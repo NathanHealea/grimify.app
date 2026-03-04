@@ -2,7 +2,7 @@
 
 **Epic:** UI & Layout
 **Type:** Feature
-**Status:** In Progress
+**Status:** Completed
 
 ## Summary
 
