@@ -25,7 +25,7 @@ export default function Home() {
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden">
       {/* Top bar */}
-      <nav className="navbar min-h-0 border-b border-base-300 bg-base-200 px-2 py-1">
+      <nav className="navbar min-h-0 border-b border-base-300 bg-base-200 px-2 py-4">
         <div className="navbar-start w-auto">
           <button
             className="btn btn-ghost btn-sm"
@@ -36,14 +36,14 @@ export default function Home() {
           </button>
         </div>
 
-        <div className="navbar-center">
+        <div className="navbar-center flex-1 px-3">
           <label className="input input-sm w-full max-w-sm">
             <MagnifyingGlassIcon className="size-4 opacity-50" />
             <input type="text" placeholder="Search paints..." disabled />
           </label>
         </div>
 
-        <div className="navbar-end w-auto gap-2">
+        <div className="navbar-end w-auto justify-end gap-2">
           <span className="badge badge-sm">{paints.length} paints</span>
           <span className="badge badge-sm">{brands.length} brands</span>
         </div>
