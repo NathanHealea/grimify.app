@@ -62,7 +62,7 @@ Epic Template:
 
 **High-Level Scope:**
 
-- [ ] [Paint database](./paint-information/paint-database.md)
+- [x] [Paint database](./paint-information/paint-database.md)
 
 ### Epic 2: Color Wheel Visualization
 
@@ -70,7 +70,7 @@ Epic Template:
 
 **High-Level Scope:**
 
-- [ ] [Interactive color wheel (zoom, pan, reset)](./color-wheel-visualization/interactive-color-wheel.md)
+- [x] [Interactive color wheel (zoom, pan, reset)](./color-wheel-visualization/interactive-color-wheel.md)
 - [ ] [Paint selection and hover](./color-wheel-visualization/paint-selection-and-hover.md)
 
 ### Epic 3: UI & Layout
@@ -79,7 +79,7 @@ Epic Template:
 
 **High-Level Scope:**
 
-- [ ] [Sidebar layout](./ui-and-layout/sidebar-layout.md)
+- [x] [Sidebar layout](./ui-and-layout/sidebar-layout.md)
 - [ ] [Header stats](./ui-and-layout/header-stats.md)
 
 ### Epic 4: Paint Information
