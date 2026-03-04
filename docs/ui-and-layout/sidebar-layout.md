@@ -2,7 +2,7 @@
 
 **Epic:** UI & Layout
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 
 ## Summary
 
@@ -10,11 +10,11 @@ A toggleable sidebar that contains Search, Brand Filter, Brand Ring Toggle, Head
 
 ## Acceptance Criteria
 
-- [ ] Sidebar contains: Search, Brand Filter, Brand Ring Toggle, Header Stats, Color Scheme Mode, and Color Details
-- [ ] Sidebar is toggleable (open/close)
-- [ ] On desktop, the sidebar shrinks the size of the main viewing window (side-by-side layout)
-- [ ] On mobile, the sidebar overlays the entire screen
-- [ ] On mobile, an apply button makes the necessary changes and closes the menu
+- [x] Sidebar contains: Search, Brand Filter, Brand Ring Toggle, Header Stats, Color Scheme Mode, and Color Details
+- [x] Sidebar is toggleable (open/close)
+- [x] On desktop, the sidebar shrinks the size of the main viewing window (side-by-side layout)
+- [x] On mobile, the sidebar overlays the entire screen
+- [x] On mobile, an apply button makes the necessary changes and closes the menu
 
 ## Implementation Plan
 
