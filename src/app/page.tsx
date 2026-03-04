@@ -25,21 +25,23 @@ export default function Home() {
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden">
       {/* Top bar */}
-      <header className="flex items-center gap-3 border-b border-base-300 bg-base-200 px-4 py-2">
+      <header className="flex items-center border-b border-base-300 bg-base-200 px-4 py-2">
         <button
-          className="btn btn-ghost btn-sm"
+          className="btn btn-ghost btn-sm flex-shrink-0"
           onClick={() => setSidebarOpen(!effectiveSidebarOpen)}
           aria-label={effectiveSidebarOpen ? "Close menu" : "Open menu"}
         >
           <Bars3Icon className="size-5" />
         </button>
 
-        <label className="input input-sm w-full max-w-xs">
-          <MagnifyingGlassIcon className="size-4 opacity-50" />
-          <input type="text" placeholder="Search paints..." disabled />
-        </label>
+        <div className="flex flex-1 justify-center px-3">
+          <label className="input input-sm w-full max-w-sm">
+            <MagnifyingGlassIcon className="size-4 opacity-50" />
+            <input type="text" placeholder="Search paints..." disabled />
+          </label>
+        </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-shrink-0 gap-2">
           <span className="badge badge-sm">{paints.length} paints</span>
           <span className="badge badge-sm">{brands.length} brands</span>
         </div>
