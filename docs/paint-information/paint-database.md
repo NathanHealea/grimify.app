@@ -2,7 +2,7 @@
 
 **Epic:** Paint Information
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 
 ## Summary
 
@@ -10,10 +10,10 @@ A lightweight JSON data store of 190+ miniature paints from four major brands, u
 
 ## Acceptance Criteria
 
-- [ ] 190+ paints stored as JSON objects across brand-specific files
-- [ ] Each paint includes: `name`, `hex`, `type`
-- [ ] Brand metadata stored separately with: `id`, `name`, `icon`, `types[]`
-- [ ] Supports four brands with their respective icons and paint types:
+- [x] 190+ paints stored as JSON objects across brand-specific files
+- [x] Each paint includes: `name`, `hex`, `type`
+- [x] Brand metadata stored separately with: `id`, `name`, `icon`, `types[]`
+- [x] Supports four brands with their respective icons and paint types:
 
 | Brand             | Icon | Paint Type            |
 |-------------------|------|-----------------------|
@@ -22,10 +22,10 @@ A lightweight JSON data store of 190+ miniature paints from four major brands, u
 | Vallejo           | 🎯    | Game Color            |
 | Green Stuff World | 🧪    | Acrylic               |
 
-- [ ] TypeScript types defined for `Paint`, `Brand`, and `PaintEntry` (raw JSON shape)
-- [ ] Barrel `index.ts` exports merged paint array and brand metadata
-- [ ] JSON files are importable via `resolveJsonModule` (already enabled in tsconfig)
-- [ ] Path alias `@data/*` maps to `src/data/*` for clean imports
+- [x] TypeScript types defined for `Paint`, `Brand`, and `PaintEntry` (raw JSON shape)
+- [x] Barrel `index.ts` exports merged paint array and brand metadata
+- [x] JSON files are importable via `resolveJsonModule` (already enabled in tsconfig)
+- [x] Path alias `@data/*` maps to `src/data/*` for clean imports
 
 ## File Structure
 
