@@ -1,21 +1,87 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { Bars3Icon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 import ColorWheel from "@/components/ColorWheel";
 import Sidebar, { useIsDesktop } from "@/components/Sidebar";
 import { brands, paints } from "@/data/index";
+import type { ProcessedPaint } from "@/types/paint";
+import {
+  hexToHsl,
+  paintToWheelPosition,
+  WHEEL_RADIUS,
+} from "@/utils/colorUtils";
+
+function PaintDetails({ paint }: { paint: ProcessedPaint | null }) {
+  if (!paint) {
+    return (
+      <p className="text-sm text-base-content/40">
+        Select a paint to see details
+      </p>
+    );
+  }
+
+  const brand = brands.find((b) => b.id === paint.brand);
+  const hsl = hexToHsl(paint.hex);
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <div
+          className="size-8 rounded border border-base-300"
+          style={{ backgroundColor: paint.hex }}
+        />
+        <div>
+          <p className="text-sm font-semibold">{paint.name}</p>
+          <p className="text-xs text-base-content/60">
+            {brand?.icon} {brand?.name}
+          </p>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+        <span className="text-base-content/60">Hex</span>
+        <span className="font-mono">{paint.hex.toUpperCase()}</span>
+        <span className="text-base-content/60">HSL</span>
+        <span className="font-mono">
+          {Math.round(hsl.h)}° {Math.round(hsl.s * 100)}%{" "}
+          {Math.round(hsl.l * 100)}%
+        </span>
+        <span className="text-base-content/60">Type</span>
+        <span>{paint.type}</span>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const isDesktop = useIsDesktop();
   const [sidebarOpen, setSidebarOpen] = useState<boolean | null>(null);
+  const [selectedPaint, setSelectedPaint] =
+    useState<ProcessedPaint | null>(null);
+  const [hoveredPaint, setHoveredPaint] =
+    useState<ProcessedPaint | null>(null);
 
   // null = user hasn't toggled yet, derive from screen size
   const effectiveSidebarOpen = sidebarOpen ?? isDesktop;
+
+  const processedPaints = useMemo<ProcessedPaint[]>(
+    () =>
+      paints.map((paint) => {
+        const hsl = hexToHsl(paint.hex);
+        const pos = paintToWheelPosition(hsl.h, hsl.l, WHEEL_RADIUS);
+        return {
+          ...paint,
+          id: `${paint.brand}-${paint.name}`,
+          x: pos.x,
+          y: pos.y,
+        };
+      }),
+    [],
+  );
 
   const handleReset = useCallback(() => {
     setZoom(1);
@@ -117,19 +183,21 @@ export default function Home() {
             <h3 className="mb-2 text-xs font-semibold uppercase text-base-content/60">
               Color Details
             </h3>
-            <p className="text-sm text-base-content/40">
-              Select a paint to see details
-            </p>
+            <PaintDetails paint={hoveredPaint ?? selectedPaint} />
           </section>
         </Sidebar>
 
         <main className="relative flex-1">
           <ColorWheel
-            paints={paints}
+            processedPaints={processedPaints}
             zoom={zoom}
             pan={pan}
             onZoomChange={setZoom}
             onPanChange={setPan}
+            selectedPaint={selectedPaint}
+            hoveredPaint={hoveredPaint}
+            onSelectPaint={setSelectedPaint}
+            onHoverPaint={setHoveredPaint}
           />
 
           {/* Reset button */}
