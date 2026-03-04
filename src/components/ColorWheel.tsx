@@ -316,7 +316,7 @@ export default function ColorWheel({ paints, zoom, pan, onZoomChange, onPanChang
       ref={svgRef}
       viewBox={viewBox}
       className="h-full w-full"
-      style={{ touchAction: 'none', cursor: isDragging ? 'grabbing' : 'grab' }}
+      style={{ touchAction: 'none', cursor: isDragging ? 'grabbing' : 'grab', userSelect: 'none', WebkitUserSelect: 'none' }}
       onWheel={handleWheel}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
