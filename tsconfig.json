@@ -19,11 +19,11 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "@components/*": ["components/*"],
-      "@modules/*": ["modules/*"],
-      "@utils/*": ["utils/*"],
-      "@types/*": ["types/*"]
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@types/*": ["./src/types/*"]
     }
   },
   "include": [
