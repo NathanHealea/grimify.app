@@ -11,7 +11,7 @@ A stats display showing total paint count, unique color count, and search match 
 ## Acceptance Criteria
 
 - [x] Displays total paint count
-- [ ] Displays unique color count
+- [x] Displays unique color count
 - [ ] Displays search match count when a search is active
 
 ## Current State

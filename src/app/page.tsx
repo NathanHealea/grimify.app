@@ -51,6 +51,11 @@ export default function Home() {
   const [selectedPaint, setSelectedPaint] = useState<ProcessedPaint | null>(null);
   const [hoveredPaint, setHoveredPaint] = useState<ProcessedPaint | null>(null);
 
+  const uniqueColorCount = useMemo(
+    () => new Set(paints.map((p) => p.hex.toLowerCase())).size,
+    [],
+  );
+
   // null = user hasn't toggled yet, derive from screen size
   const effectiveSidebarOpen = sidebarOpen ?? isDesktop;
 
@@ -96,6 +101,7 @@ export default function Home() {
 
         <div className='navbar-end w-auto justify-end gap-2'>
           <span className='badge badge-sm'>{paints.length} paints</span>
+          <span className='badge badge-sm'>{uniqueColorCount} colors</span>
           <span className='badge badge-sm'>{brands.length} brands</span>
         </div>
       </nav>
