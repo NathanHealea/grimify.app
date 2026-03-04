@@ -1,8 +1,21 @@
 @import 'tailwindcss';
-@plugin "daisyui";
 
+@plugin 'daisyui' {
+  themes: colorwheel --default;
+}
 
-body {
-  background: #0a0a0a;
-  color: #ffffff;
+@plugin "daisyui/theme" {
+  name: "colorwheel";
+  default: true;
+  prefersdark: true;
+  color-scheme: "dark";
+  --color-base-100: #0a0a0a;
+  --color-base-200: #141414;
+  --color-base-300: #2a2a2a;
+  --color-base-content: #e5e5e5;
+  --color-primary: #6366f1;
+  --color-primary-content: #ffffff;
+  --radius-selector: 2rem;
+  --radius-field: 0.5rem;
+  --radius-box: 1rem;
 }
