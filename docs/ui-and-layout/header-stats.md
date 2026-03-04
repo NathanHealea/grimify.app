@@ -2,7 +2,7 @@
 
 **Epic:** UI & Layout
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 
 ## Summary
 
@@ -10,6 +10,6 @@ A stats display showing total paint count, unique color count, and search match 
 
 ## Acceptance Criteria
 
-- [ ] Displays total paint count
+- [x] Displays total paint count
 - [ ] Displays unique color count
 - [ ] Displays search match count when a search is active
