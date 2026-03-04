@@ -2,24 +2,11 @@
 
 import { useCallback, useMemo, useRef, useState } from 'react'
 
-import type { Paint } from '@/types/paint'
-import {
-  COLOR_SEGMENTS,
-  hexToHsl,
-  hslToHex,
-  paintToWheelPosition,
-  RING_WIDTH,
-  SEGMENT_BOUNDARIES,
-  WHEEL_RADIUS,
-} from '@/utils/colorUtils'
-
-interface ProcessedPaint extends Paint {
-  x: number
-  y: number
-}
+import type { ProcessedPaint } from '@/types/paint'
+import { COLOR_SEGMENTS, hslToHex, RING_WIDTH, SEGMENT_BOUNDARIES, WHEEL_RADIUS } from '@/utils/colorUtils'
 
 interface ColorWheelProps {
-  paints: Paint[]
+  processedPaints: ProcessedPaint[]
   zoom: number
   pan: { x: number; y: number }
   onZoomChange: (zoom: number) => void
@@ -48,21 +35,11 @@ function buildHueRingPath(startDeg: number, endDeg: number, innerR: number, oute
   return `M ${x1} ${y1} A ${outerR} ${outerR} 0 0 0 ${x2} ${y2} L ${x3} ${y3} A ${innerR} ${innerR} 0 0 1 ${x4} ${y4} Z`
 }
 
-export default function ColorWheel({ paints, zoom, pan, onZoomChange, onPanChange }: ColorWheelProps) {
+export default function ColorWheel({ processedPaints, zoom, pan, onZoomChange, onPanChange }: ColorWheelProps) {
   const svgRef = useRef<SVGSVGElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const dragStart = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null)
   const touchStart = useRef<{ dist: number; zoom: number; mid: { x: number; y: number } } | null>(null)
-
-  const processedPaints = useMemo<ProcessedPaint[]>(
-    () =>
-      paints.map((paint) => {
-        const hsl = hexToHsl(paint.hex)
-        const pos = paintToWheelPosition(hsl.h, hsl.l, WHEEL_RADIUS)
-        return { ...paint, x: pos.x, y: pos.y }
-      }),
-    [paints],
-  )
 
   // ViewBox derived from zoom and pan
   const totalSize = (WHEEL_RADIUS + RING_WIDTH + 40) * 2

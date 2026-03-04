@@ -17,3 +17,10 @@ export interface Brand {
 export interface Paint extends PaintEntry {
   brand: string
 }
+
+/** Paint with computed wheel position and stable ID */
+export interface ProcessedPaint extends Paint {
+  id: string
+  x: number
+  y: number
+}
