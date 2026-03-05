@@ -218,10 +218,16 @@ export default function Home() {
 
         <div className='navbar-end w-auto justify-end gap-2'>
           <span className='badge badge-sm'>
-            {!isFiltered ? paints.length : `${filteredPaintCount} / ${paints.length}`} paints
+            {!isFiltered && !isSearching
+              ? paints.length
+              : `${filteredPaintCount} / ${paints.length}`}{' '}
+            paints
           </span>
           <span className='badge badge-sm'>
-            {!isFiltered ? uniqueColorCount : `${filteredColorCount} / ${uniqueColorCount}`} colors
+            {!isFiltered && !isSearching
+              ? uniqueColorCount
+              : `${filteredColorCount} / ${uniqueColorCount}`}{' '}
+            colors
           </span>
           <span className='badge badge-sm'>{brands.length} brands</span>
         </div>
