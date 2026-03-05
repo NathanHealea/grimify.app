@@ -19,6 +19,7 @@ export default function Home() {
   const [selectedGroup, setSelectedGroup] = useState<PaintGroup | null>(null)
   const [selectedPaint, setSelectedPaint] = useState<ProcessedPaint | null>(null)
   const [hoveredGroup, setHoveredGroup] = useState<PaintGroup | null>(null)
+  const [showBrandRing, setShowBrandRing] = useState(false)
 
   const uniqueColorCount = useMemo(
     () => new Set(paints.map((p) => p.hex.toLowerCase())).size,
@@ -125,9 +126,14 @@ export default function Home() {
         <Sidebar isOpen={effectiveSidebarOpen} onClose={() => setSidebarOpen(false)}>
           {/* Brand Ring Toggle */}
           <section>
-            <label className='flex cursor-not-allowed items-center justify-between'>
+            <label className='flex cursor-pointer items-center justify-between'>
               <span className='text-xs font-semibold uppercase text-base-content/60'>Brand Ring</span>
-              <input type='checkbox' className='toggle toggle-sm' disabled />
+              <input
+                type='checkbox'
+                className='toggle toggle-sm'
+                checked={showBrandRing}
+                onChange={(e) => setShowBrandRing(e.target.checked)}
+              />
             </label>
           </section>
 
@@ -193,6 +199,7 @@ export default function Home() {
             hoveredGroup={hoveredGroup}
             onGroupClick={handleGroupClick}
             onHoverGroup={setHoveredGroup}
+            showBrandRing={showBrandRing}
           />
 
           {/* Reset button */}
