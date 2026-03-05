@@ -34,4 +34,4 @@ export interface PaintGroup {
 }
 
 /** Color scheme modes for highlighting matching paints */
-export type ColorScheme = 'none' | 'complementary' | 'split-complementary' | 'analogous'
+export type ColorScheme = 'none' | 'complementary' | 'split-complementary' | 'analogous';
