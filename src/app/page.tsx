@@ -301,6 +301,7 @@ export default function Home() {
           <ColorWheel
             paintGroups={paintGroups}
             brandFilter={brandFilter}
+            searchMatchIds={searchMatchIds}
             zoom={zoom}
             pan={pan}
             onZoomChange={setZoom}
