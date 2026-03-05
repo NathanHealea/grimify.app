@@ -20,7 +20,75 @@ interface ColorWheelProps {
 const MIN_ZOOM = 0.4;
 const MAX_ZOOM = 8;
 const DOT_RADIUS = 5;
-const LABEL_ZOOM_THRESHOLD = 2;
+
+function PaintDot({
+  group,
+  isSelected,
+  onHover,
+  onClick,
+}: {
+  group: PaintGroup
+  isSelected: boolean
+  onHover: (group: PaintGroup | null) => void
+  onClick: (group: PaintGroup) => void
+}) {
+  const { rep } = group
+  const isMulti = group.paints.length > 1
+  const r = isMulti ? DOT_RADIUS + 2 : DOT_RADIUS
+
+  return (
+    <g>
+      {isSelected && (
+        <circle
+          cx={rep.x}
+          cy={rep.y}
+          r={r + 4}
+          fill='none'
+          stroke='white'
+          strokeWidth={2}
+          strokeDasharray='4,2'
+          pointerEvents='none'
+        />
+      )}
+      <circle
+        cx={rep.x}
+        cy={rep.y}
+        r={r}
+        fill={rep.hex}
+        stroke='rgba(0,0,0,0.5)'
+        strokeWidth={1}
+        className='cursor-pointer'
+        onPointerEnter={() => onHover(group)}
+        onPointerLeave={() => onHover(null)}
+        onClick={() => onClick(group)}
+      />
+      {isMulti && (
+        <>
+          <circle
+            cx={rep.x + r * 0.7}
+            cy={rep.y - r * 0.7}
+            r={4}
+            fill='#f0c040'
+            stroke='#000'
+            strokeWidth={0.5}
+            pointerEvents='none'
+          />
+          <text
+            x={rep.x + r * 0.7}
+            y={rep.y - r * 0.7 + 0.5}
+            textAnchor='middle'
+            dominantBaseline='middle'
+            fill='#000'
+            fontSize={5}
+            fontWeight={800}
+            pointerEvents='none'>
+            {group.paints.length}
+          </text>
+        </>
+      )}
+    </g>
+  )
+}
 
 function buildHueRingPath(startDeg: number, endDeg: number, innerR: number, outerR: number): string {
   const toRad = (deg: number) => (deg * Math.PI) / 180;
@@ -155,16 +223,6 @@ export default function ColorWheel({
         );
       }),
     [labelFontSize],
-  );
-
-  // Check if a point is within the current viewBox (for label culling)
-  const isInView = useCallback(
-    (x: number, y: number) => {
-      const vx = -viewSize / 2 + pan.x;
-      const vy = -viewSize / 2 + pan.y;
-      return x >= vx && x <= vx + viewSize && y >= vy && y <= vy + viewSize;
-    },
-    [viewSize, pan],
   );
 
   // Convert client coordinates to SVG coordinates
@@ -324,16 +382,6 @@ export default function ColorWheel({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}>
-      <defs>
-        <filter id='paint-glow'>
-          <feGaussianBlur stdDeviation='3' result='blur' />
-          <feMerge>
-            <feMergeNode in='blur' />
-            <feMergeNode in='SourceGraphic' />
-          </feMerge>
-        </filter>
-      </defs>
-
       {/* Segment background wedges */}
       <g>{segmentWedges}</g>
 
@@ -348,115 +396,68 @@ export default function ColorWheel({
 
       {/* Paint dots (one per group) */}
       <g>
-        {paintGroups.map((group) => {
-          const { rep } = group
-          const isMulti = group.paints.length > 1
-          const r = isMulti ? DOT_RADIUS + 2 : DOT_RADIUS
-          return (
-            <g key={group.key}>
-              <circle
-                cx={rep.x}
-                cy={rep.y}
-                r={r}
-                fill={rep.hex}
-                stroke='rgba(0,0,0,0.5)'
-                strokeWidth={1}
-                className='cursor-pointer'
-                onPointerEnter={() => onHoverGroup(group)}
-                onPointerLeave={() => onHoverGroup(null)}
-                onClick={(e) => {
-                  if (dragDistance.current > 3) return
-                  e.stopPropagation()
-                  onGroupClick(group)
-                }}
-              />
-              {isMulti && (
-                <>
-                  <circle
-                    cx={rep.x + r * 0.7}
-                    cy={rep.y - r * 0.7}
-                    r={4}
-                    fill='#f0c040'
-                    stroke='#000'
-                    strokeWidth={0.5}
-                    pointerEvents='none'
-                  />
-                  <text
-                    x={rep.x + r * 0.7}
-                    y={rep.y - r * 0.7 + 0.5}
-                    textAnchor='middle'
-                    dominantBaseline='middle'
-                    fill='#000'
-                    fontSize={5}
-                    fontWeight={800}
-                    pointerEvents='none'>
-                    {group.paints.length}
-                  </text>
-                </>
-              )}
-            </g>
-          )
-        })}
+        {paintGroups.map((group) => (
+          <PaintDot
+            key={group.key}
+            group={group}
+            isSelected={selectedGroup?.key === group.key}
+
+            onHover={onHoverGroup}
+            onClick={(g) => {
+              if (dragDistance.current > 3) return
+              onGroupClick(g)
+            }}
+          />
+        ))}
       </g>
 
-      {/* Hover and selection overlay layer */}
-      <g>
-        {/* Selected group dashed ring */}
-        {selectedGroup && (
-          <circle
-            cx={selectedGroup.rep.x}
-            cy={selectedGroup.rep.y}
-            r={(selectedGroup.paints.length > 1 ? DOT_RADIUS + 2 : DOT_RADIUS) + 4}
-            fill='none'
-            stroke='white'
-            strokeWidth={2}
-            strokeDasharray='4 2'
-            pointerEvents='none'
-          />
-        )}
-
-        {/* Hovered group glow */}
-        {hoveredGroup && (
-          <circle
-            cx={hoveredGroup.rep.x}
-            cy={hoveredGroup.rep.y}
-            r={(hoveredGroup.paints.length > 1 ? DOT_RADIUS + 2 : DOT_RADIUS) * 1.4}
-            fill={hoveredGroup.rep.hex}
-            stroke='rgba(255,255,255,0.8)'
-            strokeWidth={1.5}
-            filter='url(#paint-glow)'
-            pointerEvents='none'
-          />
-        )}
-      </g>
-
-      {/* Paint labels at zoom > 2x */}
-      {zoom > LABEL_ZOOM_THRESHOLD && (
-        <g>
-          {paintGroups
-            .filter((g) => isInView(g.rep.x, g.rep.y))
-            .map((group) => {
-              const label =
-                group.paints.length > 1
-                  ? `${group.rep.name} +${group.paints.length - 1}`
-                  : group.rep.name
-              return (
+      {/* Labels layer — rendered on top of all dots */}
+      <g pointerEvents='none'>
+        {paintGroups
+          .filter((g) => hoveredGroup?.key === g.key || selectedGroup?.key === g.key)
+          .map((group) => {
+            const { rep } = group
+            const isMulti = group.paints.length > 1
+            const r = isMulti ? DOT_RADIUS + 2 : DOT_RADIUS
+            const label1 = isMulti ? `${group.paints.length} paints` : rep.name
+            const label2 = isMulti ? rep.hex.toUpperCase() : rep.brand
+            const maxLen = Math.max(label1.length, label2.length)
+            const boxW = maxLen * 3 + 4
+            const boxH = 16
+            const boxX = rep.x - boxW / 2
+            const boxY = rep.y + r
+            return (
+              <g key={`label-${group.key}`}>
+                <rect
+                  x={boxX}
+                  y={boxY}
+                  width={boxW}
+                  height={boxH}
+                  rx={3}
+                  ry={3}
+                  fill='rgba(0,0,0,0.7)'
+                />
                 <text
-                  key={`label-${group.key}`}
-                  x={group.rep.x + DOT_RADIUS + 3}
-                  y={group.rep.y + 1}
-                  fill='white'
-                  fontSize={8 / Math.max(1, zoom * 0.5)}
-                  fontFamily='system-ui, sans-serif'
-                  paintOrder='stroke'
-                  stroke='rgba(0,0,0,0.7)'
-                  strokeWidth={2}>
-                  {label}
+                  x={rep.x}
+                  y={rep.y + r + 6}
+                  textAnchor='middle'
+                  fill='#bbb'
+                  fontSize={5}
+                  fontWeight={600}>
+                  {label1}
                 </text>
-              )
-            })}
-        </g>
-      )}
+                <text
+                  x={rep.x}
+                  y={rep.y + r + 13}
+                  textAnchor='middle'
+                  fill={isMulti ? '#f0c040' : '#888'}
+                  fontSize={4}>
+                  {label2}
+                </text>
+              </g>
+            )
+          })}
+      </g>
     </svg>
   );
 }

@@ -116,7 +116,7 @@ export default function Home() {
         const pos = paintToWheelPosition(hsl.h, hsl.l, WHEEL_RADIUS);
         return {
           ...paint,
-          id: `${paint.brand}-${paint.name}`,
+          id: `${paint.brand}-${paint.name}-${paint.type}`.toLowerCase().replace(/\s+/g, '-'),
           x: pos.x,
           y: pos.y,
         };
@@ -259,7 +259,7 @@ export default function Home() {
           </section>
         </Sidebar>
 
-        <main className='relative flex-1'>
+        <main className='relative flex-1 overflow-hidden'>
           <ColorWheel
             paintGroups={paintGroups}
             zoom={zoom}
