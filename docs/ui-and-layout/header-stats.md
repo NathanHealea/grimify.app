@@ -2,7 +2,7 @@
 
 **Epic:** UI & Layout
 **Type:** Feature
-**Status:** In Progress
+**Status:** Completed
 
 ## Summary
 
@@ -12,7 +12,7 @@ A stats display showing total paint count, unique color count, and search match 
 
 - [x] Displays total paint count
 - [x] Displays unique color count
-- [ ] Displays search match count when a search is active
+- [x] Displays search match count when a search is active
 
 ## Current State
 

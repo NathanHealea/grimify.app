@@ -81,7 +81,7 @@ Epic Template:
 **High-Level Scope:**
 
 - [x] [Sidebar layout](./ui-and-layout/sidebar-layout.md)
-- [ ] [Header stats](./ui-and-layout/header-stats.md)
+- [x] [Header stats](./ui-and-layout/header-stats.md)
 
 ### Epic 4: Paint Information
 
