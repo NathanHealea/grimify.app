@@ -3,8 +3,16 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { brands } from '@/data/index';
-import type { Brand, PaintGroup } from '@/types/paint';
-import { COLOR_SEGMENTS, hslToHex, RING_WIDTH, SEGMENT_BOUNDARIES, WHEEL_RADIUS } from '@/utils/colorUtils';
+import type { Brand, ColorScheme, PaintGroup, ProcessedPaint } from '@/types/paint';
+import {
+  COLOR_SEGMENTS,
+  getSchemeWedges,
+  hexToHsl,
+  hslToHex,
+  RING_WIDTH,
+  SEGMENT_BOUNDARIES,
+  WHEEL_RADIUS,
+} from '@/utils/colorUtils';
 
 interface ColorWheelProps {
   paintGroups: PaintGroup[];
@@ -18,6 +26,9 @@ interface ColorWheelProps {
   onGroupClick: (group: PaintGroup | null) => void;
   onHoverGroup: (group: PaintGroup | null) => void;
   showBrandRing: boolean;
+  colorScheme: ColorScheme;
+  selectedPaint: ProcessedPaint | null;
+  schemeMatchIds: Set<string>;
 }
 
 const MIN_ZOOM = 0.4;
@@ -193,6 +204,9 @@ export default function ColorWheel({
   onGroupClick,
   onHoverGroup,
   showBrandRing,
+  colorScheme,
+  selectedPaint,
+  schemeMatchIds,
 }: ColorWheelProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -300,6 +314,46 @@ export default function ColorWheel({
       }),
     [labelFontSize],
   );
+
+  // Scheme wedge overlays
+  const schemeWedges = useMemo(() => {
+    if (colorScheme === 'none' || !selectedPaint) return null
+    const hsl = hexToHsl(selectedPaint.hex)
+    const wedges = getSchemeWedges(hsl.h, colorScheme)
+    return wedges.map((wedge, i) => {
+      // Handle wrap-around: if startDeg > endDeg, it wraps past 0°
+      let start = wedge.startDeg
+      let end = wedge.endDeg
+      if (start > end) {
+        // Split into two arcs: start→360 and 0→end
+        return (
+          <g key={i}>
+            <path
+              d={buildHueRingPath(start, 360 - 0.01, 0, WHEEL_RADIUS)}
+              fill='white'
+              fillOpacity={0.08}
+              stroke='none'
+            />
+            <path
+              d={buildHueRingPath(0, end, 0, WHEEL_RADIUS)}
+              fill='white'
+              fillOpacity={0.08}
+              stroke='none'
+            />
+          </g>
+        )
+      }
+      return (
+        <path
+          key={i}
+          d={buildHueRingPath(start, end, 0, WHEEL_RADIUS)}
+          fill='white'
+          fillOpacity={0.08}
+          stroke='none'
+        />
+      )
+    })
+  }, [colorScheme, selectedPaint])
 
   // Convert client coordinates to SVG coordinates
   const clientToSvg = useCallback(
@@ -470,10 +524,16 @@ export default function ColorWheel({
       {/* Segment labels */}
       <g>{segmentLabels}</g>
 
+      {/* Scheme wedge overlays */}
+      {schemeWedges && <g pointerEvents='none'>{schemeWedges}</g>}
+
       {/* Paint dots (one per group) */}
       <g>
         {paintGroups.map((group) => {
-          const dimmed = brandFilter.size > 0 && !group.paints.some((p) => brandFilter.has(p.brand))
+          const brandDimmed = brandFilter.size > 0 && !group.paints.some((p) => brandFilter.has(p.brand))
+          const schemeDimmed =
+            schemeMatchIds.size > 0 && !group.paints.some((p) => schemeMatchIds.has(p.id))
+          const dimmed = brandDimmed || schemeDimmed
           return (
             <PaintDot
               key={group.key}
