@@ -46,7 +46,7 @@ function BrandRingArcs({
   }, [group.paints])
 
   const innerR = r + 1
-  const outerR = r + 4
+  const outerR = r + 2.5
   const segmentAngle = 360 / uniqueBrands.length
 
   return (
