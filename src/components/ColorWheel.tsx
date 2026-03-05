@@ -3,8 +3,16 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { brands } from '@/data/index';
-import type { Brand, PaintGroup } from '@/types/paint';
-import { COLOR_SEGMENTS, hslToHex, RING_WIDTH, SEGMENT_BOUNDARIES, WHEEL_RADIUS } from '@/utils/colorUtils';
+import type { Brand, ColorScheme, PaintGroup, ProcessedPaint } from '@/types/paint';
+import {
+  COLOR_SEGMENTS,
+  getSchemeWedges,
+  hexToHsl,
+  hslToHex,
+  RING_WIDTH,
+  SEGMENT_BOUNDARIES,
+  WHEEL_RADIUS,
+} from '@/utils/colorUtils';
 
 interface ColorWheelProps {
   paintGroups: PaintGroup[];
@@ -19,43 +27,36 @@ interface ColorWheelProps {
   onGroupClick: (group: PaintGroup | null) => void;
   onHoverGroup: (group: PaintGroup | null) => void;
   showBrandRing: boolean;
+  colorScheme: ColorScheme;
+  selectedPaint: ProcessedPaint | null;
+  isSchemeMatching: (paint: ProcessedPaint) => boolean;
 }
 
 const MIN_ZOOM = 0.4;
 const MAX_ZOOM = 8;
 const DOT_RADIUS = 5;
 
-function BrandRingArcs({
-  group,
-  r,
-  cx,
-  cy,
-}: {
-  group: PaintGroup
-  r: number
-  cx: number
-  cy: number
-}) {
+function BrandRingArcs({ group, r, cx, cy }: { group: PaintGroup; r: number; cx: number; cy: number }) {
   const uniqueBrands = useMemo(() => {
-    const seen = new Map<string, Brand>()
+    const seen = new Map<string, Brand>();
     for (const paint of group.paints) {
       if (!seen.has(paint.brand)) {
-        const brand = brands.find((b) => b.id === paint.brand)
-        if (brand) seen.set(paint.brand, brand)
+        const brand = brands.find((b) => b.id === paint.brand);
+        if (brand) seen.set(paint.brand, brand);
       }
     }
-    return Array.from(seen.values())
-  }, [group.paints])
+    return Array.from(seen.values());
+  }, [group.paints]);
 
-  const innerR = r + 1
-  const outerR = r + 2.5
-  const segmentAngle = 360 / uniqueBrands.length
+  const innerR = r + 1;
+  const outerR = r + 2.5;
+  const segmentAngle = 360 / uniqueBrands.length;
 
   return (
     <g transform={`translate(${cx}, ${cy})`} pointerEvents='none'>
       {uniqueBrands.map((brand, i) => {
-        const startDeg = i * segmentAngle
-        const endDeg = startDeg + segmentAngle
+        const startDeg = i * segmentAngle;
+        const endDeg = startDeg + segmentAngle;
         // Full 360° arc is degenerate (start === end point), split into two halves
         if (segmentAngle === 360) {
           return (
@@ -73,7 +74,7 @@ function BrandRingArcs({
                 strokeWidth={0.5}
               />
             </g>
-          )
+          );
         }
         return (
           <path
@@ -83,10 +84,10 @@ function BrandRingArcs({
             stroke='rgba(0,0,0,0.3)'
             strokeWidth={0.5}
           />
-        )
+        );
       })}
     </g>
-  )
+  );
 }
 
 function PaintDot({
@@ -94,24 +95,26 @@ function PaintDot({
   isSelected,
   showBrandRing,
   dimmed,
+  schemeDimmed,
   searchHighlight,
   onHover,
   onClick,
 }: {
-  group: PaintGroup
-  isSelected: boolean
-  showBrandRing: boolean
-  dimmed: boolean
-  searchHighlight: boolean
-  onHover: (group: PaintGroup | null) => void
-  onClick: (group: PaintGroup) => void
+  group: PaintGroup;
+  isSelected: boolean;
+  showBrandRing: boolean;
+  dimmed: boolean;
+  schemeDimmed: boolean;
+  searchHighlight: boolean;
+  onHover: (group: PaintGroup | null) => void;
+  onClick: (group: PaintGroup) => void;
 }) {
-  const { rep } = group
-  const isMulti = group.paints.length > 1
-  const r = isMulti ? DOT_RADIUS + 2 : DOT_RADIUS
+  const { rep } = group;
+  const isMulti = group.paints.length > 1;
+  const r = isMulti ? DOT_RADIUS + 2 : DOT_RADIUS;
 
   return (
-    <g opacity={dimmed ? 0.15 : 1}>
+    <g opacity={dimmed ? (schemeDimmed ? 0.06 : 0.15) : 1}>
       {searchHighlight && !dimmed && (
         <circle
           cx={rep.x}
@@ -136,9 +139,7 @@ function PaintDot({
           pointerEvents='none'
         />
       )}
-      {showBrandRing && (
-        <BrandRingArcs group={group} r={r} cx={rep.x} cy={rep.y} />
-      )}
+      {showBrandRing && <BrandRingArcs group={group} r={r} cx={rep.x} cy={rep.y} />}
       <circle
         cx={rep.x}
         cy={rep.y}
@@ -176,7 +177,7 @@ function PaintDot({
         </>
       )}
     </g>
-  )
+  );
 }
 
 function buildHueRingPath(startDeg: number, endDeg: number, innerR: number, outerR: number): string {
@@ -209,6 +210,9 @@ export default function ColorWheel({
   onGroupClick,
   onHoverGroup,
   showBrandRing,
+  colorScheme,
+  selectedPaint,
+  isSchemeMatching,
 }: ColorWheelProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -316,6 +320,49 @@ export default function ColorWheel({
       }),
     [labelFontSize],
   );
+
+  // Scheme wedge overlays — narrow indicator wedges at key angles
+  const schemeWedges = useMemo(() => {
+    if (colorScheme === 'none' || !selectedPaint) return null;
+    const hsl = hexToHsl(selectedPaint.hex);
+    const wedges = getSchemeWedges(hsl.h, colorScheme);
+    const elements: React.ReactElement[] = [];
+    wedges.forEach((wedge, i) => {
+      const start = (((wedge.center - wedge.span) % 360) + 360) % 360;
+      const end = (((wedge.center + wedge.span) % 360) + 360) % 360;
+      if (start > end) {
+        elements.push(
+          <path
+            key={`${i}a`}
+            d={buildHueRingPath(start, 360 - 0.01, 0, WHEEL_RADIUS)}
+            fill={wedge.color}
+            fillOpacity={0.15}
+            stroke='none'
+          />,
+        );
+        elements.push(
+          <path
+            key={`${i}b`}
+            d={buildHueRingPath(0, end, 0, WHEEL_RADIUS)}
+            fill={wedge.color}
+            fillOpacity={0.15}
+            stroke='none'
+          />,
+        );
+      } else {
+        elements.push(
+          <path
+            key={i}
+            d={buildHueRingPath(start, end, 0, WHEEL_RADIUS)}
+            fill={wedge.color}
+            fillOpacity={0.15}
+            stroke='none'
+          />,
+        );
+      }
+    });
+    return elements;
+  }, [colorScheme, selectedPaint]);
 
   // Convert client coordinates to SVG coordinates
   const clientToSvg = useCallback(
@@ -496,12 +543,16 @@ export default function ColorWheel({
       {/* Segment labels */}
       <g>{segmentLabels}</g>
 
+      {/* Scheme wedge overlays */}
+      {schemeWedges && <g pointerEvents='none'>{schemeWedges}</g>}
+
       {/* Paint dots (one per group) */}
       <g>
         {paintGroups.map((group) => {
-          const matchesBrand = brandFilter.size === 0 || group.paints.some((p) => brandFilter.has(p.brand))
-          const matchesSearch = searchMatchIds.size === 0 || group.paints.some((p) => searchMatchIds.has(p.id))
-          const dimmed = !matchesBrand || !matchesSearch
+          const matchesBrand = brandFilter.size === 0 || group.paints.some((p) => brandFilter.has(p.brand));
+          const matchesSearch = searchMatchIds.size === 0 || group.paints.some((p) => searchMatchIds.has(p.id));
+          const schemeDimmed = !group.paints.some(isSchemeMatching);
+          const dimmed = !matchesBrand || !matchesSearch || schemeDimmed;
           return (
             <PaintDot
               key={group.key}
@@ -509,14 +560,15 @@ export default function ColorWheel({
               isSelected={selectedGroup?.key === group.key}
               showBrandRing={showBrandRing}
               dimmed={dimmed}
+              schemeDimmed={schemeDimmed}
               searchHighlight={searchMatchIds.size > 0 && matchesSearch}
               onHover={onHoverGroup}
               onClick={(g) => {
-                if (dragDistance.current > 3) return
-                onGroupClick(g)
+                if (dragDistance.current > 3) return;
+                onGroupClick(g);
               }}
             />
-          )
+          );
         })}
       </g>
 
@@ -525,46 +577,27 @@ export default function ColorWheel({
         {paintGroups
           .filter((g) => hoveredGroup?.key === g.key || selectedGroup?.key === g.key)
           .map((group) => {
-            const { rep } = group
-            const isMulti = group.paints.length > 1
-            const r = isMulti ? DOT_RADIUS + 2 : DOT_RADIUS
-            const label1 = isMulti ? `${group.paints.length} paints` : rep.name
-            const label2 = isMulti ? rep.hex.toUpperCase() : rep.brand
-            const maxLen = Math.max(label1.length, label2.length)
-            const boxW = maxLen * 3 + 4
-            const boxH = 16
-            const boxX = rep.x - boxW / 2
-            const boxY = rep.y + r
+            const { rep } = group;
+            const isMulti = group.paints.length > 1;
+            const r = isMulti ? DOT_RADIUS + 2 : DOT_RADIUS;
+            const label1 = isMulti ? `${group.paints.length} paints` : rep.name;
+            const label2 = isMulti ? rep.hex.toUpperCase() : rep.brand;
+            const maxLen = Math.max(label1.length, label2.length);
+            const boxW = maxLen * 3 + 4;
+            const boxH = 16;
+            const boxX = rep.x - boxW / 2;
+            const boxY = rep.y + r;
             return (
               <g key={`label-${group.key}`}>
-                <rect
-                  x={boxX}
-                  y={boxY}
-                  width={boxW}
-                  height={boxH}
-                  rx={3}
-                  ry={3}
-                  fill='rgba(0,0,0,0.7)'
-                />
-                <text
-                  x={rep.x}
-                  y={rep.y + r + 6}
-                  textAnchor='middle'
-                  fill='#bbb'
-                  fontSize={5}
-                  fontWeight={600}>
+                <rect x={boxX} y={boxY} width={boxW} height={boxH} rx={3} ry={3} fill='rgba(0,0,0,0.7)' />
+                <text x={rep.x} y={rep.y + r + 6} textAnchor='middle' fill='#bbb' fontSize={5} fontWeight={600}>
                   {label1}
                 </text>
-                <text
-                  x={rep.x}
-                  y={rep.y + r + 13}
-                  textAnchor='middle'
-                  fill={isMulti ? '#f0c040' : '#888'}
-                  fontSize={4}>
+                <text x={rep.x} y={rep.y + r + 13} textAnchor='middle' fill={isMulti ? '#f0c040' : '#888'} fontSize={4}>
                   {label2}
                 </text>
               </g>
-            )
+            );
           })}
       </g>
     </svg>

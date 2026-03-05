@@ -2,7 +2,7 @@
 
 **Epic:** Color Analysis
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 
 ## Summary
 
@@ -10,13 +10,13 @@ Select a paint then choose a color scheme to highlight matching paints on the wh
 
 ## Acceptance Criteria
 
-- [ ] User can select a color scheme after selecting a paint
-- [ ] Complementary scheme highlights paints with hue distance > 155°
-- [ ] Split Complementary scheme highlights paints with hue distance between 120°–180°
-- [ ] Analogous scheme highlights paints with hue distance < 45°
-- [ ] Non-matching paints dim to near-invisible when a scheme is active
-- [ ] Matching regions are shown as translucent wedge overlays on the wheel
-- [ ] A "No Scheme" option shows all paints without filtering
+- [x] User can select a color scheme after selecting a paint
+- [x] Complementary scheme highlights paints with hue distance > 155°
+- [x] Split Complementary scheme highlights paints with hue distance between 120°–180°
+- [x] Analogous scheme highlights paints with hue distance < 45°
+- [x] Non-matching paints dim to near-invisible when a scheme is active
+- [x] Matching regions are shown as translucent wedge overlays on the wheel
+- [x] A "No Scheme" option shows all paints without filtering
 
 | Scheme               | Matching Rule                  |
 |----------------------|--------------------------------|

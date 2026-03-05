@@ -9,25 +9,23 @@ import ColorWheel from '@/components/ColorWheel';
 import DetailPanel from '@/components/DetailPanel';
 import Sidebar, { useIsDesktop } from '@/components/Sidebar';
 import { brands, paints } from '@/data/index';
-import type { PaintGroup, ProcessedPaint } from '@/types/paint';
-import { hexToHsl, paintToWheelPosition, WHEEL_RADIUS } from '@/utils/colorUtils';
+import type { ColorScheme, PaintGroup, ProcessedPaint } from '@/types/paint';
+import { hexToHsl, isMatchingScheme, paintToWheelPosition, WHEEL_RADIUS } from '@/utils/colorUtils';
 
 export default function Home() {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const isDesktop = useIsDesktop();
   const [sidebarOpen, setSidebarOpen] = useState<boolean | null>(null);
-  const [selectedGroup, setSelectedGroup] = useState<PaintGroup | null>(null)
-  const [selectedPaint, setSelectedPaint] = useState<ProcessedPaint | null>(null)
-  const [hoveredGroup, setHoveredGroup] = useState<PaintGroup | null>(null)
-  const [showBrandRing, setShowBrandRing] = useState(false)
-  const [brandFilter, setBrandFilter] = useState<Set<string>>(new Set())
-  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedGroup, setSelectedGroup] = useState<PaintGroup | null>(null);
+  const [selectedPaint, setSelectedPaint] = useState<ProcessedPaint | null>(null);
+  const [hoveredGroup, setHoveredGroup] = useState<PaintGroup | null>(null);
+  const [showBrandRing, setShowBrandRing] = useState(false);
+  const [brandFilter, setBrandFilter] = useState<Set<string>>(new Set());
+  const [colorScheme, setColorScheme] = useState<ColorScheme>('none');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const uniqueColorCount = useMemo(
-    () => new Set(paints.map((p) => p.hex.toLowerCase())).size,
-    [],
-  );
+  const uniqueColorCount = useMemo(() => new Set(paints.map((p) => p.hex.toLowerCase())).size, []);
 
   // null = user hasn't toggled yet, derive from screen size
   const effectiveSidebarOpen = sidebarOpen ?? isDesktop;
@@ -48,132 +46,142 @@ export default function Home() {
   );
 
   const brandPaintCounts = useMemo(() => {
-    const counts = new Map<string, number>()
-    brands.forEach((b) => counts.set(b.id, 0))
+    const counts = new Map<string, number>();
+    brands.forEach((b) => counts.set(b.id, 0));
     processedPaints.forEach((p) => {
-      counts.set(p.brand, (counts.get(p.brand) ?? 0) + 1)
-    })
-    return counts
-  }, [processedPaints])
+      counts.set(p.brand, (counts.get(p.brand) ?? 0) + 1);
+    });
+    return counts;
+  }, [processedPaints]);
 
   const paintGroups = useMemo<PaintGroup[]>(() => {
-    const map = new Map<string, ProcessedPaint[]>()
+    const map = new Map<string, ProcessedPaint[]>();
     processedPaints.forEach((p) => {
-      const key = p.hex.toLowerCase()
-      const list = map.get(key) ?? []
-      list.push(p)
-      map.set(key, list)
-    })
+      const key = p.hex.toLowerCase();
+      const list = map.get(key) ?? [];
+      list.push(p);
+      map.set(key, list);
+    });
     return Array.from(map.entries()).map(([key, paints]) => ({
       key,
       paints,
       rep: paints[0],
-    }))
-  }, [processedPaints])
+    }));
+  }, [processedPaints]);
 
   const searchResults = useMemo<ProcessedPaint[]>(() => {
-    const q = searchQuery.trim().toLowerCase()
-    if (!q) return []
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
     return processedPaints.filter((p) => {
-      const brandName = brands.find((b) => b.id === p.brand)?.name ?? ''
+      const brandName = brands.find((b) => b.id === p.brand)?.name ?? '';
       return (
-        p.name.toLowerCase().includes(q) ||
-        p.hex.toLowerCase().includes(q) ||
-        brandName.toLowerCase().includes(q)
-      )
-    })
-  }, [processedPaints, searchQuery])
+        p.name.toLowerCase().includes(q) || p.hex.toLowerCase().includes(q) || brandName.toLowerCase().includes(q)
+      );
+    });
+  }, [processedPaints, searchQuery]);
 
-  const searchMatchIds = useMemo(
-    () => new Set(searchResults.map((p) => p.id)),
-    [searchResults],
-  )
+  const searchMatchIds = useMemo(() => new Set(searchResults.map((p) => p.id)), [searchResults]);
 
-  const isSearching = searchQuery.trim().length > 0
+  const isSearching = searchQuery.trim().length > 0;
 
-  const isFiltered = brandFilter.size > 0
+  const isFiltered = brandFilter.size > 0;
 
   const filteredPaintCount = useMemo(() => {
-    if (!isFiltered && !isSearching) return paints.length
+    if (!isFiltered && !isSearching) return paints.length;
     return processedPaints.filter((p) => {
-      const matchesBrand = !isFiltered || brandFilter.has(p.brand)
-      const matchesSearch = !isSearching || searchMatchIds.has(p.id)
-      return matchesBrand && matchesSearch
-    }).length
-  }, [processedPaints, brandFilter, isFiltered, isSearching, searchMatchIds])
+      const matchesBrand = !isFiltered || brandFilter.has(p.brand);
+      const matchesSearch = !isSearching || searchMatchIds.has(p.id);
+      return matchesBrand && matchesSearch;
+    }).length;
+  }, [processedPaints, brandFilter, isFiltered, isSearching, searchMatchIds]);
 
   const filteredColorCount = useMemo(() => {
-    if (!isFiltered && !isSearching) return uniqueColorCount
+    if (!isFiltered && !isSearching) return uniqueColorCount;
     return paintGroups.filter((g) =>
       g.paints.some((p) => {
-        const matchesBrand = !isFiltered || brandFilter.has(p.brand)
-        const matchesSearch = !isSearching || searchMatchIds.has(p.id)
-        return matchesBrand && matchesSearch
+        const matchesBrand = !isFiltered || brandFilter.has(p.brand);
+        const matchesSearch = !isSearching || searchMatchIds.has(p.id);
+        return matchesBrand && matchesSearch;
       }),
-    ).length
-  }, [paintGroups, brandFilter, isFiltered, isSearching, searchMatchIds, uniqueColorCount])
+    ).length;
+  }, [paintGroups, brandFilter, isFiltered, isSearching, searchMatchIds, uniqueColorCount]);
+
+  const isSchemeMatching = useCallback(
+    (paint: ProcessedPaint) => {
+      if (!selectedPaint || colorScheme === 'none') return true;
+      if (paint.id === selectedPaint.id) return true;
+      const selectedHsl = hexToHsl(selectedPaint.hex);
+      const paintHsl = hexToHsl(paint.hex);
+      return isMatchingScheme(paintHsl.h, selectedHsl.h, colorScheme);
+    },
+    [selectedPaint, colorScheme],
+  );
+
+  const schemeMatches = useMemo<ProcessedPaint[]>(() => {
+    if (colorScheme === 'none' || !selectedPaint) return [];
+    return processedPaints.filter((p) => p.id !== selectedPaint.id && isSchemeMatching(p));
+  }, [colorScheme, selectedPaint, processedPaints, isSchemeMatching]);
 
   const handleBrandFilter = useCallback((id: string) => {
     setBrandFilter((prev) => {
-      if (id === 'all') return new Set()
-      const next = new Set(prev)
+      if (id === 'all') return new Set();
+      const next = new Set(prev);
       if (next.has(id)) {
-        next.delete(id)
+        next.delete(id);
       } else {
-        next.add(id)
+        next.add(id);
       }
-      return next
-    })
-    setSelectedGroup(null)
-    setSelectedPaint(null)
-  }, [])
+      return next;
+    });
+    setSelectedGroup(null);
+    setSelectedPaint(null);
+  }, []);
 
   const handleReset = useCallback(() => {
-    setZoom(1)
-    setPan({ x: 0, y: 0 })
-  }, [])
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  }, []);
 
   const handleGroupClick = useCallback(
     (group: PaintGroup | null) => {
       if (!group) {
-        setSelectedGroup(null)
-        setSelectedPaint(null)
-        return
+        setSelectedGroup(null);
+        setSelectedPaint(null);
+        setColorScheme('none');
+        return;
       }
       if (selectedGroup?.key === group.key) {
-        setSelectedGroup(null)
-        setSelectedPaint(null)
+        setSelectedGroup(null);
+        setSelectedPaint(null);
+        setColorScheme('none');
       } else if (group.paints.length === 1) {
-        setSelectedGroup(group)
-        setSelectedPaint(group.rep)
+        setSelectedGroup(group);
+        setSelectedPaint(group.rep);
       } else {
-        setSelectedGroup(group)
-        setSelectedPaint(null)
+        setSelectedGroup(group);
+        setSelectedPaint(null);
       }
     },
     [selectedGroup],
-  )
+  );
 
-  const handleSelectPaintFromGroup = useCallback(
-    (paint: ProcessedPaint, group: PaintGroup) => {
-      setSelectedGroup(group)
-      setSelectedPaint(paint)
-    },
-    [],
-  )
+  const handleSelectPaintFromGroup = useCallback((paint: ProcessedPaint, group: PaintGroup) => {
+    setSelectedGroup(group);
+    setSelectedPaint(paint);
+  }, []);
 
   const handleSelectSearchResult = useCallback(
     (paint: ProcessedPaint) => {
-      const group = paintGroups.find((g) => g.paints.some((p) => p.id === paint.id))
+      const group = paintGroups.find((g) => g.paints.some((p) => p.id === paint.id));
       if (group) {
-        setSelectedGroup(group)
-        setSelectedPaint(paint)
+        setSelectedGroup(group);
+        setSelectedPaint(paint);
       }
     },
     [paintGroups],
-  )
+  );
 
-  const displayGroup = hoveredGroup ?? selectedGroup
+  const displayGroup = hoveredGroup ?? selectedGroup;
 
   return (
     <div className='flex h-screen w-screen flex-col overflow-hidden'>
@@ -260,9 +268,11 @@ export default function Home() {
             <div className='flex flex-col gap-1'>
               <button
                 className='btn btn-sm justify-start'
-                style={!isFiltered
-                  ? { backgroundColor: '#888', borderColor: '#888', color: '#fff' }
-                  : { borderColor: '#888', color: '#888' }}
+                style={
+                  !isFiltered
+                    ? { backgroundColor: '#888', borderColor: '#888', color: '#fff' }
+                    : { borderColor: '#888', color: '#888' }
+                }
                 onClick={() => handleBrandFilter('all')}>
                 All Brands
               </button>
@@ -270,9 +280,11 @@ export default function Home() {
                 <button
                   key={brand.id}
                   className='btn btn-sm justify-start'
-                  style={brandFilter.has(brand.id)
-                    ? { backgroundColor: brand.color, borderColor: brand.color, color: '#fff' }
-                    : { borderColor: brand.color, color: brand.color }}
+                  style={
+                    brandFilter.has(brand.id)
+                      ? { backgroundColor: brand.color, borderColor: brand.color, color: '#fff' }
+                      : { borderColor: brand.color, color: brand.color }
+                  }
                   onClick={() => handleBrandFilter(brand.id)}>
                   {brand.icon} {brand.name}
                 </button>
@@ -285,13 +297,31 @@ export default function Home() {
           {/* Color Scheme Mode */}
           <section>
             <h3 className='mb-2 text-xs font-semibold uppercase text-base-content/60'>Color Scheme</h3>
-            <div className='flex flex-wrap gap-1'>
-              {['None', 'Complementary', 'Split-Comp', 'Analogous'].map((mode) => (
-                <button key={mode} className='btn btn-sm' disabled>
-                  {mode}
+            <div className='flex flex-col gap-1'>
+              {(
+                [
+                  { label: 'No Scheme', value: 'none', color: '#888' },
+                  { label: 'Complementary', value: 'complementary', color: '#4fc3f7' },
+                  { label: 'Split Complementary', value: 'split', color: '#ffee58' },
+                  { label: 'Analogous', value: 'analogous', color: '#81c784' },
+                ] as const
+              ).map(({ label, value, color }) => (
+                <button
+                  key={value}
+                  className='btn btn-sm justify-start'
+                  style={
+                    colorScheme === value
+                      ? { backgroundColor: color, borderColor: color, color: '#fff' }
+                      : { borderColor: color, color }
+                  }
+                  onClick={() => setColorScheme(value)}>
+                  {label}
                 </button>
               ))}
             </div>
+            {colorScheme !== 'none' && !selectedPaint && (
+              <p className='mt-1 text-xs text-base-content/40'>Click a paint to see its {colorScheme} colors</p>
+            )}
           </section>
 
           <div className='divider' />
@@ -303,14 +333,14 @@ export default function Home() {
               group={displayGroup}
               selectedPaint={hoveredGroup ? null : selectedPaint}
               onSelectPaint={(paint) => {
-                if (isSearching) handleSelectSearchResult(paint)
-                else if (displayGroup) handleSelectPaintFromGroup(paint, displayGroup)
+                if (isSearching) handleSelectSearchResult(paint);
+                else if (displayGroup) handleSelectPaintFromGroup(paint, displayGroup);
               }}
               onBack={() => setSelectedPaint(null)}
               brands={brands}
-              matches={searchResults}
+              matches={isSearching ? searchResults : schemeMatches}
               hasSearch={isSearching}
-              scheme="None"
+              scheme={colorScheme}
             />
           </section>
         </Sidebar>
@@ -329,6 +359,9 @@ export default function Home() {
             onGroupClick={handleGroupClick}
             onHoverGroup={setHoveredGroup}
             showBrandRing={showBrandRing}
+            colorScheme={colorScheme}
+            selectedPaint={selectedPaint}
+            isSchemeMatching={isSchemeMatching}
           />
 
           {/* Reset button */}
