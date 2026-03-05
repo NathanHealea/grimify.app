@@ -162,6 +162,17 @@ export default function Home() {
     [],
   )
 
+  const handleSelectSearchResult = useCallback(
+    (paint: ProcessedPaint) => {
+      const group = paintGroups.find((g) => g.paints.some((p) => p.id === paint.id))
+      if (group) {
+        setSelectedGroup(group)
+        setSelectedPaint(paint)
+      }
+    },
+    [paintGroups],
+  )
+
   const displayGroup = hoveredGroup ?? selectedGroup
 
   return (
@@ -287,11 +298,12 @@ export default function Home() {
               selectedPaint={hoveredGroup ? null : selectedPaint}
               onSelectPaint={(paint) => {
                 if (displayGroup) handleSelectPaintFromGroup(paint, displayGroup)
+                else handleSelectSearchResult(paint)
               }}
               onBack={() => setSelectedPaint(null)}
               brands={brands}
-              matches={[]}
-              hasSearch={false}
+              matches={searchResults}
+              hasSearch={isSearching}
               scheme="None"
             />
           </section>
