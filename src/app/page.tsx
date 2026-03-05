@@ -7,40 +7,89 @@ import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import ColorWheel from '@/components/ColorWheel';
 import Sidebar, { useIsDesktop } from '@/components/Sidebar';
 import { brands, paints } from '@/data/index';
-import type { ProcessedPaint } from '@/types/paint';
+import type { PaintGroup, ProcessedPaint } from '@/types/paint';
 import { hexToHsl, paintToWheelPosition, WHEEL_RADIUS } from '@/utils/colorUtils';
 
-function PaintDetails({ paint }: { paint: ProcessedPaint | null }) {
-  if (!paint) {
-    return <p className='text-sm text-base-content/40'>Select a paint to see details</p>;
+function PaintDetails({
+  group,
+  selectedPaint,
+  onSelectPaint,
+  onBack,
+}: {
+  group: PaintGroup | null
+  selectedPaint: ProcessedPaint | null
+  onSelectPaint: (paint: ProcessedPaint) => void
+  onBack: () => void
+}) {
+  if (!group) {
+    return <p className='text-sm text-base-content/40'>Select a paint to see details</p>
   }
 
-  const brand = brands.find((b) => b.id === paint.brand);
-  const hsl = hexToHsl(paint.hex);
+  const paint = selectedPaint ?? (group.paints.length === 1 ? group.rep : null)
+
+  if (paint) {
+    const brand = brands.find((b) => b.id === paint.brand)
+    const hsl = hexToHsl(paint.hex)
+
+    return (
+      <div className='flex flex-col gap-2'>
+        {group.paints.length > 1 && (
+          <button className='btn btn-ghost btn-xs self-start' onClick={onBack}>
+            ← Same color ({group.paints.length})
+          </button>
+        )}
+        <div className='flex items-center gap-2'>
+          <div className='size-8 rounded border border-base-300' style={{ backgroundColor: paint.hex }} />
+          <div>
+            <p className='text-sm font-semibold'>{paint.name}</p>
+            <p className='text-xs text-base-content/60'>
+              {brand?.icon} {brand?.name}
+            </p>
+          </div>
+        </div>
+        <div className='grid grid-cols-2 gap-x-4 gap-y-1 text-xs'>
+          <span className='text-base-content/60'>Hex</span>
+          <span className='font-mono'>{paint.hex.toUpperCase()}</span>
+          <span className='text-base-content/60'>HSL</span>
+          <span className='font-mono'>
+            {Math.round(hsl.h)}° {Math.round(hsl.s * 100)}% {Math.round(hsl.l * 100)}%
+          </span>
+          <span className='text-base-content/60'>Type</span>
+          <span>{paint.type}</span>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className='flex flex-col gap-2'>
       <div className='flex items-center gap-2'>
-        <div className='size-8 rounded border border-base-300' style={{ backgroundColor: paint.hex }} />
-        <div>
-          <p className='text-sm font-semibold'>{paint.name}</p>
-          <p className='text-xs text-base-content/60'>
-            {brand?.icon} {brand?.name}
-          </p>
-        </div>
+        <div className='size-6 rounded border border-base-300' style={{ backgroundColor: group.rep.hex }} />
+        <p className='text-sm font-semibold'>
+          {group.paints.length} paints — {group.rep.hex.toUpperCase()}
+        </p>
       </div>
-      <div className='grid grid-cols-2 gap-x-4 gap-y-1 text-xs'>
-        <span className='text-base-content/60'>Hex</span>
-        <span className='font-mono'>{paint.hex.toUpperCase()}</span>
-        <span className='text-base-content/60'>HSL</span>
-        <span className='font-mono'>
-          {Math.round(hsl.h)}° {Math.round(hsl.s * 100)}% {Math.round(hsl.l * 100)}%
-        </span>
-        <span className='text-base-content/60'>Type</span>
-        <span>{paint.type}</span>
+      <div className='flex flex-col gap-1'>
+        {group.paints.map((p) => {
+          const brand = brands.find((b) => b.id === p.brand)
+          return (
+            <button
+              key={p.id}
+              className='flex items-center gap-2 rounded px-2 py-1 text-left hover:bg-base-300'
+              onClick={() => onSelectPaint(p)}>
+              <div className='size-4 rounded border border-base-300' style={{ backgroundColor: p.hex }} />
+              <div className='min-w-0 flex-1'>
+                <p className='truncate text-sm'>{p.name}</p>
+                <p className='text-xs text-base-content/60'>
+                  {brand?.icon} {brand?.name}
+                </p>
+              </div>
+            </button>
+          )
+        })}
       </div>
     </div>
-  );
+  )
 }
 
 export default function Home() {
@@ -48,8 +97,9 @@ export default function Home() {
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const isDesktop = useIsDesktop();
   const [sidebarOpen, setSidebarOpen] = useState<boolean | null>(null);
-  const [selectedPaint, setSelectedPaint] = useState<ProcessedPaint | null>(null);
-  const [hoveredPaint, setHoveredPaint] = useState<ProcessedPaint | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<PaintGroup | null>(null)
+  const [selectedPaint, setSelectedPaint] = useState<ProcessedPaint | null>(null)
+  const [hoveredGroup, setHoveredGroup] = useState<PaintGroup | null>(null)
 
   const uniqueColorCount = useMemo(
     () => new Set(paints.map((p) => p.hex.toLowerCase())).size,
@@ -66,7 +116,7 @@ export default function Home() {
         const pos = paintToWheelPosition(hsl.h, hsl.l, WHEEL_RADIUS);
         return {
           ...paint,
-          id: `${paint.brand}-${paint.name}`,
+          id: `${paint.brand}-${paint.name}-${paint.type}`.toLowerCase().replace(/\s+/g, '-'),
           x: pos.x,
           y: pos.y,
         };
@@ -74,10 +124,56 @@ export default function Home() {
     [],
   );
 
+  const paintGroups = useMemo<PaintGroup[]>(() => {
+    const map = new Map<string, ProcessedPaint[]>()
+    processedPaints.forEach((p) => {
+      const key = p.hex.toLowerCase()
+      const list = map.get(key) ?? []
+      list.push(p)
+      map.set(key, list)
+    })
+    return Array.from(map.entries()).map(([key, paints]) => ({
+      key,
+      paints,
+      rep: paints[0],
+    }))
+  }, [processedPaints])
+
   const handleReset = useCallback(() => {
-    setZoom(1);
-    setPan({ x: 0, y: 0 });
-  }, []);
+    setZoom(1)
+    setPan({ x: 0, y: 0 })
+  }, [])
+
+  const handleGroupClick = useCallback(
+    (group: PaintGroup | null) => {
+      if (!group) {
+        setSelectedGroup(null)
+        setSelectedPaint(null)
+        return
+      }
+      if (selectedGroup?.key === group.key) {
+        setSelectedGroup(null)
+        setSelectedPaint(null)
+      } else if (group.paints.length === 1) {
+        setSelectedGroup(group)
+        setSelectedPaint(group.rep)
+      } else {
+        setSelectedGroup(group)
+        setSelectedPaint(null)
+      }
+    },
+    [selectedGroup],
+  )
+
+  const handleSelectPaintFromGroup = useCallback(
+    (paint: ProcessedPaint, group: PaintGroup) => {
+      setSelectedGroup(group)
+      setSelectedPaint(paint)
+    },
+    [],
+  )
+
+  const displayGroup = hoveredGroup ?? selectedGroup
 
   return (
     <div className='flex h-screen w-screen flex-col overflow-hidden'>
@@ -152,21 +248,28 @@ export default function Home() {
           {/* Color Details */}
           <section>
             <h3 className='mb-2 text-xs font-semibold uppercase text-base-content/60'>Color Details</h3>
-            <PaintDetails paint={hoveredPaint ?? selectedPaint} />
+            <PaintDetails
+              group={displayGroup}
+              selectedPaint={hoveredGroup ? null : selectedPaint}
+              onSelectPaint={(paint) => {
+                if (displayGroup) handleSelectPaintFromGroup(paint, displayGroup)
+              }}
+              onBack={() => setSelectedPaint(null)}
+            />
           </section>
         </Sidebar>
 
-        <main className='relative flex-1'>
+        <main className='relative flex-1 overflow-hidden'>
           <ColorWheel
-            processedPaints={processedPaints}
+            paintGroups={paintGroups}
             zoom={zoom}
             pan={pan}
             onZoomChange={setZoom}
             onPanChange={setPan}
-            selectedPaint={selectedPaint}
-            hoveredPaint={hoveredPaint}
-            onSelectPaint={setSelectedPaint}
-            onHoverPaint={setHoveredPaint}
+            selectedGroup={selectedGroup}
+            hoveredGroup={hoveredGroup}
+            onGroupClick={handleGroupClick}
+            onHoverGroup={setHoveredGroup}
           />
 
           {/* Reset button */}
