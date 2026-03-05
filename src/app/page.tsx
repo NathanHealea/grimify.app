@@ -126,15 +126,11 @@ export default function Home() {
         <Sidebar isOpen={effectiveSidebarOpen} onClose={() => setSidebarOpen(false)}>
           {/* Brand Ring Toggle */}
           <section>
-            <label className='flex cursor-pointer items-center justify-between'>
-              <span className='text-xs font-semibold uppercase text-base-content/60'>Brand Ring</span>
-              <input
-                type='checkbox'
-                className='toggle toggle-sm'
-                checked={showBrandRing}
-                onChange={(e) => setShowBrandRing(e.target.checked)}
-              />
-            </label>
+            <button
+              className={`btn btn-sm w-full ${showBrandRing ? 'btn-active' : ''}`}
+              onClick={() => setShowBrandRing(!showBrandRing)}>
+              Brand Ring
+            </button>
           </section>
 
           <div className='divider' />
