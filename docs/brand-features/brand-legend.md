@@ -2,7 +2,7 @@
 
 **Epic:** Brand Features
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 
 ## Summary
 
@@ -10,10 +10,10 @@ A side panel legend showing each brand's color dot, icon, name, and the count of
 
 ## Acceptance Criteria
 
-- [ ] Displays each brand's color dot
-- [ ] Displays each brand's icon
-- [ ] Displays each brand's name
-- [ ] Displays the count of paints currently visible per brand (respects active brand filter)
+- [x] Displays each brand's color dot
+- [x] Displays each brand's icon
+- [x] Displays each brand's name
+- [x] Displays the count of paints currently visible per brand (respects active brand filter)
 
 ## Implementation Plan
 
