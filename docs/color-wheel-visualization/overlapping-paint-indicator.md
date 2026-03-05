@@ -2,138 +2,185 @@
 
 **Epic:** Color Wheel Visualization
 **Type:** Bug
-**Status:** Todo
+**Status:** In Progress
 
 ## Summary
 
-When two or more paints share the same (or very similar) hue and lightness, they render at the same position on the color wheel and visually overlap. There is no indication that multiple paints exist at that location. Users should see a count badge on overlapping dots, be able to click to see the list of paints at that position, and then select one to view its details.
+When two or more paints share the same (or very similar) hue and lightness, they render at the same position on the color wheel and visually overlap. There are three problems:
+
+1. **No overlap indication** — there is no visual cue that multiple paints exist at a position. Users should see a count badge.
+2. **Garbled labels** — at zoom > 2x, overlapping paints each render their own `<text>` label at the same x,y, producing unreadable stacked text.
+3. **Hover flickering** — overlapping `<circle>` elements at the same position cause rapid `onPointerEnter`/`onPointerLeave` events as the browser switches hit targets between stacked circles. This makes the glow effect and sidebar details flicker erratically.
 
 ## Acceptance Criteria
 
-- [ ] Paints at the same wheel position are grouped into a single indicator
-- [ ] Grouped indicators display a count badge showing the number of paints
-- [ ] Clicking a grouped indicator shows a list of all paints in that group in the sidebar
-- [ ] Selecting a paint from the group list shows its full color details
-- [ ] Single-paint indicators (no overlap) behave as normal dots with no badge
+- [x] Paints at the same wheel position are grouped into a single indicator
+- [x] Grouped indicators display a count badge showing the number of paints
+- [x] Clicking a grouped indicator shows a list of all paints in that group in the sidebar
+- [x] Selecting a paint from the group list shows its full color details
+- [x] Single-paint indicators (no overlap) behave as normal dots with no badge
+- [x] At zoom > 2x, grouped paints show a single label (e.g., "Abaddon Black +2") instead of stacked overlapping labels
+- [x] Hovering over overlapping paints does not flicker — the hover glow and sidebar preview are stable
+
+## Reference
+
+The sibling project `miniature-colors.nathanhealea.com` has a working implementation of paint grouping. Key patterns to adapt (not copy verbatim — that project uses inline styles and single-letter property names):
+
+- Groups paints by **hex color** into `PaintGroup = { hex, paints[], rep }` where `rep` is the representative paint used for position
+- Passes `groups` (not individual paints) to `ColorWheel` — one `<circle>` per group eliminates flicker
+- Count badge: gold `<circle>` + `<text>` at top-right offset (`cx + r*0.7, cy - r*0.7`) with `pointerEvents: 'none'`
+- Labels: `cnt > 1 ? "${cnt} paints" : paintName` — one label per group
+- DetailPanel shows "Same hex across brands" list with clickable rows when `dupes.length > 1`
+- Hover/select targets the `rep` paint, not individual overlapping paints
 
 ## Implementation Plan
 
-### Step 1 — Group paints by wheel position
+### Step 1 — Add `PaintGroup` type and compute groups in page.tsx
 
-**File:** `src/components/ColorWheel.tsx`
+**File:** `src/types/paint.ts`, `src/app/page.tsx`
 
-After computing `processedPaints`, group them by snapping their `(x, y)` coordinates to a grid with cell size equal to `DOT_RADIUS`. Paints that land in the same grid cell are considered overlapping.
+Add a shared `PaintGroup` type:
 
 ```ts
-interface PaintGroup {
+export interface PaintGroup {
   key: string
-  x: number       // average x of all paints in the group
-  y: number       // average y of all paints in the group
   paints: ProcessedPaint[]
+  rep: ProcessedPaint // representative paint (first in group), used for position
 }
 ```
 
-Create a `useMemo` that builds a `PaintGroup[]` from `processedPaints`:
+In `page.tsx`, add a `useMemo` after `processedPaints` that groups by hex color (paints with the same hex always map to the same wheel position):
 
-1. For each paint, compute a grid key: `Math.round(x / DOT_RADIUS),Math.round(y / DOT_RADIUS)`
-2. Collect paints into a `Map<string, ProcessedPaint[]>` by grid key
-3. For each group, compute the centroid `(avgX, avgY)` for rendering position
-4. Return the array of `PaintGroup` objects
+```ts
+const paintGroups = useMemo<PaintGroup[]>(() => {
+  const map = new Map<string, ProcessedPaint[]>()
+  processedPaints.forEach((p) => {
+    const key = p.hex.toLowerCase()
+    const list = map.get(key) ?? []
+    list.push(p)
+    map.set(key, list)
+  })
+  return Array.from(map.entries()).map(([key, paints]) => ({
+    key,
+    paints,
+    rep: paints[0],
+  }))
+}, [processedPaints])
+```
 
-### Step 2 — Render grouped dots with count badges
+Pass `paintGroups` to `ColorWheel` instead of `processedPaints`.
+
+### Step 2 — Update ColorWheel to render per-group
 
 **File:** `src/components/ColorWheel.tsx`
 
-Replace the current per-paint `<circle>` rendering with per-group rendering:
+Change `ColorWheelProps` to accept `paintGroups: PaintGroup[]` instead of `processedPaints: ProcessedPaint[]`. Replace the per-paint `<circle>` loop with a per-group loop. Each group renders a single `<g>` containing:
 
-- **Single-paint group (count = 1):** Render the dot exactly as today — a `<circle>` filled with the paint's hex, dark stroke.
-- **Multi-paint group (count > 1):** Render:
-  1. A `<circle>` filled with the first paint's hex color (or a neutral color) as the base dot
-  2. A small count badge: a `<circle>` + `<text>` positioned at the top-right of the dot showing the count number. Badge background should be a contrasting color (e.g., white circle with dark text) so it's visible at any zoom level.
+1. **Selection ring** (if selected): dashed white circle at `rep` position, `r = DOT_RADIUS + 4` — already exists, just match by group key instead of paint id
+2. **Base dot**: one `<circle>` at `rep.x, rep.y` filled with `rep.hex`. Multi-paint groups get a slightly larger radius (`DOT_RADIUS + 2`)
+3. **Count badge** (if `count > 1`): a small circle + text positioned at top-right of the dot. Use `pointerEvents: 'none'` so it doesn't interfere with hover/click on the base dot
 
-The badge should scale inversely with zoom (or use a fixed SVG size) so it remains readable.
+```tsx
+{group.paints.length > 1 && (
+  <>
+    <circle
+      cx={rep.x + DOT_RADIUS * 0.7}
+      cy={rep.y - DOT_RADIUS * 0.7}
+      r={4}
+      fill="#f0c040"
+      stroke="#000"
+      strokeWidth={0.5}
+      pointerEvents="none"
+    />
+    <text
+      x={rep.x + DOT_RADIUS * 0.7}
+      y={rep.y - DOT_RADIUS * 0.7 + 0.5}
+      textAnchor="middle"
+      dominantBaseline="middle"
+      fill="#000"
+      fontSize={5}
+      fontWeight={800}
+      pointerEvents="none"
+    >
+      {group.paints.length}
+    </text>
+  </>
+)}
+```
 
-For paint labels at zoom > 2x, show the group's first paint name followed by `+N` for multi-paint groups (e.g., "Abaddon Black +2").
+**Hover events:** Attach `onPointerEnter`/`onPointerLeave` to the single group `<circle>`. For single-paint groups, call `onHoverPaint(rep)`. For multi-paint groups, call `onHoverGroup(group)`. One circle per position eliminates the flicker.
 
-### Step 3 — Add group and paint selection state
+**Labels at zoom > 2x:** Render one `<text>` per group. For multi-paint groups: `"${count} paints"`. For single-paint groups: the paint name. This fixes the garbled stacked labels.
+
+### Step 3 — Update selection and hover state
 
 **File:** `src/app/page.tsx`
 
-Add state to track what's selected:
+Replace `selectedPaint`/`hoveredPaint` with group-aware state:
 
 ```ts
 const [selectedGroup, setSelectedGroup] = useState<PaintGroup | null>(null)
 const [selectedPaint, setSelectedPaint] = useState<ProcessedPaint | null>(null)
+const [hoveredGroup, setHoveredGroup] = useState<PaintGroup | null>(null)
 ```
 
-Selection flow:
-- Click a **multi-paint group** → set `selectedGroup`, clear `selectedPaint` → sidebar shows paint list
-- Click a **single-paint group** → set both `selectedGroup` and `selectedPaint` → sidebar shows details directly
-- Select a paint from the sidebar list → set `selectedPaint` → sidebar shows that paint's details
-- Click the same group again or click empty space → deselect
+**Click handler** (passed to `ColorWheel` as `onGroupClick`):
 
-Pass `onGroupClick` callback and `selectedGroup` down to `ColorWheel`. Pass `selectedGroup`, `selectedPaint`, `onSelectPaint` down to `Sidebar`.
+```ts
+const handleGroupClick = useCallback((group: PaintGroup | null) => {
+  if (!group) {
+    setSelectedGroup(null)
+    setSelectedPaint(null)
+    return
+  }
+  if (selectedGroup?.key === group.key) {
+    setSelectedGroup(null)
+    setSelectedPaint(null)
+  } else if (group.paints.length === 1) {
+    setSelectedGroup(group)
+    setSelectedPaint(group.rep)
+  } else {
+    setSelectedGroup(group)
+    setSelectedPaint(null) // show list first
+  }
+}, [selectedGroup])
+```
 
-The `PaintGroup` type defined in Step 1 should be moved to `src/types/paint.ts` so both components can reference it. Also move `ProcessedPaint` there (adding `x` and `y` fields to the shared type).
+**Hover handler** (passed to `ColorWheel` as `onHoverGroup`):
+- Set `hoveredGroup` on enter, clear on leave
+- Sidebar reads `hoveredGroup` to preview — for single-paint groups show paint details, for multi-paint groups show the group's paint list
 
-### Step 4 — Add click handlers to ColorWheel
+Keep `dragDistance` check in `ColorWheel` — skip click if `dragDistance.current > 3`.
+
+### Step 4 — Update Color Details in sidebar
+
+**File:** `src/app/page.tsx` (the `PaintDetails` component)
+
+Replace the current `PaintDetails` component with group-aware rendering. Display priority: `hoveredGroup` > `selectedGroup` > placeholder.
+
+**When showing a multi-paint group (no individual paint selected):**
+Show the group's hex swatch and a scrollable list of paints. Each list item shows:
+- Color swatch (small square)
+- Paint name
+- Brand icon + name
+- Clickable — clicking calls `setSelectedPaint(paint)` and `setSelectedGroup(group)`
+
+**When showing a single paint (selected from list or single-paint group):**
+Show full details (same as current `PaintDetails` output). If the group has multiple paints, show a "Same color ({count})" header above the details with a back button to return to the group list.
+
+**When nothing is hovered or selected:**
+Show the current placeholder: "Select a paint to see details"
+
+### Step 5 — Visual feedback refinements
 
 **File:** `src/components/ColorWheel.tsx`
 
-Add `onClick` handlers to each group's rendered `<circle>`:
-
-```tsx
-onClick={(e) => {
-  e.stopPropagation()
-  onGroupClick(group)
-}}
-```
-
-**Click vs drag disambiguation:** Only fire the click if the mouse hasn't moved more than 3px between `mousedown` and `mouseup`. Track the start position in `mousedown` and compare in the click handler. If `isDragging` was true or distance exceeds threshold, skip the click.
-
-Add a click handler on the SVG background to deselect:
-
-```tsx
-<rect ... fill="transparent" onClick={() => onGroupClick(null)} />
-```
-
-Highlight the selected group's dot with a white dashed ring (a second `<circle>` with `stroke="white"`, `strokeDasharray="4 2"`, `fill="none"`, larger radius).
-
-### Step 5 — Display paint list and details in Sidebar
-
-**File:** `src/components/Sidebar.tsx`
-
-Update the **Color Details** section in the sidebar:
-
-**When a group is selected but no individual paint:**
-Show a scrollable list of paints in the group. Each item shows:
-- Color swatch (small square filled with the paint's hex)
-- Paint name
-- Brand name
-- Clickable — clicking sets `selectedPaint`
-
-**When an individual paint is selected:**
-Show full details:
-- Name and brand
-- Hex value with color swatch
-- HSL values
-- Paint type (Base, Layer, Shade, etc.)
-- A "Back to group" link/button if the group has multiple paints
-
-**When nothing is selected:**
-Show the current placeholder text: "Select a paint to see details"
-
-### Step 6 — Lift processedPaints and groups to page level
-
-**File:** `src/app/page.tsx`, `src/components/ColorWheel.tsx`
-
-Move the `processedPaints` computation from `ColorWheel` into `page.tsx` so the processed and grouped data is available to both `ColorWheel` and `Sidebar`. Pass `processedPaints` and `paintGroups` as props to `ColorWheel` instead of raw `paints`.
-
-This keeps the grouping logic centralized and avoids recomputing it in multiple places.
+- **Selected group ring:** Keep the existing dashed white ring, but match by `selectedGroup?.key` instead of `selectedPaint?.id`. Position at `selectedGroup.rep.x/y`.
+- **Hovered group glow:** Keep the existing glow filter, but apply to `hoveredGroup?.rep` position. For multi-paint groups, use a slightly larger radius to indicate it's a group.
+- Multi-paint groups should render at a slightly larger base radius (`DOT_RADIUS + 2`) so users can visually distinguish them even without seeing the badge.
 
 ### Risks & Considerations
 
-- **Grid cell size:** Using `DOT_RADIUS` as the grid cell size means paints within ~5 SVG units of each other get grouped. This may be too aggressive or too conservative — tune based on visual results. Consider using `DOT_RADIUS * 2` (full diameter) instead.
-- **Performance:** Grouping 190+ paints is cheap. The main cost is the badge rendering — keep badge SVG simple (circle + text).
-- **Zoom interaction with badges:** Count badges should remain legible at all zoom levels. Consider scaling the badge inversely with zoom or clamping its size.
-- **Interaction with paint-selection-and-hover feature:** This overlaps with the planned hover/selection feature (`paint-selection-and-hover.md`). Coordinate the `ProcessedPaint` type promotion and selection state — ideally implement this first as the foundation, then layer hover behavior on top.
+- **Grouping by hex:** This groups paints with the exact same hex color. Paints with very similar but not identical hex values will still render as separate dots that may visually overlap. This matches the sibling project's approach and is the simplest correct solution — near-miss overlaps are a future enhancement.
+- **Performance:** Grouping 190+ paints is trivial. One circle per group reduces total SVG elements, actually improving render performance.
+- **Builds on paint-selection-and-hover:** The selection/hover infrastructure is already merged. This refactors it from per-paint to per-group. Single-paint groups should behave identically to the current per-paint behavior.

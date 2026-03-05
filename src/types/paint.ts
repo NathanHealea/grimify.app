@@ -24,3 +24,10 @@ export interface ProcessedPaint extends Paint {
   x: number;
   y: number;
 }
+
+/** Group of paints sharing the same hex color (same wheel position) */
+export interface PaintGroup {
+  key: string;
+  paints: ProcessedPaint[];
+  rep: ProcessedPaint;
+}
