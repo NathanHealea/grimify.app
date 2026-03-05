@@ -86,26 +86,6 @@ export default function Home() {
 
   const isFiltered = brandFilter.size > 0;
 
-  const filteredPaintCount = useMemo(() => {
-    if (!isFiltered && !isSearching) return paints.length;
-    return processedPaints.filter((p) => {
-      const matchesBrand = !isFiltered || brandFilter.has(p.brand);
-      const matchesSearch = !isSearching || searchMatchIds.has(p.id);
-      return matchesBrand && matchesSearch;
-    }).length;
-  }, [processedPaints, brandFilter, isFiltered, isSearching, searchMatchIds]);
-
-  const filteredColorCount = useMemo(() => {
-    if (!isFiltered && !isSearching) return uniqueColorCount;
-    return paintGroups.filter((g) =>
-      g.paints.some((p) => {
-        const matchesBrand = !isFiltered || brandFilter.has(p.brand);
-        const matchesSearch = !isSearching || searchMatchIds.has(p.id);
-        return matchesBrand && matchesSearch;
-      }),
-    ).length;
-  }, [paintGroups, brandFilter, isFiltered, isSearching, searchMatchIds, uniqueColorCount]);
-
   const isSchemeMatching = useCallback(
     (paint: ProcessedPaint) => {
       if (!selectedPaint || colorScheme === 'none') return true;
@@ -121,6 +101,31 @@ export default function Home() {
     if (colorScheme === 'none' || !selectedPaint) return [];
     return processedPaints.filter((p) => p.id !== selectedPaint.id && isSchemeMatching(p));
   }, [colorScheme, selectedPaint, processedPaints, isSchemeMatching]);
+
+  const isSchemeActive = colorScheme !== 'none' && selectedPaint !== null;
+  const isAnyFilterActive = isFiltered || isSearching || isSchemeActive;
+
+  const filteredPaintCount = useMemo(() => {
+    if (!isAnyFilterActive) return paints.length;
+    return processedPaints.filter((p) => {
+      const matchesBrand = !isFiltered || brandFilter.has(p.brand);
+      const matchesSearch = !isSearching || searchMatchIds.has(p.id);
+      const matchesScheme = !isSchemeActive || isSchemeMatching(p);
+      return matchesBrand && matchesSearch && matchesScheme;
+    }).length;
+  }, [processedPaints, brandFilter, isFiltered, isSearching, searchMatchIds, isAnyFilterActive, isSchemeActive, isSchemeMatching]);
+
+  const filteredColorCount = useMemo(() => {
+    if (!isAnyFilterActive) return uniqueColorCount;
+    return paintGroups.filter((g) =>
+      g.paints.some((p) => {
+        const matchesBrand = !isFiltered || brandFilter.has(p.brand);
+        const matchesSearch = !isSearching || searchMatchIds.has(p.id);
+        const matchesScheme = !isSchemeActive || isSchemeMatching(p);
+        return matchesBrand && matchesSearch && matchesScheme;
+      }),
+    ).length;
+  }, [paintGroups, brandFilter, isFiltered, isSearching, searchMatchIds, uniqueColorCount, isAnyFilterActive, isSchemeActive, isSchemeMatching]);
 
   const handleBrandFilter = useCallback((id: string) => {
     setBrandFilter((prev) => {
@@ -197,7 +202,7 @@ export default function Home() {
         </div>
 
         <div className='navbar-center flex-1 px-3'>
-          <label className='input input-sm w-full max-w-sm'>
+          <label className='input input-sm w-full'>
             <MagnifyingGlassIcon className='size-4 opacity-50' />
             <input
               type='text'
@@ -224,24 +229,6 @@ export default function Home() {
           </label>
         </div>
 
-        <div className='navbar-end w-auto justify-end gap-2'>
-          <span className='badge badge-sm'>
-            {!isFiltered && !isSearching
-              ? paints.length
-              : `${filteredPaintCount} / ${paints.length}`}{' '}
-            paints
-          </span>
-          <span className='badge badge-sm'>
-            {!isFiltered && !isSearching
-              ? uniqueColorCount
-              : `${filteredColorCount} / ${uniqueColorCount}`}{' '}
-            colors
-          </span>
-          <span className='badge badge-sm'>{brands.length} brands</span>
-          {isSearching && (
-            <span className='badge badge-warning badge-sm'>{searchResults.length} matches</span>
-          )}
-        </div>
       </nav>
 
       <div className='flex flex-1 overflow-hidden'>
@@ -366,6 +353,17 @@ export default function Home() {
             selectedPaint={selectedPaint}
             isSchemeMatching={isSchemeMatching}
           />
+
+          {/* Stats overlay */}
+          <div className='absolute top-4 left-4 flex gap-2'>
+            <span className='badge badge-sm bg-base-300/50 backdrop-blur-sm'>
+              {!isAnyFilterActive ? paints.length : `${filteredPaintCount} / ${paints.length}`} paints
+            </span>
+            <span className='badge badge-sm bg-base-300/50 backdrop-blur-sm'>
+              {!isAnyFilterActive ? uniqueColorCount : `${filteredColorCount} / ${uniqueColorCount}`} colors
+            </span>
+            <span className='badge badge-sm bg-base-300/50 backdrop-blur-sm'>{brands.length} brands</span>
+          </div>
 
           {/* Reset button */}
           <button
