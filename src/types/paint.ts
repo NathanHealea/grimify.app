@@ -32,3 +32,6 @@ export interface PaintGroup {
   paints: ProcessedPaint[];
   rep: ProcessedPaint;
 }
+
+/** Color scheme modes for highlighting matching paints */
+export type ColorScheme = 'none' | 'complementary' | 'split-complementary' | 'analogous'

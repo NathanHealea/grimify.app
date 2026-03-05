@@ -87,3 +87,55 @@ export const SEGMENT_BOUNDARIES = [30, 90, 150, 210, 270, 330]
 
 export const WHEEL_RADIUS = 400
 export const RING_WIDTH = 20
+
+/** Shortest angular distance between two hues (0–180°) */
+export function hueDistance(h1: number, h2: number): number {
+  const d = Math.abs(h1 - h2)
+  return d > 180 ? 360 - d : d
+}
+
+/** Filter paints matching the given color scheme relative to a reference hue */
+export function getSchemeMatches(
+  referenceHue: number,
+  allPaints: { hex: string }[],
+  scheme: string,
+): boolean[] {
+  if (scheme === 'none') return allPaints.map(() => false)
+
+  return allPaints.map((paint) => {
+    const hsl = hexToHsl(paint.hex)
+    const dist = hueDistance(referenceHue, hsl.h)
+    switch (scheme) {
+      case 'complementary':
+        return dist > 155
+      case 'split-complementary':
+        return dist >= 120 && dist <= 180
+      case 'analogous':
+        return dist < 45
+      default:
+        return false
+    }
+  })
+}
+
+/** Get angular wedge ranges for a scheme overlay on the wheel */
+export function getSchemeWedges(
+  hue: number,
+  scheme: string,
+): { startDeg: number; endDeg: number }[] {
+  const norm = (deg: number) => ((deg % 360) + 360) % 360
+
+  switch (scheme) {
+    case 'complementary':
+      return [{ startDeg: norm(hue + 155), endDeg: norm(hue - 155) }]
+    case 'split-complementary':
+      return [
+        { startDeg: norm(hue + 120), endDeg: norm(hue + 180) },
+        { startDeg: norm(hue - 180), endDeg: norm(hue - 120) },
+      ]
+    case 'analogous':
+      return [{ startDeg: norm(hue - 45), endDeg: norm(hue + 45) }]
+    default:
+      return []
+  }
+}
