@@ -89,7 +89,7 @@ Epic Template:
 
 **High-Level Scope:**
 
-- [ ] [Detail panel](./paint-information/detail-panel.md)
+- [x] [Detail panel](./paint-information/detail-panel.md)
 
 ### Epic 5: Brand Features
 
