@@ -3,24 +3,28 @@
     "id": "citadel",
     "name": "Citadel",
     "icon": "⚔️",
+    "color": "#1a56db",
     "types": ["Base", "Layer", "Edge", "Contrast"]
   },
   {
     "id": "army-painter",
     "name": "Army Painter",
     "icon": "🛡️",
+    "color": "#4a8c3f",
     "types": ["Warpaints", "Speedpaint"]
   },
   {
     "id": "vallejo",
     "name": "Vallejo",
     "icon": "🎯",
+    "color": "#c0392b",
     "types": ["Game Color"]
   },
   {
     "id": "green-stuff-world",
     "name": "Green Stuff World",
     "icon": "🧪",
+    "color": "#2ecc71",
     "types": ["Acrylic"]
   }
 ]
