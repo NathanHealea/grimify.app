@@ -127,14 +127,14 @@ export default function DetailPanel({
           </div>
         </div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-          <span className="text-base-content/60">Hex</span>
-          <span className="font-mono">--</span>
-          <span className="text-base-content/60">HSL</span>
-          <span className="font-mono">0° 0% 0%</span>
           <span className="text-base-content/60">Type</span>
           <span>--</span>
           <span className="text-base-content/60">Finish</span>
           <span>--</span>
+          <span className="text-base-content/60">Hex</span>
+          <span className="font-mono">--</span>
+          <span className="text-base-content/60">HSL</span>
+          <span className="font-mono">0° 0% 0%</span>
         </div>
         <HslSliders hex="#000000" />
         {hasSearch && (
@@ -179,16 +179,16 @@ export default function DetailPanel({
           </div>
         </div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+          <span className="text-base-content/60">Type</span>
+          <span>{paint.type}</span>
+          <span className="text-base-content/60">Finish</span>
+          <span>Matte</span>
           <span className="text-base-content/60">Hex</span>
           <span className="font-mono">{paint.hex.toUpperCase()}</span>
           <span className="text-base-content/60">HSL</span>
           <span className="font-mono">
             {Math.round(hsl.h)}° {Math.round(hsl.s * 100)}% {Math.round(hsl.l * 100)}%
           </span>
-          <span className="text-base-content/60">Type</span>
-          <span>{paint.type}</span>
-          <span className="text-base-content/60">Finish</span>
-          <span>Matte</span>
         </div>
         <HslSliders hex={paint.hex} />
         <MatchesList
