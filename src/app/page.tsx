@@ -5,92 +5,11 @@ import { useCallback, useMemo, useState } from 'react';
 import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 import ColorWheel from '@/components/ColorWheel';
+import DetailPanel from '@/components/DetailPanel';
 import Sidebar, { useIsDesktop } from '@/components/Sidebar';
 import { brands, paints } from '@/data/index';
 import type { PaintGroup, ProcessedPaint } from '@/types/paint';
 import { hexToHsl, paintToWheelPosition, WHEEL_RADIUS } from '@/utils/colorUtils';
-
-function PaintDetails({
-  group,
-  selectedPaint,
-  onSelectPaint,
-  onBack,
-}: {
-  group: PaintGroup | null
-  selectedPaint: ProcessedPaint | null
-  onSelectPaint: (paint: ProcessedPaint) => void
-  onBack: () => void
-}) {
-  if (!group) {
-    return <p className='text-sm text-base-content/40'>Select a paint to see details</p>
-  }
-
-  const paint = selectedPaint ?? (group.paints.length === 1 ? group.rep : null)
-
-  if (paint) {
-    const brand = brands.find((b) => b.id === paint.brand)
-    const hsl = hexToHsl(paint.hex)
-
-    return (
-      <div className='flex flex-col gap-2'>
-        {group.paints.length > 1 && (
-          <button className='btn btn-ghost btn-xs self-start' onClick={onBack}>
-            ← Same color ({group.paints.length})
-          </button>
-        )}
-        <div className='flex items-center gap-2'>
-          <div className='size-8 rounded border border-base-300' style={{ backgroundColor: paint.hex }} />
-          <div>
-            <p className='text-sm font-semibold'>{paint.name}</p>
-            <p className='text-xs text-base-content/60'>
-              {brand?.icon} {brand?.name}
-            </p>
-          </div>
-        </div>
-        <div className='grid grid-cols-2 gap-x-4 gap-y-1 text-xs'>
-          <span className='text-base-content/60'>Hex</span>
-          <span className='font-mono'>{paint.hex.toUpperCase()}</span>
-          <span className='text-base-content/60'>HSL</span>
-          <span className='font-mono'>
-            {Math.round(hsl.h)}° {Math.round(hsl.s * 100)}% {Math.round(hsl.l * 100)}%
-          </span>
-          <span className='text-base-content/60'>Type</span>
-          <span>{paint.type}</span>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className='flex flex-col gap-2'>
-      <div className='flex items-center gap-2'>
-        <div className='size-6 rounded border border-base-300' style={{ backgroundColor: group.rep.hex }} />
-        <p className='text-sm font-semibold'>
-          {group.paints.length} paints — {group.rep.hex.toUpperCase()}
-        </p>
-      </div>
-      <div className='flex flex-col gap-1'>
-        {group.paints.map((p) => {
-          const brand = brands.find((b) => b.id === p.brand)
-          return (
-            <button
-              key={p.id}
-              className='flex items-center gap-2 rounded px-2 py-1 text-left hover:bg-base-300'
-              onClick={() => onSelectPaint(p)}>
-              <div className='size-4 rounded border border-base-300' style={{ backgroundColor: p.hex }} />
-              <div className='min-w-0 flex-1'>
-                <p className='truncate text-sm'>{p.name}</p>
-                <p className='text-xs text-base-content/60'>
-                  {brand?.icon} {brand?.name}
-                </p>
-              </div>
-            </button>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
 
 export default function Home() {
   const [zoom, setZoom] = useState(1);
@@ -248,13 +167,17 @@ export default function Home() {
           {/* Color Details */}
           <section>
             <h3 className='mb-2 text-xs font-semibold uppercase text-base-content/60'>Color Details</h3>
-            <PaintDetails
+            <DetailPanel
               group={displayGroup}
               selectedPaint={hoveredGroup ? null : selectedPaint}
               onSelectPaint={(paint) => {
                 if (displayGroup) handleSelectPaintFromGroup(paint, displayGroup)
               }}
               onBack={() => setSelectedPaint(null)}
+              brands={brands}
+              matches={[]}
+              hasSearch={false}
+              scheme="None"
             />
           </section>
         </Sidebar>

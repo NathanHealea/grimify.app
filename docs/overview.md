@@ -71,7 +71,8 @@ Epic Template:
 **High-Level Scope:**
 
 - [x] [Interactive color wheel (zoom, pan, reset)](./color-wheel-visualization/interactive-color-wheel.md)
-- [ ] [Paint selection and hover](./color-wheel-visualization/paint-selection-and-hover.md)
+- [x] [Paint selection and hover](./color-wheel-visualization/paint-selection-and-hover.md)
+- [x] [Overlapping paint indicator](./color-wheel-visualization/overlapping-paint-indicator.md)
 
 ### Epic 3: UI & Layout
 
