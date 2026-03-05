@@ -2,7 +2,7 @@
 
 **Epic:** Brand Features
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 
 ## Summary
 
@@ -10,10 +10,10 @@ A toggle that adds colored arc segments around paint circles to indicate brand o
 
 ## Acceptance Criteria
 
-- [ ] "Brand Ring" toggle adds colored arc segments around paint circles
-- [ ] Arc color indicates brand ownership
-- [ ] For paints with duplicate hex values across brands, the ring is split into segments (one per brand)
-- [ ] A yellow badge shows the duplicate count on paints with duplicates
+- [x] "Brand Ring" toggle adds colored arc segments around paint circles
+- [x] Arc color indicates brand ownership
+- [x] For paints with duplicate hex values across brands, the ring is split into segments (one per brand)
+- [x] A yellow badge shows the duplicate count on paints with duplicates
 
 ## Implementation Plan
 
