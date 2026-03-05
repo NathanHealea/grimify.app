@@ -10,8 +10,8 @@ export interface Brand {
   id: string;
   name: string;
   icon: string;
-  types: string[];
   color: string;
+  types: string[];
 }
 
 /** Processed paint with brand info attached */

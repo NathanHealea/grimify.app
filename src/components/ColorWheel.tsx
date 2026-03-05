@@ -8,6 +8,7 @@ import { COLOR_SEGMENTS, hslToHex, RING_WIDTH, SEGMENT_BOUNDARIES, WHEEL_RADIUS 
 
 interface ColorWheelProps {
   paintGroups: PaintGroup[];
+  brandFilter: Set<string>;
   zoom: number;
   pan: { x: number; y: number };
   onZoomChange: (zoom: number) => void;
@@ -91,12 +92,14 @@ function PaintDot({
   group,
   isSelected,
   showBrandRing,
+  dimmed,
   onHover,
   onClick,
 }: {
   group: PaintGroup
   isSelected: boolean
   showBrandRing: boolean
+  dimmed: boolean
   onHover: (group: PaintGroup | null) => void
   onClick: (group: PaintGroup) => void
 }) {
@@ -105,7 +108,7 @@ function PaintDot({
   const r = isMulti ? DOT_RADIUS + 2 : DOT_RADIUS
 
   return (
-    <g>
+    <g opacity={dimmed ? 0.15 : 1}>
       {isSelected && (
         <circle
           cx={rep.x}
@@ -180,6 +183,7 @@ function buildHueRingPath(startDeg: number, endDeg: number, innerR: number, oute
 
 export default function ColorWheel({
   paintGroups,
+  brandFilter,
   zoom,
   pan,
   onZoomChange,
@@ -468,19 +472,23 @@ export default function ColorWheel({
 
       {/* Paint dots (one per group) */}
       <g>
-        {paintGroups.map((group) => (
-          <PaintDot
-            key={group.key}
-            group={group}
-            isSelected={selectedGroup?.key === group.key}
-            showBrandRing={showBrandRing}
-            onHover={onHoverGroup}
-            onClick={(g) => {
-              if (dragDistance.current > 3) return
-              onGroupClick(g)
-            }}
-          />
-        ))}
+        {paintGroups.map((group) => {
+          const dimmed = brandFilter.size > 0 && !group.paints.some((p) => brandFilter.has(p.brand))
+          return (
+            <PaintDot
+              key={group.key}
+              group={group}
+              isSelected={selectedGroup?.key === group.key}
+              showBrandRing={showBrandRing}
+              dimmed={dimmed}
+              onHover={onHoverGroup}
+              onClick={(g) => {
+                if (dragDistance.current > 3) return
+                onGroupClick(g)
+              }}
+            />
+          )
+        })}
       </g>
 
       {/* Labels layer — rendered on top of all dots */}

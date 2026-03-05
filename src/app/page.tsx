@@ -20,6 +20,7 @@ export default function Home() {
   const [selectedPaint, setSelectedPaint] = useState<ProcessedPaint | null>(null)
   const [hoveredGroup, setHoveredGroup] = useState<PaintGroup | null>(null)
   const [showBrandRing, setShowBrandRing] = useState(false)
+  const [brandFilter, setBrandFilter] = useState<Set<string>>(new Set())
 
   const uniqueColorCount = useMemo(
     () => new Set(paints.map((p) => p.hex.toLowerCase())).size,
@@ -58,6 +59,37 @@ export default function Home() {
       rep: paints[0],
     }))
   }, [processedPaints])
+
+  const isFiltered = brandFilter.size > 0
+
+  const filteredPaintCount = useMemo(
+    () => !isFiltered
+      ? paints.length
+      : processedPaints.filter((p) => brandFilter.has(p.brand)).length,
+    [processedPaints, brandFilter, isFiltered],
+  )
+
+  const filteredColorCount = useMemo(
+    () => !isFiltered
+      ? uniqueColorCount
+      : paintGroups.filter((g) => g.paints.some((p) => brandFilter.has(p.brand))).length,
+    [paintGroups, brandFilter, isFiltered, uniqueColorCount],
+  )
+
+  const handleBrandFilter = useCallback((id: string) => {
+    setBrandFilter((prev) => {
+      if (id === 'all') return new Set()
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+    setSelectedGroup(null)
+    setSelectedPaint(null)
+  }, [])
 
   const handleReset = useCallback(() => {
     setZoom(1)
@@ -116,8 +148,12 @@ export default function Home() {
         </div>
 
         <div className='navbar-end w-auto justify-end gap-2'>
-          <span className='badge badge-sm'>{paints.length} paints</span>
-          <span className='badge badge-sm'>{uniqueColorCount} colors</span>
+          <span className='badge badge-sm'>
+            {!isFiltered ? paints.length : `${filteredPaintCount} / ${paints.length}`} paints
+          </span>
+          <span className='badge badge-sm'>
+            {!isFiltered ? uniqueColorCount : `${filteredColorCount} / ${uniqueColorCount}`} colors
+          </span>
           <span className='badge badge-sm'>{brands.length} brands</span>
         </div>
       </nav>
@@ -138,14 +174,25 @@ export default function Home() {
           {/* Brand Filter */}
           <section>
             <h3 className='mb-2 text-xs font-semibold uppercase text-base-content/60'>Brand Filter</h3>
-            <div className='flex flex-col gap-2'>
+            <div className='flex flex-col gap-1'>
+              <button
+                className='btn btn-sm justify-start'
+                style={!isFiltered
+                  ? { backgroundColor: '#888', borderColor: '#888', color: '#fff' }
+                  : { borderColor: '#888', color: '#888' }}
+                onClick={() => handleBrandFilter('all')}>
+                All Brands
+              </button>
               {brands.map((brand) => (
-                <label key={brand.id} className='flex cursor-not-allowed items-center gap-2'>
-                  <input type='checkbox' className='checkbox checkbox-sm' checked disabled readOnly />
-                  <span className='text-sm'>
-                    {brand.icon} {brand.name}
-                  </span>
-                </label>
+                <button
+                  key={brand.id}
+                  className='btn btn-sm justify-start'
+                  style={brandFilter.has(brand.id)
+                    ? { backgroundColor: brand.color, borderColor: brand.color, color: '#fff' }
+                    : { borderColor: brand.color, color: brand.color }}
+                  onClick={() => handleBrandFilter(brand.id)}>
+                  {brand.icon} {brand.name}
+                </button>
               ))}
             </div>
           </section>
@@ -187,6 +234,7 @@ export default function Home() {
         <main className='relative flex-1 overflow-hidden'>
           <ColorWheel
             paintGroups={paintGroups}
+            brandFilter={brandFilter}
             zoom={zoom}
             pan={pan}
             onZoomChange={setZoom}
