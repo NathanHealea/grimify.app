@@ -19,7 +19,7 @@ export default function Home() {
   const [selectedGroup, setSelectedGroup] = useState<PaintGroup | null>(null)
   const [selectedPaint, setSelectedPaint] = useState<ProcessedPaint | null>(null)
   const [hoveredGroup, setHoveredGroup] = useState<PaintGroup | null>(null)
-  const [brandFilter, setBrandFilter] = useState<string>('all')
+  const [brandFilter, setBrandFilter] = useState<Set<string>>(new Set())
 
   const uniqueColorCount = useMemo(
     () => new Set(paints.map((p) => p.hex.toLowerCase())).size,
@@ -44,16 +44,9 @@ export default function Home() {
     [],
   );
 
-  const filteredPaints = useMemo(
-    () => brandFilter === 'all'
-      ? processedPaints
-      : processedPaints.filter((p) => p.brand === brandFilter),
-    [processedPaints, brandFilter],
-  )
-
   const paintGroups = useMemo<PaintGroup[]>(() => {
     const map = new Map<string, ProcessedPaint[]>()
-    filteredPaints.forEach((p) => {
+    processedPaints.forEach((p) => {
       const key = p.hex.toLowerCase()
       const list = map.get(key) ?? []
       list.push(p)
@@ -64,10 +57,35 @@ export default function Home() {
       paints,
       rep: paints[0],
     }))
-  }, [filteredPaints])
+  }, [processedPaints])
+
+  const isFiltered = brandFilter.size > 0
+
+  const filteredPaintCount = useMemo(
+    () => !isFiltered
+      ? paints.length
+      : processedPaints.filter((p) => brandFilter.has(p.brand)).length,
+    [processedPaints, brandFilter, isFiltered],
+  )
+
+  const filteredColorCount = useMemo(
+    () => !isFiltered
+      ? uniqueColorCount
+      : paintGroups.filter((g) => g.paints.some((p) => brandFilter.has(p.brand))).length,
+    [paintGroups, brandFilter, isFiltered, uniqueColorCount],
+  )
 
   const handleBrandFilter = useCallback((id: string) => {
-    setBrandFilter(id)
+    setBrandFilter((prev) => {
+      if (id === 'all') return new Set()
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
     setSelectedGroup(null)
     setSelectedPaint(null)
   }, [])
@@ -130,10 +148,10 @@ export default function Home() {
 
         <div className='navbar-end w-auto justify-end gap-2'>
           <span className='badge badge-sm'>
-            {brandFilter === 'all' ? paints.length : `${filteredPaints.length} / ${paints.length}`} paints
+            {!isFiltered ? paints.length : `${filteredPaintCount} / ${paints.length}`} paints
           </span>
           <span className='badge badge-sm'>
-            {brandFilter === 'all' ? uniqueColorCount : `${paintGroups.length} / ${uniqueColorCount}`} colors
+            {!isFiltered ? uniqueColorCount : `${filteredColorCount} / ${uniqueColorCount}`} colors
           </span>
           <span className='badge badge-sm'>{brands.length} brands</span>
         </div>
@@ -156,7 +174,7 @@ export default function Home() {
             <h3 className='mb-2 text-xs font-semibold uppercase text-base-content/60'>Brand Filter</h3>
             <div className='flex flex-col gap-1'>
               <button
-                className={`btn btn-sm justify-start ${brandFilter === 'all' ? 'btn-active' : 'btn-ghost'}`}
+                className={`btn btn-sm justify-start ${!isFiltered ? 'btn-active' : 'btn-ghost'}`}
                 onClick={() => handleBrandFilter('all')}>
                 All Brands
               </button>
@@ -164,7 +182,7 @@ export default function Home() {
                 <button
                   key={brand.id}
                   className='btn btn-sm justify-start'
-                  style={brandFilter === brand.id
+                  style={brandFilter.has(brand.id)
                     ? { backgroundColor: brand.color, borderColor: brand.color, color: '#fff' }
                     : { borderColor: brand.color, color: brand.color }}
                   onClick={() => handleBrandFilter(brand.id)}>
@@ -211,6 +229,7 @@ export default function Home() {
         <main className='relative flex-1 overflow-hidden'>
           <ColorWheel
             paintGroups={paintGroups}
+            brandFilter={brandFilter}
             zoom={zoom}
             pan={pan}
             onZoomChange={setZoom}
