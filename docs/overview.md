@@ -97,9 +97,9 @@ Epic Template:
 
 **High-Level Scope:**
 
-- [ ] [Brand filtering](./brand-features/brand-filtering.md)
-- [ ] [Brand ring toggle](./brand-features/brand-ring-toggle.md)
-- [ ] [Brand legend](./brand-features/brand-legend.md)
+- [x] [Brand filtering](./brand-features/brand-filtering.md)
+- [x] [Brand ring toggle](./brand-features/brand-ring-toggle.md)
+- [x] [Brand legend](./brand-features/brand-legend.md)
 
 ### Epic 6: Color Analysis
 

@@ -2,7 +2,7 @@
 
 **Epic:** Brand Features
 **Type:** Feature
-**Status:** In Progress
+**Status:** Completed
 
 ## Summary
 
