@@ -107,5 +107,5 @@ Epic Template:
 
 **High-Level Scope:**
 
-- [ ] [Color scheme modes (complementary, split complementary, analogous)](./color-analysis/color-scheme-modes.md)
+- [x] [Color scheme modes (complementary, split complementary, analogous)](./color-analysis/color-scheme-modes.md)
 - [x] [Search](./color-analysis/search.md)
