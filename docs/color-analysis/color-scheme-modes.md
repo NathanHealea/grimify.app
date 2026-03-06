@@ -80,21 +80,17 @@ Replace the disabled scheme buttons (lines 154–161) with functional buttons:
 
 **File:** `src/components/ColorWheel.tsx`
 
-Extend the existing `dimmed` prop logic. Currently dimming is:
+Extend the existing `dimmed` prop logic using a priority cascade: brand filter always constrains, then color scheme overrides search when active.
 
 ```ts
-const dimmed = brandFilter.size > 0 && !group.paints.some((p) => brandFilter.has(p.brand))
+const matchesBrand = brandFilter.size === 0 || group.paints.some((p) => brandFilter.has(p.brand))
+const matchesSearch = searchMatchIds.size === 0 || group.paints.some((p) => searchMatchIds.has(p.id))
+const hasActiveScheme = colorScheme !== 'none' && selectedPaint !== null
+const schemeDimmed = !group.paints.some(isSchemeMatching)
+const dimmed = !matchesBrand || (hasActiveScheme ? schemeDimmed : !matchesSearch)
 ```
 
-Add scheme dimming: a paint group is dimmed if a scheme is active AND none of its paints appear in `schemeMatches`. Combine with brand filter dimming using OR logic:
-
-```ts
-const brandDimmed = brandFilter.size > 0 && !group.paints.some((p) => brandFilter.has(p.brand))
-const schemeDimmed = schemeMatches.length > 0 && !group.paints.some((p) => schemeMatchSet.has(p.id))
-const dimmed = brandDimmed || schemeDimmed
-```
-
-Pass `schemeMatches` (or a pre-built `Set` of matched paint IDs) as a new prop to `ColorWheel`.
+See `docs/color-wheel-visualization/filter-visibility-priority.md` for the full priority cascade rationale.
 
 ### Step 6 — Render scheme wedge overlays on the wheel
 
