@@ -95,7 +95,11 @@ export function isMatchingScheme(paintHue: number, selectedHue: number, scheme: 
   if (scheme === 'none') return true;
   const d = hueDistance(selectedHue, paintHue);
   if (scheme === 'complementary') return d > 155;
-  if (scheme === 'split') return d > 120 && d < 180;
+  if (scheme === 'split') {
+    const splitA = (selectedHue + 150) % 360
+    const splitB = (selectedHue + 210) % 360
+    return hueDistance(paintHue, splitA) < 25 || hueDistance(paintHue, splitB) < 25
+  }
   if (scheme === 'analogous') return d < 45;
   return true;
 }
