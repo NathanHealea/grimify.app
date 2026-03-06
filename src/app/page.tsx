@@ -355,14 +355,14 @@ export default function Home() {
           />
 
           {/* Stats overlay */}
-          <div className='absolute top-4 left-4 flex gap-2'>
-            <span className='badge badge-sm bg-base-300/50 backdrop-blur-sm'>
+          <div className='absolute top-4 left-1/2 flex -translate-x-1/2 gap-2'>
+            <span className='badge badge-sm p-4 bg-base-300/50 backdrop-blur-sm'>
               {!isAnyFilterActive ? paints.length : `${filteredPaintCount} / ${paints.length}`} paints
             </span>
-            <span className='badge badge-sm bg-base-300/50 backdrop-blur-sm'>
+            <span className='badge badge-sm  p-4 bg-base-300/50 backdrop-blur-sm'>
               {!isAnyFilterActive ? uniqueColorCount : `${filteredColorCount} / ${uniqueColorCount}`} colors
             </span>
-            <span className='badge badge-sm bg-base-300/50 backdrop-blur-sm'>{brands.length} brands</span>
+            <span className='badge badge-sm p-4 bg-base-300/50 backdrop-blur-sm'>{brands.length} brands</span>
           </div>
 
           {/* Reset button */}
