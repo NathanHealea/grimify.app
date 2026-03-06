@@ -15,6 +15,18 @@
   --color-base-content: #e5e5e5;
   --color-primary: #6366f1;
   --color-primary-content: #ffffff;
+  --color-secondary: #a78bfa;
+  --color-secondary-content: #ffffff;
+  --color-accent: #f59e0b;
+  --color-accent-content: #000000;
+  --color-info: #38bdf8;
+  --color-info-content: #000000;
+  --color-success: #4ade80;
+  --color-success-content: #000000;
+  --color-warning: #facc15;
+  --color-warning-content: #000000;
+  --color-error: #f87171;
+  --color-error-content: #000000;
   --radius-selector: 2rem;
   --radius-field: 0.5rem;
   --radius-box: 1rem;
