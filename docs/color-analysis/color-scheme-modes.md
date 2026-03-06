@@ -12,7 +12,7 @@ Select a paint then choose a color scheme to highlight matching paints on the wh
 
 - [x] User can select a color scheme after selecting a paint
 - [x] Complementary scheme highlights paints with hue distance > 155°
-- [x] Split Complementary scheme highlights paints with hue distance between 120°–180°
+- [x] Split Complementary scheme highlights paints within 25° of hue+150° or hue+210°
 - [x] Analogous scheme highlights paints with hue distance < 45°
 - [x] Non-matching paints dim to near-invisible when a scheme is active
 - [x] Matching regions are shown as translucent wedge overlays on the wheel
@@ -21,7 +21,7 @@ Select a paint then choose a color scheme to highlight matching paints on the wh
 | Scheme               | Matching Rule                  |
 |----------------------|--------------------------------|
 | Complementary        | Hue distance > 155°            |
-| Split Complementary  | Hue distance between 120°–180° |
+| Split Complementary  | Within 25° of hue+150° or hue+210° |
 | Analogous            | Hue distance < 45°             |
 
 ## Implementation Plan
