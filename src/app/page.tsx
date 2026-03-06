@@ -252,7 +252,7 @@ export default function Home() {
           {/* Brand Ring Toggle */}
           <section>
             <button
-              className={`btn btn-sm w-full ${showBrandRing ? 'btn-active' : ''}`}
+              className={`btn btn-sm w-full ${showBrandRing ? 'btn-primary' : 'btn-outline btn-primary'}`}
               onClick={() => setShowBrandRing(!showBrandRing)}>
               Brand Ring
             </button>
