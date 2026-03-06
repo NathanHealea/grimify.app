@@ -74,9 +74,7 @@ export default function Home() {
     if (!q) return [];
     return processedPaints.filter((p) => {
       const brandName = brands.find((b) => b.id === p.brand)?.name ?? '';
-      return (
-        p.name.toLowerCase().includes(q) || p.hex.toLowerCase().includes(q) || brandName.toLowerCase().includes(q)
-      );
+      return p.name.toLowerCase().includes(q) || p.hex.toLowerCase().includes(q) || brandName.toLowerCase().includes(q);
     });
   }, [processedPaints, searchQuery]);
 
@@ -113,7 +111,16 @@ export default function Home() {
       const matchesScheme = !isSchemeActive || isSchemeMatching(p);
       return matchesBrand && matchesSearch && matchesScheme;
     }).length;
-  }, [processedPaints, brandFilter, isFiltered, isSearching, searchMatchIds, isAnyFilterActive, isSchemeActive, isSchemeMatching]);
+  }, [
+    processedPaints,
+    brandFilter,
+    isFiltered,
+    isSearching,
+    searchMatchIds,
+    isAnyFilterActive,
+    isSchemeActive,
+    isSchemeMatching,
+  ]);
 
   const filteredColorCount = useMemo(() => {
     if (!isAnyFilterActive) return uniqueColorCount;
@@ -125,7 +132,17 @@ export default function Home() {
         return matchesBrand && matchesSearch && matchesScheme;
       }),
     ).length;
-  }, [paintGroups, brandFilter, isFiltered, isSearching, searchMatchIds, uniqueColorCount, isAnyFilterActive, isSchemeActive, isSchemeMatching]);
+  }, [
+    paintGroups,
+    brandFilter,
+    isFiltered,
+    isSearching,
+    searchMatchIds,
+    uniqueColorCount,
+    isAnyFilterActive,
+    isSchemeActive,
+    isSchemeMatching,
+  ]);
 
   const handleBrandFilter = useCallback((id: string) => {
     setBrandFilter((prev) => {
@@ -209,18 +226,18 @@ export default function Home() {
               placeholder='Search paints...'
               value={searchQuery}
               onChange={(e) => {
-                setSearchQuery(e.target.value)
-                setSelectedGroup(null)
-                setSelectedPaint(null)
+                setSearchQuery(e.target.value);
+                setSelectedGroup(null);
+                setSelectedPaint(null);
               }}
             />
             {searchQuery && (
               <button
                 className='btn btn-circle btn-ghost btn-xs'
                 onClick={() => {
-                  setSearchQuery('')
-                  setSelectedGroup(null)
-                  setSelectedPaint(null)
+                  setSearchQuery('');
+                  setSelectedGroup(null);
+                  setSelectedPaint(null);
                 }}
                 aria-label='Clear search'>
                 <XMarkIcon className='size-3' />
@@ -228,7 +245,6 @@ export default function Home() {
             )}
           </label>
         </div>
-
       </nav>
 
       <div className='flex flex-1 overflow-hidden'>
@@ -355,14 +371,14 @@ export default function Home() {
           />
 
           {/* Stats overlay */}
-          <div className='absolute top-4 left-1/2 flex -translate-x-1/2 gap-2'>
-            <span className='badge badge-sm p-4 bg-base-300/50 backdrop-blur-sm'>
+          <div className='absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2'>
+            <span className='text-xs text-base-content/40'>
               {!isAnyFilterActive ? paints.length : `${filteredPaintCount} / ${paints.length}`} paints
             </span>
-            <span className='badge badge-sm  p-4 bg-base-300/50 backdrop-blur-sm'>
+            <span className='text-xs text-base-content/40'>
               {!isAnyFilterActive ? uniqueColorCount : `${filteredColorCount} / ${uniqueColorCount}`} colors
             </span>
-            <span className='badge badge-sm p-4 bg-base-300/50 backdrop-blur-sm'>{brands.length} brands</span>
+            <span className='text-xs text-base-content/40'>{brands.length} brands</span>
           </div>
 
           {/* Reset button */}
