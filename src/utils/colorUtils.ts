@@ -116,11 +116,11 @@ export function getSchemeWedges(hue: number, scheme: string): SchemeWedge[] {
   const wedges: SchemeWedge[] = [{ center: hue, span: 22, color: '#fff' }];
 
   if (scheme === 'complementary') {
-    wedges.push({ center: (hue + 180) % 360, span: 22, color: '#fff' });
+    wedges.push({ center: (hue + 180) % 360, span: 50, color: '#fff' });
   }
   if (scheme === 'split') {
-    wedges.push({ center: (hue + 150) % 360, span: 22, color: '#ff4' });
-    wedges.push({ center: (hue + 210) % 360, span: 22, color: '#ff4' });
+    wedges.push({ center: (hue + 150) % 360, span: 50, color: '#ff4' });
+    wedges.push({ center: (hue + 210) % 360, span: 50, color: '#ff4' });
   }
   if (scheme === 'analogous') {
     wedges.push({ center: (hue - 30 + 360) % 360, span: 22, color: '#ff4' });
