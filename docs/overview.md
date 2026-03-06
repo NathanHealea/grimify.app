@@ -147,7 +147,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | | Name | Type | Status |
 |---|------|------|--------|
 | [x] | [Brand Filtering](./brand-features/brand-filtering.md) | Feature | Completed |
-| [x] | [Brand Ring Toggle](./brand-features/brand-ring-toggle.md) | Feature | In Progress |
+| [x] | [Brand Ring Toggle](./brand-features/brand-ring-toggle.md) | Feature | Completed |
 | [x] | [Brand Legend](./brand-features/brand-legend.md) | Feature | Completed |
 | [ ] | [Brand Ring Button Styling](./brand-features/brand-ring-button-styling.md) | Enhancement | Todo |
 
