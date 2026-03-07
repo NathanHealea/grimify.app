@@ -252,7 +252,12 @@ export default function Home() {
           {/* Brand Ring Toggle */}
           <section>
             <button
-              className={`btn btn-sm w-full ${showBrandRing ? 'btn-active' : ''}`}
+              className={`btn btn-sm w-full ${showBrandRing ? '' : 'btn-outline'}`}
+              style={
+                showBrandRing
+                  ? { backgroundColor: '#6366f1', borderColor: '#6366f1', color: '#fff' }
+                  : { borderColor: '#6366f1', color: '#6366f1' }
+              }
               onClick={() => setShowBrandRing(!showBrandRing)}>
               Brand Ring
             </button>
@@ -273,19 +278,14 @@ export default function Home() {
             <h3 className='mb-2 text-xs font-semibold uppercase text-base-content/60'>Brand Filter</h3>
             <div className='flex flex-col gap-1'>
               <button
-                className='btn btn-sm justify-start'
-                style={
-                  !isFiltered
-                    ? { backgroundColor: '#888', borderColor: '#888', color: '#fff' }
-                    : { borderColor: '#888', color: '#888' }
-                }
+                className={`btn btn-sm justify-start ${!isFiltered ? 'btn-neutral' : 'btn-outline btn-neutral'}`}
                 onClick={() => handleBrandFilter('all')}>
                 All Brands
               </button>
               {brands.map((brand) => (
                 <button
                   key={brand.id}
-                  className='btn btn-sm justify-start'
+                  className={`btn btn-sm justify-start ${brandFilter.has(brand.id) ? '' : 'btn-outline'}`}
                   style={
                     brandFilter.has(brand.id)
                       ? { backgroundColor: brand.color, borderColor: brand.color, color: '#fff' }
@@ -306,18 +306,18 @@ export default function Home() {
             <div className='flex flex-col gap-1'>
               {(
                 [
-                  { label: 'No Scheme', value: 'none', color: '#888' },
-                  { label: 'Complementary', value: 'complementary', color: '#4fc3f7' },
-                  { label: 'Split Complementary', value: 'split', color: '#ffee58' },
-                  { label: 'Analogous', value: 'analogous', color: '#81c784' },
+                  { label: 'No Scheme', value: 'none', color: '#6b7280', contentColor: '#fff' },
+                  { label: 'Complementary', value: 'complementary', color: '#38bdf8', contentColor: '#000' },
+                  { label: 'Split Complementary', value: 'split', color: '#facc15', contentColor: '#000' },
+                  { label: 'Analogous', value: 'analogous', color: '#4ade80', contentColor: '#000' },
                 ] as const
-              ).map(({ label, value, color }) => (
+              ).map(({ label, value, color, contentColor }) => (
                 <button
                   key={value}
-                  className='btn btn-sm justify-start'
+                  className={`btn btn-sm justify-start ${colorScheme === value ? '' : 'btn-outline'}`}
                   style={
                     colorScheme === value
-                      ? { backgroundColor: color, borderColor: color, color: '#fff' }
+                      ? { backgroundColor: color, borderColor: color, color: contentColor }
                       : { borderColor: color, color }
                   }
                   onClick={() => setColorScheme(value)}>

@@ -140,7 +140,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 |---|------|------|--------|
 | [x] | [Sidebar Layout](./ui-and-layout/sidebar-layout.md) | Feature | Completed |
 | [x] | [Header Stats](./ui-and-layout/header-stats.md) | Feature | Completed |
-| [ ] | [Scheme Button Readability](./ui-and-layout/scheme-button-readability.md) | Bug | Todo |
+| [ ] | [Refactor DaisyUI Button Styling](./ui-and-layout/refactor-daisyui-button-styling.md) | Refactor | In Progress |
 
 ### Brand Features
 
@@ -149,7 +149,6 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [x] | [Brand Filtering](./brand-features/brand-filtering.md) | Feature | Completed |
 | [x] | [Brand Ring Toggle](./brand-features/brand-ring-toggle.md) | Feature | Completed |
 | [x] | [Brand Legend](./brand-features/brand-legend.md) | Feature | Completed |
-| [ ] | [Brand Ring Button Styling](./brand-features/brand-ring-button-styling.md) | Enhancement | Todo |
 
 ### Color Analysis
 
