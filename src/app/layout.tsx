@@ -1,6 +1,6 @@
-import type { Metadata, Viewport } from 'next'
+import type { Metadata, Viewport } from 'next';
 
-import './globals.css'
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Miniature Paint Color Wheel',
@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="nord">
       <body className="overflow-hidden">{children}</body>
     </html>
   )
