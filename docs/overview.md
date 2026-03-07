@@ -140,7 +140,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 |---|------|------|--------|
 | [x] | [Sidebar Layout](./ui-and-layout/sidebar-layout.md) | Feature | Completed |
 | [x] | [Header Stats](./ui-and-layout/header-stats.md) | Feature | Completed |
-| [ ] | [Refactor DaisyUI Button Styling](./ui-and-layout/refactor-daisyui-button-styling.md) | Refactor | In Progress |
+| [x] | [Refactor DaisyUI Button Styling](./ui-and-layout/refactor-daisyui-button-styling.md) | Refactor | Completed |
 
 ### Brand Features
 
