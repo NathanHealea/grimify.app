@@ -2,7 +2,7 @@
 
 **Epic:** Paint Collection
 **Type:** Enhancement
-**Status:** Completed
+**Status:** Todo
 
 ## Summary
 
@@ -10,12 +10,12 @@ Improve the owned paint collection UX in three areas: (1) replace the symbol-onl
 
 ## Acceptance Criteria
 
-- [x] Detail panel "owned" button displays human-readable text ("Add to Collection" / "Remove from Collection") instead of symbols
-- [x] Detail panel button is styled as a DaisyUI `btn-outline` button with green accent color
-- [x] Each paint in the collection sidebar has a remove button
-- [x] Clicking the remove button in the sidebar shows a confirmation dialog before removing the paint
-- [x] Confirmation dialog asks "Remove {paint name} from your collection?" with confirm/cancel actions
-- [x] Wording is consistent and human-readable across detail panel and collection sidebar
+- [ ] Detail panel "owned" button displays human-readable text ("Add to Collection" / "Remove from Collection") instead of symbols
+- [ ] Detail panel button is styled as a DaisyUI `btn-outline` button with green accent color
+- [ ] Each paint in the collection sidebar has a remove button
+- [ ] Clicking the remove button in the sidebar shows a confirmation dialog before removing the paint
+- [ ] Confirmation dialog asks "Remove {paint name} from your collection?" with confirm/cancel actions
+- [ ] Wording is consistent and human-readable across detail panel and collection sidebar
 
 ## Implementation Plan
 

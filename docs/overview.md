@@ -222,38 +222,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 
 ### Paint Collection
 
-|     | Name                                                                                       | Type        | Status    |
-| --- | ------------------------------------------------------------------------------------------ | ----------- | --------- |
-| [x] | [Owned Paint Collection](./paint-collection/owned-paint-collection.md)                     | Feature     | Completed |
-| [x] | [Owned Collection UX Improvements](./paint-collection/owned-collection-ux-improvements.md) | Enhancement | Completed |
-| [ ] | [Cloud Paint Collection](./paint-collection/cloud-paint-collection.md)                     | Feature     | Todo      |
-
-### User Authentication
-
-|     | Name                                                                          | Type    | Status |
-| --- | ----------------------------------------------------------------------------- | ------- | ------ |
-| [ ] | [Supabase Setup](./user-authentication/supabase-setup.md)                     | Feature | Todo   |
-| [ ] | [Email Authentication Pages](./user-authentication/email-auth-pages.md)       | Feature | Todo   |
-| [ ] | [User Profiles](./user-authentication/user-profiles.md)                       | Feature | Todo   |
-| [ ] | [Navbar Auth UI](./user-authentication/navbar-auth-ui.md)                     | Feature | Todo   |
-| [ ] | [Social Login (Google & Discord)](./user-authentication/social-login.md)      | Feature | Todo   |
-| [ ] | [Password Recovery](./user-authentication/password-recovery.md)               | Feature | Todo   |
-| [ ] | [Role-Based Authorization](./user-authentication/role-based-authorization.md) | Feature | Todo   |
-
-### Color Palette
-
-|     | Name                                                    | Type    | Status |
-| --- | ------------------------------------------------------- | ------- | ------ |
-| [ ] | [Color Palettes](./color-palette/color-palettes.md)     | Feature | Todo   |
-| [ ] | [Projects](./color-palette/projects.md)                 | Feature | Todo   |
-| [ ] | [Tags](./color-palette/tags.md)                         | Feature | Todo   |
-| [ ] | [Admin Management](./color-palette/admin-management.md) | Feature | Todo   |
-| [ ] | [Sharing](./color-palette/sharing.md)                   | Feature | Todo   |
-
-### SEO & Branding
-
-|     | Name                                                         | Type    | Status |
-| --- | ------------------------------------------------------------ | ------- | ------ |
-| [ ] | [Branding Assets](./seo-and-branding/branding-assets.md)     | Feature | Todo   |
-| [ ] | [SEO Metadata](./seo-and-branding/seo-metadata.md)           | Feature | Todo   |
-| [ ] | [Sitemap & Robots](./seo-and-branding/sitemap-and-robots.md) | Feature | Todo   |
+| | Name | Type | Status |
+|---|------|------|--------|
+| [x] | [Owned Paint Collection](./paint-collection/owned-paint-collection.md) | Feature | Completed |
+| [ ] | [Owned Collection UX Improvements](./paint-collection/owned-collection-ux-improvements.md) | Enhancement | Todo |
