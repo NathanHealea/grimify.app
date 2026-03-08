@@ -196,10 +196,10 @@ export default function DetailPanel({
         </div>
         <HslSliders hex={paint.hex} />
         <button
-          className={`btn btn-sm w-full ${ownedIds.has(paint.id) ? 'btn-outline btn-success' : 'btn-outline'}`}
+          className={`btn btn-sm btn-outline w-full ${ownedIds.has(paint.id) ? 'btn-success' : ''}`}
           onClick={() => onToggleOwned(paint.id)}
         >
-          {ownedIds.has(paint.id) ? '✓' : '+'}
+          {ownedIds.has(paint.id) ? 'Remove from Collection' : 'Add to Collection'}
         </button>
         <MatchesList
           matches={matches}
