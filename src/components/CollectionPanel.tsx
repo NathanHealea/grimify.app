@@ -1,19 +1,19 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react';
 
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
-import type { Brand, ProcessedPaint } from '@/types/paint'
+import type { Brand, ProcessedPaint } from '@/types/paint';
 
 interface CollectionPanelProps {
-  processedPaints: ProcessedPaint[]
-  ownedIds: Set<string>
-  onToggleOwned: (paintId: string) => void
-  onSelectPaint: (paint: ProcessedPaint) => void
-  brands: Brand[]
-  showOwnedRing: boolean
-  onToggleOwnedRing: () => void
-  ownedFilter: boolean
-  onToggleOwnedFilter: () => void
+  processedPaints: ProcessedPaint[];
+  ownedIds: Set<string>;
+  onToggleOwned: (paintId: string) => void;
+  onSelectPaint: (paint: ProcessedPaint) => void;
+  brands: Brand[];
+  showOwnedRing: boolean;
+  onToggleOwnedRing: () => void;
+  ownedFilter: boolean;
+  onToggleOwnedFilter: () => void;
 }
 
 export default function CollectionPanel({
@@ -27,22 +27,19 @@ export default function CollectionPanel({
   ownedFilter,
   onToggleOwnedFilter,
 }: CollectionPanelProps) {
-  const [collectionSearch, setCollectionSearch] = useState('')
-  const [paintToRemove, setPaintToRemove] = useState<ProcessedPaint | null>(null)
+  const [collectionSearch, setCollectionSearch] = useState('');
+  const [paintToRemove, setPaintToRemove] = useState<ProcessedPaint | null>(null);
 
-  const ownedPaints = useMemo(
-    () => processedPaints.filter((p) => ownedIds.has(p.id)),
-    [processedPaints, ownedIds],
-  )
+  const ownedPaints = useMemo(() => processedPaints.filter((p) => ownedIds.has(p.id)), [processedPaints, ownedIds]);
 
   const filteredOwnedPaints = useMemo(() => {
-    const q = collectionSearch.trim().toLowerCase()
-    if (!q) return ownedPaints
+    const q = collectionSearch.trim().toLowerCase();
+    if (!q) return ownedPaints;
     return ownedPaints.filter((p) => {
-      const brandName = brands.find((b) => b.id === p.brand)?.name ?? ''
-      return p.name.toLowerCase().includes(q) || p.hex.toLowerCase().includes(q) || brandName.toLowerCase().includes(q)
-    })
-  }, [ownedPaints, collectionSearch, brands])
+      const brandName = brands.find((b) => b.id === p.brand)?.name ?? '';
+      return p.name.toLowerCase().includes(q) || p.hex.toLowerCase().includes(q) || brandName.toLowerCase().includes(q);
+    });
+  }, [ownedPaints, collectionSearch, brands]);
 
   return (
     <>
@@ -108,7 +105,7 @@ export default function CollectionPanel({
         ) : (
           <div className='flex flex-col gap-0.5 overflow-y-auto' style={{ maxHeight: 'calc(100vh - 280px)' }}>
             {filteredOwnedPaints.map((paint) => {
-              const brand = brands.find((b) => b.id === paint.brand)
+              const brand = brands.find((b) => b.id === paint.brand);
               return (
                 <div key={paint.id} className='flex items-center gap-1'>
                   <button
@@ -132,7 +129,7 @@ export default function CollectionPanel({
                     <XMarkIcon className='size-3' />
                   </button>
                 </div>
-              )
+              );
             })}
           </div>
         )}
@@ -153,8 +150,8 @@ export default function CollectionPanel({
               <button
                 className='btn btn-error'
                 onClick={() => {
-                  onToggleOwned(paintToRemove.id)
-                  setPaintToRemove(null)
+                  onToggleOwned(paintToRemove.id);
+                  setPaintToRemove(null);
                 }}>
                 Remove
               </button>
@@ -166,5 +163,5 @@ export default function CollectionPanel({
         </dialog>
       )}
     </>
-  )
+  );
 }
