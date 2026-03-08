@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react';
 
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import BrandLegend from '@/components/BrandLegend';
 import CollectionPanel from '@/components/CollectionPanel';
@@ -15,12 +15,14 @@ import type { ColorScheme, PaintGroup, ProcessedPaint } from '@/types/paint';
 import { hexToHsl, isMatchingScheme, paintToWheelPosition, WHEEL_RADIUS } from '@/utils/colorUtils';
 
 type SidebarTab = 'filters' | 'collection';
+type SidebarState = SidebarTab | 'closed' | null; // null = derive from screen size
 
 export default function Home() {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const isDesktop = useIsDesktop();
-  const [activeTab, setActiveTab] = useState<SidebarTab | null>(null);
+  const [sidebarState, setSidebarState] = useState<SidebarState>(null);
+  const [lastTab, setLastTab] = useState<SidebarTab>('filters');
   const [selectedGroup, setSelectedGroup] = useState<PaintGroup | null>(null);
   const [selectedPaint, setSelectedPaint] = useState<ProcessedPaint | null>(null);
   const [hoveredGroup, setHoveredGroup] = useState<PaintGroup | null>(null);
@@ -34,18 +36,30 @@ export default function Home() {
 
   const uniqueColorCount = useMemo(() => new Set(paints.map((p) => p.hex.toLowerCase())).size, []);
 
-  // null = user hasn't toggled yet, derive from screen size
-  const effectiveTab: SidebarTab | null = activeTab ?? (isDesktop ? 'filters' : null);
+  // null = derive from screen size, 'closed' = explicitly closed
+  const effectiveTab: SidebarTab | null =
+    sidebarState === null ? (isDesktop ? 'filters' : null) : sidebarState === 'closed' ? null : sidebarState;
 
   const handleTabToggle = useCallback(
     (tab: SidebarTab) => {
-      setActiveTab((prev) => {
-        const current = prev ?? (isDesktop ? 'filters' : null);
-        return current === tab ? null : tab;
+      setSidebarState((prev) => {
+        const current = prev === null ? (isDesktop ? 'filters' : null) : prev === 'closed' ? null : prev;
+        if (current === tab) return 'closed';
+        setLastTab(tab);
+        return tab;
       });
     },
     [isDesktop],
   );
+
+  const handleMenuToggle = useCallback(() => {
+    setSidebarState((prev) => {
+      const current = prev === null ? (isDesktop ? 'filters' : null) : prev === 'closed' ? null : prev;
+      if (current !== null) return 'closed';
+      const reopenTab = lastTab;
+      return reopenTab;
+    });
+  }, [isDesktop, lastTab]);
 
   const processedPaints = useMemo<ProcessedPaint[]>(
     () =>
@@ -232,6 +246,15 @@ export default function Home() {
     <div className='flex h-screen w-screen flex-col overflow-hidden'>
       {/* Top bar */}
       <nav className='navbar min-h-0 border-b border-base-300 bg-base-200 px-2 py-4'>
+        <div className='navbar-start w-auto'>
+          <button
+            className='btn btn-ghost btn-sm'
+            onClick={handleMenuToggle}
+            aria-label={effectiveTab ? 'Close sidebar' : 'Open sidebar'}>
+            <Bars3Icon className='size-5' />
+          </button>
+        </div>
+
         <div className='navbar-center flex-1 px-3'>
           <label className='input input-sm w-full'>
             <MagnifyingGlassIcon className='size-4 opacity-50' />
@@ -285,7 +308,7 @@ export default function Home() {
         </div>
 
         {/* Filters sidebar */}
-        <Sidebar isOpen={effectiveTab === 'filters'} onClose={() => setActiveTab(null)} title='Filters'>
+        <Sidebar isOpen={effectiveTab === 'filters'} onClose={() => setSidebarState('closed')} title='Filters'>
           {/* Brand Ring Toggle */}
           <section>
             <button
@@ -391,14 +414,14 @@ export default function Home() {
         </Sidebar>
 
         {/* Collection sidebar */}
-        <Sidebar isOpen={effectiveTab === 'collection'} onClose={() => setActiveTab(null)} title='Collection'>
+        <Sidebar isOpen={effectiveTab === 'collection'} onClose={() => setSidebarState('closed')} title='Collection'>
           <CollectionPanel
             processedPaints={processedPaints}
             ownedIds={ownedIds}
             onToggleOwned={toggleOwned}
             onSelectPaint={(paint) => {
               handleSelectSearchResult(paint);
-              if (!isDesktop) setActiveTab(null);
+              if (!isDesktop) setSidebarState('closed');
             }}
             brands={brands}
             showOwnedRing={showOwnedRing}
