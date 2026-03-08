@@ -171,4 +171,4 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 
 | | Name | Type | Status |
 |---|------|------|--------|
-| [ ] | [Owned Paint Collection](./paint-collection/owned-paint-collection.md) | Feature | Todo |
+| [ ] | [Owned Paint Collection](./paint-collection/owned-paint-collection.md) | Feature | In Progress |
