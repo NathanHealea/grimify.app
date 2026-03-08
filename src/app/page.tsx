@@ -105,7 +105,7 @@ export default function Home() {
   }, [colorScheme, selectedPaint, processedPaints, isSchemeMatching]);
 
   const isSchemeActive = colorScheme !== 'none' && selectedPaint !== null;
-  const isAnyFilterActive = isFiltered || isSearching || isSchemeActive;
+  const isAnyFilterActive = isFiltered || isSearching || isSchemeActive || ownedFilter;
 
   const filteredPaintCount = useMemo(() => {
     if (!isAnyFilterActive) return paints.length;
@@ -113,7 +113,8 @@ export default function Home() {
       const matchesBrand = !isFiltered || brandFilter.has(p.brand);
       const matchesSearch = !isSearching || searchMatchIds.has(p.id);
       const matchesScheme = !isSchemeActive || isSchemeMatching(p);
-      return matchesBrand && matchesSearch && matchesScheme;
+      const matchesOwned = !ownedFilter || ownedIds.has(p.id);
+      return matchesBrand && matchesSearch && matchesScheme && matchesOwned;
     }).length;
   }, [
     processedPaints,
@@ -124,6 +125,8 @@ export default function Home() {
     isAnyFilterActive,
     isSchemeActive,
     isSchemeMatching,
+    ownedFilter,
+    ownedIds,
   ]);
 
   const filteredColorCount = useMemo(() => {
@@ -133,7 +136,8 @@ export default function Home() {
         const matchesBrand = !isFiltered || brandFilter.has(p.brand);
         const matchesSearch = !isSearching || searchMatchIds.has(p.id);
         const matchesScheme = !isSchemeActive || isSchemeMatching(p);
-        return matchesBrand && matchesSearch && matchesScheme;
+        const matchesOwned = !ownedFilter || ownedIds.has(p.id);
+        return matchesBrand && matchesSearch && matchesScheme && matchesOwned;
       }),
     ).length;
   }, [
@@ -146,6 +150,8 @@ export default function Home() {
     isAnyFilterActive,
     isSchemeActive,
     isSchemeMatching,
+    ownedFilter,
+    ownedIds,
   ]);
 
   const handleBrandFilter = useCallback((id: string) => {
@@ -253,17 +259,50 @@ export default function Home() {
 
       <div className='flex flex-1 overflow-hidden'>
         <Sidebar isOpen={effectiveSidebarOpen} onClose={() => setSidebarOpen(false)}>
-          {/* Brand Ring Toggle */}
+          {/* Ring Toggles */}
           <section>
+            <div className='flex gap-1'>
+              <button
+                className={`btn btn-sm flex-1 ${showBrandRing ? '' : 'btn-outline'}`}
+                style={
+                  showBrandRing
+                    ? { backgroundColor: '#6366f1', borderColor: '#6366f1', color: '#fff' }
+                    : { borderColor: '#6366f1', color: '#6366f1' }
+                }
+                onClick={() => setShowBrandRing(!showBrandRing)}>
+                Brand Ring
+              </button>
+              <button
+                className={`btn btn-sm flex-1 ${showOwnedRing ? '' : 'btn-outline'}`}
+                style={
+                  showOwnedRing
+                    ? { backgroundColor: '#10b981', borderColor: '#10b981', color: '#fff' }
+                    : { borderColor: '#10b981', color: '#10b981' }
+                }
+                onClick={() => setShowOwnedRing(!showOwnedRing)}>
+                Owned Ring
+              </button>
+            </div>
+          </section>
+
+          <div className='divider' />
+
+          {/* Collection Filter */}
+          <section>
+            <h3 className='mb-2 text-xs font-semibold uppercase text-base-content/60'>Collection Filter</h3>
             <button
-              className={`btn btn-sm w-full ${showBrandRing ? '' : 'btn-outline'}`}
+              className={`btn btn-sm w-full justify-start ${ownedFilter ? '' : 'btn-outline'}`}
               style={
-                showBrandRing
-                  ? { backgroundColor: '#6366f1', borderColor: '#6366f1', color: '#fff' }
-                  : { borderColor: '#6366f1', color: '#6366f1' }
+                ownedFilter
+                  ? { backgroundColor: '#10b981', borderColor: '#10b981', color: '#fff' }
+                  : { borderColor: '#10b981', color: '#10b981' }
               }
-              onClick={() => setShowBrandRing(!showBrandRing)}>
-              Brand Ring
+              onClick={() => {
+                setOwnedFilter(!ownedFilter);
+                setSelectedGroup(null);
+                setSelectedPaint(null);
+              }}>
+              Owned Only ({ownedIds.size})
             </button>
           </section>
 
