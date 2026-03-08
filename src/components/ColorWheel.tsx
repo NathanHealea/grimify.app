@@ -34,6 +34,7 @@ interface ColorWheelProps {
   showOwnedRing: boolean;
   ownedFilter: boolean;
   onToggleOwned: (paintId: string) => void;
+  onRequestRemoveOwned: (paint: ProcessedPaint) => void;
 }
 
 const MIN_ZOOM = 0.4;
@@ -236,6 +237,7 @@ export default function ColorWheel({
   showOwnedRing,
   ownedFilter,
   onToggleOwned,
+  onRequestRemoveOwned,
 }: ColorWheelProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -629,7 +631,10 @@ export default function ColorWheel({
                   {label2}
                 </text>
                 {showBtn && (
-                  <g pointerEvents='all' className='cursor-pointer' onClick={() => onToggleOwned(rep.id)}>
+                  <g
+                    pointerEvents='all'
+                    className='cursor-pointer'
+                    onClick={() => (isOwned ? onRequestRemoveOwned(rep) : onToggleOwned(rep.id))}>
                     <rect
                       x={boxX + 2}
                       y={boxY + 17}
@@ -637,8 +642,8 @@ export default function ColorWheel({
                       height={7}
                       rx={1.5}
                       ry={1.5}
-                      fill={isOwned ? '#10b981' : 'none'}
-                      stroke='#10b981'
+                      fill={isOwned ? '#ef4444' : 'none'}
+                      stroke={isOwned ? '#ef4444' : '#10b981'}
                       strokeWidth={0.5}
                     />
                     <text
