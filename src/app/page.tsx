@@ -2,9 +2,10 @@
 
 import { useCallback, useMemo, useState } from 'react';
 
-import { Bars3Icon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import BrandLegend from '@/components/BrandLegend';
+import CollectionPanel from '@/components/CollectionPanel';
 import ColorWheel from '@/components/ColorWheel';
 import DetailPanel from '@/components/DetailPanel';
 import Sidebar, { useIsDesktop } from '@/components/Sidebar';
@@ -13,11 +14,13 @@ import { useOwnedPaints } from '@/hooks/useOwnedPaints';
 import type { ColorScheme, PaintGroup, ProcessedPaint } from '@/types/paint';
 import { hexToHsl, isMatchingScheme, paintToWheelPosition, WHEEL_RADIUS } from '@/utils/colorUtils';
 
+type SidebarTab = 'filters' | 'collection';
+
 export default function Home() {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const isDesktop = useIsDesktop();
-  const [sidebarOpen, setSidebarOpen] = useState<boolean | null>(null);
+  const [activeTab, setActiveTab] = useState<SidebarTab | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<PaintGroup | null>(null);
   const [selectedPaint, setSelectedPaint] = useState<ProcessedPaint | null>(null);
   const [hoveredGroup, setHoveredGroup] = useState<PaintGroup | null>(null);
@@ -32,7 +35,17 @@ export default function Home() {
   const uniqueColorCount = useMemo(() => new Set(paints.map((p) => p.hex.toLowerCase())).size, []);
 
   // null = user hasn't toggled yet, derive from screen size
-  const effectiveSidebarOpen = sidebarOpen ?? isDesktop;
+  const effectiveTab: SidebarTab | null = activeTab ?? (isDesktop ? 'filters' : null);
+
+  const handleTabToggle = useCallback(
+    (tab: SidebarTab) => {
+      setActiveTab((prev) => {
+        const current = prev ?? (isDesktop ? 'filters' : null);
+        return current === tab ? null : tab;
+      });
+    },
+    [isDesktop],
+  );
 
   const processedPaints = useMemo<ProcessedPaint[]>(
     () =>
@@ -219,15 +232,6 @@ export default function Home() {
     <div className='flex h-screen w-screen flex-col overflow-hidden'>
       {/* Top bar */}
       <nav className='navbar min-h-0 border-b border-base-300 bg-base-200 px-2 py-4'>
-        <div className='navbar-start w-auto'>
-          <button
-            className='btn btn-ghost btn-sm'
-            onClick={() => setSidebarOpen(!effectiveSidebarOpen)}
-            aria-label={effectiveSidebarOpen ? 'Close menu' : 'Open menu'}>
-            <Bars3Icon className='size-5' />
-          </button>
-        </div>
-
         <div className='navbar-center flex-1 px-3'>
           <label className='input input-sm w-full'>
             <MagnifyingGlassIcon className='size-4 opacity-50' />
@@ -258,51 +262,41 @@ export default function Home() {
       </nav>
 
       <div className='flex flex-1 overflow-hidden'>
-        <Sidebar isOpen={effectiveSidebarOpen} onClose={() => setSidebarOpen(false)}>
-          {/* Ring Toggles */}
-          <section>
-            <div className='flex gap-1'>
-              <button
-                className={`btn btn-sm flex-1 ${showBrandRing ? '' : 'btn-outline'}`}
-                style={
-                  showBrandRing
-                    ? { backgroundColor: '#6366f1', borderColor: '#6366f1', color: '#fff' }
-                    : { borderColor: '#6366f1', color: '#6366f1' }
-                }
-                onClick={() => setShowBrandRing(!showBrandRing)}>
-                Brand Ring
-              </button>
-              <button
-                className={`btn btn-sm flex-1 ${showOwnedRing ? '' : 'btn-outline'}`}
-                style={
-                  showOwnedRing
-                    ? { backgroundColor: '#10b981', borderColor: '#10b981', color: '#fff' }
-                    : { borderColor: '#10b981', color: '#10b981' }
-                }
-                onClick={() => setShowOwnedRing(!showOwnedRing)}>
-                Owned Ring
-              </button>
-            </div>
-          </section>
+        {/* Vertical tab strip */}
+        <div className='flex flex-col border-r border-base-300 bg-base-200'>
+          <button
+            className={`flex h-24 w-10 items-center justify-center border-b border-base-300 transition-colors ${
+              effectiveTab === 'filters' ? 'bg-base-300 text-base-content' : 'text-base-content/60 hover:bg-base-300/50'
+            }`}
+            onClick={() => handleTabToggle('filters')}
+            aria-label='Toggle Filters sidebar'>
+            <span className='text-xs font-semibold tracking-wider [writing-mode:vertical-lr]'>Filters</span>
+          </button>
+          <button
+            className={`flex h-24 w-10 items-center justify-center border-b border-base-300 transition-colors ${
+              effectiveTab === 'collection'
+                ? 'bg-base-300 text-base-content'
+                : 'text-base-content/60 hover:bg-base-300/50'
+            }`}
+            onClick={() => handleTabToggle('collection')}
+            aria-label='Toggle Collection sidebar'>
+            <span className='text-xs font-semibold tracking-wider [writing-mode:vertical-lr]'>Collection</span>
+          </button>
+        </div>
 
-          <div className='divider' />
-
-          {/* Collection Filter */}
+        {/* Filters sidebar */}
+        <Sidebar isOpen={effectiveTab === 'filters'} onClose={() => setActiveTab(null)} title='Filters'>
+          {/* Brand Ring Toggle */}
           <section>
-            <h3 className='mb-2 text-xs font-semibold uppercase text-base-content/60'>Collection Filter</h3>
             <button
-              className={`btn btn-sm w-full justify-start ${ownedFilter ? '' : 'btn-outline'}`}
+              className={`btn btn-sm w-full ${showBrandRing ? '' : 'btn-outline'}`}
               style={
-                ownedFilter
-                  ? { backgroundColor: '#10b981', borderColor: '#10b981', color: '#fff' }
-                  : { borderColor: '#10b981', color: '#10b981' }
+                showBrandRing
+                  ? { backgroundColor: '#6366f1', borderColor: '#6366f1', color: '#fff' }
+                  : { borderColor: '#6366f1', color: '#6366f1' }
               }
-              onClick={() => {
-                setOwnedFilter(!ownedFilter);
-                setSelectedGroup(null);
-                setSelectedPaint(null);
-              }}>
-              Owned Only ({ownedIds.size})
+              onClick={() => setShowBrandRing(!showBrandRing)}>
+              Brand Ring
             </button>
           </section>
 
@@ -394,6 +388,28 @@ export default function Home() {
               onToggleOwned={toggleOwned}
             />
           </section>
+        </Sidebar>
+
+        {/* Collection sidebar */}
+        <Sidebar isOpen={effectiveTab === 'collection'} onClose={() => setActiveTab(null)} title='Collection'>
+          <CollectionPanel
+            processedPaints={processedPaints}
+            ownedIds={ownedIds}
+            onToggleOwned={toggleOwned}
+            onSelectPaint={(paint) => {
+              handleSelectSearchResult(paint);
+              if (!isDesktop) setActiveTab(null);
+            }}
+            brands={brands}
+            showOwnedRing={showOwnedRing}
+            onToggleOwnedRing={() => setShowOwnedRing(!showOwnedRing)}
+            ownedFilter={ownedFilter}
+            onToggleOwnedFilter={() => {
+              setOwnedFilter(!ownedFilter);
+              setSelectedGroup(null);
+              setSelectedPaint(null);
+            }}
+          />
         </Sidebar>
 
         <main className='relative flex-1 overflow-hidden'>

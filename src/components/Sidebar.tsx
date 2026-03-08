@@ -8,6 +8,7 @@ interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  title?: string;
 }
 
 const DESKTOP_MQ = "(min-width: 768px)";
@@ -26,7 +27,7 @@ export function useIsDesktop() {
   return useSyncExternalStore(subscribeToMediaQuery, getIsDesktop, () => false);
 }
 
-export default function Sidebar({ isOpen, onClose, children }: SidebarProps) {
+export default function Sidebar({ isOpen, onClose, children, title = 'Settings' }: SidebarProps) {
   const isDesktop = useIsDesktop();
 
   // Desktop: side-by-side flex panel
@@ -50,7 +51,7 @@ export default function Sidebar({ isOpen, onClose, children }: SidebarProps) {
           <CloseButton className="btn btn-ghost btn-sm" aria-label="Close menu">
             <XMarkIcon className="size-5" />
           </CloseButton>
-          <span className="ml-2 text-sm font-semibold">Settings</span>
+          <span className="ml-2 text-sm font-semibold">{title}</span>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">{children}</div>
