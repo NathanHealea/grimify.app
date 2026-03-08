@@ -5,18 +5,24 @@ import { useCallback, useMemo, useState } from 'react';
 import { Bars3Icon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import BrandLegend from '@/components/BrandLegend';
+import CollectionPanel from '@/components/CollectionPanel';
 import ColorWheel from '@/components/ColorWheel';
 import DetailPanel from '@/components/DetailPanel';
 import Sidebar, { useIsDesktop } from '@/components/Sidebar';
 import { brands, paints } from '@/data/index';
+import { useOwnedPaints } from '@/hooks/useOwnedPaints';
 import type { ColorScheme, PaintGroup, ProcessedPaint } from '@/types/paint';
 import { hexToHsl, isMatchingScheme, paintToWheelPosition, WHEEL_RADIUS } from '@/utils/colorUtils';
+
+type SidebarTab = 'filters' | 'collection';
+type SidebarState = SidebarTab | 'closed' | null; // null = derive from screen size
 
 export default function Home() {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const isDesktop = useIsDesktop();
-  const [sidebarOpen, setSidebarOpen] = useState<boolean | null>(null);
+  const [sidebarState, setSidebarState] = useState<SidebarState>(null);
+  const [lastTab, setLastTab] = useState<SidebarTab>('filters');
   const [selectedGroup, setSelectedGroup] = useState<PaintGroup | null>(null);
   const [selectedPaint, setSelectedPaint] = useState<ProcessedPaint | null>(null);
   const [hoveredGroup, setHoveredGroup] = useState<PaintGroup | null>(null);
@@ -24,11 +30,36 @@ export default function Home() {
   const [brandFilter, setBrandFilter] = useState<Set<string>>(new Set());
   const [colorScheme, setColorScheme] = useState<ColorScheme>('none');
   const [searchQuery, setSearchQuery] = useState('');
+  const { ownedIds, toggleOwned } = useOwnedPaints();
+  const [showOwnedRing, setShowOwnedRing] = useState(false);
+  const [ownedFilter, setOwnedFilter] = useState(false);
 
   const uniqueColorCount = useMemo(() => new Set(paints.map((p) => p.hex.toLowerCase())).size, []);
 
-  // null = user hasn't toggled yet, derive from screen size
-  const effectiveSidebarOpen = sidebarOpen ?? isDesktop;
+  // null = derive from screen size, 'closed' = explicitly closed
+  const effectiveTab: SidebarTab | null =
+    sidebarState === null ? (isDesktop ? 'filters' : null) : sidebarState === 'closed' ? null : sidebarState;
+
+  const handleTabToggle = useCallback(
+    (tab: SidebarTab) => {
+      setSidebarState((prev) => {
+        const current = prev === null ? (isDesktop ? 'filters' : null) : prev === 'closed' ? null : prev;
+        if (current === tab) return 'closed';
+        setLastTab(tab);
+        return tab;
+      });
+    },
+    [isDesktop],
+  );
+
+  const handleMenuToggle = useCallback(() => {
+    setSidebarState((prev) => {
+      const current = prev === null ? (isDesktop ? 'filters' : null) : prev === 'closed' ? null : prev;
+      if (current !== null) return 'closed';
+      const reopenTab = lastTab;
+      return reopenTab;
+    });
+  }, [isDesktop, lastTab]);
 
   const processedPaints = useMemo<ProcessedPaint[]>(
     () =>
@@ -101,7 +132,7 @@ export default function Home() {
   }, [colorScheme, selectedPaint, processedPaints, isSchemeMatching]);
 
   const isSchemeActive = colorScheme !== 'none' && selectedPaint !== null;
-  const isAnyFilterActive = isFiltered || isSearching || isSchemeActive;
+  const isAnyFilterActive = isFiltered || isSearching || isSchemeActive || ownedFilter;
 
   const filteredPaintCount = useMemo(() => {
     if (!isAnyFilterActive) return paints.length;
@@ -109,7 +140,8 @@ export default function Home() {
       const matchesBrand = !isFiltered || brandFilter.has(p.brand);
       const matchesSearch = !isSearching || searchMatchIds.has(p.id);
       const matchesScheme = !isSchemeActive || isSchemeMatching(p);
-      return matchesBrand && matchesSearch && matchesScheme;
+      const matchesOwned = !ownedFilter || ownedIds.has(p.id);
+      return matchesBrand && matchesSearch && matchesScheme && matchesOwned;
     }).length;
   }, [
     processedPaints,
@@ -120,6 +152,8 @@ export default function Home() {
     isAnyFilterActive,
     isSchemeActive,
     isSchemeMatching,
+    ownedFilter,
+    ownedIds,
   ]);
 
   const filteredColorCount = useMemo(() => {
@@ -129,7 +163,8 @@ export default function Home() {
         const matchesBrand = !isFiltered || brandFilter.has(p.brand);
         const matchesSearch = !isSearching || searchMatchIds.has(p.id);
         const matchesScheme = !isSchemeActive || isSchemeMatching(p);
-        return matchesBrand && matchesSearch && matchesScheme;
+        const matchesOwned = !ownedFilter || ownedIds.has(p.id);
+        return matchesBrand && matchesSearch && matchesScheme && matchesOwned;
       }),
     ).length;
   }, [
@@ -142,6 +177,8 @@ export default function Home() {
     isAnyFilterActive,
     isSchemeActive,
     isSchemeMatching,
+    ownedFilter,
+    ownedIds,
   ]);
 
   const handleBrandFilter = useCallback((id: string) => {
@@ -212,8 +249,8 @@ export default function Home() {
         <div className='navbar-start w-auto'>
           <button
             className='btn btn-ghost btn-sm'
-            onClick={() => setSidebarOpen(!effectiveSidebarOpen)}
-            aria-label={effectiveSidebarOpen ? 'Close menu' : 'Open menu'}>
+            onClick={handleMenuToggle}
+            aria-label={effectiveTab ? 'Close sidebar' : 'Open sidebar'}>
             <Bars3Icon className='size-5' />
           </button>
         </div>
@@ -248,7 +285,30 @@ export default function Home() {
       </nav>
 
       <div className='flex flex-1 overflow-hidden'>
-        <Sidebar isOpen={effectiveSidebarOpen} onClose={() => setSidebarOpen(false)}>
+        {/* Vertical tab strip */}
+        <div className='flex flex-col border-r border-base-300 bg-base-200'>
+          <button
+            className={`flex h-24 w-10 items-center justify-center border-b border-base-300 transition-colors ${
+              effectiveTab === 'filters' ? 'bg-base-300 text-base-content' : 'text-base-content/60 hover:bg-base-300/50'
+            }`}
+            onClick={() => handleTabToggle('filters')}
+            aria-label='Toggle Filters sidebar'>
+            <span className='text-xs font-semibold tracking-wider [writing-mode:vertical-lr]'>Filters</span>
+          </button>
+          <button
+            className={`flex h-24 w-10 items-center justify-center border-b border-base-300 transition-colors ${
+              effectiveTab === 'collection'
+                ? 'bg-base-300 text-base-content'
+                : 'text-base-content/60 hover:bg-base-300/50'
+            }`}
+            onClick={() => handleTabToggle('collection')}
+            aria-label='Toggle Collection sidebar'>
+            <span className='text-xs font-semibold tracking-wider [writing-mode:vertical-lr]'>Collection</span>
+          </button>
+        </div>
+
+        {/* Filters sidebar */}
+        <Sidebar isOpen={effectiveTab === 'filters'} onClose={() => setSidebarState('closed')} title='Filters'>
           {/* Brand Ring Toggle */}
           <section>
             <button
@@ -347,8 +407,32 @@ export default function Home() {
               matches={isSearching ? searchResults : schemeMatches}
               hasSearch={isSearching}
               scheme={colorScheme}
+              ownedIds={ownedIds}
+              onToggleOwned={toggleOwned}
             />
           </section>
+        </Sidebar>
+
+        {/* Collection sidebar */}
+        <Sidebar isOpen={effectiveTab === 'collection'} onClose={() => setSidebarState('closed')} title='Collection'>
+          <CollectionPanel
+            processedPaints={processedPaints}
+            ownedIds={ownedIds}
+            onToggleOwned={toggleOwned}
+            onSelectPaint={(paint) => {
+              handleSelectSearchResult(paint);
+              if (!isDesktop) setSidebarState('closed');
+            }}
+            brands={brands}
+            showOwnedRing={showOwnedRing}
+            onToggleOwnedRing={() => setShowOwnedRing(!showOwnedRing)}
+            ownedFilter={ownedFilter}
+            onToggleOwnedFilter={() => {
+              setOwnedFilter(!ownedFilter);
+              setSelectedGroup(null);
+              setSelectedPaint(null);
+            }}
+          />
         </Sidebar>
 
         <main className='relative flex-1 overflow-hidden'>
@@ -368,6 +452,9 @@ export default function Home() {
             colorScheme={colorScheme}
             selectedPaint={selectedPaint}
             isSchemeMatching={isSchemeMatching}
+            ownedIds={ownedIds}
+            showOwnedRing={showOwnedRing}
+            ownedFilter={ownedFilter}
           />
 
           {/* Stats overlay */}

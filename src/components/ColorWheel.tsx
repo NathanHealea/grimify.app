@@ -30,6 +30,9 @@ interface ColorWheelProps {
   colorScheme: ColorScheme;
   selectedPaint: ProcessedPaint | null;
   isSchemeMatching: (paint: ProcessedPaint) => boolean;
+  ownedIds: Set<string>;
+  showOwnedRing: boolean;
+  ownedFilter: boolean;
 }
 
 const MIN_ZOOM = 0.4;
@@ -97,6 +100,8 @@ function PaintDot({
   dimmed,
   schemeDimmed,
   searchHighlight,
+  isOwned,
+  showOwnedRing,
   onHover,
   onClick,
 }: {
@@ -106,6 +111,8 @@ function PaintDot({
   dimmed: boolean;
   schemeDimmed: boolean;
   searchHighlight: boolean;
+  isOwned: boolean;
+  showOwnedRing: boolean;
   onHover: (group: PaintGroup | null) => void;
   onClick: (group: PaintGroup) => void;
 }) {
@@ -115,6 +122,17 @@ function PaintDot({
 
   return (
     <g opacity={dimmed ? (schemeDimmed ? 0.06 : 0.15) : 1}>
+      {showOwnedRing && isOwned && !dimmed && (
+        <circle
+          cx={rep.x}
+          cy={rep.y}
+          r={r + (showBrandRing ? 5.5 : 3)}
+          fill='none'
+          stroke='#10b981'
+          strokeWidth={1.5}
+          pointerEvents='none'
+        />
+      )}
       {searchHighlight && !dimmed && (
         <circle
           cx={rep.x}
@@ -213,6 +231,9 @@ export default function ColorWheel({
   colorScheme,
   selectedPaint,
   isSchemeMatching,
+  ownedIds,
+  showOwnedRing,
+  ownedFilter,
 }: ColorWheelProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -551,9 +572,11 @@ export default function ColorWheel({
         {paintGroups.map((group) => {
           const matchesBrand = brandFilter.size === 0 || group.paints.some((p) => brandFilter.has(p.brand));
           const matchesSearch = searchMatchIds.size === 0 || group.paints.some((p) => searchMatchIds.has(p.id));
+          const matchesOwned = !ownedFilter || group.paints.some((p) => ownedIds.has(p.id));
           const hasActiveScheme = colorScheme !== 'none' && selectedPaint !== null;
           const schemeDimmed = !group.paints.some(isSchemeMatching);
-          const dimmed = !matchesBrand || (hasActiveScheme ? schemeDimmed : !matchesSearch);
+          const dimmed = !matchesBrand || !matchesOwned || (hasActiveScheme ? schemeDimmed : !matchesSearch);
+          const isOwned = group.paints.some((p) => ownedIds.has(p.id));
           return (
             <PaintDot
               key={group.key}
@@ -563,6 +586,8 @@ export default function ColorWheel({
               dimmed={dimmed}
               schemeDimmed={schemeDimmed}
               searchHighlight={searchMatchIds.size > 0 && !hasActiveScheme && matchesSearch}
+              isOwned={isOwned}
+              showOwnedRing={showOwnedRing}
               onHover={onHoverGroup}
               onClick={(g) => {
                 if (dragDistance.current > 3) return;

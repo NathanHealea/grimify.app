@@ -2,7 +2,7 @@
 
 **Epic:** Paint Collection
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 
 ## Summary
 
@@ -10,13 +10,13 @@ Allow users to mark paints they own in their personal collection. Owned paints a
 
 ## Acceptance Criteria
 
-- [ ] Users can mark a paint as owned from the detail panel when a paint is selected
-- [ ] Users can unmark a paint as owned from the detail panel
-- [ ] Owned paint IDs are persisted in browser localStorage
-- [ ] Owned paints display a ring indicator around their color dot on the wheel
-- [ ] Users can toggle the owned ring indicator on/off from the sidebar
-- [ ] Users can filter the wheel to show only owned paints
-- [ ] Visibility priority cascade: owned/search > Color Scheme > Brand Filters
+- [x] Users can mark a paint as owned from the detail panel when a paint is selected
+- [x] Users can unmark a paint as owned from the detail panel
+- [x] Owned paint IDs are persisted in browser localStorage
+- [x] Owned paints display a ring indicator around their color dot on the wheel
+- [x] Users can toggle the owned ring indicator on/off from the sidebar
+- [x] Users can filter the wheel to show only owned paints
+- [x] Visibility priority cascade: owned/search > Color Scheme > Brand Filters
 
 ## Implementation Plan
 
