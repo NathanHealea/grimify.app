@@ -172,4 +172,4 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | | Name | Type | Status |
 |---|------|------|--------|
 | [x] | [Owned Paint Collection](./paint-collection/owned-paint-collection.md) | Feature | Completed |
-| [ ] | [Owned Collection UX Improvements](./paint-collection/owned-collection-ux-improvements.md) | Enhancement | Todo |
+| [x] | [Owned Collection UX Improvements](./paint-collection/owned-collection-ux-improvements.md) | Enhancement | Completed |
