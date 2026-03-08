@@ -455,6 +455,7 @@ export default function Home() {
             ownedIds={ownedIds}
             showOwnedRing={showOwnedRing}
             ownedFilter={ownedFilter}
+            onToggleOwned={toggleOwned}
           />
 
           {/* Stats overlay */}

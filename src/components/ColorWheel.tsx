@@ -33,6 +33,7 @@ interface ColorWheelProps {
   ownedIds: Set<string>;
   showOwnedRing: boolean;
   ownedFilter: boolean;
+  onToggleOwned: (paintId: string) => void;
 }
 
 const MIN_ZOOM = 0.4;
@@ -234,6 +235,7 @@ export default function ColorWheel({
   ownedIds,
   showOwnedRing,
   ownedFilter,
+  onToggleOwned,
 }: ColorWheelProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -608,9 +610,13 @@ export default function ColorWheel({
             const r = isMulti ? DOT_RADIUS + 2 : DOT_RADIUS;
             const label1 = isMulti ? `${group.paints.length} paints` : rep.name;
             const label2 = isMulti ? rep.hex.toUpperCase() : rep.brand;
-            const maxLen = Math.max(label1.length, label2.length);
+            const isSelected = selectedGroup?.key === group.key;
+            const showBtn = isSelected && !isMulti;
+            const isOwned = showBtn && ownedIds.has(rep.id);
+            const btnText = isOwned ? 'Remove from Collection' : 'Add to Collection';
+            const maxLen = Math.max(label1.length, label2.length, showBtn ? btnText.length : 0);
             const boxW = maxLen * 3 + 4;
-            const boxH = 16;
+            const boxH = showBtn ? 26 : 16;
             const boxX = rep.x - boxW / 2;
             const boxY = rep.y + r;
             return (
@@ -622,6 +628,31 @@ export default function ColorWheel({
                 <text x={rep.x} y={rep.y + r + 13} textAnchor='middle' fill={isMulti ? '#f0c040' : '#888'} fontSize={4}>
                   {label2}
                 </text>
+                {showBtn && (
+                  <g pointerEvents='all' className='cursor-pointer' onClick={() => onToggleOwned(rep.id)}>
+                    <rect
+                      x={boxX + 2}
+                      y={boxY + 17}
+                      width={boxW - 4}
+                      height={7}
+                      rx={1.5}
+                      ry={1.5}
+                      fill={isOwned ? '#10b981' : 'none'}
+                      stroke='#10b981'
+                      strokeWidth={0.5}
+                    />
+                    <text
+                      x={rep.x}
+                      y={boxY + 21.5}
+                      textAnchor='middle'
+                      dominantBaseline='middle'
+                      fill={isOwned ? '#fff' : '#10b981'}
+                      fontSize={3.5}
+                      fontWeight={600}>
+                      {btnText}
+                    </text>
+                  </g>
+                )}
               </g>
             );
           })}
