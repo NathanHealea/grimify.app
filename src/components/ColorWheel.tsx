@@ -30,6 +30,10 @@ interface ColorWheelProps {
   colorScheme: ColorScheme;
   selectedPaint: ProcessedPaint | null;
   isSchemeMatching: (paint: ProcessedPaint) => boolean;
+  ownedIds: Set<string>;
+  showOwnedRing: boolean;
+  ownedFilter: boolean;
+  onToggleOwned: (paintId: string) => void;
 }
 
 const MIN_ZOOM = 0.4;
@@ -94,6 +98,8 @@ function PaintDot({
   group,
   isSelected,
   showBrandRing,
+  showOwnedRing,
+  isOwned,
   dimmed,
   schemeDimmed,
   searchHighlight,
@@ -103,6 +109,8 @@ function PaintDot({
   group: PaintGroup;
   isSelected: boolean;
   showBrandRing: boolean;
+  showOwnedRing: boolean;
+  isOwned: boolean;
   dimmed: boolean;
   schemeDimmed: boolean;
   searchHighlight: boolean;
@@ -115,6 +123,17 @@ function PaintDot({
 
   return (
     <g opacity={dimmed ? (schemeDimmed ? 0.06 : 0.15) : 1}>
+      {showOwnedRing && isOwned && !dimmed && (
+        <circle
+          cx={rep.x}
+          cy={rep.y}
+          r={r + (showBrandRing ? 5.5 : 3)}
+          fill='none'
+          stroke='#10b981'
+          strokeWidth={1.5}
+          pointerEvents='none'
+        />
+      )}
       {searchHighlight && !dimmed && (
         <circle
           cx={rep.x}
@@ -213,6 +232,10 @@ export default function ColorWheel({
   colorScheme,
   selectedPaint,
   isSchemeMatching,
+  ownedIds,
+  showOwnedRing,
+  ownedFilter,
+  onToggleOwned,
 }: ColorWheelProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -551,15 +574,19 @@ export default function ColorWheel({
         {paintGroups.map((group) => {
           const matchesBrand = brandFilter.size === 0 || group.paints.some((p) => brandFilter.has(p.brand));
           const matchesSearch = searchMatchIds.size === 0 || group.paints.some((p) => searchMatchIds.has(p.id));
+          const matchesOwned = !ownedFilter || group.paints.some((p) => ownedIds.has(p.id));
           const hasActiveScheme = colorScheme !== 'none' && selectedPaint !== null;
           const schemeDimmed = !group.paints.some(isSchemeMatching);
-          const dimmed = !matchesBrand || (hasActiveScheme ? schemeDimmed : !matchesSearch);
+          const isOwned = group.paints.some((p) => ownedIds.has(p.id));
+          const dimmed = !matchesBrand || !matchesOwned || (hasActiveScheme ? schemeDimmed : !matchesSearch);
           return (
             <PaintDot
               key={group.key}
               group={group}
               isSelected={selectedGroup?.key === group.key}
               showBrandRing={showBrandRing}
+              showOwnedRing={showOwnedRing}
+              isOwned={isOwned}
               dimmed={dimmed}
               schemeDimmed={schemeDimmed}
               searchHighlight={searchMatchIds.size > 0 && !hasActiveScheme && matchesSearch}
@@ -574,7 +601,7 @@ export default function ColorWheel({
       </g>
 
       {/* Labels layer — rendered on top of all dots */}
-      <g pointerEvents='none'>
+      <g>
         {paintGroups
           .filter((g) => hoveredGroup?.key === g.key || selectedGroup?.key === g.key)
           .map((group) => {
@@ -584,19 +611,66 @@ export default function ColorWheel({
             const label1 = isMulti ? `${group.paints.length} paints` : rep.name;
             const label2 = isMulti ? rep.hex.toUpperCase() : rep.brand;
             const maxLen = Math.max(label1.length, label2.length);
-            const boxW = maxLen * 3 + 4;
+            const btnR = 4;
+            const boxW = maxLen * 3 + 4 + (!isMulti ? btnR * 2 + 3 : 0);
             const boxH = 16;
             const boxX = rep.x - boxW / 2;
             const boxY = rep.y + r;
+            const isOwned = !isMulti && ownedIds.has(rep.id);
+            const btnCx = boxX + boxW - btnR - 2;
+            const btnCy = boxY + boxH / 2;
             return (
               <g key={`label-${group.key}`}>
-                <rect x={boxX} y={boxY} width={boxW} height={boxH} rx={3} ry={3} fill='rgba(0,0,0,0.7)' />
-                <text x={rep.x} y={rep.y + r + 6} textAnchor='middle' fill='#bbb' fontSize={5} fontWeight={600}>
+                <rect
+                  x={boxX}
+                  y={boxY}
+                  width={boxW}
+                  height={boxH}
+                  rx={3}
+                  ry={3}
+                  fill='rgba(0,0,0,0.7)'
+                  pointerEvents='none'
+                />
+                <text
+                  x={rep.x - (!isMulti ? (btnR + 1.5) / 2 : 0)}
+                  y={rep.y + r + 6}
+                  textAnchor='middle'
+                  fill='#bbb'
+                  fontSize={5}
+                  fontWeight={600}
+                  pointerEvents='none'>
                   {label1}
                 </text>
-                <text x={rep.x} y={rep.y + r + 13} textAnchor='middle' fill={isMulti ? '#f0c040' : '#888'} fontSize={4}>
+                <text
+                  x={rep.x - (!isMulti ? (btnR + 1.5) / 2 : 0)}
+                  y={rep.y + r + 13}
+                  textAnchor='middle'
+                  fill={isMulti ? '#f0c040' : '#888'}
+                  fontSize={4}
+                  pointerEvents='none'>
                   {label2}
                 </text>
+                {!isMulti && (
+                  <g
+                    className='cursor-pointer'
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggleOwned(rep.id);
+                    }}>
+                    <circle cx={btnCx} cy={btnCy} r={btnR} fill={isOwned ? '#10b981' : 'rgba(255,255,255,0.15)'} />
+                    <text
+                      x={btnCx}
+                      y={btnCy + 0.5}
+                      textAnchor='middle'
+                      dominantBaseline='middle'
+                      fill={isOwned ? '#fff' : '#aaa'}
+                      fontSize={5}
+                      fontWeight={700}
+                      pointerEvents='none'>
+                      {isOwned ? '✓' : '+'}
+                    </text>
+                  </g>
+                )}
               </g>
             );
           })}

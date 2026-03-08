@@ -2,13 +2,16 @@
 
 import { useCallback, useMemo, useState } from 'react';
 
-import { Bars3Icon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
-import BrandLegend from '@/components/BrandLegend';
 import ColorWheel from '@/components/ColorWheel';
-import DetailPanel from '@/components/DetailPanel';
-import Sidebar, { useIsDesktop } from '@/components/Sidebar';
+import FiltersPanel from '@/components/FiltersPanel';
+import PaintsPanel from '@/components/PaintsPanel';
+import SidePanel from '@/components/SidePanel';
+import TabStrip, { type TabId } from '@/components/TabStrip';
 import { brands, paints } from '@/data/index';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { useOwnedPaints } from '@/hooks/useOwnedPaints';
 import type { ColorScheme, PaintGroup, ProcessedPaint } from '@/types/paint';
 import { hexToHsl, isMatchingScheme, paintToWheelPosition, WHEEL_RADIUS } from '@/utils/colorUtils';
 
@@ -16,7 +19,7 @@ export default function Home() {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const isDesktop = useIsDesktop();
-  const [sidebarOpen, setSidebarOpen] = useState<boolean | null>(null);
+  const [activeTab, setActiveTab] = useState<TabId | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<PaintGroup | null>(null);
   const [selectedPaint, setSelectedPaint] = useState<ProcessedPaint | null>(null);
   const [hoveredGroup, setHoveredGroup] = useState<PaintGroup | null>(null);
@@ -25,10 +28,25 @@ export default function Home() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>('none');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Owned paint state
+  const { ownedIds, toggleOwned } = useOwnedPaints();
+  const [showOwnedRing, setShowOwnedRing] = useState(false);
+  const [ownedFilter, setOwnedFilter] = useState(false);
+
   const uniqueColorCount = useMemo(() => new Set(paints.map((p) => p.hex.toLowerCase())).size, []);
 
-  // null = user hasn't toggled yet, derive from screen size
-  const effectiveSidebarOpen = sidebarOpen ?? isDesktop;
+  // Default to filters tab on desktop, closed on mobile
+  const effectiveTab = activeTab ?? (isDesktop ? 'filters' : null);
+
+  const handleTabClick = useCallback(
+    (tab: TabId) => {
+      setActiveTab((prev) => {
+        const effective = prev ?? (isDesktop ? 'filters' : null);
+        return effective === tab ? null : tab;
+      });
+    },
+    [isDesktop],
+  );
 
   const processedPaints = useMemo<ProcessedPaint[]>(
     () =>
@@ -101,7 +119,7 @@ export default function Home() {
   }, [colorScheme, selectedPaint, processedPaints, isSchemeMatching]);
 
   const isSchemeActive = colorScheme !== 'none' && selectedPaint !== null;
-  const isAnyFilterActive = isFiltered || isSearching || isSchemeActive;
+  const isAnyFilterActive = isFiltered || isSearching || isSchemeActive || ownedFilter;
 
   const filteredPaintCount = useMemo(() => {
     if (!isAnyFilterActive) return paints.length;
@@ -109,7 +127,8 @@ export default function Home() {
       const matchesBrand = !isFiltered || brandFilter.has(p.brand);
       const matchesSearch = !isSearching || searchMatchIds.has(p.id);
       const matchesScheme = !isSchemeActive || isSchemeMatching(p);
-      return matchesBrand && matchesSearch && matchesScheme;
+      const matchesOwned = !ownedFilter || ownedIds.has(p.id);
+      return matchesBrand && matchesSearch && matchesScheme && matchesOwned;
     }).length;
   }, [
     processedPaints,
@@ -120,6 +139,8 @@ export default function Home() {
     isAnyFilterActive,
     isSchemeActive,
     isSchemeMatching,
+    ownedFilter,
+    ownedIds,
   ]);
 
   const filteredColorCount = useMemo(() => {
@@ -129,7 +150,8 @@ export default function Home() {
         const matchesBrand = !isFiltered || brandFilter.has(p.brand);
         const matchesSearch = !isSearching || searchMatchIds.has(p.id);
         const matchesScheme = !isSchemeActive || isSchemeMatching(p);
-        return matchesBrand && matchesSearch && matchesScheme;
+        const matchesOwned = !ownedFilter || ownedIds.has(p.id);
+        return matchesBrand && matchesSearch && matchesScheme && matchesOwned;
       }),
     ).length;
   }, [
@@ -142,6 +164,8 @@ export default function Home() {
     isAnyFilterActive,
     isSchemeActive,
     isSchemeMatching,
+    ownedFilter,
+    ownedIds,
   ]);
 
   const handleBrandFilter = useCallback((id: string) => {
@@ -208,17 +232,8 @@ export default function Home() {
   return (
     <div className='flex h-screen w-screen flex-col overflow-hidden'>
       {/* Top bar */}
-      <nav className='navbar min-h-0 border-b border-base-300 bg-base-200 px-2 py-4'>
-        <div className='navbar-start w-auto'>
-          <button
-            className='btn btn-ghost btn-sm'
-            onClick={() => setSidebarOpen(!effectiveSidebarOpen)}
-            aria-label={effectiveSidebarOpen ? 'Close menu' : 'Open menu'}>
-            <Bars3Icon className='size-5' />
-          </button>
-        </div>
-
-        <div className='navbar-center flex-1 px-3'>
+      <nav className='navbar min-h-0 border-b border-base-300 bg-base-200 px-4 py-4'>
+        <div className='flex-1'>
           <label className='input input-sm w-full'>
             <MagnifyingGlassIcon className='size-4 opacity-50' />
             <input
@@ -248,108 +263,56 @@ export default function Home() {
       </nav>
 
       <div className='flex flex-1 overflow-hidden'>
-        <Sidebar isOpen={effectiveSidebarOpen} onClose={() => setSidebarOpen(false)}>
-          {/* Brand Ring Toggle */}
-          <section>
-            <button
-              className={`btn btn-sm w-full ${showBrandRing ? '' : 'btn-outline'}`}
-              style={
-                showBrandRing
-                  ? { backgroundColor: '#6366f1', borderColor: '#6366f1', color: '#fff' }
-                  : { borderColor: '#6366f1', color: '#6366f1' }
-              }
-              onClick={() => setShowBrandRing(!showBrandRing)}>
-              Brand Ring
-            </button>
-          </section>
+        {/* Tab strip — always visible */}
+        <TabStrip activeTab={effectiveTab} onTabClick={handleTabClick} ownedCount={ownedIds.size} />
 
-          <div className='divider' />
-
-          {/* Brand Legend */}
-          <section>
-            <h3 className='mb-2 text-xs font-semibold uppercase text-base-content/60'>Brands</h3>
-            <BrandLegend brands={brands} paintCounts={brandPaintCounts} />
-          </section>
-
-          <div className='divider' />
-
-          {/* Brand Filter */}
-          <section>
-            <h3 className='mb-2 text-xs font-semibold uppercase text-base-content/60'>Brand Filter</h3>
-            <div className='flex flex-col gap-1'>
-              <button
-                className={`btn btn-sm justify-start ${!isFiltered ? 'btn-neutral' : 'btn-outline btn-neutral'}`}
-                onClick={() => handleBrandFilter('all')}>
-                All Brands
-              </button>
-              {brands.map((brand) => (
-                <button
-                  key={brand.id}
-                  className={`btn btn-sm justify-start ${brandFilter.has(brand.id) ? '' : 'btn-outline'}`}
-                  style={
-                    brandFilter.has(brand.id)
-                      ? { backgroundColor: brand.color, borderColor: brand.color, color: '#fff' }
-                      : { borderColor: brand.color, color: brand.color }
-                  }
-                  onClick={() => handleBrandFilter(brand.id)}>
-                  {brand.icon} {brand.name}
-                </button>
-              ))}
-            </div>
-          </section>
-
-          <div className='divider' />
-
-          {/* Color Scheme Mode */}
-          <section>
-            <h3 className='mb-2 text-xs font-semibold uppercase text-base-content/60'>Color Scheme</h3>
-            <div className='flex flex-col gap-1'>
-              {(
-                [
-                  { label: 'No Scheme', value: 'none', color: '#6b7280', contentColor: '#fff' },
-                  { label: 'Complementary', value: 'complementary', color: '#38bdf8', contentColor: '#000' },
-                  { label: 'Split Complementary', value: 'split', color: '#facc15', contentColor: '#000' },
-                  { label: 'Analogous', value: 'analogous', color: '#4ade80', contentColor: '#000' },
-                ] as const
-              ).map(({ label, value, color, contentColor }) => (
-                <button
-                  key={value}
-                  className={`btn btn-sm justify-start ${colorScheme === value ? '' : 'btn-outline'}`}
-                  style={
-                    colorScheme === value
-                      ? { backgroundColor: color, borderColor: color, color: contentColor }
-                      : { borderColor: color, color }
-                  }
-                  onClick={() => setColorScheme(value)}>
-                  {label}
-                </button>
-              ))}
-            </div>
-            {colorScheme !== 'none' && !selectedPaint && (
-              <p className='mt-1 text-xs text-base-content/40'>Click a paint to see its {colorScheme} colors</p>
-            )}
-          </section>
-
-          <div className='divider' />
-
-          {/* Color Details */}
-          <section>
-            <h3 className='mb-2 text-xs font-semibold uppercase text-base-content/60'>Color Details</h3>
-            <DetailPanel
-              group={displayGroup}
+        {/* Side panel — slides in/out */}
+        <SidePanel
+          isOpen={effectiveTab !== null}
+          activeTab={effectiveTab}
+          onClose={() => setActiveTab(null)}
+          onTabChange={setActiveTab}>
+          {effectiveTab === 'filters' && (
+            <FiltersPanel
+              showBrandRing={showBrandRing}
+              onToggleBrandRing={() => setShowBrandRing(!showBrandRing)}
+              showOwnedRing={showOwnedRing}
+              onToggleOwnedRing={() => setShowOwnedRing(!showOwnedRing)}
+              brands={brands}
+              brandPaintCounts={brandPaintCounts}
+              brandFilter={brandFilter}
+              isFiltered={isFiltered}
+              onBrandFilter={handleBrandFilter}
+              colorScheme={colorScheme}
+              onColorScheme={setColorScheme}
               selectedPaint={hoveredGroup ? null : selectedPaint}
+              displayGroup={displayGroup}
+              hoveredGroup={hoveredGroup}
               onSelectPaint={(paint) => {
                 if (isSearching) handleSelectSearchResult(paint);
                 else if (displayGroup) handleSelectPaintFromGroup(paint, displayGroup);
               }}
               onBack={() => setSelectedPaint(null)}
-              brands={brands}
               matches={isSearching ? searchResults : schemeMatches}
-              hasSearch={isSearching}
-              scheme={colorScheme}
+              isSearching={isSearching}
+              ownedIds={ownedIds}
+              onToggleOwned={toggleOwned}
             />
-          </section>
-        </Sidebar>
+          )}
+          {effectiveTab === 'paints' && (
+            <PaintsPanel
+              ownedIds={ownedIds}
+              processedPaints={processedPaints}
+              brands={brands}
+              onToggleOwned={toggleOwned}
+              onSelectPaint={handleSelectSearchResult}
+              ownedFilter={ownedFilter}
+              onToggleOwnedFilter={() => setOwnedFilter(!ownedFilter)}
+              showOwnedRing={showOwnedRing}
+              onToggleOwnedRing={() => setShowOwnedRing(!showOwnedRing)}
+            />
+          )}
+        </SidePanel>
 
         <main className='relative flex-1 overflow-hidden'>
           <ColorWheel
@@ -368,6 +331,10 @@ export default function Home() {
             colorScheme={colorScheme}
             selectedPaint={selectedPaint}
             isSchemeMatching={isSchemeMatching}
+            ownedIds={ownedIds}
+            showOwnedRing={showOwnedRing}
+            ownedFilter={ownedFilter}
+            onToggleOwned={toggleOwned}
           />
 
           {/* Stats overlay */}
