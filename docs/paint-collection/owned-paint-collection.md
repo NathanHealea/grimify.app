@@ -2,7 +2,7 @@
 
 **Epic:** Paint Collection
 **Type:** Feature
-**Status:** In Progress
+**Status:** Completed
 
 ## Summary
 

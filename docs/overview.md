@@ -117,7 +117,7 @@ Epic Template:
 
 **High-Level Scope:**
 
-- [ ] [Owned paint collection](./paint-collection/owned-paint-collection.md)
+- [x] [Owned paint collection](./paint-collection/owned-paint-collection.md)
 
 ---
 
@@ -171,4 +171,4 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 
 | | Name | Type | Status |
 |---|------|------|--------|
-| [ ] | [Owned Paint Collection](./paint-collection/owned-paint-collection.md) | Feature | In Progress |
+| [x] | [Owned Paint Collection](./paint-collection/owned-paint-collection.md) | Feature | Completed |
