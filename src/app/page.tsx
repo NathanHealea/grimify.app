@@ -33,6 +33,7 @@ export default function Home() {
   const { ownedIds, toggleOwned } = useOwnedPaints();
   const [showOwnedRing, setShowOwnedRing] = useState(false);
   const [ownedFilter, setOwnedFilter] = useState(false);
+  const [paintToRemove, setPaintToRemove] = useState<ProcessedPaint | null>(null);
 
   const uniqueColorCount = useMemo(() => new Set(paints.map((p) => p.hex.toLowerCase())).size, []);
 
@@ -455,6 +456,8 @@ export default function Home() {
             ownedIds={ownedIds}
             showOwnedRing={showOwnedRing}
             ownedFilter={ownedFilter}
+            onToggleOwned={toggleOwned}
+            onRequestRemoveOwned={setPaintToRemove}
           />
 
           {/* Stats overlay */}
@@ -479,6 +482,34 @@ export default function Home() {
           <div className='absolute bottom-4 left-4 text-xs text-base-content/40'>{zoom.toFixed(1)}x</div>
         </main>
       </div>
+
+      {/* Remove from collection confirmation dialog */}
+      {paintToRemove && (
+        <dialog className='modal modal-open'>
+          <div className='modal-box'>
+            <h3 className='text-lg font-bold'>Remove from Collection</h3>
+            <p className='py-4'>
+              Remove <strong>{paintToRemove.name}</strong> from your collection?
+            </p>
+            <div className='modal-action'>
+              <button className='btn btn-outline' onClick={() => setPaintToRemove(null)}>
+                Cancel
+              </button>
+              <button
+                className='btn btn-error'
+                onClick={() => {
+                  toggleOwned(paintToRemove.id);
+                  setPaintToRemove(null);
+                }}>
+                Remove
+              </button>
+            </div>
+          </div>
+          <form method='dialog' className='modal-backdrop'>
+            <button onClick={() => setPaintToRemove(null)}>close</button>
+          </form>
+        </dialog>
+      )}
     </div>
   );
 }
