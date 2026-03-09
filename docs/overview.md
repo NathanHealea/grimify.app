@@ -147,6 +147,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [x] | [Paint Database](./paint-information/paint-database.md) | Feature | Completed |
 | [x] | [Detail Panel](./paint-information/detail-panel.md) | Feature | Completed |
 | [ ] | [Grouped Paint Details](./paint-information/grouped-paint-details.md) | Refactor | Todo |
+| [ ] | [Paint Data Migration](./paint-information/paint-data-migration.md) | Enhancement | Todo |
 
 ### Color Wheel Visualization
 
