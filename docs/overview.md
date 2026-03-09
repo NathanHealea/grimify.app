@@ -54,6 +54,7 @@ Epic Template:
 | 5 | Brand Features | Filtering, rings, and legend layer on top of the wheel and sidebar |
 | 6 | Color Analysis | Color schemes and search are advanced features that enhance the base experience |
 | 7 | Paint Collection | Personal collection tracking lets users mark owned paints and filter by ownership |
+| 8 | User Authentication | User registration, login, profiles, and role-based authorization via Supabase |
 
 ---
 
@@ -119,6 +120,20 @@ Epic Template:
 
 - [x] [Owned paint collection](./paint-collection/owned-paint-collection.md)
 
+## Epic 8: User Authentication
+
+**Goal:** Enable user registration, login, profiles, and role-based authorization so users can have persistent accounts and administrators can manage the platform.
+
+**High-Level Scope:**
+
+- [ ] [Supabase Setup](./user-authentication/supabase-setup.md)
+- [ ] [Email Authentication Pages](./user-authentication/email-auth-pages.md)
+- [ ] [User Profiles](./user-authentication/user-profiles.md)
+- [ ] [Navbar Auth UI](./user-authentication/navbar-auth-ui.md)
+- [ ] [Social Login (Google & Discord)](./user-authentication/social-login.md)
+- [ ] [Password Recovery](./user-authentication/password-recovery.md)
+- [ ] [Role-Based Authorization](./user-authentication/role-based-authorization.md)
+
 ---
 
 ## Features (Epics)
@@ -173,3 +188,15 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 |---|------|------|--------|
 | [x] | [Owned Paint Collection](./paint-collection/owned-paint-collection.md) | Feature | Completed |
 | [x] | [Owned Collection UX Improvements](./paint-collection/owned-collection-ux-improvements.md) | Enhancement | Completed |
+
+### User Authentication
+
+| | Name | Type | Status |
+|---|------|------|--------|
+| [ ] | [Supabase Setup](./user-authentication/supabase-setup.md) | Feature | Todo |
+| [ ] | [Email Authentication Pages](./user-authentication/email-auth-pages.md) | Feature | Todo |
+| [ ] | [User Profiles](./user-authentication/user-profiles.md) | Feature | Todo |
+| [ ] | [Navbar Auth UI](./user-authentication/navbar-auth-ui.md) | Feature | Todo |
+| [ ] | [Social Login (Google & Discord)](./user-authentication/social-login.md) | Feature | Todo |
+| [ ] | [Password Recovery](./user-authentication/password-recovery.md) | Feature | Todo |
+| [ ] | [Role-Based Authorization](./user-authentication/role-based-authorization.md) | Feature | Todo |
