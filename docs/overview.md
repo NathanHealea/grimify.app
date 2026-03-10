@@ -189,6 +189,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 |---|------|------|--------|
 | [x] | [Owned Paint Collection](./paint-collection/owned-paint-collection.md) | Feature | Completed |
 | [x] | [Owned Collection UX Improvements](./paint-collection/owned-collection-ux-improvements.md) | Enhancement | Completed |
+| [ ] | [Cloud Paint Collection](./paint-collection/cloud-paint-collection.md) | Feature | Todo |
 
 ### User Authentication
 
