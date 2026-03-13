@@ -1,34 +1,258 @@
 [
-  { "name": "Cyber Yellow", "hex": "#FFE600", "type": "Acrylic" },
-  { "name": "Hellfire Red", "hex": "#C02020", "type": "Acrylic" },
-  { "name": "Red Truth", "hex": "#B01818", "type": "Acrylic" },
-  { "name": "Carnage Red", "hex": "#8B0000", "type": "Acrylic" },
-  { "name": "Sangria Red", "hex": "#6E1A2E", "type": "Acrylic" },
-  { "name": "Cutthroat Red", "hex": "#A02020", "type": "Acrylic" },
-  { "name": "Lollipop Magenta", "hex": "#C8307A", "type": "Acrylic" },
-  { "name": "Ember Orange", "hex": "#E05820", "type": "Acrylic" },
-  { "name": "Faded Orange", "hex": "#D87840", "type": "Acrylic" },
-  { "name": "Marine Blue", "hex": "#1A3A6A", "type": "Acrylic" },
-  { "name": "Summersea Blue", "hex": "#3878A8", "type": "Acrylic" },
-  { "name": "Warcry Green", "hex": "#3A6830", "type": "Acrylic" },
-  { "name": "Hunter Green", "hex": "#2E5028", "type": "Acrylic" },
-  { "name": "Forest Green", "hex": "#1A4020", "type": "Acrylic" },
-  { "name": "Flubber Green", "hex": "#60C830", "type": "Acrylic" },
-  { "name": "Rocket Green", "hex": "#48B038", "type": "Acrylic" },
-  { "name": "Canary Green", "hex": "#A0D840", "type": "Acrylic" },
-  { "name": "Arachnid Green", "hex": "#385830", "type": "Acrylic" },
-  { "name": "Yoda Green", "hex": "#509838", "type": "Acrylic" },
-  { "name": "Overlord Olive", "hex": "#6A6828", "type": "Acrylic" },
-  { "name": "Sun Bleached Bone", "hex": "#D8C898", "type": "Acrylic" },
-  { "name": "Parchment", "hex": "#E8D8B0", "type": "Acrylic" },
-  { "name": "Ancient Sepia", "hex": "#A08050", "type": "Acrylic" },
-  { "name": "Bestial Brown", "hex": "#6B4020", "type": "Acrylic" },
-  { "name": "Quicksand Brown", "hex": "#9A7848", "type": "Acrylic" },
-  { "name": "Redwood Brown", "hex": "#784028", "type": "Acrylic" },
-  { "name": "Ochre Desert", "hex": "#C09840", "type": "Acrylic" },
-  { "name": "Elven Flesh", "hex": "#E8B890", "type": "Acrylic" },
-  { "name": "Dwarven Flesh", "hex": "#C89070", "type": "Acrylic" },
-  { "name": "Liche Purple", "hex": "#582878", "type": "Acrylic" },
-  { "name": "Steel Grey", "hex": "#808888", "type": "Acrylic" },
-  { "name": "Grey Teal", "hex": "#507078", "type": "Acrylic" }
+  {
+    "id": "gsw-1",
+    "name": "Cyber Yellow",
+    "hex": "#FFE600",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-2",
+    "name": "Hellfire Red",
+    "hex": "#C02020",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-3",
+    "name": "Red Truth",
+    "hex": "#B01818",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-4",
+    "name": "Carnage Red",
+    "hex": "#8B0000",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-5",
+    "name": "Sangria Red",
+    "hex": "#6E1A2E",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-6",
+    "name": "Cutthroat Red",
+    "hex": "#A02020",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-7",
+    "name": "Lollipop Magenta",
+    "hex": "#C8307A",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-8",
+    "name": "Ember Orange",
+    "hex": "#E05820",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-9",
+    "name": "Faded Orange",
+    "hex": "#D87840",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-10",
+    "name": "Marine Blue",
+    "hex": "#1A3A6A",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-11",
+    "name": "Summersea Blue",
+    "hex": "#3878A8",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-12",
+    "name": "Warcry Green",
+    "hex": "#3A6830",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-13",
+    "name": "Hunter Green",
+    "hex": "#2E5028",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-14",
+    "name": "Forest Green",
+    "hex": "#1A4020",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-15",
+    "name": "Flubber Green",
+    "hex": "#60C830",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-16",
+    "name": "Rocket Green",
+    "hex": "#48B038",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-17",
+    "name": "Canary Green",
+    "hex": "#A0D840",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-18",
+    "name": "Arachnid Green",
+    "hex": "#385830",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-19",
+    "name": "Yoda Green",
+    "hex": "#509838",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-20",
+    "name": "Overlord Olive",
+    "hex": "#6A6828",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-21",
+    "name": "Sun Bleached Bone",
+    "hex": "#D8C898",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-22",
+    "name": "Parchment",
+    "hex": "#E8D8B0",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-23",
+    "name": "Ancient Sepia",
+    "hex": "#A08050",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-24",
+    "name": "Bestial Brown",
+    "hex": "#6B4020",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-25",
+    "name": "Quicksand Brown",
+    "hex": "#9A7848",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-26",
+    "name": "Redwood Brown",
+    "hex": "#784028",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-27",
+    "name": "Ochre Desert",
+    "hex": "#C09840",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-28",
+    "name": "Elven Flesh",
+    "hex": "#E8B890",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-29",
+    "name": "Dwarven Flesh",
+    "hex": "#C89070",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-30",
+    "name": "Liche Purple",
+    "hex": "#582878",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-31",
+    "name": "Steel Grey",
+    "hex": "#808888",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "gsw-32",
+    "name": "Grey Teal",
+    "hex": "#507078",
+    "type": "Acrylic",
+    "description": "",
+    "comparable": []
+  }
 ]
