@@ -54,6 +54,9 @@ Epic Template:
 | 5 | Brand Features | Filtering, rings, and legend layer on top of the wheel and sidebar |
 | 6 | Color Analysis | Color schemes and search are advanced features that enhance the base experience |
 | 7 | Paint Collection | Personal collection tracking lets users mark owned paints and filter by ownership |
+| 8 | User Authentication | User registration, login, profiles, and role-based authorization via Supabase |
+| 9 | Color Palette | Palette building, projects, tags, and sharing for paint planning |
+| 10 | SEO & Branding | Branding assets, SEO metadata, sitemap, and discoverability |
 
 ---
 
@@ -119,6 +122,42 @@ Epic Template:
 
 - [x] [Owned paint collection](./paint-collection/owned-paint-collection.md)
 
+## Epic 8: User Authentication
+
+**Goal:** Enable user registration, login, profiles, and role-based authorization so users can have persistent accounts and administrators can manage the platform.
+
+**High-Level Scope:**
+
+- [ ] [Supabase Setup](./user-authentication/supabase-setup.md)
+- [ ] [Email Authentication Pages](./user-authentication/email-auth-pages.md)
+- [ ] [User Profiles](./user-authentication/user-profiles.md)
+- [ ] [Navbar Auth UI](./user-authentication/navbar-auth-ui.md)
+- [ ] [Social Login (Google & Discord)](./user-authentication/social-login.md)
+- [ ] [Password Recovery](./user-authentication/password-recovery.md)
+- [ ] [Role-Based Authorization](./user-authentication/role-based-authorization.md)
+
+## Epic 9: Color Palette
+
+**Goal:** Let users build color palettes for projects, track which paints they own vs need to buy, and share palettes and projects with others.
+
+**High-Level Scope:**
+
+- [ ] [Color Palettes](./color-palette/color-palettes.md)
+- [ ] [Projects](./color-palette/projects.md)
+- [ ] [Tags](./color-palette/tags.md)
+- [ ] [Admin Management](./color-palette/admin-management.md)
+- [ ] [Sharing](./color-palette/sharing.md)
+
+## Epic 10: SEO & Branding
+
+**Goal:** Establish visual branding and implement SEO best practices so the site is discoverable and presents well in search results and social media.
+
+**High-Level Scope:**
+
+- [ ] [Branding Assets](./seo-and-branding/branding-assets.md)
+- [ ] [SEO Metadata](./seo-and-branding/seo-metadata.md)
+- [ ] [Sitemap & Robots](./seo-and-branding/sitemap-and-robots.md)
+
 ---
 
 ## Features (Epics)
@@ -132,6 +171,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [x] | [Paint Database](./paint-information/paint-database.md) | Feature | Completed |
 | [x] | [Detail Panel](./paint-information/detail-panel.md) | Feature | Completed |
 | [ ] | [Grouped Paint Details](./paint-information/grouped-paint-details.md) | Refactor | Todo |
+| [ ] | [Paint Data Migration](./paint-information/paint-data-migration.md) | Enhancement | Todo |
 
 ### Color Wheel Visualization
 
@@ -166,6 +206,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [x] | [Color Scheme Modes](./color-analysis/color-scheme-modes.md) | Feature | Completed |
 | [x] | [Search](./color-analysis/search.md) | Feature | Completed |
 | [x] | [Split Complementary Zone Matching](./color-analysis/split-complementary-zone-matching.md) | Bug | Completed |
+| [ ] | [Hue Value Suggestions](./color-analysis/hue-value-suggestions.md) | Feature | Todo |
 
 ### Paint Collection
 
@@ -173,3 +214,34 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 |---|------|------|--------|
 | [x] | [Owned Paint Collection](./paint-collection/owned-paint-collection.md) | Feature | Completed |
 | [x] | [Owned Collection UX Improvements](./paint-collection/owned-collection-ux-improvements.md) | Enhancement | Completed |
+| [ ] | [Cloud Paint Collection](./paint-collection/cloud-paint-collection.md) | Feature | Todo |
+
+### User Authentication
+
+| | Name | Type | Status |
+|---|------|------|--------|
+| [ ] | [Supabase Setup](./user-authentication/supabase-setup.md) | Feature | Todo |
+| [ ] | [Email Authentication Pages](./user-authentication/email-auth-pages.md) | Feature | Todo |
+| [ ] | [User Profiles](./user-authentication/user-profiles.md) | Feature | Todo |
+| [ ] | [Navbar Auth UI](./user-authentication/navbar-auth-ui.md) | Feature | Todo |
+| [ ] | [Social Login (Google & Discord)](./user-authentication/social-login.md) | Feature | Todo |
+| [ ] | [Password Recovery](./user-authentication/password-recovery.md) | Feature | Todo |
+| [ ] | [Role-Based Authorization](./user-authentication/role-based-authorization.md) | Feature | Todo |
+
+### Color Palette
+
+| | Name | Type | Status |
+|---|------|------|--------|
+| [ ] | [Color Palettes](./color-palette/color-palettes.md) | Feature | Todo |
+| [ ] | [Projects](./color-palette/projects.md) | Feature | Todo |
+| [ ] | [Tags](./color-palette/tags.md) | Feature | Todo |
+| [ ] | [Admin Management](./color-palette/admin-management.md) | Feature | Todo |
+| [ ] | [Sharing](./color-palette/sharing.md) | Feature | Todo |
+
+### SEO & Branding
+
+| | Name | Type | Status |
+|---|------|------|--------|
+| [ ] | [Branding Assets](./seo-and-branding/branding-assets.md) | Feature | Todo |
+| [ ] | [SEO Metadata](./seo-and-branding/seo-metadata.md) | Feature | Todo |
+| [ ] | [Sitemap & Robots](./seo-and-branding/sitemap-and-robots.md) | Feature | Todo |

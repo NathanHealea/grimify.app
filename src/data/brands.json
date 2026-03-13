@@ -4,21 +4,21 @@
     "name": "Citadel",
     "icon": "⚔️",
     "color": "#C7A74D",
-    "types": ["Base", "Layer", "Edge", "Contrast"]
+    "types": ["Base", "Layer", "Edge", "Contrast", "Shade", "Air", "Dry", "Spray", "Technical"]
   },
   {
     "id": "army-painter",
     "name": "Army Painter",
     "icon": "🛡️",
     "color": "#D32F2F",
-    "types": ["Warpaints", "Speedpaint"]
+    "types": ["Fanatic", "Fanatic Metallic", "Fanatic Wash", "Speedpaint"]
   },
   {
     "id": "vallejo",
     "name": "Vallejo",
     "icon": "🎯",
     "color": "#1565C0",
-    "types": ["Game Color"]
+    "types": ["Model Color", "Game Color", "Game Color Metallic", "Game Color Ink", "Game Color Wash", "Xpress Color", "Model Wash", "Liquid Metal"]
   },
   {
     "id": "green-stuff-world",
