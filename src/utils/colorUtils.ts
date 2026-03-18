@@ -1,3 +1,5 @@
+import type { PaintGroup } from '@/types/paint'
+
 export interface HSL {
   h: number;
   s: number;
@@ -114,6 +116,25 @@ export interface SchemeWedge {
 }
 
 /** Get narrow indicator wedges for a scheme overlay on the wheel */
+/** Perceived luminance from hex (0–255 scale, standard NTSC weighting) */
+export function hexToLuminance(hex: string): number {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  return 0.299 * r + 0.587 * g + 0.114 * b
+}
+
+/** Comparator for sorting PaintGroups from darkest to lightest */
+export function comparePaintGroups(a: PaintGroup, b: PaintGroup): number {
+  const lumA = hexToLuminance(a.rep.hex)
+  const lumB = hexToLuminance(b.rep.hex)
+  if (lumA !== lumB) return lumA - lumB
+  const hslA = hexToHsl(a.rep.hex)
+  const hslB = hexToHsl(b.rep.hex)
+  if (hslA.h !== hslB.h) return hslA.h - hslB.h
+  return hslA.s - hslB.s
+}
+
 export function getSchemeWedges(hue: number, scheme: string): SchemeWedge[] {
   const wedges: SchemeWedge[] = [{ center: hue, span: 22, color: '#fff' }];
 
