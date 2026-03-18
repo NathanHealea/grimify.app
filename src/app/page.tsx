@@ -8,6 +8,7 @@ import BrandLegend from '@/components/BrandLegend';
 import CollectionPanel from '@/components/CollectionPanel';
 import ColorWheel from '@/components/ColorWheel';
 import DetailPanel from '@/components/DetailPanel';
+import GridView from '@/components/GridView';
 import Sidebar, { useIsDesktop } from '@/components/Sidebar';
 import { brands, paints } from '@/data/index';
 import { useOwnedPaints } from '@/hooks/useOwnedPaints';
@@ -34,6 +35,7 @@ export default function Home() {
   const [showOwnedRing, setShowOwnedRing] = useState(false);
   const [ownedFilter, setOwnedFilter] = useState(false);
   const [paintToRemove, setPaintToRemove] = useState<ProcessedPaint | null>(null);
+  const [viewMode, setViewMode] = useState<'wheel' | 'grid'>('wheel');
 
   const uniqueColorCount = useMemo(() => new Set(paints.map((p) => p.hex.toLowerCase())).size, []);
 
@@ -437,28 +439,63 @@ export default function Home() {
         </Sidebar>
 
         <main className='relative flex-1 overflow-hidden'>
-          <ColorWheel
-            paintGroups={paintGroups}
-            brandFilter={brandFilter}
-            searchMatchIds={searchMatchIds}
-            zoom={zoom}
-            pan={pan}
-            onZoomChange={setZoom}
-            onPanChange={setPan}
-            selectedGroup={selectedGroup}
-            hoveredGroup={hoveredGroup}
-            onGroupClick={handleGroupClick}
-            onHoverGroup={setHoveredGroup}
-            showBrandRing={showBrandRing}
-            colorScheme={colorScheme}
-            selectedPaint={selectedPaint}
-            isSchemeMatching={isSchemeMatching}
-            ownedIds={ownedIds}
-            showOwnedRing={showOwnedRing}
-            ownedFilter={ownedFilter}
-            onToggleOwned={toggleOwned}
-            onRequestRemoveOwned={setPaintToRemove}
-          />
+          {/* View mode toggle */}
+          <div className='absolute top-4 right-4 z-10'>
+            <div className='join'>
+              <button
+                className={`join-item btn btn-sm ${viewMode === 'wheel' ? 'btn-active' : ''}`}
+                onClick={() => setViewMode('wheel')}>
+                Wheel
+              </button>
+              <button
+                className={`join-item btn btn-sm ${viewMode === 'grid' ? 'btn-active' : ''}`}
+                onClick={() => setViewMode('grid')}>
+                Grid
+              </button>
+            </div>
+          </div>
+
+          {viewMode === 'wheel' ? (
+            <ColorWheel
+              paintGroups={paintGroups}
+              brandFilter={brandFilter}
+              searchMatchIds={searchMatchIds}
+              zoom={zoom}
+              pan={pan}
+              onZoomChange={setZoom}
+              onPanChange={setPan}
+              selectedGroup={selectedGroup}
+              hoveredGroup={hoveredGroup}
+              onGroupClick={handleGroupClick}
+              onHoverGroup={setHoveredGroup}
+              showBrandRing={showBrandRing}
+              colorScheme={colorScheme}
+              selectedPaint={selectedPaint}
+              isSchemeMatching={isSchemeMatching}
+              ownedIds={ownedIds}
+              showOwnedRing={showOwnedRing}
+              ownedFilter={ownedFilter}
+              onToggleOwned={toggleOwned}
+              onRequestRemoveOwned={setPaintToRemove}
+            />
+          ) : (
+            <GridView
+              paintGroups={paintGroups}
+              selectedGroup={selectedGroup}
+              hoveredGroup={hoveredGroup}
+              onGroupClick={handleGroupClick}
+              onHoverGroup={setHoveredGroup}
+              brandFilter={brandFilter}
+              searchMatchIds={searchMatchIds}
+              colorScheme={colorScheme}
+              isSchemeMatching={isSchemeMatching}
+              selectedPaint={selectedPaint}
+              showBrandRing={showBrandRing}
+              showOwnedRing={showOwnedRing}
+              ownedIds={ownedIds}
+              ownedFilter={ownedFilter}
+            />
+          )}
 
           {/* Stats overlay */}
           <div className='absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2'>
@@ -471,15 +508,19 @@ export default function Home() {
             <span className='text-xs text-base-content/40'>{brands.length} brands</span>
           </div>
 
-          {/* Reset button */}
-          <button
-            onClick={handleReset}
-            className='btn btn-ghost btn-sm absolute right-4 bottom-4 bg-base-300/50 backdrop-blur-sm'>
-            Reset View
-          </button>
+          {/* Reset button (wheel mode only) */}
+          {viewMode === 'wheel' && (
+            <button
+              onClick={handleReset}
+              className='btn btn-ghost btn-sm absolute right-4 bottom-4 bg-base-300/50 backdrop-blur-sm'>
+              Reset View
+            </button>
+          )}
 
-          {/* Zoom indicator */}
-          <div className='absolute bottom-4 left-4 text-xs text-base-content/40'>{zoom.toFixed(1)}x</div>
+          {/* Zoom indicator (wheel mode only) */}
+          {viewMode === 'wheel' && (
+            <div className='absolute bottom-4 left-4 text-xs text-base-content/40'>{zoom.toFixed(1)}x</div>
+          )}
         </main>
       </div>
 
