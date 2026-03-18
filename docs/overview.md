@@ -77,6 +77,7 @@ Epic Template:
 - [x] [Interactive color wheel (zoom, pan, reset)](./color-wheel-visualization/interactive-color-wheel.md)
 - [x] [Paint selection and hover](./color-wheel-visualization/paint-selection-and-hover.md)
 - [x] [Overlapping paint indicator](./color-wheel-visualization/overlapping-paint-indicator.md)
+- [ ] [Grid View](./color-wheel-visualization/grid-view.md)
 
 ## Epic 3: UI & Layout
 
@@ -183,6 +184,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [x] | [Overlapping Paint Indicator](./color-wheel-visualization/overlapping-paint-indicator.md) | Bug     | Completed |
 | [x] | [Filter Visibility Priority](./color-wheel-visualization/filter-visibility-priority.md)   | Bug     | Completed |
 | [ ] | [Auto-Center Selected Color](./color-wheel-visualization/auto-center-selected-color.md)   | Feature | Todo      |
+| [ ] | [Grid View](./color-wheel-visualization/grid-view.md)                                     | Feature | Todo      |
 
 ### UI & Layout
 
