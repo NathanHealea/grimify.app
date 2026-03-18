@@ -192,6 +192,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [x] | [Header Stats](./ui-and-layout/header-stats.md)                                       | Feature  | Completed |
 | [x] | [Refactor DaisyUI Button Styling](./ui-and-layout/refactor-daisyui-button-styling.md) | Refactor | Completed |
 | [ ] | [Clear Filters Button](./ui-and-layout/clear-filters-button.md)                       | Feature  | Todo      |
+| [ ] | [Iconographic Sidebar Navigation](./ui-and-layout/iconographic-sidebar.md)            | Refactor | Todo      |
 
 ### Brand Features
 
