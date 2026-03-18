@@ -94,6 +94,8 @@ export function hueDistance(h1: number, h2: number): number {
 export function isMatchingScheme(paintHue: number, selectedHue: number, scheme: string): boolean {
   if (scheme === 'none') return true;
   const d = hueDistance(selectedHue, paintHue);
+  // Always include paints in the selected color's own zone
+  if (d < 22) return true;
   if (scheme === 'complementary') return d > 155;
   if (scheme === 'split') {
     const splitA = (selectedHue + 150) % 360
