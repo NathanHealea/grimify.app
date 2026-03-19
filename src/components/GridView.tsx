@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 import { brands } from '@/data/index';
 import type { ColorScheme, PaintGroup, ProcessedPaint } from '@/types/paint';
 import { comparePaintGroups } from '@/utils/colorUtils';
+import { isGroupDimmed, isGroupSchemeDimmed, type GroupFilterParams } from '@/utils/filterUtils';
 
 interface GridViewProps {
   paintGroups: PaintGroup[];
@@ -45,12 +46,17 @@ export default function GridView({
       className='grid h-full gap-[2px] overflow-y-auto p-2'
       style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(3rem, 1fr))' }}>
       {sorted.map((group) => {
-        const matchesBrand = brandFilter.size === 0 || group.paints.some((p) => brandFilter.has(p.brand));
-        const matchesSearch = searchMatchIds.size === 0 || group.paints.some((p) => searchMatchIds.has(p.id));
-        const matchesOwned = !ownedFilter || group.paints.some((p) => ownedIds.has(p.id));
-        const hasActiveScheme = colorScheme !== 'none' && selectedPaint !== null;
-        const schemeDimmed = !group.paints.some(isSchemeMatching);
-        const dimmed = !matchesBrand || !matchesOwned || (hasActiveScheme ? schemeDimmed : !matchesSearch);
+        const filterParams: GroupFilterParams = {
+          brandFilter,
+          searchMatchIds,
+          isSchemeActive: colorScheme !== 'none' && selectedPaint !== null,
+          isSchemeMatching,
+          ownedFilter,
+          ownedIds,
+        };
+        const dimmed = isGroupDimmed(group, filterParams);
+        const schemeDimmed = isGroupSchemeDimmed(group, isSchemeMatching);
+        const hasActiveScheme = filterParams.isSchemeActive;
         const isSelected = selectedGroup?.key === group.key;
         const isMulti = group.paints.length > 1;
         const isOwned = group.paints.some((p) => ownedIds.has(p.id));

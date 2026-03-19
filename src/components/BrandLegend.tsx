@@ -1,8 +1,8 @@
-import type { Brand } from '@/types/paint'
+import type { Brand } from '@/types/paint';
 
 interface BrandLegendProps {
-  brands: Brand[]
-  paintCounts: Map<string, number>
+  brands: Brand[];
+  paintCounts: Map<string, number>;
 }
 
 export default function BrandLegend({ brands, paintCounts }: BrandLegendProps) {
@@ -17,5 +17,5 @@ export default function BrandLegend({ brands, paintCounts }: BrandLegendProps) {
         </div>
       ))}
     </div>
-  )
+  );
 }

@@ -77,7 +77,7 @@ Epic Template:
 - [x] [Interactive color wheel (zoom, pan, reset)](./color-wheel-visualization/interactive-color-wheel.md)
 - [x] [Paint selection and hover](./color-wheel-visualization/paint-selection-and-hover.md)
 - [x] [Overlapping paint indicator](./color-wheel-visualization/overlapping-paint-indicator.md)
-- [ ] [Grid View](./color-wheel-visualization/grid-view.md)
+- [x] [Grid View](./color-wheel-visualization/grid-view.md)
 - [ ] [List View](./color-wheel-visualization/list-view.md)
 
 ## Epic 3: UI & Layout
@@ -185,7 +185,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [x] | [Overlapping Paint Indicator](./color-wheel-visualization/overlapping-paint-indicator.md) | Bug     | Completed |
 | [x] | [Filter Visibility Priority](./color-wheel-visualization/filter-visibility-priority.md)   | Bug     | Completed |
 | [ ] | [Auto-Center Selected Color](./color-wheel-visualization/auto-center-selected-color.md)   | Feature | Todo      |
-| [ ] | [Grid View](./color-wheel-visualization/grid-view.md)                                     | Feature | Todo      |
+| [x] | [Grid View](./color-wheel-visualization/grid-view.md)                                     | Feature | Completed |
 | [ ] | [List View](./color-wheel-visualization/list-view.md)                                     | Feature | Todo      |
 
 ### UI & Layout
@@ -199,6 +199,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [ ] | [Iconographic Sidebar Navigation](./ui-and-layout/iconographic-sidebar.md)            | Refactor | Todo      |
 | [ ] | [Browser History Navigation](./ui-and-layout/browser-history-navigation.md)           | Feature  | Todo      |
 | [ ] | [State Management Refactor](./ui-and-layout/state-management-refactor.md)             | Refactor | Todo      |
+| [x] | [Extract Filter Modules](./ui-and-layout/extract-filter-modules.md)                   | Refactor | Completed |
 
 ### Brand Features
 
