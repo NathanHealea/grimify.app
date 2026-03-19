@@ -13,6 +13,7 @@ import {
   SEGMENT_BOUNDARIES,
   WHEEL_RADIUS,
 } from '@/utils/colorUtils';
+import { isGroupDimmed, isGroupSchemeDimmed, type GroupFilterParams } from '@/utils/filterUtils';
 
 interface ColorWheelProps {
   paintGroups: PaintGroup[];
@@ -575,12 +576,18 @@ export default function ColorWheel({
       {/* Paint dots (one per group) */}
       <g>
         {paintGroups.map((group) => {
-          const matchesBrand = brandFilter.size === 0 || group.paints.some((p) => brandFilter.has(p.brand));
+          const filterParams: GroupFilterParams = {
+            brandFilter,
+            searchMatchIds,
+            isSchemeActive: colorScheme !== 'none' && selectedPaint !== null,
+            isSchemeMatching,
+            ownedFilter,
+            ownedIds,
+          };
+          const dimmed = isGroupDimmed(group, filterParams);
+          const schemeDimmed = isGroupSchemeDimmed(group, isSchemeMatching);
+          const hasActiveScheme = filterParams.isSchemeActive;
           const matchesSearch = searchMatchIds.size === 0 || group.paints.some((p) => searchMatchIds.has(p.id));
-          const matchesOwned = !ownedFilter || group.paints.some((p) => ownedIds.has(p.id));
-          const hasActiveScheme = colorScheme !== 'none' && selectedPaint !== null;
-          const schemeDimmed = !group.paints.some(isSchemeMatching);
-          const dimmed = !matchesBrand || !matchesOwned || (hasActiveScheme ? schemeDimmed : !matchesSearch);
           const isOwned = group.paints.some((p) => ownedIds.has(p.id));
           return (
             <PaintDot
