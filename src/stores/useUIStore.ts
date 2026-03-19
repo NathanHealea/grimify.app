@@ -28,7 +28,7 @@ function getEffectiveTab(sidebarState: SidebarState, isDesktop: boolean): Sideba
   return sidebarState
 }
 
-export const useUIStore = create<UIState>()((set, get) => ({
+export const useUIStore = create<UIState>()((set) => ({
   sidebarState: null,
   lastTab: 'filters',
   showBrandRing: false,

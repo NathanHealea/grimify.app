@@ -1,7 +1,5 @@
 'use client'
 
-import type { ColorScheme } from '@/types/paint'
-
 import { useFilterStore } from '@/stores/useFilterStore'
 import { usePaintStore } from '@/stores/usePaintStore'
 
