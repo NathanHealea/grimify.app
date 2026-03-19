@@ -35,3 +35,9 @@ export interface PaintGroup {
 
 /** Color scheme modes for highlighting matching paints */
 export type ColorScheme = 'none' | 'complementary' | 'split' | 'analogous';
+
+/** View mode for the main visualization */
+export type ViewMode = 'wheel' | 'grid';
+
+/** Sidebar tab identifiers */
+export type SidebarTab = 'filters' | 'collection';
