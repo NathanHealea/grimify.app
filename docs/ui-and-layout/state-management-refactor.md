@@ -2,7 +2,7 @@
 
 **Epic:** UI & Layout
 **Type:** Refactor
-**Status:** Todo
+**Status:** Done
 
 ## Summary
 
@@ -10,16 +10,16 @@ Refactor the application's state management from centralized `useState` in `page
 
 ## Acceptance Criteria
 
-- [ ] Zustand is installed as a dependency
-- [ ] Paint store manages selection state (selectedGroup, selectedPaint, hoveredGroup) and view mode
-- [ ] Filter store manages all filter state (brandFilter, searchQuery, colorScheme, ownedFilter)
-- [ ] UI store manages sidebar state (sidebarState, lastTab) and display toggles (showBrandRing, showOwnedRing)
-- [ ] `page.tsx` no longer holds filter, selection, or UI state — only composes components
-- [ ] All components consume state directly from stores instead of receiving props
-- [ ] Derived data (processedPaints, paintGroups, searchResults, schemeMatches, filteredCounts) is computed via Zustand selectors or co-located `useMemo` hooks
-- [ ] `useOwnedPaints` hook continues to manage localStorage persistence (migrated to a Zustand store with persist middleware)
-- [ ] All existing functionality works identically — no user-facing behavior changes
-- [ ] Build and lint pass with no new warnings
+- [x] Zustand is installed as a dependency
+- [x] Paint store manages selection state (selectedGroup, selectedPaint, hoveredGroup) and view mode
+- [x] Filter store manages all filter state (brandFilter, searchQuery, colorScheme, ownedFilter)
+- [x] UI store manages sidebar state (sidebarState, lastTab) and display toggles (showBrandRing, showOwnedRing)
+- [x] `page.tsx` no longer holds filter, selection, or UI state — only composes components
+- [x] All components consume state directly from stores instead of receiving props
+- [x] Derived data (processedPaints, paintGroups, searchResults, schemeMatches, filteredCounts) is computed via Zustand selectors or co-located `useMemo` hooks
+- [x] `useOwnedPaints` hook continues to manage localStorage persistence (migrated to a Zustand store with persist middleware)
+- [x] All existing functionality works identically — no user-facing behavior changes
+- [x] Build and lint pass with no new warnings
 
 ## Design Notes
 
