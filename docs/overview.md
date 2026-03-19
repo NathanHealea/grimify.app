@@ -77,6 +77,8 @@ Epic Template:
 - [x] [Interactive color wheel (zoom, pan, reset)](./color-wheel-visualization/interactive-color-wheel.md)
 - [x] [Paint selection and hover](./color-wheel-visualization/paint-selection-and-hover.md)
 - [x] [Overlapping paint indicator](./color-wheel-visualization/overlapping-paint-indicator.md)
+- [ ] [Grid View](./color-wheel-visualization/grid-view.md)
+- [ ] [List View](./color-wheel-visualization/list-view.md)
 
 ## Epic 3: UI & Layout
 
@@ -183,6 +185,8 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [x] | [Overlapping Paint Indicator](./color-wheel-visualization/overlapping-paint-indicator.md) | Bug     | Completed |
 | [x] | [Filter Visibility Priority](./color-wheel-visualization/filter-visibility-priority.md)   | Bug     | Completed |
 | [ ] | [Auto-Center Selected Color](./color-wheel-visualization/auto-center-selected-color.md)   | Feature | Todo      |
+| [ ] | [Grid View](./color-wheel-visualization/grid-view.md)                                     | Feature | Todo      |
+| [ ] | [List View](./color-wheel-visualization/list-view.md)                                     | Feature | Todo      |
 
 ### UI & Layout
 
@@ -191,6 +195,9 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [x] | [Sidebar Layout](./ui-and-layout/sidebar-layout.md)                                   | Feature  | Completed |
 | [x] | [Header Stats](./ui-and-layout/header-stats.md)                                       | Feature  | Completed |
 | [x] | [Refactor DaisyUI Button Styling](./ui-and-layout/refactor-daisyui-button-styling.md) | Refactor | Completed |
+| [ ] | [Clear Filters Button](./ui-and-layout/clear-filters-button.md)                       | Feature  | Todo      |
+| [ ] | [Iconographic Sidebar Navigation](./ui-and-layout/iconographic-sidebar.md)            | Refactor | Todo      |
+| [ ] | [Browser History Navigation](./ui-and-layout/browser-history-navigation.md)           | Feature  | Todo      |
 
 ### Brand Features
 
@@ -209,6 +216,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [x] | [Split Complementary Zone Matching](./color-analysis/split-complementary-zone-matching.md) | Bug     | Completed |
 | [ ] | [Hue Value Suggestions](./color-analysis/hue-value-suggestions.md)                         | Feature | Todo      |
 | [ ] | [Scheme Selected Zone Matching](./color-analysis/scheme-selected-zone-matching.md)          | Bug     | Todo      |
+| [ ] | [Scheme Brand Filter Interaction](./color-analysis/scheme-brand-filter-interaction.md)      | Bug     | Todo      |
 
 ### Paint Collection
 
