@@ -2,7 +2,7 @@
 
 **Epic:** UI & Layout
 **Type:** Refactor
-**Status:** Done
+**Status:** Completed
 
 ## Summary
 
