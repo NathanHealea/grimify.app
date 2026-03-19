@@ -198,6 +198,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [ ] | [Clear Filters Button](./ui-and-layout/clear-filters-button.md)                       | Feature  | Todo      |
 | [ ] | [Iconographic Sidebar Navigation](./ui-and-layout/iconographic-sidebar.md)            | Refactor | Todo      |
 | [ ] | [Browser History Navigation](./ui-and-layout/browser-history-navigation.md)           | Feature  | Todo      |
+| [ ] | [State Management Refactor](./ui-and-layout/state-management-refactor.md)             | Refactor | Todo      |
 
 ### Brand Features
 
