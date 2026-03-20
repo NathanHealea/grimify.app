@@ -37,7 +37,7 @@ export interface PaintGroup {
 export type ColorScheme = 'none' | 'complementary' | 'split' | 'analogous';
 
 /** View mode for the main visualization */
-export type ViewMode = 'wheel' | 'grid';
+export type ViewMode = 'wheel' | 'grid' | 'list';
 
 /** Sidebar tab identifiers */
 export type SidebarTab = 'filters' | 'collection';
