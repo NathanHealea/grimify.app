@@ -2,7 +2,7 @@
 
 **Epic:** Color Wheel Visualization
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 
 ## Summary
 
@@ -10,21 +10,21 @@ An alternative list-based visualization that displays all paints as rows in a sc
 
 ## Acceptance Criteria
 
-- [ ] List view displays all paints as rows in a scrollable list
-- [ ] Each row shows: color swatch, paint name, brand name/icon, hex value, and paint type
-- [ ] Paints are sorted from darkest to lightest using perceived luminance
-- [ ] Paints with identical hex values are sub-sorted by HSL (hue, then saturation) for deterministic ordering
-- [ ] View mode toggle supports all views (Wheel, Grid, List) — not just two
-- [ ] Toggle buttons are visible and accessible on both desktop and mobile
-- [ ] Clicking a row in the list selects the paint (opens DetailPanel, same as wheel)
-- [ ] Brand filtering, search highlighting, color scheme matching, and owned indicators apply in list view
-- [ ] Filtered/dimmed paints appear with reduced opacity (consistent with wheel behavior)
-- [ ] Multi-paint groups (same hex) show an expandable row with sub-rows for each paint
-- [ ] Selected paint row has a visible highlight
-- [ ] Owned paints show an indicator (e.g., checkmark or badge) when owned ring is enabled
-- [ ] List view is responsive — adapts layout for narrow viewports
-- [ ] View mode persists during the session (not reset by filter changes)
-- [ ] List scrolls smoothly with 190+ entries (no virtualization needed at current scale)
+- [x] List view displays all paints as rows in a scrollable list
+- [x] Each row shows: color swatch, paint name, brand name/icon, hex value, and paint type
+- [x] Paints are sorted from darkest to lightest using perceived luminance
+- [x] Paints with identical hex values are sub-sorted by HSL (hue, then saturation) for deterministic ordering
+- [x] View mode toggle supports all views (Wheel, Grid, List) — not just two
+- [x] Toggle buttons are visible and accessible on both desktop and mobile
+- [x] Clicking a row in the list selects the paint (opens DetailPanel, same as wheel)
+- [x] Brand filtering, search highlighting, color scheme matching, and owned indicators apply in list view
+- [x] Filtered/dimmed paints appear with reduced opacity (consistent with wheel behavior)
+- [x] Multi-paint groups (same hex) show an expandable row with sub-rows for each paint
+- [x] Selected paint row has a visible highlight
+- [x] Owned paints show an indicator (e.g., checkmark or badge) when owned ring is enabled
+- [x] List view is responsive — adapts layout for narrow viewports
+- [x] View mode persists during the session (not reset by filter changes)
+- [x] List scrolls smoothly with 190+ entries (no virtualization needed at current scale)
 
 ## Design Notes
 
