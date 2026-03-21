@@ -2,7 +2,7 @@
 
 **Epic:** Color Wheel Visualization
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 
 ## Summary
 
