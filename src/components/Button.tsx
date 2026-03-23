@@ -1,17 +1,10 @@
 import clsx from 'clsx';
 import type { ComponentProps } from 'react';
 
-const BUTTON_VARIANTS = ['default', 'outline', 'ghost'] as const;
-type ButtonVariant = (typeof BUTTON_VARIANTS)[number];
-
-const BUTTON_COLORS = ['primary', 'secondary', 'accent', 'info', 'success', 'warning', 'error', 'neutral'] as const;
-type ButtonColor = (typeof BUTTON_COLORS)[number];
-
-const BUTTON_SIZES = ['xs', 'sm', 'md', 'lg'] as const;
-type ButtonSize = (typeof BUTTON_SIZES)[number];
-
-const BUTTON_SHAPES = ['default', 'circle'] as const;
-type ButtonShape = (typeof BUTTON_SHAPES)[number];
+export type ButtonVariant = 'default' | 'outline' | 'ghost';
+export type ButtonColor = 'default' | 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | 'neutral' | 'citadel'| 'army-painter' | 'vallejo' | 'green-stuff-world' | 'complementary' | 'split' | 'analogous' | (string & {});
+export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
+export type ButtonShape = 'default' | 'circle';
 
 interface ButtonProps extends ComponentProps<'button'> {
   variant?: ButtonVariant;
@@ -26,9 +19,9 @@ interface ButtonProps extends ComponentProps<'button'> {
 
 export default function Button({
   variant = 'default',
-  color,
-  size = 'sm',
-  shape,
+  color = 'default',
+  size = 'md',
+  shape = 'default',
   block,
   customColor,
   customContentColor = '#fff',
@@ -38,11 +31,11 @@ export default function Button({
   children,
   ...rest
 }: ButtonProps) {
-  const btnBase = 'btn btn-outline';
-  const btnVariant = variant in BUTTON_VARIANTS ? `btn-${variant}` : '';
-  const btnColor = color && color in BUTTON_COLORS ? `btn-${color}` : '';
-  const btnSize = size in BUTTON_SIZES ? `btn-${size}` : '';
-  const btnShape = shape === 'circle' ? 'btn-circle' : '';
+  const btnBase = 'btn';
+  const btnVariant = variant !== 'default' ? `btn-${variant}` : '';
+  const btnColor = color !== 'default' ? `btn-${color}` : '';
+  const btnSize = `btn-${size}`;
+  const btnShape = shape !== 'default' ? `btn-${shape}` : '';
   const btnActive = active ? 'btn-active' : '';
   const btnBlock = block ? 'btn-block' : '';
 
