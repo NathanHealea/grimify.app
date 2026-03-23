@@ -1,71 +1,70 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react';
 
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
-import { brands } from '@/data/index'
-import { useCollectionStore } from '@/stores/useCollectionStore'
-import { useFilterStore } from '@/stores/useFilterStore'
-import { usePaintStore } from '@/stores/usePaintStore'
-import { useUIStore } from '@/stores/useUIStore'
-import type { ProcessedPaint } from '@/types/paint'
-
+import { brands } from '@/data/index';
+import { useCollectionStore } from '@/stores/useCollectionStore';
+import { useFilterStore } from '@/stores/useFilterStore';
+import { usePaintStore } from '@/stores/usePaintStore';
+import { useUIStore } from '@/stores/useUIStore';
+import type { ProcessedPaint } from '@/types/paint';
+import Button from './Button';
 interface CollectionPanelProps {
-  processedPaints: ProcessedPaint[]
-  onSelectPaint: (paint: ProcessedPaint) => void
+  processedPaints: ProcessedPaint[];
+  onSelectPaint: (paint: ProcessedPaint) => void;
 }
 
 export default function CollectionPanel({ processedPaints, onSelectPaint }: CollectionPanelProps) {
-  const ownedIds = useCollectionStore((s) => s.ownedIds)
-  const toggleOwned = useCollectionStore((s) => s.toggleOwned)
-  const showOwnedRing = useUIStore((s) => s.showOwnedRing)
-  const toggleOwnedRing = useUIStore((s) => s.toggleOwnedRing)
-  const ownedFilter = useFilterStore((s) => s.ownedFilter)
-  const toggleOwnedFilterAction = useFilterStore((s) => s.toggleOwnedFilter)
+  const ownedIds = useCollectionStore((s) => s.ownedIds);
+  const toggleOwned = useCollectionStore((s) => s.toggleOwned);
+  const showOwnedRing = useUIStore((s) => s.showOwnedRing);
+  const toggleOwnedRing = useUIStore((s) => s.toggleOwnedRing);
+  const ownedFilter = useFilterStore((s) => s.ownedFilter);
+  const toggleOwnedFilterAction = useFilterStore((s) => s.toggleOwnedFilter);
 
   const toggleOwnedFilter = () => {
-    toggleOwnedFilterAction()
-    usePaintStore.getState().clearSelection()
-  }
+    toggleOwnedFilterAction();
+    usePaintStore.getState().clearSelection();
+  };
 
-  const [collectionSearch, setCollectionSearch] = useState('')
-  const [paintToRemove, setPaintToRemove] = useState<ProcessedPaint | null>(null)
+  const [collectionSearch, setCollectionSearch] = useState('');
+  const [paintToRemove, setPaintToRemove] = useState<ProcessedPaint | null>(null);
 
-  const ownedPaints = useMemo(() => processedPaints.filter((p) => ownedIds.has(p.id)), [processedPaints, ownedIds])
+  const ownedPaints = useMemo(
+    () => processedPaints.filter((p) => (ownedIds.size > 0 ? ownedIds.has(p.id) : false)),
+    [processedPaints, ownedIds],
+  );
 
   const filteredOwnedPaints = useMemo(() => {
-    const q = collectionSearch.trim().toLowerCase()
-    if (!q) return ownedPaints
+    const q = collectionSearch.trim().toLowerCase();
+    if (!q) return ownedPaints;
     return ownedPaints.filter((p) => {
-      const brandName = brands.find((b) => b.id === p.brand)?.name ?? ''
-      return p.name.toLowerCase().includes(q) || p.hex.toLowerCase().includes(q) || brandName.toLowerCase().includes(q)
-    })
-  }, [ownedPaints, collectionSearch])
+      const brandName = brands.find((b) => b.id === p.brand)?.name ?? '';
+      return p.name.toLowerCase().includes(q) || p.hex.toLowerCase().includes(q) || brandName.toLowerCase().includes(q);
+    });
+  }, [ownedPaints, collectionSearch]);
 
   return (
     <>
       {/* Collection controls */}
       <section>
-        <div className='flex flex-col gap-1'>
-          <button
-            className={`btn btn-sm w-full ${showOwnedRing ? '' : 'btn-outline'}`}
-            style={
-              showOwnedRing
-                ? { backgroundColor: '#10b981', borderColor: '#10b981', color: '#fff' }
-                : { borderColor: '#10b981', color: '#10b981' }
-            }
+        <div className='flex flex-col gap-2'>
+          <Button
+            variant='outline'
+            color='primary'
+            className={'w-full'}
+            active={showOwnedRing}
             onClick={toggleOwnedRing}>
             Owned Ring
-          </button>
-          <button
-            className={`btn btn-sm w-full justify-start ${ownedFilter ? '' : 'btn-outline'}`}
-            style={
-              ownedFilter
-                ? { backgroundColor: '#10b981', borderColor: '#10b981', color: '#fff' }
-                : { borderColor: '#10b981', color: '#10b981' }
-            }
+          </Button>
+          <Button
+            variant='outline'
+            color='secondary'
+            className={'w-full'}
+            active={ownedFilter}
             onClick={toggleOwnedFilter}>
             Owned Only ({ownedIds.size})
-          </button>
+          </Button>
         </div>
       </section>
 
@@ -86,12 +85,13 @@ export default function CollectionPanel({ processedPaints, onSelectPaint }: Coll
             onChange={(e) => setCollectionSearch(e.target.value)}
           />
           {collectionSearch && (
-            <button
-              className='btn btn-circle btn-ghost btn-xs'
+            <Button
+              variant='ghost'
+              size='xs'
               onClick={() => setCollectionSearch('')}
               aria-label='Clear collection search'>
               <XMarkIcon className='size-3' />
-            </button>
+            </Button>
           )}
         </label>
 
@@ -105,7 +105,7 @@ export default function CollectionPanel({ processedPaints, onSelectPaint }: Coll
         ) : (
           <div className='flex flex-col gap-0.5 overflow-y-auto' style={{ maxHeight: 'calc(100vh - 280px)' }}>
             {filteredOwnedPaints.map((paint) => {
-              const brand = brands.find((b) => b.id === paint.brand)
+              const brand = brands.find((b) => b.id === paint.brand);
               return (
                 <div key={paint.id} className='flex items-center gap-1'>
                   <button
@@ -122,14 +122,16 @@ export default function CollectionPanel({ processedPaints, onSelectPaint }: Coll
                       </p>
                     </div>
                   </button>
-                  <button
-                    className='btn btn-ghost btn-xs text-error'
+                  <Button
+                    variant='ghost'
+                    size='xs'
+                    color='error'
                     onClick={() => setPaintToRemove(paint)}
                     aria-label={`Remove ${paint.name} from collection`}>
                     <XMarkIcon className='size-3' />
-                  </button>
+                  </Button>
                 </div>
-              )
+              );
             })}
           </div>
         )}
@@ -144,24 +146,24 @@ export default function CollectionPanel({ processedPaints, onSelectPaint }: Coll
               Remove <strong>{paintToRemove.name}</strong> from your collection?
             </p>
             <div className='modal-action'>
-              <button className='btn btn-outline' onClick={() => setPaintToRemove(null)}>
+              <Button variant='outline' onClick={() => setPaintToRemove(null)}>
                 Cancel
-              </button>
-              <button
-                className='btn btn-error'
+              </Button>
+              <Button
+                color='error'
                 onClick={() => {
-                  toggleOwned(paintToRemove.id)
-                  setPaintToRemove(null)
+                  toggleOwned(paintToRemove.id);
+                  setPaintToRemove(null);
                 }}>
                 Remove
-              </button>
+              </Button>
             </div>
           </div>
           <form method='dialog' className='modal-backdrop'>
-            <button onClick={() => setPaintToRemove(null)}>close</button>
+            <Button onClick={() => setPaintToRemove(null)}>close</Button>
           </form>
         </dialog>
       )}
     </>
-  )
+  );
 }

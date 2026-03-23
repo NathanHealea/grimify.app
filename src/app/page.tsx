@@ -1,28 +1,29 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo } from 'react';
 
-import { Bars3Icon } from '@heroicons/react/24/outline'
+import { Bars3Icon } from '@heroicons/react/24/outline';
 
-import BrandFilterPanel from '@/components/BrandFilterPanel'
-import BrandLegend from '@/components/BrandLegend'
-import BrandRingToggle from '@/components/BrandRingToggle'
-import CollectionPanel from '@/components/CollectionPanel'
-import ColorSchemePanel from '@/components/ColorSchemePanel'
-import ColorWheel from '@/components/ColorWheel'
-import DetailPanel from '@/components/DetailPanel'
-import GridView from '@/components/GridView'
-import ListView from '@/components/ListView'
-import SearchBar from '@/components/SearchBar'
-import Sidebar, { useIsDesktop } from '@/components/Sidebar'
-import StatsOverlay from '@/components/StatsOverlay'
-import { paints } from '@/data/index'
-import { useBrandPaintCounts, usePaintGroups, useProcessedPaints } from '@/hooks/useDerivedPaints'
-import { useFilteredCounts, useSchemeMatching, useSearchResults } from '@/hooks/useFilteredPaints'
-import { useCollectionStore } from '@/stores/useCollectionStore'
-import { selectIsSearching, useFilterStore } from '@/stores/useFilterStore'
-import { usePaintStore } from '@/stores/usePaintStore'
-import { getEffectiveTabFromState, useUIStore } from '@/stores/useUIStore'
+import BrandFilterPanel from '@/components/BrandFilterPanel';
+import BrandLegend from '@/components/BrandLegend';
+import BrandRingToggle from '@/components/BrandRingToggle';
+import CollectionPanel from '@/components/CollectionPanel';
+import ColorSchemePanel from '@/components/ColorSchemePanel';
+import ColorWheel from '@/components/ColorWheel';
+import DetailPanel from '@/components/DetailPanel';
+import GridView from '@/components/GridView';
+import ListView from '@/components/ListView';
+import SearchBar from '@/components/SearchBar';
+import Sidebar, { useIsDesktop } from '@/components/Sidebar';
+import StatsOverlay from '@/components/StatsOverlay';
+import { paints } from '@/data/index';
+import { useBrandPaintCounts, usePaintGroups, useProcessedPaints } from '@/hooks/useDerivedPaints';
+import { useFilteredCounts, useSchemeMatching, useSearchResults } from '@/hooks/useFilteredPaints';
+import { useCollectionStore } from '@/stores/useCollectionStore';
+import { selectIsSearching, useFilterStore } from '@/stores/useFilterStore';
+import { usePaintStore } from '@/stores/usePaintStore';
+import { getEffectiveTabFromState, useUIStore } from '@/stores/useUIStore';
+import Button from '@/components/Button';
 
 export default function Home() {
   const isDesktop = useIsDesktop()
@@ -74,12 +75,14 @@ export default function Home() {
       {/* Top bar */}
       <nav className='navbar min-h-0 border-b border-base-300 bg-base-200 px-2 py-4'>
         <div className='navbar-start w-auto'>
-          <button
-            className='btn btn-ghost btn-sm'
+          <Button
+            variant='outline'
+            size='sm'
+            // className='btn btn-ghost btn-sm'
             onClick={() => toggleMenu(isDesktop)}
             aria-label={effectiveTab ? 'Close sidebar' : 'Open sidebar'}>
             <Bars3Icon className='size-5' />
-          </button>
+          </Button>
         </div>
 
         <div className='navbar-center flex-1 px-3'>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { brands } from '@/data/index'
 import { useCollectionStore } from '@/stores/useCollectionStore'
@@ -389,7 +389,7 @@ export default function ColorWheel({ paintGroups, searchMatchIds, isSchemeMatchi
 
   // Mouse wheel zoom (toward cursor)
   const handleWheel = useCallback(
-    (e: React.WheelEvent) => {
+    (e: WheelEvent) => {
       e.preventDefault()
       const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1
       const newZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom * zoomFactor))
@@ -404,6 +404,13 @@ export default function ColorWheel({ paintGroups, searchMatchIds, isSchemeMatchi
     },
     [zoom, pan, clientToSvg, setZoom, setPan],
   )
+
+  useEffect(() => {
+    const el = svgRef.current
+    if (!el) return
+    el.addEventListener('wheel', handleWheel, { passive: false })
+    return () => el.removeEventListener('wheel', handleWheel)
+  }, [handleWheel])
 
   // Mouse drag pan
   const handleMouseDown = useCallback(
@@ -514,7 +521,6 @@ export default function ColorWheel({ paintGroups, searchMatchIds, isSchemeMatchi
         userSelect: 'none',
         WebkitUserSelect: 'none',
       }}
-      onWheel={handleWheel}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
