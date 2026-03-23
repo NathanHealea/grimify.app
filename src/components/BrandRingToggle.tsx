@@ -1,6 +1,7 @@
 'use client'
 
-import { useUIStore } from '@/stores/useUIStore'
+import { useUIStore } from '@/stores/useUIStore';
+import Button from './Button';
 
 export default function BrandRingToggle() {
   const showBrandRing = useUIStore((s) => s.showBrandRing)
@@ -8,16 +9,14 @@ export default function BrandRingToggle() {
 
   return (
     <section>
-      <button
-        className={`btn btn-sm w-full ${showBrandRing ? '' : 'btn-outline'}`}
-        style={
-          showBrandRing
-            ? { backgroundColor: '#6366f1', borderColor: '#6366f1', color: '#fff' }
-            : { borderColor: '#6366f1', color: '#6366f1' }
-        }
+      <Button
+        variant='outline'
+        color='primary'
+        className={'w-full'}
+        active={showBrandRing}
         onClick={toggleBrandRing}>
         Brand Ring
-      </button>
+      </Button>
     </section>
   )
 }

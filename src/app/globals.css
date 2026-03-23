@@ -1,36 +1,86 @@
 @import 'tailwindcss';
 
 @plugin 'daisyui' {
-  themes: colorwheel --default;
+  themes: dark --default;
 }
 
+
 @plugin "daisyui/theme" {
-  name: "colorwheel";
-  default: true;
-  prefersdark: true;
+  name: "dark";
+  default: false;
+  prefersdark: false;
   color-scheme: "dark";
-  --color-base-100: #0a0a0a;
-  --color-base-200: #141414;
-  --color-base-300: #2a2a2a;
-  --color-base-content: #e5e5e5;
-  --color-primary: #6366f1;
-  --color-primary-content: #ffffff;
-  --color-neutral: #6b7280;
-  --color-neutral-content: #ffffff;
-  --color-secondary: #a78bfa;
-  --color-secondary-content: #ffffff;
-  --color-accent: #f59e0b;
-  --color-accent-content: #000000;
-  --color-info: #38bdf8;
-  --color-info-content: #000000;
-  --color-success: #4ade80;
-  --color-success-content: #000000;
-  --color-warning: #facc15;
-  --color-warning-content: #000000;
-  --color-error: #f87171;
-  --color-error-content: #000000;
-  --radius-selector: 2rem;
-  --radius-field: 0.5rem;
-  --radius-box: 1rem;
+  --color-base-100: oklch(25.33% 0.016 252.42);
+  --color-base-200: oklch(23.26% 0.014 253.1);
+  --color-base-300: oklch(21.15% 0.012 254.09);
+  --color-base-content: oklch(97.807% 0.029 256.847);
+  --color-primary: oklch(58% 0.233 277.117);
+  --color-primary-content: oklch(96% 0.018 272.314);
+  --color-secondary: oklch(65% 0.241 354.308);
+  --color-secondary-content: oklch(94% 0.028 342.258);
+  --color-accent: oklch(77% 0.152 181.912);
+  --color-accent-content: oklch(38% 0.063 188.416);
+  --color-neutral: oklch(14% 0.005 285.823);
+  --color-neutral-content: oklch(92% 0.004 286.32);
+  --color-info: oklch(74% 0.16 232.661);
+  --color-info-content: oklch(29% 0.066 243.157);
+  --color-success: oklch(76% 0.177 163.223);
+  --color-success-content: oklch(37% 0.077 168.94);
+  --color-warning: oklch(82% 0.189 84.429);
+  --color-warning-content: oklch(41% 0.112 45.904);
+  --color-error: oklch(71% 0.194 13.428);
+  --color-error-content: oklch(27% 0.105 12.094);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
   --noise: 0;
+
+}
+
+
+/* ---- Custom Colors ----  */
+:root {
+  --color-citadel: oklch(85.09% 0.15175 88.943);
+  --color-army-painter: oklch(57.075% 0.20016 26.055);
+  --color-vallejo: oklch(51.064% 0.16005 255.986);
+  --color-green-stuff-world: oklch(51.969% 0.13592 144.115);
+  --color-complementary: oklch(59.986% 0.19941 29.987);
+  --color-split:  oklch(64.011% 0.11958 223.348);
+  --color-analogous: oklch(60.649% 0.12787 75.058);
+}
+
+
+/* ---- Button ----  */
+@layer utilities {
+  .btn-citadel {
+    --btn-color: var(--color-citadel);
+  }
+
+  .btn-army-painter {
+    --btn-color: var(--color-army-painter);
+  }
+
+  .btn-vallejo {
+    --btn-color: var(--color-vallejo);
+  }
+
+  .btn-green-stuff-world {
+    --btn-color: var(--color-green-stuff-world);
+  }
+
+  .btn-complementary {
+    --btn-color: var(--color-complementary);
+  }
+
+  .btn-split {
+    --btn-color: var(--color-split);
+  }
+
+  .btn-analogous {
+    --btn-color: var(--color-analogous);
+  }
 }
