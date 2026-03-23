@@ -12,7 +12,7 @@ export function matchesSearchFilter(paint: ProcessedPaint, searchMatchIds: Set<s
 }
 
 export function matchesOwnedFilter(paint: ProcessedPaint, ownedFilter: boolean, ownedIds: Set<string>): boolean {
-  return !ownedFilter || ownedIds.has(paint.id);
+  return !ownedFilter || ownedIds.size === 0 || ownedIds.has(paint.id);
 }
 
 export function matchesSchemeFilter(paint: ProcessedPaint, isSchemeMatching: (p: ProcessedPaint) => boolean): boolean {
@@ -36,10 +36,15 @@ export interface GroupFilterParams {
  */
 export function isGroupDimmed(group: PaintGroup, filters: GroupFilterParams): boolean {
   const matchesBrand = filters.brandFilter.size === 0 || group.paints.some((p) => filters.brandFilter.has(p.brand));
+
   const matchesSearch = filters.searchMatchIds.size === 0 || group.paints.some((p) => filters.searchMatchIds.has(p.id));
-  const matchesOwned = !filters.ownedFilter || group.paints.some((p) => filters.ownedIds.has(p.id));
+
+  const matchesOwned = !filters.ownedFilter || filters.ownedIds.size === 0 || group.paints.some((p) => filters.ownedIds.has(p.id));
+
   const schemeDimmed = !group.paints.some(filters.isSchemeMatching);
+
   const dimmed = !matchesBrand || !matchesOwned || (filters.isSchemeActive ? schemeDimmed : !matchesSearch);
+  
   return dimmed;
 }
 
