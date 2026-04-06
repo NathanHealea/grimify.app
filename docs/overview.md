@@ -55,7 +55,7 @@ Epic Template:
 | 6     | Color Analysis            | Color schemes and search are advanced features that enhance the base experience   |
 | 7     | Paint Collection          | Personal collection tracking lets users mark owned paints and filter by ownership |
 | 8     | User Authentication       | User registration, login, profiles, and role-based authorization via Supabase     |
-| 9     | Color Palette             | Palette building, projects, tags, and sharing for paint planning                  |
+| 9     | Recipe                    | Paint recipes, projects, tags, and sharing for documenting painting processes     |
 | 10    | SEO & Branding            | Branding assets, SEO metadata, sitemap, and discoverability                       |
 
 ---
@@ -138,18 +138,18 @@ Epic Template:
 - [ ] [Password Recovery](./user-authentication/password-recovery.md)
 - [ ] [Role-Based Authorization](./user-authentication/role-based-authorization.md)
 
-## Epic 9: Color Palette
+## Epic 9: Recipe
 
-**Goal:** Let users build color palettes for projects, track which paints they own vs need to buy, and share palettes and projects with others.
+**Goal:** Let users create step-by-step paint recipes for miniature model areas, group them into projects, and share recipes with the community.
 
 **High-Level Scope:**
 
-- [ ] [Local Color Palettes](./color-palette/local-color-palettes.md)
-- [ ] [Color Palettes](./color-palette/color-palettes.md)
-- [ ] [Projects](./color-palette/projects.md)
-- [ ] [Tags](./color-palette/tags.md)
-- [ ] [Admin Management](./color-palette/admin-management.md)
-- [ ] [Sharing](./color-palette/sharing.md)
+- [ ] [Local Recipes](./recipe/local-recipes.md)
+- [ ] [Recipes](./recipe/recipes.md)
+- [ ] [Projects](./recipe/projects.md)
+- [ ] [Tags](./recipe/tags.md)
+- [ ] [Admin Management](./recipe/admin-management.md)
+- [ ] [Sharing](./recipe/sharing.md)
 
 ## Epic 10: SEO & Branding
 
@@ -201,6 +201,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [ ] | [Browser History Navigation](./ui-and-layout/browser-history-navigation.md)           | Feature  | Todo      |
 | [x] | [State Management Refactor](./ui-and-layout/state-management-refactor.md)             | Refactor | Completed |
 | [x] | [Extract Filter Modules](./ui-and-layout/extract-filter-modules.md)                   | Refactor | Completed |
+| [ ] | [UI Refactor: Single Workspace Layout](./ui-and-layout/ui-refactor-single-workspace.md) | Refactor | Todo      |
 
 ### Brand Features
 
@@ -228,13 +229,13 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [x] | [Owned Paint Collection](./paint-collection/owned-paint-collection.md) | Feature | Completed |
 | [ ] | [Owned Collection UX Improvements](./paint-collection/owned-collection-ux-improvements.md) | Enhancement | Todo |
 
-### Color Palette
+### Recipe
 
 | | Name | Type | Status |
 |---|------|------|--------|
-| [ ] | [Local Color Palettes](./color-palette/local-color-palettes.md) | Feature | Todo |
-| [ ] | [Color Palettes](./color-palette/color-palettes.md) | Feature | Todo |
-| [ ] | [Projects](./color-palette/projects.md) | Feature | Todo |
-| [ ] | [Tags](./color-palette/tags.md) | Feature | Todo |
-| [ ] | [Admin Management](./color-palette/admin-management.md) | Feature | Todo |
-| [ ] | [Sharing](./color-palette/sharing.md) | Feature | Todo |
+| [ ] | [Local Recipes](./recipe/local-recipes.md) | Feature | Todo |
+| [ ] | [Recipes](./recipe/recipes.md) | Feature | Todo |
+| [ ] | [Projects](./recipe/projects.md) | Feature | Todo |
+| [ ] | [Tags](./recipe/tags.md) | Feature | Todo |
+| [ ] | [Admin Management](./recipe/admin-management.md) | Feature | Todo |
+| [ ] | [Sharing](./recipe/sharing.md) | Feature | Todo |
