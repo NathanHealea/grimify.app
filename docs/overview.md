@@ -176,6 +176,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [ ] | [Grouped Paint Details](./paint-information/grouped-paint-details.md)           | Refactor    | Todo      |
 | [ ] | [Paint Data Migration](./paint-information/paint-data-migration.md)             | Enhancement | Todo      |
 | [x] | [Paint Range Data Expansion](./paint-information/paint-range-data-expansion.md) | Enhancement | Completed |
+| [ ] | [AK Interactive Paint Data](./paint-information/ak-interactive-paint-data.md) | Feature | Todo |
 
 ### Color Wheel Visualization
 
