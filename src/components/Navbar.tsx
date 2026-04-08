@@ -19,7 +19,7 @@ export default async function Navbar() {
 
   return (
     <nav className='navbar min-h-0 border-b border-base-300 bg-base-200 px-2 py-4'>
-      <div className='navbar-start w-auto'>
+      <div className='navbar-start w-auto shrink-0'>
         <SidebarToggleButton />
       </div>
 
@@ -27,7 +27,7 @@ export default async function Navbar() {
         <SearchBar />
       </div>
 
-      <div className='navbar-end w-auto'>
+      <div className='navbar-end w-auto shrink-0'>
         {authResult ? (
           <UserMenu
             displayName={displayName}

@@ -30,7 +30,7 @@ export async function getAuthUser(options?: GetAuthUserOptions): Promise<AuthUse
     error,
   } = await supabase.auth.getUser()
 
-  if (error || !user) {
+  if (error || !user || !user.email_confirmed_at) {
     return null
   }
 
