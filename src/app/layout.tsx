@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from 'next'
 
-import Navbar from '@/components/Navbar'
-
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -21,7 +19,6 @@ export default function RootLayout({
   return (
     <html lang='en' data-theme='nord'>
       <body className='flex h-screen w-screen flex-col overflow-hidden'>
-        <Navbar />
         {children}
       </body>
     </html>
