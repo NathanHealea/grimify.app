@@ -66,7 +66,7 @@ export default function Home() {
   const displayGroup = hoveredGroup ?? selectedGroup
 
   return (
-    <div className='flex flex-1 flex-col overflow-hidden'>
+    <>
       <div className='flex flex-1 overflow-hidden'>
         {/* Vertical tab strip */}
         <div className='flex flex-col border-r border-base-300 bg-base-200'>
@@ -226,6 +226,6 @@ export default function Home() {
           </form>
         </dialog>
       )}
-    </div>
+    </>
   )
 }
