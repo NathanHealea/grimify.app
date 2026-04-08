@@ -3,6 +3,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { UserCircleIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
+import Image from 'next/image'
 import Link from 'next/link'
 
 interface UserMenuProps {
@@ -17,7 +18,7 @@ export default function UserMenu({ displayName, avatarUrl, signOutAction, isAdmi
     <Menu>
       <MenuButton className='btn btn-ghost btn-sm gap-2'>
         {avatarUrl ? (
-          <img src={avatarUrl} alt={displayName} className='size-6 rounded-full' />
+          <Image src={avatarUrl} alt={displayName} width={24} height={24} className='size-6 rounded-full' />
         ) : (
           <UserCircleIcon className='size-6' />
         )}
