@@ -19,15 +19,15 @@ Configure Supabase client libraries and middleware for cookie-based auth session
 
 ## Key Files
 
-| Action | File                        | Description                                          |
-| ------ | --------------------------- | ---------------------------------------------------- |
-| Create | `app/lib/supabase/client.ts` | Browser Supabase client                              |
-| Create | `app/lib/supabase/server.ts` | Server-side Supabase client (cookies-based)          |
-| Create | `middleware.ts`              | Auth session refresh middleware                      |
-| Modify | `.env.local`                 | Add Supabase URL and anon key                        |
-| Modify | `package.json`               | Add `@supabase/supabase-js` and `@supabase/ssr`     |
+| Action | File                         | Description                                     |
+| ------ | ---------------------------- | ----------------------------------------------- |
+| Create | `src/lib/supabase/client.ts` | Browser Supabase client                         |
+| Create | `src/lib/supabase/server.ts` | Server-side Supabase client (cookies-based)     |
+| Create | `src/middleware.ts`          | Auth session refresh middleware                  |
+| Modify | `.env.local`                 | Add Supabase URL and anon key                   |
+| Modify | `package.json`               | Add `@supabase/supabase-js` and `@supabase/ssr` |
 
-## Approach
+## Implementation Plan
 
 ### 1. Install dependencies
 
@@ -37,15 +37,15 @@ npm install @supabase/supabase-js @supabase/ssr
 
 ### 2. Browser client
 
-Create `app/lib/supabase/client.ts` using `createBrowserClient()` from `@supabase/ssr`. References `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY` env vars.
+Create `src/lib/supabase/client.ts` — export a `createClient()` function that returns `createBrowserClient()` from `@supabase/ssr`, passing `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY` env vars.
 
 ### 3. Server client
 
-Create `app/lib/supabase/server.ts` — async server client created with `createServerClient()` from `@supabase/ssr`. Reads/writes auth tokens via Next.js `cookies()` from `next/headers`. The `setAll` callback is wrapped in a try/catch to handle calls from Server Components where cookies are read-only (middleware handles the refresh in that case).
+Create `src/lib/supabase/server.ts` — export an async `createClient()` function that returns `createServerClient()` from `@supabase/ssr`. Reads/writes auth tokens via Next.js `cookies()` from `next/headers`. The `setAll` callback is wrapped in a try/catch to handle calls from Server Components where cookies are read-only (middleware handles the refresh in that case).
 
 ### 4. Middleware
 
-Create `middleware.ts` that refreshes the auth session on every request:
+Create `src/middleware.ts` that refreshes the auth session on every request:
 
 - Creates a `createServerClient` inline using request/response cookie accessors (sets cookies on both the request and a new `NextResponse`).
 - Calls `supabase.auth.getUser()` to refresh the session and rewrite expired tokens into the response cookies.
