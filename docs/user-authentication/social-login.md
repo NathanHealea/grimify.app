@@ -13,117 +13,193 @@ Allow users to sign in or sign up using their Google or Discord accounts via Sup
 - [ ] Users can sign in/sign up with Google
 - [ ] Users can sign in/sign up with Discord
 - [ ] OAuth users are redirected through `/auth/callback` and session is established
-- [ ] New OAuth users are redirected to `/profile/setup` (existing middleware handles this)
-- [ ] Existing OAuth users bypass setup and go to `/`
+- [ ] New users are redirected to `/profile/setup` via middleware (display name matches `Painter####` pattern)
+- [ ] Users who have completed profile setup bypass it and go to `/`
 - [ ] OAuth buttons appear on both sign-in and sign-up pages
 - [ ] Email/password login continues to work alongside OAuth
-- [ ] `avatar_url` column added to `profiles` table (nullable text)
-- [ ] On OAuth sign-in/sign-up, if `avatar_url` is null, populate it from the provider's profile picture via a Supabase database trigger
+- [x] `avatar_url` column exists in `profiles` table (nullable text) — already in current schema
+- [x] On user creation, `avatar_url` is populated from provider metadata — `handle_new_user()` trigger already does this
 - [ ] Profile setup page pre-fills display name from OAuth provider metadata (`full_name`, `name`, or `custom_username`)
 - [ ] If the suggested display name is already taken, a warning is shown on the profile setup page
 
 ## Routes
 
-No new routes required — reuses existing `/auth/callback`.
+| Route | Type | Description |
+| ----- | ---- | ----------- |
+| `/auth/callback` | Existing | Exchanges OAuth code for session (no changes needed) |
+| `/profile/setup` | **New** | Profile setup page for new users to customize display name |
 
 ## Key Files
 
-| Action | File                                                              | Description                                                              |
-| ------ | ----------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Modify | `app/(auth)/sign-in/page.tsx`                                     | Add Google and Discord OAuth buttons                                     |
-| Modify | `app/(auth)/sign-up/page.tsx`                                     | Add Google and Discord OAuth buttons                                     |
-| Modify | `app/(auth)/actions.ts`                                           | Add `signInWithGoogle()` and `signInWithDiscord()` server actions        |
-| Modify | `supabase/config.toml`                                            | Enable Google and Discord providers                                      |
-| Create | `supabase/migrations/XXXXXX_add_avatar_url_to_profiles.sql`      | Add `avatar_url` column and trigger to sync from OAuth provider          |
-| Modify | `app/profile/setup/page.tsx`                                      | Fetch OAuth display name from user metadata, check uniqueness            |
-| Modify | `app/profile/setup/profile-form.tsx`                              | Accept `suggestedName` and `nameAlreadyTaken` props, pre-fill and warn   |
+| Action | File | Description |
+| ------ | ---- | ----------- |
+| Modify | `src/app/(auth)/sign-in/page.tsx` | Add Google and Discord OAuth buttons |
+| Modify | `src/app/(auth)/sign-up/page.tsx` | Add Google and Discord OAuth buttons |
+| Modify | `src/app/(auth)/actions.ts` | Add `signInWithGoogle()` and `signInWithDiscord()` server actions |
+| Modify | `supabase/config.toml` | Enable Google and Discord providers |
+| Create | `src/app/profile/setup/page.tsx` | Profile setup page — reads OAuth metadata, checks name uniqueness |
+| Create | `src/app/profile/setup/profile-form.tsx` | Client-side form with pre-filled display name and taken-name warning |
+| Create | `src/app/profile/setup/actions.ts` | `completeProfileSetup` server action to update display name |
+| Modify | `src/middleware.ts` | Redirect authenticated users with default `Painter####` names to `/profile/setup` |
+| Modify | `src/app/auth/callback/route.ts` | Generalize error message for OAuth failures |
+| Modify | `.env.example` | Add OAuth client ID and secret placeholders |
 
-## Approach
+## Implementation Plan
 
-### 1. Enable OAuth providers in Supabase
+### Step 1: Enable OAuth providers in Supabase config
 
-Update `supabase/config.toml` to enable Google and Discord:
+**File:** `supabase/config.toml`
+
+Add Google and Discord provider blocks after the existing `[auth.external.apple]` section. Follow the same structure as the apple block:
 
 ```toml
 [auth.external.google]
 enabled = true
-client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
-secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+client_id = "env(GOOGLE_CLIENT_ID)"
+secret = "env(GOOGLE_CLIENT_SECRET)"
+redirect_uri = ""
+url = ""
+skip_nonce_check = true
+email_optional = false
 
 [auth.external.discord]
 enabled = true
-client_id = "env(SUPABASE_AUTH_EXTERNAL_DISCORD_CLIENT_ID)"
-secret = "env(SUPABASE_AUTH_EXTERNAL_DISCORD_SECRET)"
+client_id = "env(DISCORD_CLIENT_ID)"
+secret = "env(DISCORD_CLIENT_SECRET)"
+redirect_uri = ""
+url = ""
+skip_nonce_check = false
+email_optional = false
 ```
 
-### 2. Add environment variables
+**File:** `.env.example` — append OAuth credential placeholders:
 
-Add OAuth client IDs and secrets to `.env.local` for local development and to the production Supabase project settings.
-
-### 3. Add `avatar_url` column to profiles
-
-Create a migration that adds the column and a database trigger to sync the avatar from the OAuth provider:
-
-```sql
-alter table public.profiles
-  add column avatar_url text;
-
-create or replace function public.sync_avatar_from_provider()
-returns trigger as $$
-declare
-  provider_avatar text;
-begin
-  if new.avatar_url is not null then
-    return new;
-  end if;
-
-  select raw_user_meta_data->>'avatar_url'
-    into provider_avatar
-    from auth.users
-    where id = new.id;
-
-  if provider_avatar is not null and provider_avatar <> '' then
-    new.avatar_url := provider_avatar;
-  end if;
-
-  return new;
-end;
-$$ language plpgsql security definer;
-
-create trigger on_profile_sync_avatar
-  before insert or update on public.profiles
-  for each row
-  execute function public.sync_avatar_from_provider();
+```
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+DISCORD_CLIENT_ID=
+DISCORD_CLIENT_SECRET=
 ```
 
-### 4. Create OAuth server actions
+### Step 2: Add OAuth server actions
 
-Add two server actions to `app/(auth)/actions.ts`:
+**File:** `src/app/(auth)/actions.ts`
 
-- `signInWithGoogle()` — calls `supabase.auth.signInWithOAuth({ provider: 'google' })` with a redirect URL pointing to `/auth/callback`
-- `signInWithDiscord()` — calls `supabase.auth.signInWithOAuth({ provider: 'discord' })` with a redirect URL pointing to `/auth/callback`
+Add `headers` import from `next/headers`. Add two new exported async functions:
 
-Both actions receive the OAuth redirect URL from Supabase and redirect the browser to the provider's consent screen.
+- `signInWithGoogle()` — no parameters, no state return
+- `signInWithDiscord()` — no parameters, no state return
 
-### 5. Add OAuth buttons to sign-in and sign-up pages
+Both follow the same pattern:
+1. Create Supabase server client
+2. Read request origin from `(await headers()).get('origin')`
+3. Call `supabase.auth.signInWithOAuth({ provider, options: { redirectTo: origin + '/auth/callback' } })`
+4. On error, redirect to `/sign-in?error=...`
+5. On success, redirect to `data.url` (the provider's OAuth consent screen)
 
-Add "Continue with Google" and "Continue with Discord" buttons to both pages, separated from the email/password form by a divider. Each button submits a form that calls the corresponding server action.
+These are simple server actions (not `useActionState` compatible) — they always redirect, never return state.
 
-### 6. Pre-fill display name on profile setup
+### Step 3: Add OAuth buttons to sign-in and sign-up pages
 
-When an OAuth user lands on `/profile/setup`, the setup page reads the user's metadata from `auth.users.user_metadata` (fields: `full_name`, `name`, or `custom_username`) and passes it to the form as `suggestedName`. The page also checks if that name is already taken and passes `nameAlreadyTaken` to the form.
+**Files:** `src/app/(auth)/sign-in/page.tsx`, `src/app/(auth)/sign-up/page.tsx`
 
-The form pre-fills the display name input via `defaultValue` and shows a warning alert if the name is taken. Email/password users see an empty input.
+Import `signInWithGoogle` and `signInWithDiscord` from the actions file. Add below the existing email/password `</form>` and before the sign-in/sign-up link paragraph:
 
-### 7. Reuse existing auth callback
+1. A DaisyUI divider: `<div className="divider">or</div>`
+2. Two `<form>` elements, each wrapping a single submit button:
+   - `<form action={signInWithGoogle}>` → `<button className="btn btn-outline w-full">Continue with Google</button>`
+   - `<form action={signInWithDiscord}>` → `<button className="btn btn-outline w-full">Continue with Discord</button>`
+3. Wrap the two OAuth forms in a `<div className="flex flex-col gap-2">` for spacing
 
-The existing `/auth/callback` route handler already exchanges the authorization code for a session and redirects. No changes needed.
+Use inline SVG elements for Google and Discord brand icons inside the buttons (small 20x20 icons before the text).
+
+No `useActionState` needed — these forms just redirect, they don't return state. Plain `<form action={serverAction}>` works in client components.
+
+### Step 4: Update auth callback error message
+
+**File:** `src/app/auth/callback/route.ts`
+
+Change the fallback error redirect from:
+```
+/sign-in?error=Could not verify your email. Please try again.
+```
+to:
+```
+/sign-in?error=Authentication failed. Please try again.
+```
+
+The existing `exchangeCodeForSession(code)` logic works for both email confirmation and OAuth code exchange — no other changes needed.
+
+### Step 5: Create profile setup page
+
+**File:** `src/app/profile/setup/page.tsx` (new — server component)
+
+1. Call `getAuthUser({ withProfile: true })`
+2. If not authenticated → redirect to `/sign-in`
+3. If `profile.display_name` does NOT match `/^Painter\d{4}$/` → redirect to `/` (setup already completed)
+4. Read suggested display name from `user.user_metadata`:
+   - Try fields in order: `full_name`, `name`, `custom_username`
+   - Use the first non-empty value found
+5. If a suggested name exists, query profiles to check uniqueness: `supabase.from('profiles').select('id').ilike('display_name', suggestedName).single()`
+6. Render a centered layout (matching auth page style) with `<ProfileSetupForm suggestedName={...} nameAlreadyTaken={...} />`
+
+**File:** `src/app/profile/setup/profile-form.tsx` (new — client component)
+
+Props: `suggestedName?: string`, `nameAlreadyTaken?: boolean`
+
+Layout matches the sign-in/sign-up card style:
+1. DaisyUI `card` with `card-body`
+2. Title: "Set up your profile"
+3. If `nameAlreadyTaken`, show `alert alert-warning`: "The name '{suggestedName}' is already taken. Please choose a different one."
+4. Display name `input input-bordered` with `defaultValue={suggestedName}`
+5. Submit button: `btn btn-primary w-full` → "Continue"
+6. Uses `useActionState` with `completeProfileSetup` for error handling
+
+**File:** `src/app/profile/setup/actions.ts` (new — server action)
+
+Export `completeProfileSetup(prevState, formData)`:
+1. Get authenticated user via `getAuthUser()`
+2. Extract `display_name` from form data
+3. Validate: non-empty, 2-30 characters, no leading/trailing whitespace
+4. Update profile: `supabase.from('profiles').update({ display_name }).eq('id', user.id)`
+5. Handle unique constraint violation (code `23505`) → return `{ error: 'This display name is already taken' }`
+6. On success: `revalidatePath('/', 'layout')` then `redirect('/')`
+
+### Step 6: Update middleware for profile setup redirect
+
+**File:** `src/middleware.ts`
+
+After the existing `await supabase.auth.getUser()` call:
+
+1. Extract user: `const { data: { user } } = await supabase.auth.getUser()`
+2. Define skip paths: `/profile/setup`, `/auth/`, `/sign-in`, `/sign-up`, `/sign-up/confirm`, `/_next/`
+3. If user is authenticated AND current path is not in skip list:
+   - Query profile: `supabase.from('profiles').select('display_name').eq('id', user.id).single()`
+   - If `display_name` matches `/^Painter\d{4}$/` → redirect to `/profile/setup`
+4. If user is NOT authenticated AND path is `/profile/setup` → redirect to `/sign-in`
+
+This adds one DB query per authenticated page load. The query is a PK lookup on profiles (fast). Once the user completes setup, the check passes immediately and no redirect occurs.
+
+### No migration needed
+
+The `avatar_url` column already exists in the `profiles` table (added in `20260408204618_remote_schema.sql`). The `handle_new_user()` trigger already reads `raw_user_meta_data->>'avatar_url'` on INSERT, so OAuth provider avatars are automatically captured when the profile is created.
 
 ## Key Design Decisions
 
-- **Server actions for OAuth** — `signInWithOAuth()` returns a redirect URL. The server action performs the redirect, keeping the flow server-side.
-- **Avatar sync via database trigger** — A `BEFORE INSERT OR UPDATE` trigger on `profiles` checks `auth.users.raw_user_meta_data->>'avatar_url'` and populates `avatar_url` only when null. Uses `security definer` to read from `auth.users`.
-- **Existing middleware handles new OAuth users** — Supabase Auth creates the user in `auth.users` automatically. The middleware detects the missing profile and redirects to `/profile/setup`.
+- **Server actions for OAuth** — `signInWithOAuth()` returns a redirect URL. The server action performs the redirect, keeping the flow server-side. No client-side JS needed for the OAuth buttons.
+- **Avatar sync already handled** — The existing `handle_new_user()` trigger reads `raw_user_meta_data->>'avatar_url'` on INSERT, so OAuth avatars are automatically captured when the profile is created. No new migration needed.
+- **Profile setup detection via display name pattern** — New users are auto-assigned `Painter####` names by `generate_painter_name()`. The middleware checks this pattern (`/^Painter\d{4}$/`) to determine if profile setup is needed, avoiding an extra database column.
+- **Middleware profile check** — Adds one lightweight DB query (PK lookup) per authenticated request. Once the user completes setup, the regex check passes immediately and no redirect occurs.
+- **Reuse existing callback** — The `/auth/callback` route already handles code exchange via `exchangeCodeForSession()`, which works for both email confirmation and OAuth flows.
+
+## Risks & Considerations
+
+- **Google `skip_nonce_check: true`** is required for local development with Google OAuth. In production, configure the Google Cloud Console properly and consider setting to `false`.
+- **Google OAuth credentials** must be obtained from Google Cloud Console. Discord credentials already exist in `.env.local`.
+- **Redirect URIs** must be registered with each provider: `http://localhost:54321/auth/v1/callback` for local dev, `https://<project>.supabase.co/auth/v1/callback` for production.
+- **`email_confirmed_at` for OAuth users** — `getAuthUser()` returns null if `email_confirmed_at` is falsy. Supabase auto-sets this for OAuth users, but verify during testing.
+- **Display name uniqueness** — The `UNIQUE` constraint on `display_name` means OAuth-suggested names may conflict. The setup page pre-checks and warns, and the server action handles constraint violations gracefully.
+- **Middleware performance** — The profile query runs on every authenticated page load. Monitor and consider a cookie-based flag if latency becomes an issue.
 
 ## Notes
 
