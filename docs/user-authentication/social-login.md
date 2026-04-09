@@ -2,7 +2,7 @@
 
 **Epic:** User Authentication
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 
 ## Summary
 
@@ -10,17 +10,17 @@ Allow users to sign in or sign up using their Google or Discord accounts via Sup
 
 ## Acceptance Criteria
 
-- [ ] Users can sign in/sign up with Google
-- [ ] Users can sign in/sign up with Discord
-- [ ] OAuth users are redirected through `/auth/callback` and session is established
-- [ ] New users are redirected to `/profile/setup` via middleware (display name matches `Painter####` pattern)
-- [ ] Users who have completed profile setup bypass it and go to `/`
-- [ ] OAuth buttons appear on both sign-in and sign-up pages
-- [ ] Email/password login continues to work alongside OAuth
+- [x] Users can sign in/sign up with Google
+- [x] Users can sign in/sign up with Discord
+- [x] OAuth users are redirected through `/auth/callback` and session is established
+- [x] New users are redirected to `/profile/setup` via middleware (display name matches `Painter####` pattern)
+- [x] Users who have completed profile setup bypass it and go to `/`
+- [x] OAuth buttons appear on both sign-in and sign-up pages
+- [x] Email/password login continues to work alongside OAuth
 - [x] `avatar_url` column exists in `profiles` table (nullable text) — already in current schema
 - [x] On user creation, `avatar_url` is populated from provider metadata — `handle_new_user()` trigger already does this
-- [ ] Profile setup page pre-fills display name from OAuth provider metadata (`full_name`, `name`, or `custom_username`)
-- [ ] If the suggested display name is already taken, a warning is shown on the profile setup page
+- [x] Profile setup page pre-fills display name from OAuth provider metadata (`full_name`, `name`, or `custom_username`)
+- [x] If the suggested display name is already taken, a warning is shown on the profile setup page
 
 ## Routes
 
