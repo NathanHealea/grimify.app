@@ -1,44 +1,32 @@
-import type { User } from '@supabase/supabase-js'
+import type { User } from '@supabase/supabase-js';
 
-import type { Profile } from '@/types/profile'
+import type { Profile } from '@/types/profile';
 
-import { createClient } from './server'
+import { createClient } from './server';
 
-/** Return shape when `withProfile` is false (default) */
-interface AuthUserResult {
-  user: User
-}
+type AuthResult = { user: User };
+type AuthResultWithProfile = { user: User; profile: Profile };
 
-/** Return shape when `withProfile` is true */
-interface AuthUserWithProfileResult {
-  user: User
-  profile: Profile | null
-}
-
-/** Options for `getAuthUser` */
-interface GetAuthUserOptions {
-  withProfile?: boolean
-}
-
-export async function getAuthUser(): Promise<AuthUserResult | null>
-export async function getAuthUser(options: { withProfile: true }): Promise<AuthUserWithProfileResult | null>
-export async function getAuthUser(options?: GetAuthUserOptions): Promise<AuthUserResult | AuthUserWithProfileResult | null> {
-  const supabase = await createClient()
+export async function getAuthUser(options: { withProfile: true }): Promise<AuthResultWithProfile | null>;
+export async function getAuthUser(options?: { withProfile?: false }): Promise<AuthResult | null>;
+export async function getAuthUser(options?: {
+  withProfile?: boolean;
+}): Promise<AuthResult | AuthResultWithProfile | null> {
+  const supabase = await createClient();
 
   const {
     data: { user },
-    error,
-  } = await supabase.auth.getUser()
+  } = await supabase.auth.getUser();
 
-  if (error || !user || !user.email_confirmed_at) {
-    return null
-  }
+  if (!user) return null;
 
   if (options?.withProfile) {
-    const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
 
-    return { user, profile: (profile as Profile) ?? null }
+    if (!profile) return null;
+
+    return { user, profile: profile as Profile };
   }
 
-  return { user }
+  return { user };
 }

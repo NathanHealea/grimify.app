@@ -1,27 +1,28 @@
-'use client'
+'use client';
 
-import { useActionState } from 'react'
+import { useActionState, useRef } from 'react';
+import { type ProfileSetupState, setupProfile } from './actions';
 
-import { completeProfileSetup, ProfileSetupState } from './actions'
+type ProfileFormProps = {
+  suggestedName?: string;
+  nameAlreadyTaken?: boolean;
+};
 
-interface ProfileSetupFormProps {
-  suggestedName?: string
-  nameAlreadyTaken?: boolean
-}
+export default function ProfileSetupForm({ suggestedName, nameAlreadyTaken }: ProfileFormProps) {
+  const [state, formAction, pending] = useActionState<ProfileSetupState, FormData>(setupProfile, null);
+  const displayNameRef = useRef<HTMLInputElement>(null);
 
-export default function ProfileSetupForm({ suggestedName, nameAlreadyTaken }: ProfileSetupFormProps) {
-  const [state, formAction, pending] = useActionState<ProfileSetupState, FormData>(completeProfileSetup, null)
+  const fieldError = state?.errors?.display_name;
 
   return (
-    <div className='card w-full max-w-sm bg-base-200 shadow-xl'>
-      <div className='card-body'>
-        <h2 className='card-title'>Set up your profile</h2>
+    <div className='card w-full max-w-md bg-base-200 shadow-xl'>
+      <div className='card-body gap-4'>
+        <h1 className='card-title text-2xl'>Set Up Your Profile</h1>
+        <p className='text-base-content/70'>Choose a display name to get started. You can change it later.</p>
 
-        {nameAlreadyTaken && suggestedName && (
+        {nameAlreadyTaken && (
           <div role='alert' className='alert alert-warning'>
-            <span>
-              The name &apos;{suggestedName}&apos; is already taken. Please choose a different one.
-            </span>
+            <span>The display name &quot;{suggestedName}&quot; is already taken. Please choose a different one.</span>
           </div>
         )}
 
@@ -32,27 +33,30 @@ export default function ProfileSetupForm({ suggestedName, nameAlreadyTaken }: Pr
         )}
 
         <form action={formAction} className='flex flex-col gap-4'>
-          <label className='form-control w-full'>
-            <div className='label'>
-              <span className='label-text'>Display Name</span>
-            </div>
+          <fieldset className='fieldset'>
+            <label className='label' htmlFor='display_name'>
+              Display Name
+            </label>
             <input
-              type='text'
+              ref={displayNameRef}
+              id='display_name'
               name='display_name'
-              defaultValue={nameAlreadyTaken ? '' : suggestedName}
-              placeholder='Choose a display name'
-              className='input input-bordered w-full'
-              minLength={2}
-              maxLength={30}
+              type='text'
+              placeholder='Your display name'
+              defaultValue={suggestedName}
+              className={`input input-bordered w-full ${fieldError ? 'input-error' : ''}`}
               required
+              minLength={2}
+              maxLength={50}
             />
-          </label>
+            {fieldError && <p className='label text-error'>{fieldError}</p>}
+          </fieldset>
 
           <button type='submit' className='btn btn-primary w-full' disabled={pending}>
-            {pending ? <span className='loading loading-spinner' /> : 'Continue'}
+            {pending ? <span className='loading loading-spinner loading-sm' /> : 'Continue'}
           </button>
         </form>
       </div>
     </div>
-  )
+  );
 }

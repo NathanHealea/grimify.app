@@ -1,50 +1,57 @@
-'use server'
+'use server';
 
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
-import { getAuthUser } from '@/lib/supabase/auth'
-import { createClient } from '@/lib/supabase/server'
+export type ProfileSetupState = { error?: string; errors?: { display_name?: string } } | null;
 
-export type ProfileSetupState = { error?: string } | null
+export async function setupProfile(prevState: ProfileSetupState, formData: FormData): Promise<ProfileSetupState> {
+  const supabase = await createClient();
 
-export async function completeProfileSetup(
-  _prevState: ProfileSetupState,
-  formData: FormData
-): Promise<ProfileSetupState> {
-  const authResult = await getAuthUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!authResult) {
-    redirect('/sign-in')
+  if (!user) {
+    return { error: 'You must be signed in to create a profile.' };
   }
 
-  const displayName = formData.get('display_name') as string
+  const displayName = (formData.get('display_name') as string) ?? '';
+  const trimmed = displayName.trim();
 
-  if (!displayName || displayName.trim().length === 0) {
-    return { error: 'Display name is required' }
+  if (!trimmed) {
+    return { errors: { display_name: 'Display name is required.' } };
   }
 
-  const trimmed = displayName.trim()
-
-  if (trimmed.length < 2 || trimmed.length > 30) {
-    return { error: 'Display name must be between 2 and 30 characters' }
+  if (trimmed.length < 2 || trimmed.length > 50) {
+    return { errors: { display_name: 'Display name must be between 2 and 50 characters.' } };
   }
 
-  if (trimmed !== displayName) {
-    return { error: 'Display name must not have leading or trailing whitespace' }
+  // Check uniqueness (case-insensitive)
+  const { data: existing } = await supabase.from('profiles').select('id').ilike('display_name', trimmed).single();
+
+  if (existing) {
+    return { errors: { display_name: 'Display name is already taken.' } };
   }
 
-  const supabase = await createClient()
-
-  const { error } = await supabase.from('profiles').update({ display_name: trimmed }).eq('id', authResult.user.id)
+  const { error } = await supabase
+    .from('profiles')
+    .insert({
+      id: user.id,
+      display_name: trimmed,
+      avatar_url: user.user_metadata?.avatar_url ?? null,
+    })
+    .select('id')
+    .single();
 
   if (error) {
     if (error.code === '23505') {
-      return { error: 'This display name is already taken' }
+      return { errors: { display_name: 'Display name is already taken.' } };
     }
-    return { error: error.message }
+    return { error: 'Failed to create profile. Please try again.' };
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/')
+  revalidatePath('/', 'layout');
+  redirect('/');
 }
