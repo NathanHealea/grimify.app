@@ -177,6 +177,7 @@ All documented features, bugs, enhancements, and refactors organized by epic.
 | [ ] | [Paint Data Migration](./paint-information/paint-data-migration.md)             | Enhancement | Todo      |
 | [x] | [Paint Range Data Expansion](./paint-information/paint-range-data-expansion.md) | Enhancement | Completed |
 | [ ] | [AK Interactive Paint Data](./paint-information/ak-interactive-paint-data.md) | Feature | Todo |
+| [ ] | [Improve Paint Database via PaintPad.app](./paint-information/improve-paint-database.md) | Enhancement | Todo |
 
 ### Color Wheel Visualization
 
