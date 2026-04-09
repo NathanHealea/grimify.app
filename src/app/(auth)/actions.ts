@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase/server'
@@ -44,4 +45,36 @@ export async function signOut() {
   await supabase.auth.signOut()
 
   revalidatePath('/', 'layout')
+}
+
+export async function signInWithGoogle() {
+  const supabase = await createClient()
+  const origin = (await headers()).get('origin')
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: origin + '/auth/callback' },
+  })
+
+  if (error) {
+    redirect('/sign-in?error=' + encodeURIComponent(error.message))
+  }
+
+  redirect(data.url)
+}
+
+export async function signInWithDiscord() {
+  const supabase = await createClient()
+  const origin = (await headers()).get('origin')
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'discord',
+    options: { redirectTo: origin + '/auth/callback' },
+  })
+
+  if (error) {
+    redirect('/sign-in?error=' + encodeURIComponent(error.message))
+  }
+
+  redirect(data.url)
 }
