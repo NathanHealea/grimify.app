@@ -3257,5 +3257,285 @@
     "type": "Technical",
     "description": "",
     "comparable": []
+  },
+  {
+    "id": "cit-307",
+    "name": "Barak-Nar Burgundy",
+    "hex": "#451636",
+    "type": "Base",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-308",
+    "name": "Bloodreaver Flesh",
+    "hex": "#6A4848",
+    "type": "Layer",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-309",
+    "name": "Bugman's Glow",
+    "hex": "#845045",
+    "type": "Base",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-310",
+    "name": "Catachan Fleshtone",
+    "hex": "#442B25",
+    "type": "Base",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-311",
+    "name": "Ceramite White",
+    "hex": "#FFFFFF",
+    "type": "Base",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-312",
+    "name": "Death Korps Drab",
+    "hex": "#3D4539",
+    "type": "Base",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-313",
+    "name": "Emperor's Children",
+    "hex": "#B94278",
+    "type": "Layer",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-314",
+    "name": "Ionrach Skin",
+    "hex": "#97A384",
+    "type": "Base",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-315",
+    "name": "Kakophoni Purple",
+    "hex": "#8869AE",
+    "type": "Layer",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-316",
+    "name": "Thondia Brown",
+    "hex": "#54302A",
+    "type": "Base",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-317",
+    "name": "Canoptek Alloy",
+    "hex": "#C0A870",
+    "type": "Layer",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-318",
+    "name": "Castellax Bronze",
+    "hex": "#907050",
+    "type": "Layer",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-319",
+    "name": "Agrax Earthshade Gloss",
+    "hex": "#5A543C",
+    "type": "Shade",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-320",
+    "name": "Cryptek Armourshade Gloss",
+    "hex": "#3A5050",
+    "type": "Shade",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-321",
+    "name": "Nuln Oil Gloss",
+    "hex": "#151203",
+    "type": "Shade",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-322",
+    "name": "Reikland Fleshshade Gloss",
+    "hex": "#A34529",
+    "type": "Shade",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-323",
+    "name": "Changeling Pink",
+    "hex": "#F4AFCE",
+    "type": "Dry",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-324",
+    "name": "Chronus Blue",
+    "hex": "#6E97CF",
+    "type": "Dry",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-325",
+    "name": "Hellion Green",
+    "hex": "#83C3A9",
+    "type": "Dry",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-326",
+    "name": "Kindleflame",
+    "hex": "#EFB494",
+    "type": "Dry",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-327",
+    "name": "Sigmarite",
+    "hex": "#DAC38D",
+    "type": "Dry",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-328",
+    "name": "Verminlord Hide",
+    "hex": "#773A37",
+    "type": "Dry",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-329",
+    "name": "Ardcoat",
+    "hex": "#F0F0F0",
+    "type": "Technical",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-330",
+    "name": "Contrast Medium",
+    "hex": "#F0F0F0",
+    "type": "Technical",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-331",
+    "name": "Lahmian Medium",
+    "hex": "#F0F0F0",
+    "type": "Technical",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-332",
+    "name": "Mordant Earth",
+    "hex": "#1A1A18",
+    "type": "Technical",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-333",
+    "name": "Nurgles Rot",
+    "hex": "#9D8C30",
+    "type": "Technical",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-334",
+    "name": "Soulstone Blue",
+    "hex": "#294C86",
+    "type": "Technical",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-335",
+    "name": "Spiritstone Red",
+    "hex": "#FD5D3D",
+    "type": "Technical",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-336",
+    "name": "Stormshield",
+    "hex": "#F0F0F0",
+    "type": "Technical",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-337",
+    "name": "Waystone Green",
+    "hex": "#018675",
+    "type": "Technical",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-338",
+    "name": "Bloodletter",
+    "hex": "#CB2924",
+    "type": "Technical",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-339",
+    "name": "Guilliman Blue",
+    "hex": "#2E83C6",
+    "type": "Technical",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-340",
+    "name": "Lamenters Yellow",
+    "hex": "#FBF44C",
+    "type": "Technical",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "cit-341",
+    "name": "Waywatcher Green",
+    "hex": "#78B04B",
+    "type": "Technical",
+    "description": "",
+    "comparable": []
   }
 ]
