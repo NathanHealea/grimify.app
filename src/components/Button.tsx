@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import type { ComponentProps } from 'react';
 
 export type ButtonVariant = 'default' | 'outline' | 'ghost';
-export type ButtonColor = 'default' | 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | 'neutral' | 'citadel'| 'army-painter' | 'vallejo' | 'green-stuff-world' | 'complementary' | 'split' | 'analogous' | (string & {});
+export type ButtonColor = 'default' | 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | 'neutral' | 'complementary' | 'split' | 'analogous' | (string & {});
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 export type ButtonShape = 'default' | 'circle';
 

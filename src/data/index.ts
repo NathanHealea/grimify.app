@@ -1,5 +1,6 @@
 import type { Brand, Paint, PaintEntry } from '@/types/paint';
 
+import akInteractiveData from './paints/ak-interactive.json';
 import brandsData from './brands.json';
 import armyPainterData from './paints/army-painter.json';
 import citadelData from './paints/citadel.json';
@@ -11,6 +12,7 @@ const brandPaints: [string, PaintEntry[]][] = [
   ['army-painter', armyPainterData],
   ['vallejo', vallejoData],
   ['green-stuff-world', greenStuffWorldData],
+  ['ak-interactive', akInteractiveData],
 ];
 
 export const brands: Brand[] = brandsData;

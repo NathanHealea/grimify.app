@@ -2,7 +2,7 @@
 
 **Epic:** Paint Information
 **Type:** Enhancement
-**Status:** Todo
+**Status:** Done
 
 ## Summary
 
@@ -18,20 +18,20 @@ Current state: 983 paints across 4 brands. Target: significantly expanded covera
 
 ## Acceptance Criteria
 
-- [ ] AK Interactive brand entry exists in `src/data/brands.json`
-- [ ] `src/data/paints/ak-interactive.json` exists with paints from PaintPad
-- [ ] `src/data/index.ts` imports and merges AK Interactive data
-- [ ] Army Painter paint count increases (new ranges added from PaintPad)
-- [ ] Army Painter `types` array in `brands.json` updated with new range names
-- [ ] Citadel paints cross-referenced — missing paints added, hex values updated where PaintPad has better data
-- [ ] Green Stuff World paint count increases beyond 32
-- [ ] Vallejo paint count increases (new ranges added from PaintPad)
-- [ ] Vallejo `types` array in `brands.json` updated with new range names
-- [ ] All paint entries follow the JSON schema: `id`, `name`, `hex`, `type`, `description`, `comparable`
-- [ ] No duplicate paint IDs within any brand file
-- [ ] Every `type` value used in paint entries exists in the brand's `types` array in `brands.json`
-- [ ] `npm run build` succeeds
-- [ ] `npm run lint` passes
+- [x] AK Interactive brand entry exists in `src/data/brands.json`
+- [x] `src/data/paints/ak-interactive.json` exists with paints from PaintPad
+- [x] `src/data/index.ts` imports and merges AK Interactive data
+- [x] Army Painter paint count increases (new ranges added from PaintPad)
+- [x] Army Painter `types` array in `brands.json` updated with new range names
+- [x] Citadel paints cross-referenced — missing paints added, hex values updated where PaintPad has better data
+- [x] Green Stuff World paint count increases beyond 32
+- [x] Vallejo paint count increases (new ranges added from PaintPad)
+- [x] Vallejo `types` array in `brands.json` updated with new range names
+- [x] All paint entries follow the JSON schema: `id`, `name`, `hex`, `type`, `description`, `comparable`
+- [x] No duplicate paint IDs within any brand file
+- [x] Every `type` value used in paint entries exists in the brand's `types` array in `brands.json`
+- [x] `npm run build` succeeds
+- [x] `npm run lint` passes
 
 ## Implementation Plan
 
@@ -214,6 +214,10 @@ Commit: `feat(data): expand vallejo paints from paintpad`
 5. Run `npm run lint` — fix any warnings
 
 Commit (if fixes needed): `fix(data): resolve validation issues`
+
+### Notes
+
+- **AK Interactive coverage** — Acrylic paint lines are included (3rd Gen Acrylics, 3rd Gen Intense, 3rd Gen Metallic, Acrylics, Acrylics AFV/Air/Figure/Naval/Primer, Abteilung 502). Enamel and weathering products (e.g., Streaking Grime) are not covered.
 
 ### Risks & Considerations
 

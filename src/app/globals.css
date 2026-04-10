@@ -44,10 +44,6 @@
 
 /* ---- Custom Colors ----  */
 :root {
-  --color-citadel: oklch(85.09% 0.15175 88.943);
-  --color-army-painter: oklch(57.075% 0.20016 26.055);
-  --color-vallejo: oklch(51.064% 0.16005 255.986);
-  --color-green-stuff-world: oklch(51.969% 0.13592 144.115);
   --color-complementary: oklch(59.986% 0.19941 29.987);
   --color-split:  oklch(64.011% 0.11958 223.348);
   --color-analogous: oklch(60.649% 0.12787 75.058);
@@ -56,22 +52,6 @@
 
 /* ---- Button ----  */
 @layer utilities {
-  .btn-citadel {
-    --btn-color: var(--color-citadel);
-  }
-
-  .btn-army-painter {
-    --btn-color: var(--color-army-painter);
-  }
-
-  .btn-vallejo {
-    --btn-color: var(--color-vallejo);
-  }
-
-  .btn-green-stuff-world {
-    --btn-color: var(--color-green-stuff-world);
-  }
-
   .btn-complementary {
     --btn-color: var(--color-complementary);
   }

@@ -2821,5 +2821,1405 @@
     "type": "Speedpaint",
     "description": "",
     "comparable": []
+  },
+  {
+    "id": "ap-287",
+    "name": "Abomination Gore",
+    "hex": "#6C1E10",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-288",
+    "name": "Arid Earth",
+    "hex": "#FAECC3",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-289",
+    "name": "Babe Blonde",
+    "hex": "#F8DD0D",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-290",
+    "name": "Banshee Brown",
+    "hex": "#C3B097",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-291",
+    "name": "Basilisk Brown",
+    "hex": "#CD8315",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-292",
+    "name": "Castle Grey",
+    "hex": "#F1F0E0",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-293",
+    "name": "Centaur Skin",
+    "hex": "#DEABA0",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-294",
+    "name": "Chaotic Red",
+    "hex": "#6C1E10",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-295",
+    "name": "Combat Fatigue",
+    "hex": "#878E5C",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-296",
+    "name": "Commando Green",
+    "hex": "#827B39",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-297",
+    "name": "Corpse Pale",
+    "hex": "#EDCCAD",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-298",
+    "name": "Crusted Sore",
+    "hex": "#611624",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-299",
+    "name": "Crypt Wraith",
+    "hex": "#606050",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-300",
+    "name": "Cultist Robe",
+    "hex": "#756E60",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-301",
+    "name": "Dark Sky",
+    "hex": "#2B4B5F",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-302",
+    "name": "Dark Stone",
+    "hex": "#605752",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-303",
+    "name": "Deep Blue",
+    "hex": "#083251",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-304",
+    "name": "Dirt Spatter",
+    "hex": "#5E3827",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-305",
+    "name": "Drake Tooth",
+    "hex": "#CFCBB4",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-306",
+    "name": "Dungeon Grey",
+    "hex": "#686C71",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-307",
+    "name": "Electric Blue",
+    "hex": "#508CBE",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-308",
+    "name": "Elemental Bolt",
+    "hex": "#009A82",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-309",
+    "name": "Elf Green",
+    "hex": "#495122",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-310",
+    "name": "Elven Flesh",
+    "hex": "#F5D5B0",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-311",
+    "name": "Field Grey",
+    "hex": "#787C78",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-312",
+    "name": "Filthy Cape",
+    "hex": "#7C7863",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-313",
+    "name": "Fire Lizard",
+    "hex": "#D67128",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-314",
+    "name": "Fog Grey",
+    "hex": "#6C8FAC",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-315",
+    "name": "Goblin Green",
+    "hex": "#348941",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-316",
+    "name": "Gorgon Hide",
+    "hex": "#C7D2E4",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-317",
+    "name": "Griffon Blue",
+    "hex": "#215383",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-318",
+    "name": "Grimoire Purple",
+    "hex": "#805259",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-319",
+    "name": "Hardened Carapace",
+    "hex": "#4C473F",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-320",
+    "name": "Hemp Rope",
+    "hex": "#94763A",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-321",
+    "name": "Ice Storm",
+    "hex": "#639EC9",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-322",
+    "name": "Jungle Green",
+    "hex": "#88AC2E",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-323",
+    "name": "Kobold Skin",
+    "hex": "#C9A484",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-324",
+    "name": "Kraken Skin",
+    "hex": "#71C591",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-325",
+    "name": "Mars Red",
+    "hex": "#B73B37",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-326",
+    "name": "Monster Brown",
+    "hex": "#855C2A",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-327",
+    "name": "Moon Dust",
+    "hex": "#E8D468",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-328",
+    "name": "Mouldy Clothes",
+    "hex": "#447B3A",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-329",
+    "name": "Mummy Robes",
+    "hex": "#EBDED5",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-330",
+    "name": "Mutant Hue",
+    "hex": "#A58084",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-331",
+    "name": "Mythical Orange",
+    "hex": "#E73D24",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-332",
+    "name": "Necromancer Cloak",
+    "hex": "#3C3D37",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-333",
+    "name": "Oozing Purple",
+    "hex": "#AA94B4",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-334",
+    "name": "Orc Blood",
+    "hex": "#925F6E",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-335",
+    "name": "Phoenix Flames",
+    "hex": "#FAA61A",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-336",
+    "name": "Poisonous Cloud",
+    "hex": "#CDDE4A",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-337",
+    "name": "Royal Cloak",
+    "hex": "#15999C",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-338",
+    "name": "Scaly Hide",
+    "hex": "#859852",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-339",
+    "name": "Scar Tissue",
+    "hex": "#CA8772",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-340",
+    "name": "Snake Scales",
+    "hex": "#8AB239",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-341",
+    "name": "Spaceship Exterior",
+    "hex": "#CDCED0",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-342",
+    "name": "Stone Golem",
+    "hex": "#B9BAB7",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-343",
+    "name": "Sulphide Ochre",
+    "hex": "#C68512",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-344",
+    "name": "Tanned Flesh",
+    "hex": "#BC745E",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-345",
+    "name": "Toxic Boils",
+    "hex": "#A67284",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-346",
+    "name": "Toxic Mist",
+    "hex": "#39C0C5",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-347",
+    "name": "Troglodyte Blue",
+    "hex": "#0889BA",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-348",
+    "name": "Troll Claws",
+    "hex": "#CB8B4E",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-349",
+    "name": "Vampire Red",
+    "hex": "#981D34",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-350",
+    "name": "Venom Wyrm",
+    "hex": "#6A653E",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-351",
+    "name": "Viking Blue",
+    "hex": "#00609A",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-352",
+    "name": "Voidshield Blue",
+    "hex": "#2CA2D9",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-353",
+    "name": "Warlock Purple",
+    "hex": "#BB5B64",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-354",
+    "name": "Wasteland Soil",
+    "hex": "#774B58",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-355",
+    "name": "Werewolf Fur",
+    "hex": "#785E4E",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-356",
+    "name": "Witch Brew",
+    "hex": "#92963E",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-357",
+    "name": "Wizards Orb",
+    "hex": "#00726A",
+    "type": "Warpaints",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-358",
+    "name": "Azure Magic",
+    "hex": "#4A90C8",
+    "type": "Warpaints Metallic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-359",
+    "name": "Elven Armour",
+    "hex": "#8DB580",
+    "type": "Warpaints Metallic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-360",
+    "name": "Fairy Dust",
+    "hex": "#E8D8F0",
+    "type": "Warpaints Metallic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-361",
+    "name": "Gemstone",
+    "hex": "#2AAF6E",
+    "type": "Warpaints Metallic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-362",
+    "name": "Glitter Green",
+    "hex": "#5AB872",
+    "type": "Warpaints Metallic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-363",
+    "name": "Night Scales",
+    "hex": "#2A3A40",
+    "type": "Warpaints Metallic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-364",
+    "name": "Royal Purple",
+    "hex": "#6A3085",
+    "type": "Warpaints Metallic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-365",
+    "name": "Zephyr Pink",
+    "hex": "#F0B0C0",
+    "type": "Warpaints Metallic",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-366",
+    "name": "Flesh Wash",
+    "hex": "#C08060",
+    "type": "Warpaints Wash",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-367",
+    "name": "Mid Brown",
+    "hex": "#6A4A30",
+    "type": "Warpaints Wash",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-368",
+    "name": "Military Shader",
+    "hex": "#4A5040",
+    "type": "Warpaints Wash",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-369",
+    "name": "Blighted Green",
+    "hex": "#4A6A3A",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-370",
+    "name": "Bloodmoon Red",
+    "hex": "#8C1A1A",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-371",
+    "name": "Emperor Gold",
+    "hex": "#C8A840",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-372",
+    "name": "Grimdark Shadow",
+    "hex": "#3A3430",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-373",
+    "name": "Ironclad Grey",
+    "hex": "#6A6E70",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-374",
+    "name": "Ivory White",
+    "hex": "#F5F0E0",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-375",
+    "name": "Moonbeam Yellow",
+    "hex": "#F8E870",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-376",
+    "name": "The Darkness",
+    "hex": "#1A1A18",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-377",
+    "name": "Warm Skin Shade",
+    "hex": "#C08A6A",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-378",
+    "name": "Blanched Berry",
+    "hex": "#C8708A",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-379",
+    "name": "Fiery Vermilion",
+    "hex": "#E84030",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-380",
+    "name": "Grim Rust",
+    "hex": "#8A4A20",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-381",
+    "name": "Heavy Metal",
+    "hex": "#808080",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-382",
+    "name": "Midnight Olive",
+    "hex": "#3A3A20",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-383",
+    "name": "Ruddy Terra",
+    "hex": "#A06040",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-384",
+    "name": "Sunburst Ochre",
+    "hex": "#D8A030",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-385",
+    "name": "Tainted Garden",
+    "hex": "#5A8A40",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-386",
+    "name": "Turnbull Turquoise",
+    "hex": "#30A0A0",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-387",
+    "name": "Voodoo Shade",
+    "hex": "#4A3050",
+    "type": "Masterclass",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-388",
+    "name": "Barren Yellow",
+    "hex": "#D8C060",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-389",
+    "name": "Brethil Blush",
+    "hex": "#E0B0A0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-390",
+    "name": "Broodmother Purple",
+    "hex": "#5A2A5A",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-391",
+    "name": "Charred Bone",
+    "hex": "#A0987A",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-392",
+    "name": "Chimera Red",
+    "hex": "#C03030",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-393",
+    "name": "Encarmine Red",
+    "hex": "#A02020",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-394",
+    "name": "Fairy Pink",
+    "hex": "#F0C0D0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-395",
+    "name": "Gnome Cheeks",
+    "hex": "#E0A090",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-396",
+    "name": "Gremlin Green",
+    "hex": "#50AA50",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-397",
+    "name": "Hazardous Smog",
+    "hex": "#C0C050",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-398",
+    "name": "Husk Brown",
+    "hex": "#8A7050",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-399",
+    "name": "Incursion Orange",
+    "hex": "#E07030",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-400",
+    "name": "Iron Wolf",
+    "hex": "#6A6A70",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-401",
+    "name": "Magnolia Brown",
+    "hex": "#9A7A5A",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-402",
+    "name": "Majestic Fortress",
+    "hex": "#6A6A68",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-403",
+    "name": "Meteor Rock",
+    "hex": "#7A7A78",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-404",
+    "name": "Militia Green",
+    "hex": "#5A7A40",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-405",
+    "name": "Molten Orange",
+    "hex": "#F08030",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-406",
+    "name": "Nomad Flesh",
+    "hex": "#D0A080",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-407",
+    "name": "Ocean Depths",
+    "hex": "#1A3A5A",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-408",
+    "name": "Omega Blue",
+    "hex": "#2A5090",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-409",
+    "name": "Pestilent Flesh",
+    "hex": "#B0A870",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-410",
+    "name": "Rawhide Brown",
+    "hex": "#9A7A50",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-411",
+    "name": "Regiment Grey",
+    "hex": "#808080",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-412",
+    "name": "Ruinous Spell",
+    "hex": "#6A40A0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-413",
+    "name": "Sapphire Gem",
+    "hex": "#2050B0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-414",
+    "name": "Savage Green",
+    "hex": "#308A30",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-415",
+    "name": "Shark White",
+    "hex": "#F0F0F0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-416",
+    "name": "Thunder Storm",
+    "hex": "#4A5060",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-417",
+    "name": "Traitor Red",
+    "hex": "#A02828",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-418",
+    "name": "Undergrowth Green",
+    "hex": "#4A6A30",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-419",
+    "name": "Unforgiven Green",
+    "hex": "#2A4A20",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-420",
+    "name": "Witchbane Plum",
+    "hex": "#6A3050",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-421",
+    "name": "Raven Black",
+    "hex": "#1A1A20",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-422",
+    "name": "Yeti White",
+    "hex": "#F8F8F8",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-423",
+    "name": "Archangel Red",
+    "hex": "#B82020",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-424",
+    "name": "Bleached Bone",
+    "hex": "#E0D8C0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-425",
+    "name": "Bogey Green",
+    "hex": "#3A6A3A",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-426",
+    "name": "Bullwhack Brown",
+    "hex": "#7A5A30",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-427",
+    "name": "Cadre Grey",
+    "hex": "#7A7A78",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-428",
+    "name": "Canopy Green",
+    "hex": "#3A7A3A",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-429",
+    "name": "Consul Blue",
+    "hex": "#2A4A7A",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-430",
+    "name": "Cosmic Dust",
+    "hex": "#9090A0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-431",
+    "name": "Coven Purple",
+    "hex": "#5A2A6A",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-432",
+    "name": "Crow Hue",
+    "hex": "#2A2A28",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-433",
+    "name": "Cypress Brown",
+    "hex": "#6A5A40",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-434",
+    "name": "Drab Green",
+    "hex": "#5A6A40",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-435",
+    "name": "Exile Green",
+    "hex": "#1A4A2A",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-436",
+    "name": "Feral Green",
+    "hex": "#50A040",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-437",
+    "name": "Fey Pink",
+    "hex": "#F0A0B0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-438",
+    "name": "Feywild Glow",
+    "hex": "#A0F0A0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-439",
+    "name": "Hobgoblin Hue",
+    "hex": "#A06840",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-440",
+    "name": "Imp Yellow",
+    "hex": "#F0D020",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-441",
+    "name": "Ionic Blue",
+    "hex": "#3070C0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-442",
+    "name": "Leviathan Light",
+    "hex": "#B0D0E0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-443",
+    "name": "Orange Magma",
+    "hex": "#F06020",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-444",
+    "name": "Phantasmal Blue",
+    "hex": "#7090C0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-445",
+    "name": "Potion Green",
+    "hex": "#30A060",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-446",
+    "name": "Psychic Shock",
+    "hex": "#A040D0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-447",
+    "name": "Rebel Red",
+    "hex": "#D03030",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-448",
+    "name": "Storm Wolf",
+    "hex": "#6080A0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-449",
+    "name": "Talisman Purple",
+    "hex": "#7A40A0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-450",
+    "name": "Twilight Sky",
+    "hex": "#4060A0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-451",
+    "name": "Viper Brown",
+    "hex": "#6A4A20",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-452",
+    "name": "Wildling Flesh",
+    "hex": "#D0A070",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-453",
+    "name": "Wyrmling Red",
+    "hex": "#C02830",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-454",
+    "name": "Yellow Dune",
+    "hex": "#D8C060",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-455",
+    "name": "Zombie Flesh",
+    "hex": "#A0A870",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-456",
+    "name": "Blue Flux",
+    "hex": "#3060F0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-457",
+    "name": "Gauss Green",
+    "hex": "#30F060",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-458",
+    "name": "Hot Pink",
+    "hex": "#F030A0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-459",
+    "name": "Neon Yellow",
+    "hex": "#F0F030",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-460",
+    "name": "Safety Orange",
+    "hex": "#F07020",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
+  },
+  {
+    "id": "ap-461",
+    "name": "Violet Volt",
+    "hex": "#8030F0",
+    "type": "Warpaints Air",
+    "description": "",
+    "comparable": []
   }
 ]
