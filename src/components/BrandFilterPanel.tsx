@@ -34,7 +34,7 @@ const isFilterActive = (id: string) => (brandFilter.size > 0 && brandFilter.has(
           <Button
             key={brand.id}
             variant='outline'
-            color={brand.id}
+            customColor={brand.color}
             className={'justify-start'}
             active={isFilterActive(brand.id)}
             onClick={() => handleToggleBrand(brand.id)}>
