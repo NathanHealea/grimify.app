@@ -24,16 +24,18 @@ Allow users to sign in or sign up using their Google or Discord accounts via Sup
 
 ## Key Files
 
-| Action   | File                                                     | Description                                                       |
-| -------- | -------------------------------------------------------- | ----------------------------------------------------------------- |
-| Modify   | `src/app/(auth)/sign-in/page.tsx`                        | Add Google and Discord OAuth buttons                              |
-| Modify   | `src/app/(auth)/sign-up/page.tsx`                        | Add Google and Discord OAuth buttons                              |
-| Modify   | `src/app/(auth)/actions.ts`                              | Add `signInWithGoogle()` and `signInWithDiscord()` server actions |
-| Existing | `src/app/auth/callback/route.ts`                         | Handles code exchange for OAuth redirect                          |
-| Modify   | `supabase/config.toml`                                   | Enable Google and Discord providers                               |
-| Create   | `supabase/migrations/XXXXXX_add_avatar_sync_trigger.sql` | Trigger to sync avatar from OAuth provider                        |
-| Modify   | `src/app/profile/setup/page.tsx`                         | Fetch OAuth display name, check uniqueness                        |
-| Modify   | `src/app/profile/setup/profile-form.tsx`                 | Accept `suggestedName` and `nameAlreadyTaken` props               |
+| Action   | File                                                              | Description                                          |
+| -------- | ----------------------------------------------------------------- | ---------------------------------------------------- |
+| Modify   | `supabase/config.toml`                                            | Enable Google and Discord providers                   |
+| Create   | `src/modules/auth/actions/sign-in-with-google.ts`                 | Server action for Google OAuth                        |
+| Create   | `src/modules/auth/actions/sign-in-with-discord.ts`                | Server action for Discord OAuth                       |
+| Create   | `src/modules/auth/components/oauth-buttons.tsx`                   | Client component with OAuth buttons and divider       |
+| Modify   | `src/app/(auth)/sign-in/page.tsx`                                 | Add `OAuthButtons` below sign-in form                 |
+| Modify   | `src/app/(auth)/sign-up/page.tsx`                                 | Add `OAuthButtons` below sign-up form                 |
+| Existing | `src/app/auth/callback/route.ts`                                  | Handles code exchange for OAuth redirect (no changes) |
+| Create   | `supabase/migrations/20260411000000_add_avatar_sync_trigger.sql`  | Trigger to sync avatar from OAuth provider            |
+| Modify   | `src/app/profile/setup/page.tsx`                                  | Extract OAuth display name, check uniqueness          |
+| Modify   | `src/modules/profile/components/profile-form.tsx`                 | Accept `suggestedName` and `nameAlreadyTaken` props   |
 
 ## Prerequisites
 
@@ -48,7 +50,7 @@ This feature depends on:
 
 **File:** `supabase/config.toml`
 
-Add `[auth.external.google]` and `[auth.external.discord]` sections after the existing `[auth.external.apple]` block. Both use `env()` references for secrets so credentials stay out of version control.
+Add `[auth.external.google]` and `[auth.external.discord]` sections after the existing `[auth.external.apple]` block (before `[auth.web3.solana]`). Both use `env()` references for secrets so credentials stay out of version control.
 
 ```toml
 [auth.external.google]
@@ -72,76 +74,86 @@ url = ""
 
 ### 2. Add OAuth server actions
 
-**File:** `src/app/(auth)/actions.ts`
+**Create:** `src/modules/auth/actions/sign-in-with-google.ts`
+**Create:** `src/modules/auth/actions/sign-in-with-discord.ts`
 
-Add two new exported async functions: `signInWithGoogle()` and `signInWithDiscord()`. These are standalone server actions (not form actions), so they take no parameters and return no state.
+Follow the existing one-file-per-action pattern in `src/modules/auth/actions/`. Each action is a standalone `'use server'` function (not a form action) that takes no parameters and returns no state.
 
 Each action:
-1. Creates a Supabase server client.
-2. Calls `supabase.auth.signInWithOAuth()` with the provider name and `redirectTo` set to `${origin}/auth/callback` (using the existing `getSiteUrl()` helper or request origin).
-3. If the call returns a URL, redirects to it via `redirect()`.
-4. If it returns an error, redirects to `/sign-in?error=<message>`.
+1. Creates a Supabase server client via `createClient()` from `@/lib/supabase/server`.
+2. Gets the origin from `headers()`, falling back to `getSiteUrl()` from `@/modules/auth/utils/get-site-url`.
+3. Calls `supabase.auth.signInWithOAuth()` with the provider name and `redirectTo` set to `${origin}/auth/callback`.
+4. If the call returns a URL, redirects to it via `redirect()`.
+5. If it returns an error, redirects to `/sign-in?error=<encoded message>`.
 
-Since `signInWithOAuth()` returns a redirect URL (not a session), the server action performs the redirect server-side. These actions are invoked directly from button `onClick` handlers via `useTransition`, not through `useActionState` forms.
+Since `signInWithOAuth()` returns a redirect URL (not a session), the server action performs the redirect server-side. These actions are invoked from button `onClick` handlers via `useTransition` in the client component.
 
-### 3. Add OAuth buttons to auth pages
+### 3. Create OAuth buttons client component
 
-**Files:** `src/app/(auth)/sign-in/page.tsx`, `src/app/(auth)/sign-up/page.tsx`
+**Create:** `src/modules/auth/components/oauth-buttons.tsx`
 
-On both pages, add a visual divider and two OAuth buttons below the existing email/password form, inside the `<CardContent>`:
+The sign-in and sign-up pages are **server components** that render client form components. OAuth buttons need interactivity (`useTransition`), so create a dedicated `'use client'` component:
 
-1. **Divider** — A horizontal rule with "or" text centered, using a `<div>` with `flex items-center gap-3` containing two `<hr>` elements and a `<span>` with "or" text.
+1. **Divider** — A `<div>` with `flex items-center gap-3` containing two `<hr>` elements and a centered `<span>` with "or" text.
+2. **OAuth buttons** — Two `<Button>` components styled with `btn btn-outline btn-block`:
+   - "Continue with Google" with an inline Google SVG icon (multicolor brand logo).
+   - "Continue with Discord" with an inline Discord SVG icon (`fill="currentColor"`).
+3. Uses `useTransition` — each button calls its server action via `startTransition`.
+4. Both buttons are disabled while any transition is pending.
+5. Outer wrapper has `mt-6` for spacing between the form and the divider.
 
-2. **OAuth buttons** — Two buttons styled with `btn btn-outline btn-block`:
-   - "Continue with Google" with an inline Google SVG icon (20×20).
-   - "Continue with Discord" with an inline Discord SVG icon (20×20).
+### 4. Add OAuth buttons to auth pages
 
-Each button calls the corresponding server action via `startTransition(() => signInWithGoogle())` from a `useTransition` hook. Both buttons are disabled while any transition is pending.
+**Modify:** `src/app/(auth)/sign-in/page.tsx`
+**Modify:** `src/app/(auth)/sign-up/page.tsx`
 
-Import the new actions at the top of each file. Since these pages are already `'use client'`, add `useTransition` to the React import.
+Import `OAuthButtons` from `@/modules/auth/components/oauth-buttons` and render it inside `<CardContent>` below the existing form component. Pages remain server components — all interactivity is encapsulated in the `OAuthButtons` client component.
 
-### 4. Avatar sync trigger migration
+### 5. Avatar sync trigger migration
 
-**File:** `supabase/migrations/<timestamp>_add_avatar_sync_trigger.sql`
+**Create:** `supabase/migrations/20260411000000_add_avatar_sync_trigger.sql`
 
-Create a database trigger function and trigger on the `profiles` table that runs on INSERT. The function:
+Create a `sync_avatar_from_auth()` trigger function and `on_profile_sync_avatar` trigger on the `profiles` table that runs `BEFORE INSERT FOR EACH ROW`. The function:
 
-1. Reads `avatar_url` from `auth.users.raw_user_meta_data` for the newly inserted row's `id`.
-2. If `NEW.avatar_url` is null and the metadata contains an `avatar_url`, sets `NEW.avatar_url` to the metadata value.
-3. Returns `NEW`.
+1. Short-circuits if `NEW.avatar_url` is not null (never overwrites user-set avatars).
+2. Reads `avatar_url` from `auth.users.raw_user_meta_data` for the newly inserted row's `id`.
+3. If the metadata contains a non-empty `avatar_url`, sets `NEW.avatar_url` to that value.
+4. Returns `NEW`.
 
-The function uses `SECURITY DEFINER` to access `auth.users` (which RLS would otherwise block). The trigger fires `BEFORE INSERT` so the avatar URL is set in the same transaction as the profile creation.
+The function uses `SECURITY DEFINER` with `set search_path = ''` to safely access `auth.users` (which RLS would otherwise block). The trigger fires `BEFORE INSERT` so the avatar URL is set in the same transaction as the profile creation.
 
 This ensures:
 - OAuth users get their provider profile picture automatically.
 - Email/password users (who have no metadata avatar) are unaffected.
 - If a user has already set an avatar (non-null), it is never overwritten.
 
-### 5. Pre-fill display name on profile setup
+### 6. Pre-fill display name on profile setup
 
-**File:** `src/app/profile/setup/page.tsx`
+**Modify:** `src/app/profile/setup/page.tsx`
 
-In the server component, after fetching the authenticated user:
+In the server component, after fetching the authenticated user and profile:
 
 1. Read `user.user_metadata` and extract a suggested display name by checking (in order): `full_name`, `name`, `custom_username`, `preferred_username`, `user_name`.
-2. If a suggested name is found, query the `profiles` table for an existing row with the same `display_name` (case-insensitive via `ilike`).
-3. Pass `suggestedName` and `nameAlreadyTaken` (boolean) as props to the `ProfileForm` client component.
+2. If a suggested name is found, query the `profiles` table for an existing row with a matching `display_name` (case-insensitive via `ilike`), excluding the current user.
+3. Use the suggested name as the display name default value (overriding the auto-generated `ProfileXXXX` name).
+4. Pass `suggestedName` and `nameAlreadyTaken` (boolean) as new props to the `ProfileForm` client component.
 
-**File:** `src/app/profile/setup/profile-form.tsx`
+**Modify:** `src/modules/profile/components/profile-form.tsx`
 
-Accept optional `suggestedName?: string` and `nameAlreadyTaken?: boolean` props:
+Add optional props `suggestedName?: string | null` and `nameAlreadyTaken?: boolean`:
 
-1. If `suggestedName` is provided, use it as the initial value for the display name input.
-2. If `nameAlreadyTaken` is true, render a warning message below the input: "The name '{suggestedName}' is already taken. Please choose a different name."
-3. The user can always change the pre-filled value before submitting.
+1. If `suggestedName` is provided, it's already used as the `defaultValues.display_name` from the page.
+2. If `nameAlreadyTaken` is true and `suggestedName` is set, render a warning message below the input: "The name '{suggestedName}' is already taken. Please choose a different name." (using `text-warning` styling).
+3. The warning appears in the same slot as the helper text / error message (mutually exclusive with validation errors).
+4. The user can always change the pre-filled value before submitting.
 
-### 6. Reuse existing auth callback
+### 7. Reuse existing auth callback
 
 **File:** `src/app/auth/callback/route.ts` — **No changes needed.**
 
 The existing route handler calls `supabase.auth.exchangeCodeForSession(code)` which works for both email confirmation and OAuth code exchange. After a successful exchange, the user is redirected to `/` (or the `next` query param). The middleware then handles redirecting profile-less users to `/profile/setup`.
 
-### 7. Verify build and lint
+### 8. Verify build and lint
 
 Run `npm run build` and `npm run lint` to confirm no errors are introduced.
 
