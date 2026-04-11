@@ -34,7 +34,7 @@
  * Base
  * ----------------------------------------------------------------------- */
 .btn {
-  @apply inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg
+  @apply inline-flex shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg
     text-sm font-medium whitespace-nowrap transition-all select-none outline-none
     focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50
     disabled:pointer-events-none disabled:opacity-50
