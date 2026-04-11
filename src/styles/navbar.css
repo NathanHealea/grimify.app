@@ -20,7 +20,8 @@
  * Base
  * ----------------------------------------------------------------------- */
 .navbar {
-  @apply flex h-14 w-full items-center border-b border-border bg-background px-4;
+  @apply flex h-14 w-full items-center px-4
+    border-b border-border bg-background;
 }
 
 /* -------------------------------------------------------------------------
@@ -42,5 +43,6 @@
  * Brand
  * ----------------------------------------------------------------------- */
 .navbar-brand {
-  @apply text-lg font-semibold tracking-tight text-foreground no-underline transition-colors hover:text-primary;
+  @apply text-lg font-semibold tracking-tight text-foreground
+    no-underline transition-colors hover:text-primary;
 }

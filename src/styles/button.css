@@ -76,7 +76,8 @@
 }
 
 .btn-ghost {
-  @apply bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground;
+  @apply bg-transparent text-muted-foreground
+    hover:bg-muted hover:text-foreground;
 }
 
 .btn-link {
