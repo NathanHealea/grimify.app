@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { OAuthButtons } from '@/modules/auth/components/oauth-buttons'
 import { SignInForm } from '@/modules/auth/components/sign-in-form'
 
 export default function SignInPage() {
@@ -12,6 +13,7 @@ export default function SignInPage() {
       </CardHeader>
       <CardContent>
         <SignInForm />
+        <OAuthButtons />
       </CardContent>
       <CardFooter className="justify-center">
         <p className="text-sm text-muted-foreground">

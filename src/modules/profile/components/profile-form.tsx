@@ -19,8 +19,20 @@ import { validateDisplayName } from '@/modules/profile/validation'
  *
  * @param props.defaultValues - Pre-populated form values (e.g. auto-generated display name).
  * @param props.submitLabel - Label text for the submit button.
+ * @param props.suggestedName - Display name suggested by an OAuth provider, or `null`.
+ * @param props.nameAlreadyTaken - Whether the suggested name conflicts with an existing profile.
  */
-export function ProfileForm({ defaultValues, submitLabel }: { defaultValues: ProfileFormValues; submitLabel: string }) {
+export function ProfileForm({
+  defaultValues,
+  submitLabel,
+  suggestedName,
+  nameAlreadyTaken,
+}: {
+  defaultValues: ProfileFormValues
+  submitLabel: string
+  suggestedName?: string | null
+  nameAlreadyTaken?: boolean
+}) {
   const [state, formAction, pending] = useActionState<ProfileFormState, FormData>(setupProfile, null)
   const [clientError, setClientError] = useState<string | null>(null)
 
@@ -61,6 +73,10 @@ export function ProfileForm({ defaultValues, submitLabel }: { defaultValues: Pro
         />
         {clientError || state?.errors?.display_name ? (
           <p className="form-message text-sm text-destructive">{clientError || state?.errors?.display_name}</p>
+        ) : nameAlreadyTaken && suggestedName ? (
+          <p className="text-sm text-amber-600 dark:text-amber-400">
+            The name &apos;{suggestedName}&apos; is already taken. Please choose a different name.
+          </p>
         ) : (
           <p className="text-sm text-muted-foreground">2-50 characters. Letters, numbers, hyphens, and underscores only.</p>
         )}

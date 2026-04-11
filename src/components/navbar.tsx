@@ -1,19 +1,33 @@
 import Link from 'next/link'
 
-import { signOut } from '@/modules/auth/actions/sign-out'
 import { createClient } from '@/lib/supabase/server'
+import { UserMenu } from '@/modules/auth/components/user-menu'
 
 /**
  * Top-level navigation bar (server component).
  *
  * Shows the brand link and auth-state-dependent actions:
- * sign-in/sign-up links for guests, sign-out button for authenticated users.
+ * sign-in/sign-up links for guests, user avatar dropdown for authenticated users.
  */
 export async function Navbar() {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
+
+  let displayName: string | null = null
+  let avatarUrl: string | null = null
+
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('display_name, avatar_url')
+      .eq('id', user.id)
+      .single()
+
+    displayName = profile?.display_name ?? null
+    avatarUrl = profile?.avatar_url ?? null
+  }
 
   return (
     <nav className="navbar">
@@ -23,12 +37,8 @@ export async function Navbar() {
         </Link>
       </div>
       <div className="navbar-end">
-        {user ? (
-          <form action={signOut}>
-            <button type="submit" className="btn btn-ghost btn-sm">
-              Sign Out
-            </button>
-          </form>
+        {user && displayName ? (
+          <UserMenu displayName={displayName} avatarUrl={avatarUrl} />
         ) : (
           <>
             <Link href="/sign-in" className="btn btn-ghost btn-sm">
