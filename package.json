@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "eslint",
     "prettify": "prettier --write .",
+    "format": "prettier --write . && eslint --fix",
     "supabase:start": "npx supabase start",
     "supabase:stop": "npx supabase stop",
     "supabase:restart": "npx supabase stop && npx supabase start",
