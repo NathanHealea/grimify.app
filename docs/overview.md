@@ -56,7 +56,7 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Color scheme and theme](./00-marketing-and-branding/color-scheme-and-theme.md)
+- [x] [Color scheme and theme](./00-marketing-and-branding/color-scheme-and-theme.md)
 - [ ] [Metadata and OpenGraph](./00-marketing-and-branding/metadata-and-opengraph.md)
 - [ ] [Branding images](./00-marketing-and-branding/branding-images.md)
 - [ ] [Terms of Use](./00-marketing-and-branding/terms-of-use.md)
