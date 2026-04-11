@@ -1,12 +1,10 @@
-@layer components {
-  .label {
-    @apply flex items-center gap-2 text-sm leading-none font-medium select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-50;
-  }
+.label {
+  @apply flex items-center gap-2 text-sm leading-none font-medium select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-50;
+}
 
-  .label-text {
-    @apply text-foreground text-sm font-medium;
-  }
-  .label-text-alt {
-    @apply text-muted-foreground text-xs font-normal;
-  }
+.label-text {
+  @apply text-sm font-medium text-foreground;
+}
+.label-text-alt {
+  @apply text-xs font-normal text-muted-foreground;
 }
