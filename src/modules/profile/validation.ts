@@ -1,16 +1,17 @@
-export type ProfileFormState = {
-  errors?: { display_name?: string }
-  error?: string
-} | null
-
 /**
  * Validates a display name string.
- * Returns an error message string if invalid, or `null` if valid.
  *
+ * Used both client-side (pre-submit) and server-side (in the action)
+ * to enforce consistent rules.
+ *
+ * @param name - The raw display name input to validate.
+ * @returns An error message string if invalid, or `null` if valid.
+ *
+ * @remarks
  * Rules:
  * - Required (non-empty after trim)
  * - 2–50 characters
- * - Only letters, numbers, hyphens, underscores
+ * - Only letters, numbers, hyphens, underscores (`/^[a-zA-Z0-9_-]+$/`)
  */
 export function validateDisplayName(name: string): string | null {
   const trimmed = name.trim()
