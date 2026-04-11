@@ -56,6 +56,134 @@ npx shadcn@latest add card input label
 
 These provide the form structure. The existing `Button` component is already available.
 
+### Step 2A: Add daisyUI-style CSS for card, input, label, and form
+
+Create CSS files in `src/styles/` using `@layer components` with daisyUI naming conventions, adapted from the duckling project's styling patterns. Import them in `src/app/globals.css`.
+
+**File:** `src/styles/card.css`
+
+Card classes: `.card`, `.card-body`, `.card-title`, `.card-description`, `.card-footer`. Sizes: `.card-compact`, `.card-normal`. Variants: `.card-bordered`.
+
+```css
+@layer components {
+  .card {
+    @apply rounded-xl border border-border bg-card text-card-foreground shadow-sm;
+  }
+
+  .card-body {
+    @apply flex flex-col gap-4 p-6;
+  }
+
+  .card-compact .card-body {
+    @apply gap-3 p-4;
+  }
+
+  .card-title {
+    @apply text-lg font-semibold leading-none tracking-tight;
+  }
+
+  .card-description {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .card-footer {
+    @apply flex items-center p-6 pt-0;
+  }
+
+  .card-bordered {
+    @apply border-2;
+  }
+}
+```
+
+**File:** `src/styles/input.css`
+
+Input classes: `.input` (base), sizes (`.input-xs`, `.input-sm`, `.input-md`, `.input-lg`), colors (`.input-primary`, `.input-secondary`, `.input-accent`, `.input-error`), states (`.input-disabled`, `.input-ghost`). Also includes `.textarea` base and sizes.
+
+```css
+@layer components {
+  .input {
+    @apply h-9 w-full min-w-0 rounded-lg border border-input bg-transparent
+      px-3 py-1.5 text-sm transition-colors outline-none
+      placeholder:text-muted-foreground
+      focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50
+      disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50
+      aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20;
+  }
+
+  .input-xs { @apply h-6 px-2 py-0.5 text-xs; }
+  .input-sm { @apply h-7 px-2.5 py-1 text-xs; }
+  .input-md { @apply h-9 px-3 py-1.5 text-sm; }
+  .input-lg { @apply h-11 px-4 py-2.5 text-base; }
+
+  .input-primary { @apply border-primary focus-visible:border-primary focus-visible:ring-primary/50; }
+  .input-secondary { @apply border-secondary focus-visible:border-secondary focus-visible:ring-secondary/50; }
+  .input-accent { @apply border-accent focus-visible:border-accent focus-visible:ring-accent/50; }
+  .input-error { @apply border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20; }
+
+  .input-disabled { @apply pointer-events-none cursor-not-allowed opacity-50; }
+  .input-ghost { @apply border-transparent bg-transparent focus-visible:border-ring focus-visible:bg-transparent; }
+
+  .textarea {
+    @apply field-sizing-content w-full min-w-0 rounded-lg border border-input bg-transparent
+      px-3 py-2 text-sm transition-colors outline-none
+      placeholder:text-muted-foreground
+      focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50
+      disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50
+      aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20;
+    min-height: 5rem;
+    resize: vertical;
+  }
+
+  .textarea-xs { @apply px-2 py-1 text-xs; min-height: 3rem; }
+  .textarea-sm { @apply px-2.5 py-1.5 text-xs; min-height: 4rem; }
+  .textarea-md { @apply px-3 py-2 text-sm; min-height: 5rem; }
+  .textarea-lg { @apply px-4 py-3 text-base; min-height: 7rem; }
+}
+```
+
+**File:** `src/styles/label.css`
+
+Label classes: `.label`, `.label-text`, `.label-text-alt`.
+
+```css
+@layer components {
+  .label {
+    @apply flex items-center gap-2 text-sm leading-none font-medium select-none
+      peer-disabled:cursor-not-allowed peer-disabled:opacity-50;
+  }
+
+  .label-text { @apply text-sm font-medium text-foreground; }
+  .label-text-alt { @apply text-xs font-normal text-muted-foreground; }
+}
+```
+
+**File:** `src/styles/form.css`
+
+Form layout classes: `.form-control`, `.form-item`, `.form-label`, `.form-message`, `.form-description`.
+
+```css
+@layer components {
+  .form-control { @apply flex w-full flex-col gap-5; }
+  .form-item { @apply flex w-full flex-col gap-2; }
+  .form-label {
+    @apply text-sm leading-none font-medium select-none
+      peer-disabled:cursor-not-allowed peer-disabled:opacity-50;
+  }
+  .form-message { @apply text-sm font-normal text-destructive; }
+  .form-description { @apply text-sm text-muted-foreground; }
+}
+```
+
+**Update:** `src/app/globals.css` — add imports after the existing tailwind imports:
+
+```css
+@import '../styles/card.css';
+@import '../styles/input.css';
+@import '../styles/label.css';
+@import '../styles/form.css';
+```
+
 ### Step 3: Create `.env.local`
 
 ```env
