@@ -1,7 +1,45 @@
+/*
+ * Input & Textarea Components
+ *
+ * Based on the daisyUI Input and Textarea component APIs.
+ * https://daisyui.com/components/input/
+ * https://daisyui.com/components/textarea/
+ *
+ * Implements daisyUI's class naming conventions (.input, .input-primary,
+ * .input-sm, etc.) using this project's Tailwind CSS theme tokens instead of
+ * daisyUI's built-in theme system.
+ *
+ * Input Classes:
+ *   Base:    .input              — Default single-line input styling (h-9, text-sm)
+ *   Sizes:   .input-xs           — Extra-small (h-6, text-xs)
+ *            .input-sm           — Small (h-7, text-xs)
+ *            .input-md           — Medium / default (h-9, text-sm)
+ *            .input-lg           — Large (h-11, text-base)
+ *   Colors:  .input-primary      — Primary border & ring color
+ *            .input-secondary    — Secondary border & ring color
+ *            .input-accent       — Accent border & ring color
+ *            .input-error        — Destructive/error border & ring color
+ *   States:  .input-disabled     — Disabled appearance (pointer-events-none, opacity-50)
+ *            .input-ghost        — Borderless/transparent style
+ *
+ * Textarea Classes:
+ *   Base:    .textarea           — Default multi-line input styling (min-height 5rem)
+ *   Sizes:   .textarea-xs        — Extra-small (min-height 3rem, text-xs)
+ *            .textarea-sm        — Small (min-height 4rem, text-xs)
+ *            .textarea-md        — Medium / default (min-height 5rem, text-sm)
+ *            .textarea-lg        — Large (min-height 7rem, text-base)
+ */
+
+/* -------------------------------------------------------------------------
+ * Input — Base
+ * ----------------------------------------------------------------------- */
 .input {
   @apply h-9 w-full min-w-0 rounded-lg border border-input bg-transparent px-3 py-1.5 text-sm transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20;
 }
 
+/* -------------------------------------------------------------------------
+ * Input — Sizes
+ * ----------------------------------------------------------------------- */
 .input-xs {
   @apply h-6 px-2 py-0.5 text-xs;
 }
@@ -15,6 +53,9 @@
   @apply h-11 px-4 py-2.5 text-base;
 }
 
+/* -------------------------------------------------------------------------
+ * Input — Colors
+ * ----------------------------------------------------------------------- */
 .input-primary {
   @apply border-primary focus-visible:border-primary focus-visible:ring-primary/50;
 }
@@ -28,6 +69,9 @@
   @apply border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20;
 }
 
+/* -------------------------------------------------------------------------
+ * Input — States
+ * ----------------------------------------------------------------------- */
 .input-disabled {
   @apply pointer-events-none cursor-not-allowed opacity-50;
 }
@@ -35,12 +79,18 @@
   @apply border-transparent bg-transparent focus-visible:border-ring focus-visible:bg-transparent;
 }
 
+/* -------------------------------------------------------------------------
+ * Textarea — Base
+ * ----------------------------------------------------------------------- */
 .textarea {
   @apply field-sizing-content w-full min-w-0 rounded-lg border border-input bg-transparent px-3 py-2 text-sm transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20;
   min-height: 5rem;
   resize: vertical;
 }
 
+/* -------------------------------------------------------------------------
+ * Textarea — Sizes
+ * ----------------------------------------------------------------------- */
 .textarea-xs {
   @apply px-2 py-1 text-xs;
   min-height: 3rem;

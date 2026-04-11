@@ -1,15 +1,52 @@
+/*
+ * Form Component
+ *
+ * Based on the daisyUI Form Control component API.
+ * https://daisyui.com/components/form-control/
+ *
+ * Implements daisyUI-style class naming conventions for form field layouts,
+ * using this project's Tailwind CSS theme tokens instead of daisyUI's
+ * built-in theme system.
+ *
+ * Classes:
+ *   Base:        .form-control     — Wraps the entire form (flex column, gap-5)
+ *   Item:        .form-item        — Wraps a single field: label + input + message (gap-2)
+ *   Label:       .form-label       — Form-specific label styling
+ *   Message:     .form-message     — Error/validation text (destructive color)
+ *   Description: .form-description — Helper text below a field (muted color)
+ */
+
+/* -------------------------------------------------------------------------
+ * Form control — wraps the entire form
+ * ----------------------------------------------------------------------- */
 .form-control {
   @apply flex w-full flex-col gap-5;
 }
+
+/* -------------------------------------------------------------------------
+ * Form item — wraps a single field (label + input + message)
+ * ----------------------------------------------------------------------- */
 .form-item {
   @apply flex w-full flex-col gap-2;
 }
+
+/* -------------------------------------------------------------------------
+ * Form label
+ * ----------------------------------------------------------------------- */
 .form-label {
   @apply text-sm leading-none font-medium select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-50;
 }
+
+/* -------------------------------------------------------------------------
+ * Form message — error or validation text below a field
+ * ----------------------------------------------------------------------- */
 .form-message {
   @apply text-sm font-normal text-destructive;
 }
+
+/* -------------------------------------------------------------------------
+ * Form description — helper text below a field
+ * ----------------------------------------------------------------------- */
 .form-description {
   @apply text-sm text-muted-foreground;
 }
