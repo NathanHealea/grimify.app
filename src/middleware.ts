@@ -4,12 +4,17 @@ import { type NextRequest, NextResponse } from 'next/server'
 /** Routes that bypass authentication and profile-setup checks. */
 const PUBLIC_ROUTES = ['/sign-in', '/sign-up', '/auth/callback']
 
+/** Route prefixes that require the `admin` role. */
+const ADMIN_ROUTES = ['/admin']
+
 /**
- * Next.js middleware that handles Supabase session refresh and profile-setup enforcement.
+ * Next.js middleware that handles Supabase session refresh, profile-setup
+ * enforcement, and admin route protection.
  *
- * For authenticated users, queries the `profiles` table and:
+ * For authenticated users:
  * - Redirects to `/profile/setup` if `has_setup_profile` is `false`.
  * - Redirects away from `/profile/setup` if setup is already complete.
+ * - Blocks access to admin routes for non-admin users (redirects to `/`).
  */
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
@@ -65,6 +70,20 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
     return NextResponse.redirect(url)
+  }
+
+  // Admin route protection — only fetch roles when path requires it
+  const isAdminRoute = ADMIN_ROUTES.some((route) => pathname.startsWith(route))
+
+  if (isAdminRoute) {
+    const { data } = await supabase.rpc('get_user_roles', { user_uuid: user.id })
+    const roles: string[] = data ?? []
+
+    if (!roles.includes('admin')) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/'
+      return NextResponse.redirect(url)
+    }
   }
 
   return supabaseResponse
