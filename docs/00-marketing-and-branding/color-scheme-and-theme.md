@@ -15,7 +15,7 @@ Grimify was primarily built for a group of friends painting Warhammer and Age of
 
 ## Acceptance Criteria
 
-- [ ] Brand primary and accent colors are defined (kept to 1-2 hues max)
+- [ ] Brand primary color is defined with WCAG 2.1 AA contrast compliance
 - [ ] Light mode theme is configured with brand colors in `globals.css`
 - [ ] Dark mode theme is configured with brand colors in `globals.css`
 - [ ] Theme tokens use OKLch color format for perceptual consistency
@@ -26,113 +26,149 @@ Grimify was primarily built for a group of friends painting Warhammer and Age of
 
 ## Design Principle
 
-**The UI is the frame, not the painting.** Brand color only appears on interactive elements (buttons, links, focus rings). Everything else is neutral gray. This ensures:
-- Paint swatches are the most colorful elements on screen
-- Color comparisons aren't influenced by surrounding UI hues
-- The app feels like a clean tool, not a colorful distraction
+**The UI is the frame, not the painting.** Brand color only appears on interactive elements (buttons, links, focus rings). Everything else is neutral gray.
 
-## Color Scheme Options
+## Chosen Theme: Gold
 
-Three options, all intentionally restrained. Each uses a single brand hue for interactive elements over neutral gray backgrounds.
+Brand colors derived from `#b7882a`, `#d4a63a`, `#f1c84b`.
 
----
+### WCAG 2.1 AA Contrast Audit
 
-### Option A: "Crimson" — Warhammer Red
+Gold is a mid-lightness hue — it needs **dark text on gold backgrounds**, and a **darkened variant** for text on light backgrounds.
 
-A single warm accent pulled from the Warhammer universe. Crimson on buttons and links, everything else gray.
-
-| Token | Role | OKLch | Hex (approx) |
+| Usage | Colors | Ratio | AA (4.5:1) |
 |---|---|---|---|
-| **Primary** | Crimson | `oklch(0.50 0.18 25)` | `#A82030` |
-| **Primary Foreground** | White | `oklch(0.98 0 0)` | `#FAFAFA` |
-| **Accent** | Same as primary | — | — |
+| **Button**: dark text on `#b7882a` bg | `#171717` on `#b7882a` | 5.61:1 | PASS |
+| **Button**: dark text on `#d4a63a` bg | `#171717` on `#d4a63a` | 7.95:1 | PASS |
+| **Button**: dark text on `#f1c84b` bg | `#171717` on `#f1c84b` | 11.19:1 | PASS |
+| **Button**: white text on `#b7882a` bg | `#fafafa` on `#b7882a` | 3.06:1 | FAIL |
+| **Light link**: `#b7882a` text on white | `#b7882a` on `#fafafa` | 3.06:1 | FAIL |
+| **Light link**: `#8a6a1e` text on white | `#8a6a1e` on `#fafafa` | 4.84:1 | PASS |
+| **Dark link**: `#d4a63a` text on dark bg | `#d4a63a` on `#171717` | 7.95:1 | PASS |
+| **Dark link**: `#f1c84b` text on dark bg | `#f1c84b` on `#171717` | 11.19:1 | PASS |
 
-Backgrounds, cards, borders, muted — all neutral grays (same as current shadcn defaults, zero chroma).
-
----
-
-### Option B: "Teal" — Tool Blue-Green
-
-A cool, professional teal. Feels like a utility app. Subtle, doesn't clash with any paint hue range.
-
-| Token | Role | OKLch | Hex (approx) |
-|---|---|---|---|
-| **Primary** | Deep Teal | `oklch(0.52 0.10 220)` | `#1E7A8A` |
-| **Primary Foreground** | White | `oklch(0.98 0 0)` | `#FAFAFA` |
-| **Accent** | Same as primary | — | — |
-
----
-
-### Option C: "Gold" — Retributor Brass
-
-A warm gold accent that nods to Warhammer's Stormcast and Custodes metallics. Warm but restrained.
-
-| Token | Role | OKLch | Hex (approx) |
-|---|---|---|---|
-| **Primary** | Aged Gold | `oklch(0.65 0.14 80)` | `#B8892A` |
-| **Primary Foreground** | Dark | `oklch(0.15 0 0)` | `#181818` |
-| **Accent** | Same as primary | — | — |
-
----
-
-**All three options share the same neutral base:**
+### Token Mapping
 
 | Token | Light Mode | Dark Mode |
 |---|---|---|
-| **Background** | `oklch(0.99 0 0)` — near white | `oklch(0.15 0 0)` — near black |
-| **Card** | `oklch(1 0 0)` — white | `oklch(0.19 0 0)` — dark gray |
-| **Foreground** | `oklch(0.15 0 0)` — near black | `oklch(0.96 0 0)` — near white |
-| **Muted** | `oklch(0.96 0 0)` — light gray | `oklch(0.25 0 0)` — dark gray |
-| **Muted Foreground** | `oklch(0.55 0 0)` — mid gray | `oklch(0.70 0 0)` — mid gray |
-| **Border** | `oklch(0.91 0 0)` | `oklch(0.25 0 0)` |
-| **Input** | `oklch(0.91 0 0)` | `oklch(0.25 0 0)` |
+| **Primary** | `#b7882a` — button bg, focus rings | `#d4a63a` — button bg, lighter for dark bg contrast |
+| **Primary Foreground** | `#171717` — dark text on gold | `#171717` — dark text on gold |
+| **Ring** | `#b7882a` | `#d4a63a` |
+| **Background** | `#fafafa` — near white, zero chroma | `#171717` — near black, zero chroma |
+| **Card** | `#ffffff` — white | `#262626` — dark gray |
+| **Foreground** | `#171717` — near black | `#f5f5f5` — near white |
+| **Muted** | `#f5f5f5` — light gray | `#2e2e2e` — dark gray |
+| **Muted Foreground** | `#737373` — mid gray | `#a3a3a3` — mid gray |
+| **Border** | `#e5e5e5` | `#333333` |
+| **Input** | `#e5e5e5` | `#333333` |
+| **Secondary** | `#f5f5f5` — neutral gray | `#2e2e2e` — neutral gray |
+| **Secondary Foreground** | `#171717` | `#f5f5f5` |
+| **Accent** | `#f5f5f5` — neutral gray | `#2e2e2e` — neutral gray |
+| **Accent Foreground** | `#171717` | `#f5f5f5` |
+| **Destructive** | `#dc2626` — functional red | `#ef4444` — functional red |
 
-All backgrounds and surfaces have **zero chroma** — pure neutral grays — so paint colors always read true.
+All surface tokens (background, card, muted, secondary, accent) are **zero chroma neutrals** — paint swatches always display accurately.
+
+### Brand Color Variables
+
+| Variable | Value | Hex | Purpose |
+|---|---|---|---|
+| `--grimify-gold` | `oklch(0.60 0.14 80)` | `#b7882a` | Base brand gold |
+| `--grimify-gold-light` | `oklch(0.71 0.15 84)` | `#d4a63a` | Dark mode primary, hover states |
+| `--grimify-gold-bright` | `oklch(0.82 0.16 88)` | `#f1c84b` | Highlights, badges |
+| `--grimify-gold-dark` | `oklch(0.47 0.11 84)` | `#8a6a1e` | Light mode text on white (AA compliant) |
 
 ## Key Files
 
 | Action | File | Description |
 |---|---|---|
-| Create | `src/styles/variables.css` | Brand color definitions |
+| Create | `src/styles/variables.css` | Brand gold color definitions |
 | Modify | `src/app/globals.css` | Update `:root` and `.dark` theme variables, import variables.css |
 
 ## Implementation
 
-### Step 1: Choose a color scheme
-
-Pick Option A, B, or C (or provide a custom single-hue accent). The only colored tokens are `--primary`, `--primary-foreground`, `--ring`, and `--accent`. Everything else stays neutral gray.
-
-### Step 2: Create `src/styles/variables.css`
+### Step 1: Create `src/styles/variables.css`
 
 ```css
 /*
  * Grimify Brand Colors
- * Keep it simple — one brand hue, neutral everything else.
+ * Gold palette derived from #b7882a, #d4a63a, #f1c84b.
+ * Single brand hue — neutral everything else.
  */
 
 :root {
-  --grimify-brand: oklch(...); /* chosen primary */
-  --grimify-brand-foreground: oklch(...);
-  --grimify-brand-hover: oklch(...); /* slightly lighter/darker for hover */
+  --grimify-gold: oklch(0.60 0.14 80);
+  --grimify-gold-light: oklch(0.71 0.15 84);
+  --grimify-gold-bright: oklch(0.82 0.16 88);
+  --grimify-gold-dark: oklch(0.47 0.11 84);
 }
 ```
 
-### Step 3: Update `src/app/globals.css`
+### Step 2: Update `:root` in `src/app/globals.css`
 
-1. Add `@import '../styles/variables.css';` after the tailwind imports.
-2. Update `:root` to map `--primary` and `--ring` to the brand color. Keep all surface/background tokens as neutral grays.
-3. Update `.dark` similarly — adjust the brand color's lightness for dark mode contrast if needed.
+Add `@import '../styles/variables.css';` after the tailwind imports. Update `:root` light mode:
+
+```css
+:root {
+  --background: oklch(0.99 0 0);
+  --foreground: oklch(0.15 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0 0);
+  --primary: var(--grimify-gold);
+  --primary-foreground: oklch(0.15 0 0);
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0.15 0 0);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.55 0 0);
+  --accent: oklch(0.96 0 0);
+  --accent-foreground: oklch(0.15 0 0);
+  --destructive: oklch(0.58 0.24 27);
+  --border: oklch(0.91 0 0);
+  --input: oklch(0.91 0 0);
+  --ring: var(--grimify-gold);
+  --radius: 0.625rem;
+}
+```
+
+### Step 3: Update `.dark` in `src/app/globals.css`
+
+```css
+.dark {
+  --background: oklch(0.15 0 0);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.19 0 0);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.19 0 0);
+  --popover-foreground: oklch(0.96 0 0);
+  --primary: var(--grimify-gold-light);
+  --primary-foreground: oklch(0.15 0 0);
+  --secondary: oklch(0.22 0 0);
+  --secondary-foreground: oklch(0.96 0 0);
+  --muted: oklch(0.22 0 0);
+  --muted-foreground: oklch(0.65 0 0);
+  --accent: oklch(0.22 0 0);
+  --accent-foreground: oklch(0.96 0 0);
+  --destructive: oklch(0.65 0.22 25);
+  --border: oklch(0.25 0 0);
+  --input: oklch(0.25 0 0);
+  --ring: var(--grimify-gold-light);
+}
+```
 
 ### Step 4: Verify
 
 1. `npm run build` and `npm run lint` pass
-2. Buttons, links, and focus rings show the brand color
-3. Cards, backgrounds, borders are all neutral gray
-4. A paint swatch (colored div) looks the same against the background as it would on a white/black surface
+2. Buttons show gold background with dark text — readable in both modes
+3. Focus rings show gold
+4. All surfaces are neutral gray — no color cast on paint swatches
+5. Destructive elements stay red
 
 ## Notes
 
-- Dark mode is likely the primary mode for this audience — consider defaulting to dark.
-- The `--secondary` token can stay as a neutral gray; there's no need for a second brand color when the goal is maximum neutrality.
-- Destructive color stays red (`oklch(0.58 0.24 27)`) regardless of chosen brand — it's a functional color, not brand.
-- Chart colors should also use muted, distinguishable hues that don't overshadow paint data.
+- **Primary foreground is always dark** (`#171717`) — gold is too light for white text to meet AA. This applies in both light and dark mode.
+- Dark mode uses the lighter gold (`#d4a63a`) for better visibility on dark backgrounds.
+- For links/text rendered in gold on light backgrounds, use `--grimify-gold-dark` (`#8a6a1e`, 4.84:1 on white) to ensure AA compliance.
+- `--secondary` and `--accent` are kept as neutral grays — no second brand color needed.
+- Dark mode is likely the primary mode for this audience.
