@@ -1,8 +1,14 @@
 import Link from 'next/link'
 
-import { signOut } from '@/app/(auth)/actions'
+import { signOut } from '@/modules/auth/actions/sign-out'
 import { createClient } from '@/lib/supabase/server'
 
+/**
+ * Top-level navigation bar (server component).
+ *
+ * Shows the brand link and auth-state-dependent actions:
+ * sign-in/sign-up links for guests, sign-out button for authenticated users.
+ */
 export async function Navbar() {
   const supabase = await createClient()
   const {
