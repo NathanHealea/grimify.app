@@ -6,14 +6,86 @@
 
 ## Summary
 
-When a user signs up (email/password or OAuth), a skeleton profile record is automatically created in the database via a trigger. The user is then redirected to a profile setup page to complete their profile (display name). Until the profile is completed, authenticated routes are inaccessible.
+When a user signs up or logs in, a profile record is automatically created via database triggers. The profile is assigned a random display name in the format `ProfileDDDD` (e.g. `Painter#4821`) and a `has_setup_profile` flag set to `false`. The user is redirected to a profile setup page where they can choose their own display name. Submitting the form sets `has_setup_profile` to `true`, granting access to all authenticated routes.
+
+## User Flow
+
+```
+Sign Up / Sign In
+       │
+       ▼
+┌──────────────────────────────────┐
+│  Database trigger fires          │
+│  • on_auth_user_created (INSERT) │
+│  • on_auth_user_login (UPDATE)   │
+│                                  │
+│  Creates profile row with:       │
+│  • display_name = ProfileDDDD   │
+│  • has_setup_profile = false     │
+└──────────────┬───────────────────┘
+               │
+               ▼
+┌──────────────────────────────────┐
+│  Middleware checks profile       │
+│  SELECT has_setup_profile        │
+│  FROM profiles WHERE id = user   │
+└──────────────┬───────────────────┘
+               │
+       ┌───────┴───────┐
+       │               │
+  has_setup_profile  has_setup_profile
+  = false            = true
+       │               │
+       ▼               ▼
+┌─────────────┐  ┌────────────┐
+│  Redirect   │  │  Allow     │
+│  to         │  │  access to │
+│  /profile/  │  │  requested │
+│  setup      │  │  route     │
+└──────┬──────┘  └────────────┘
+       │
+       ▼
+┌──────────────────────────────────┐
+│  Profile Setup Page              │
+│                                  │
+│  • Form pre-populated with       │
+│    auto-generated ProfileDDDD   │
+│  • User chooses a display name   │
+│  • Validates: 2-50 chars,        │
+│    [a-zA-Z0-9_-] only            │
+│  • Checks uniqueness (case-      │
+│    insensitive)                   │
+└──────────────┬───────────────────┘
+               │
+               ▼
+┌──────────────────────────────────┐
+│  setupProfile server action      │
+│                                  │
+│  UPDATE profiles SET             │
+│    display_name = <user input>,  │
+│    has_setup_profile = true      │
+│  WHERE id = user.id              │
+└──────────────┬───────────────────┘
+               │
+               ▼
+┌──────────────────────────────────┐
+│  Redirect to /                   │
+│  Middleware now sees              │
+│  has_setup_profile = true        │
+│  → full access granted           │
+└──────────────────────────────────┘
+```
 
 ## Acceptance Criteria
 
 - [x] A profile record is automatically created when a new auth user is created (database trigger)
-- [x] New users with incomplete profiles are redirected to `/profile/setup`
-- [x] User must provide a display name before accessing authenticated features
-- [x] Returning users with completed profiles skip setup and go directly to the app
+- [x] A profile record is created on login if missing (login trigger with backfill)
+- [x] New profiles are assigned an auto-generated `ProfileDDDD` display name
+- [x] New profiles have `has_setup_profile = false`
+- [x] Users with `has_setup_profile = false` are redirected to `/profile/setup`
+- [x] The setup form is pre-populated with the auto-generated display name
+- [x] Submitting the setup form sets `has_setup_profile = true`
+- [x] Returning users with `has_setup_profile = true` skip setup and go directly to the app
 - [x] Display names are unique (case-insensitive)
 - [x] The setup page updates the existing profile record (not insert)
 - [x] `npm run build` and `npm run lint` pass with no errors
@@ -26,147 +98,59 @@ When a user signs up (email/password or OAuth), a skeleton profile record is aut
 
 ## Key Files
 
-| Action | File                                                   | Description                                                        |
-| ------ | ------------------------------------------------------ | ------------------------------------------------------------------ |
-| Create | `src/app/profile/setup/page.tsx`                       | Setup page (renders ProfileForm component)                         |
-| Create | `src/app/profile/setup/profile-form.tsx`               | Client component with display name form                            |
-| Create | `src/app/profile/setup/actions.ts`                     | `setupProfile` server action                                       |
-| Create | `src/modules/profile/validation.ts`                    | Shared validation logic and `ProfileFormState` type                |
-| Modify | `src/middleware.ts`                                    | Redirect authenticated users without a profile to `/profile/setup` |
-| Create | `supabase/migrations/XXXXXX_create_profiles_table.sql` | Creates profiles table with RLS policies                           |
+| Action | File                                                           | Description                                    |
+| ------ | -------------------------------------------------------------- | ---------------------------------------------- |
+| Create | `src/app/profile/setup/page.tsx`                               | Setup page (card layout, renders ProfileForm)  |
+| Create | `src/modules/profile/components/profile-form.tsx`              | Client component with display name form        |
+| Create | `src/modules/profile/actions/setup-profile.ts`                 | `setupProfile` server action                   |
+| Create | `src/modules/profile/types/profile-form-state.ts`              | `ProfileFormState` type                        |
+| Create | `src/modules/profile/validation.ts`                            | Shared validation logic                        |
+| Modify | `src/middleware.ts`                                            | Redirect users with `has_setup_profile = false` |
+| Create | `supabase/migrations/20260410000000_create_profiles_table.sql` | Profiles table, RLS, triggers, backfill        |
 
 ## Database
 
 ### `profiles` Table
 
-| Column         | Type          | Constraints                                       |
-| -------------- | ------------- | ------------------------------------------------- |
-| `id`           | `uuid`        | PK, FK to `auth.users.id` on delete cascade       |
-| `display_name` | `text`        | Nullable, unique (case-insensitive partial index)  |
-| `bio`          | `text`        | Nullable                                           |
-| `avatar_url`   | `text`        | Nullable                                           |
-| `created_at`   | `timestamptz` | Not null, default `now()`                          |
-| `updated_at`   | `timestamptz` | Not null, default `now()`                          |
+| Column              | Type          | Constraints                                      |
+| ------------------- | ------------- | ------------------------------------------------ |
+| `id`                | `uuid`        | PK, FK to `auth.users.id` on delete cascade      |
+| `display_name`      | `text`        | Nullable, unique (case-insensitive partial index) |
+| `bio`               | `text`        | Nullable                                          |
+| `avatar_url`        | `text`        | Nullable                                          |
+| `has_setup_profile` | `boolean`     | Not null, default `false`                         |
+| `created_at`        | `timestamptz` | Not null, default `now()`                         |
+| `updated_at`        | `timestamptz` | Not null, default `now()`                         |
 
-`display_name` is nullable so the trigger can create a skeleton row without a name. The unique index is a partial index (`WHERE display_name IS NOT NULL`) so multiple incomplete profiles can coexist.
+A profile is considered "complete" when `has_setup_profile = true`.
 
-A profile is considered "complete" when `display_name IS NOT NULL`.
+### Database Functions
 
-### Auto-Create Trigger
+| Function                  | Purpose                                                  |
+| ------------------------- | -------------------------------------------------------- |
+| `generate_profile_name()` | Returns a unique `ProfileDDDD` string (retries on collision) |
+| `handle_new_user()`       | Creates a profile with auto-generated name on user signup |
+| `handle_user_login()`     | Creates or backfills a profile on user login             |
 
-A `handle_new_user()` function runs `AFTER INSERT` on `auth.users`. It inserts a skeleton row into `profiles` with only the `id` set. The function uses `SECURITY DEFINER` to bypass RLS.
+### Triggers
+
+| Trigger                | Fires on                              | Function             |
+| ---------------------- | ------------------------------------- | -------------------- |
+| `on_auth_user_created` | `AFTER INSERT` on `auth.users`        | `handle_new_user()`  |
+| `on_auth_user_login`   | `AFTER UPDATE OF last_sign_in_at` on `auth.users` | `handle_user_login()` |
 
 ### Row Level Security
 
 - **SELECT**: All authenticated users can read all profiles
-- **INSERT**: Service role only (trigger handles creation)
+- **INSERT**: Service role only (triggers handle creation via `SECURITY DEFINER`)
 - **UPDATE**: Users can update their own profile (`auth.uid() = id`)
-
-## Implementation
-
-### 1. Profiles table and auto-create trigger migration
-
-**File:** `supabase/migrations/<timestamp>_create_profiles_table.sql`
-
-Create a single migration that:
-
-1. Creates the `profiles` table with the schema above.
-2. Adds a case-insensitive partial unique index on `display_name`:
-   ```sql
-   CREATE UNIQUE INDEX profiles_display_name_unique
-     ON public.profiles (lower(display_name))
-     WHERE display_name IS NOT NULL;
-   ```
-3. Enables RLS with these policies:
-   - `SELECT` — all authenticated users
-   - `INSERT` — none (trigger handles creation via `SECURITY DEFINER`)
-   - `UPDATE` — own row only (`auth.uid() = id`)
-4. Creates the `handle_new_user()` function (`SECURITY DEFINER`, set `search_path = ''`) that inserts a skeleton profile:
-   ```sql
-   INSERT INTO public.profiles (id) VALUES (NEW.id);
-   ```
-5. Creates the trigger on `auth.users`:
-   ```sql
-   CREATE TRIGGER on_auth_user_created
-     AFTER INSERT ON auth.users
-     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-   ```
-
-This ensures every new auth user (email, OAuth, etc.) immediately has a profile row. The `display_name` is NULL, marking it as incomplete.
-
-### 2. Middleware redirect
-
-**File:** `src/middleware.ts`
-
-After the existing `supabase.auth.getUser()` call, add profile completion checks:
-
-1. Define `PUBLIC_ROUTES`: `/sign-in`, `/sign-up`, `/auth/callback`.
-2. If the request path matches a public route, skip all checks.
-3. If no authenticated user, skip (the Protected Routes feature handles auth redirects).
-4. For authenticated users, query `profiles` for the user's row and check if `display_name` is not null.
-5. If the profile is incomplete (`display_name IS NULL` or no row found) and the path is NOT `/profile/setup`, redirect to `/profile/setup`.
-6. If the profile is complete and the path IS `/profile/setup`, redirect to `/` (prevent re-visiting setup).
-
-The profile check uses `supabase.from('profiles').select('display_name').eq('id', user.id).single()`. This adds one lightweight query per request for authenticated users. The middleware Supabase client already exists.
-
-### 3. Profile setup page
-
-**File:** `src/app/profile/setup/page.tsx`
-
-Server component that:
-
-1. Creates a Supabase server client and gets the authenticated user.
-2. If no user, redirects to `/sign-in`.
-3. Fetches the user's profile row.
-4. If profile has a non-null `display_name`, redirects to `/` (already complete).
-5. If no profile row exists (edge case — trigger failed), inserts a skeleton row.
-6. Renders a `Card` with a title "Complete your profile" and the `ProfileForm` client component.
-
-### 4. Profile form
-
-**File:** `src/app/profile/setup/profile-form.tsx`
-
-Client component using `useActionState` with the `setupProfile` server action (matching the pattern in `sign-in/page.tsx` and `sign-up/page.tsx`):
-
-1. A single `display_name` input field with a label "Display name" and helper text showing the format rules.
-2. Field-level error display using `form-message` class when the server action returns errors.
-3. A submit button ("Complete setup") that shows a pending state.
-4. Client-side validation via the shared `validateDisplayName` function before submission (prevents unnecessary server round-trips).
-
-### 5. Server action
-
-**File:** `src/app/profile/setup/actions.ts`
-
-`setupProfile` server action:
-
-1. Gets the authenticated user. If none, returns an error.
-2. Extracts `display_name` from form data.
-3. Validates using `validateDisplayName` from the shared validation module.
-4. If invalid, returns field-level errors.
-5. **Updates** (not inserts) the profile row: `supabase.from('profiles').update({ display_name, updated_at: new Date().toISOString() }).eq('id', user.id)`.
-6. Handles unique constraint violation (Postgres error code `23505`) by returning "Display name is already taken."
-7. On success, calls `revalidatePath('/', 'layout')` and `redirect('/')`.
-
-### 6. Shared validation
-
-**File:** `src/modules/profile/validation.ts`
-
-Exports:
-
-- `ProfileFormState` type — `{ errors?: { display_name?: string }; error?: string } | null`
-- `validateDisplayName(name: string)` — returns an error string or `null`:
-  - Required (non-empty after trim)
-  - 2–50 characters
-  - Only letters, numbers, hyphens, underscores (`/^[a-zA-Z0-9_-]+$/`)
-
-### 7. Verify build and lint
-
-Run `npm run build` and `npm run lint` to confirm no errors are introduced.
 
 ## Notes
 
 - Display names are unique (case-insensitive) — "Ragnar" and "ragnar" are treated as the same name.
 - Display names cannot contain spaces — only letters, numbers, hyphens, and underscores.
-- The profile setup flow is enforced at the middleware level, so no authenticated route can be accessed without a completed profile.
+- Auto-generated `ProfileDDDD` names match the form validation pattern (`[a-zA-Z0-9_-]+`), so users can keep them or choose their own.
+- The profile setup flow is enforced at the middleware level, so no authenticated route can be accessed until `has_setup_profile` is `true`.
 - The auto-create trigger means profile rows always exist for authenticated users — the setup page updates rather than inserts.
 - The partial unique index on `display_name` allows multiple NULL values (incomplete profiles) without violating uniqueness.
+- The login trigger uses `ON CONFLICT ... DO UPDATE` to backfill a display name for profiles that exist but have `display_name IS NULL`.
