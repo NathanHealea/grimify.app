@@ -1,62 +1,62 @@
 /*
- * Dropdown Component
+ * Dropdown Menu Component
  *
  * Based on the daisyUI Dropdown component API.
  * https://daisyui.com/components/dropdown/
  *
- * Implements daisyUI's class naming conventions using this project's
- * Tailwind CSS theme tokens instead of daisyUI's built-in theme system.
- *
- * Uses the native HTML <details> element for open/close state — no JS required.
+ * Styled for use with Radix UI DropdownMenu primitives. Animations use
+ * Radix data-state attributes for open/close transitions.
  *
  * Classes:
- *   Base:      .dropdown           — Positioning wrapper (relative)
- *   Content:   .dropdown-content   — The floating panel (absolute, hidden until open)
- *   Position:  .dropdown-end       — Align content to the right edge
- *              .dropdown-top       — Open upward
- *   Items:     .dropdown-item      — Individual menu item (block link/button)
+ *   Content:     .dropdown-content          — The floating panel
+ *   Items:       .dropdown-item             — Individual menu item
+ *   Destructive: .dropdown-item-destructive — Destructive/danger item
+ *   Label:       .dropdown-label            — Non-interactive label row
+ *   Separator:   .dropdown-separator        — Divider line between groups
  */
-
-/* -------------------------------------------------------------------------
- * Base
- * ----------------------------------------------------------------------- */
-.dropdown {
-  @apply relative inline-block;
-}
 
 /* -------------------------------------------------------------------------
  * Content panel
  * ----------------------------------------------------------------------- */
 .dropdown-content {
-  @apply absolute z-50 mt-2 hidden min-w-48 rounded-lg
+  @apply z-50 min-w-48 overflow-hidden rounded-lg
     border border-border bg-popover p-1 text-popover-foreground shadow-md;
-}
 
-.dropdown[open] > .dropdown-content,
-.dropdown:focus-within > .dropdown-content {
-  @apply block;
-}
+  /* open/close animations */
+  @apply data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95
+    data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95;
 
-/* -------------------------------------------------------------------------
- * Position modifiers
- * ----------------------------------------------------------------------- */
-.dropdown-end > .dropdown-content {
-  @apply right-0;
-}
-
-.dropdown-top > .dropdown-content {
-  @apply bottom-full top-auto mb-2 mt-0;
+  /* slide direction based on Radix side */
+  @apply data-[side=top]:slide-in-from-bottom-2
+    data-[side=right]:slide-in-from-left-2
+    data-[side=bottom]:slide-in-from-top-2
+    data-[side=left]:slide-in-from-right-2;
 }
 
 /* -------------------------------------------------------------------------
  * Menu items
  * ----------------------------------------------------------------------- */
 .dropdown-item {
-  @apply flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5
-    text-sm text-foreground no-underline transition-colors
-    hover:bg-muted focus-visible:bg-muted focus-visible:outline-none;
+  @apply relative flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5
+    text-sm text-foreground outline-none transition-colors select-none
+    focus:bg-muted
+    data-[disabled]:pointer-events-none data-[disabled]:opacity-50;
 }
 
 .dropdown-item-destructive {
-  @apply text-destructive hover:bg-destructive/10 focus-visible:bg-destructive/10;
+  @apply text-destructive focus:bg-destructive/10;
+}
+
+/* -------------------------------------------------------------------------
+ * Label
+ * ----------------------------------------------------------------------- */
+.dropdown-label {
+  @apply px-2 py-1.5 text-sm font-medium;
+}
+
+/* -------------------------------------------------------------------------
+ * Separator
+ * ----------------------------------------------------------------------- */
+.dropdown-separator {
+  @apply -mx-1 my-1 h-px bg-border;
 }
