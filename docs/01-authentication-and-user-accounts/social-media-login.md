@@ -2,7 +2,7 @@
 
 **Epic:** Authentication & User Accounts
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 
 ## Summary
 
@@ -10,17 +10,17 @@ Allow users to sign in or sign up using their Google or Discord accounts via Sup
 
 ## Acceptance Criteria
 
-- [ ] Users can sign in/sign up with Google
-- [ ] Users can sign in/sign up with Discord
-- [ ] OAuth users are redirected through `/auth/callback` and session is established
-- [ ] New OAuth users are redirected to `/profile/setup` (existing middleware handles this)
-- [ ] Existing OAuth users bypass setup and go to `/`
-- [ ] OAuth buttons appear on both sign-in and sign-up pages
-- [ ] Email/password login continues to work alongside OAuth
-- [ ] `avatar_url` is populated from the OAuth provider's profile picture on first login
-- [ ] Profile setup page pre-fills display name from OAuth provider metadata
-- [ ] If the suggested display name is already taken, a warning is shown
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Users can sign in/sign up with Google
+- [x] Users can sign in/sign up with Discord
+- [x] OAuth users are redirected through `/auth/callback` and session is established
+- [x] New OAuth users are redirected to `/profile/setup` (existing middleware handles this)
+- [x] Existing OAuth users bypass setup and go to `/`
+- [x] OAuth buttons appear on both sign-in and sign-up pages
+- [x] Email/password login continues to work alongside OAuth
+- [x] `avatar_url` is populated from the OAuth provider's profile picture on first login
+- [x] Profile setup page pre-fills display name from OAuth provider metadata
+- [x] If the suggested display name is already taken, a warning is shown
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Key Files
 
