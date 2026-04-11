@@ -1,21 +1,21 @@
 @layer components {
   .navbar {
-    @apply flex w-full items-center gap-2 border-b border-border bg-background px-4 py-2;
+    @apply flex h-14 w-full items-center border-b border-border bg-background px-4;
   }
 
   .navbar-start {
-    @apply flex flex-1 items-center gap-2;
+    @apply flex flex-1 items-center;
   }
 
   .navbar-center {
-    @apply flex items-center gap-2;
+    @apply flex items-center;
   }
 
   .navbar-end {
-    @apply flex flex-1 items-center justify-end gap-2;
+    @apply flex items-center gap-2;
   }
 
   .navbar-brand {
-    @apply text-lg font-semibold text-foreground no-underline hover:text-primary;
+    @apply text-lg font-semibold tracking-tight text-foreground no-underline transition-colors hover:text-primary;
   }
 }
