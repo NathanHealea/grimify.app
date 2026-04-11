@@ -2,7 +2,7 @@
 
 **Epic:** Authentication & User Accounts
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `v1/feature/sign-up-sign-in`
 
 ## Summary

@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `v1/feature/color-scheme-and-theme`
 
 ## Summary
