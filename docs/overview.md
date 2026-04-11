@@ -55,12 +55,12 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Sign up / sign in via Supabase Auth](./authentication-and-user-accounts/sign-up-sign-in.md)
-- [ ] [User profile creation on first login](./authentication-and-user-accounts/user-profile-creation-on-first-login.md)
-- [ ] [Protected routes for authenticated features](./authentication-and-user-accounts/protected-routes.md)
-- [ ] [User roles (user, admin)](./authentication-and-user-accounts/user-roles.md)
-- [ ] [Social media login (Google, Discord)](./authentication-and-user-accounts/social-media-login.md)
-- [ ] [User password reset and change](./authentication-and-user-accounts/user-reset-password.md)
+- [ ] [Sign up / sign in via Supabase Auth](./01-authentication-and-user-accounts/sign-up-sign-in.md)
+- [ ] [User profile creation on first login](./01-authentication-and-user-accounts/user-profile-creation-on-first-login.md)
+- [ ] [Protected routes for authenticated features](./01-authentication-and-user-accounts/protected-routes.md)
+- [ ] [User roles (user, admin)](./01-authentication-and-user-accounts/user-roles.md)
+- [ ] [Social media login (Google, Discord)](./01-authentication-and-user-accounts/social-media-login.md)
+- [ ] [User password reset and change](./01-authentication-and-user-accounts/user-reset-password.md)
 
 ### Epic: Paint Data & Search
 
@@ -68,9 +68,9 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Paint data model and seed data](./paint-data-search/paint-data-model.md)
-- [ ] [Paint search by name, hex, and brand](./paint-data-search/paint-search.md)
-- [ ] [Brand and product line browsing](./paint-data-search/brand-browsing.md)
+- [ ] [Paint data model and seed data](./02-paint-data-search/paint-data-model.md)
+- [ ] [Paint search by name, hex, and brand](./02-paint-data-search/paint-search.md)
+- [ ] [Brand and product line browsing](./02-paint-data-search/brand-browsing.md)
 
 ### Epic: Interactive Color Wheel
 
@@ -78,9 +78,9 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Color wheel rendering and paint mapping](./interactive-color-wheel/color-wheel-rendering.md)
-- [ ] [Zoom, pan, and paint detail interaction](./interactive-color-wheel/wheel-interaction.md)
-- [ ] [Filter wheel by brand, collection, or owned paints](./interactive-color-wheel/wheel-filters.md)
+- [ ] [Color wheel rendering and paint mapping](./03-interactive-color-wheel/color-wheel-rendering.md)
+- [ ] [Zoom, pan, and paint detail interaction](./03-interactive-color-wheel/wheel-interaction.md)
+- [ ] [Filter wheel by brand, collection, or owned paints](./03-interactive-color-wheel/wheel-filters.md)
 
 ### Epic: Cross-Brand Comparison
 
@@ -88,9 +88,9 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Color distance algorithm and matching engine](./cross-brand-comparison/color-matching-engine.md)
-- [ ] [Side-by-side paint comparison UI](./cross-brand-comparison/comparison-ui.md)
-- [ ] [Substitute suggestions for discontinued paints](./cross-brand-comparison/substitute-suggestions.md)
+- [ ] [Color distance algorithm and matching engine](./04-cross-brand-comparison/color-matching-engine.md)
+- [ ] [Side-by-side paint comparison UI](./04-cross-brand-comparison/comparison-ui.md)
+- [ ] [Substitute suggestions for discontinued paints](./04-cross-brand-comparison/substitute-suggestions.md)
 
 ### Epic: Color Scheme Explorer
 
@@ -98,9 +98,9 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Color scheme generation (complementary, split-comp, analogous, triadic)](./color-scheme-explorer/scheme-generation.md)
-- [ ] [Scheme visualization on the color wheel](./color-scheme-explorer/scheme-visualization.md)
-- [ ] [Map schemes to available paints](./color-scheme-explorer/scheme-to-paints.md)
+- [ ] [Color scheme generation (complementary, split-comp, analogous, triadic)](./05-color-scheme-explorer/scheme-generation.md)
+- [ ] [Scheme visualization on the color wheel](./05-color-scheme-explorer/scheme-visualization.md)
+- [ ] [Map schemes to available paints](./05-color-scheme-explorer/scheme-to-paints.md)
 
 ### Epic: Collection Tracking
 
@@ -108,8 +108,8 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Add/remove paints to personal collection](./collection-tracking/manage-collection.md)
-- [ ] [Collection overview and statistics](./collection-tracking/collection-overview.md)
+- [ ] [Add/remove paints to personal collection](./06-collection-tracking/manage-collection.md)
+- [ ] [Collection overview and statistics](./06-collection-tracking/collection-overview.md)
 
 ### Epic: Community & Social
 
@@ -117,7 +117,7 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Painting recipes (step-by-step color layering guides)](./community-social/painting-recipes.md)
-- [ ] [Curated palette sharing](./community-social/palette-sharing.md)
-- [ ] [Community feed and discovery](./community-social/community-feed.md)
-- [ ] [User profiles and shared collections](./community-social/user-profiles.md)
+- [ ] [Painting recipes (step-by-step color layering guides)](./07-community-social/painting-recipes.md)
+- [ ] [Curated palette sharing](./07-community-social/palette-sharing.md)
+- [ ] [Community feed and discovery](./07-community-social/community-feed.md)
+- [ ] [User profiles and shared collections](./07-community-social/user-profiles.md)
