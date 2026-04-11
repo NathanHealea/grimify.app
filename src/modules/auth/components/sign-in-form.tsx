@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useActionState } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -38,6 +39,11 @@ export function SignInForm() {
           required
           autoComplete="current-password"
         />
+      </div>
+      <div className="flex justify-end">
+        <Link href="/forgot-password" className="text-sm text-muted-foreground underline-offset-4 hover:underline">
+          Forgot your password?
+        </Link>
       </div>
       <Button type="submit" disabled={pending}>
         {pending ? 'Signing in...' : 'Sign in'}
