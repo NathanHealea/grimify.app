@@ -1,0 +1,29 @@
+@layer components {
+  .card {
+    @apply rounded-xl border border-border bg-card text-card-foreground shadow-sm;
+  }
+
+  .card-body {
+    @apply flex flex-col gap-4 p-6;
+  }
+
+  .card-compact .card-body {
+    @apply gap-3 p-4;
+  }
+
+  .card-title {
+    @apply text-lg font-semibold leading-none tracking-tight;
+  }
+
+  .card-description {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .card-footer {
+    @apply flex items-center p-6 pt-0;
+  }
+
+  .card-bordered {
+    @apply border-2;
+  }
+}

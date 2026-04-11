@@ -1,0 +1,10 @@
+@layer components {
+  .form-control { @apply flex w-full flex-col gap-5; }
+  .form-item { @apply flex w-full flex-col gap-2; }
+  .form-label {
+    @apply text-sm leading-none font-medium select-none
+      peer-disabled:cursor-not-allowed peer-disabled:opacity-50;
+  }
+  .form-message { @apply text-sm font-normal text-destructive; }
+  .form-description { @apply text-sm text-muted-foreground; }
+}

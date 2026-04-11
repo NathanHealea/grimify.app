@@ -2,6 +2,10 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 @import '../styles/variables.css';
+@import '../styles/card.css';
+@import '../styles/input.css';
+@import '../styles/label.css';
+@import '../styles/form.css';
 
 @custom-variant dark (&:is(.dark *));
 

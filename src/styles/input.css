@@ -1,0 +1,39 @@
+@layer components {
+  .input {
+    @apply h-9 w-full min-w-0 rounded-lg border border-input bg-transparent
+      px-3 py-1.5 text-sm transition-colors outline-none
+      placeholder:text-muted-foreground
+      focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50
+      disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50
+      aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20;
+  }
+
+  .input-xs { @apply h-6 px-2 py-0.5 text-xs; }
+  .input-sm { @apply h-7 px-2.5 py-1 text-xs; }
+  .input-md { @apply h-9 px-3 py-1.5 text-sm; }
+  .input-lg { @apply h-11 px-4 py-2.5 text-base; }
+
+  .input-primary { @apply border-primary focus-visible:border-primary focus-visible:ring-primary/50; }
+  .input-secondary { @apply border-secondary focus-visible:border-secondary focus-visible:ring-secondary/50; }
+  .input-accent { @apply border-accent focus-visible:border-accent focus-visible:ring-accent/50; }
+  .input-error { @apply border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20; }
+
+  .input-disabled { @apply pointer-events-none cursor-not-allowed opacity-50; }
+  .input-ghost { @apply border-transparent bg-transparent focus-visible:border-ring focus-visible:bg-transparent; }
+
+  .textarea {
+    @apply field-sizing-content w-full min-w-0 rounded-lg border border-input bg-transparent
+      px-3 py-2 text-sm transition-colors outline-none
+      placeholder:text-muted-foreground
+      focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50
+      disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50
+      aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20;
+    min-height: 5rem;
+    resize: vertical;
+  }
+
+  .textarea-xs { @apply px-2 py-1 text-xs; min-height: 3rem; }
+  .textarea-sm { @apply px-2.5 py-1.5 text-xs; min-height: 4rem; }
+  .textarea-md { @apply px-3 py-2 text-sm; min-height: 5rem; }
+  .textarea-lg { @apply px-4 py-3 text-base; min-height: 7rem; }
+}
