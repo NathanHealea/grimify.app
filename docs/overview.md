@@ -39,6 +39,7 @@ Core functionality:
 
 <!-- Recommended sequence for building the MVP epics -->
 
+0. Marketing & Branding — Visual identity, metadata, and legal pages; sets the tone for everything else
 1. Authentication & User Accounts — Foundation for all personalized features; required before collection tracking, community, and any user-specific data
 2. Paint Data & Search — Core data layer; all paint features depend on having a searchable paint database
 3. Interactive Color Wheel — Core visual differentiator; requires paint data
@@ -48,6 +49,18 @@ Core functionality:
 7. Community & Social — Highest complexity; depends on collections, recipes, and user accounts
 
 ## MVP Features (Epics)
+
+### Epic: Marketing & Branding
+
+**Goal:** Establish the Grimify visual identity, SEO presence, and legal foundation before building features.
+
+**High-Level Scope:**
+
+- [x] [Color scheme and theme](./00-marketing-and-branding/color-scheme-and-theme.md)
+- [ ] [Metadata and OpenGraph](./00-marketing-and-branding/metadata-and-opengraph.md)
+- [ ] [Branding images](./00-marketing-and-branding/branding-images.md)
+- [ ] [Terms of Use](./00-marketing-and-branding/terms-of-use.md)
+- [ ] [Code of Conduct](./00-marketing-and-branding/code-of-conduct.md)
 
 ### Epic: Authentication & User Accounts
 
