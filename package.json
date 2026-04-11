@@ -1,6 +1,8 @@
 {
-  "name": "colorwheel.nathanhealea.com",
-  "version": "0.1.0",
+  "name": "grimify.app",
+  "version": "1.0.0",
+  "description": "Interactive color research and collection management app for miniature painters",
+  "author": "Nathan Healea <nhealea@uoregon.edu>",
   "private": true,
   "scripts": {
     "dev": "next dev",
