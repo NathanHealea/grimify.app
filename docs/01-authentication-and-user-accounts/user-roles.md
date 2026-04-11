@@ -30,30 +30,32 @@ Admins can grant or revoke the `admin` role through an admin interface. The `use
 
 ### `roles` Table
 
-| Column | Type | Constraints |
-|---|---|---|
-| `id` | `serial` | Primary key |
-| `name` | `text` | Unique, not null |
+| Column | Type     | Constraints      |
+| ------ | -------- | ---------------- |
+| `id`   | `serial` | Primary key      |
+| `name` | `text`   | Unique, not null |
 
 Seeded with two rows: `user`, `admin`.
 
 ### `user_roles` Table
 
-| Column | Type | Constraints |
-|---|---|---|
-| `user_id` | `uuid` | FK to `profiles.id` on delete cascade, part of composite PK |
-| `role_id` | `int` | FK to `roles.id`, part of composite PK |
-| `assigned_at` | `timestamptz` | Not null, default `now()` |
+| Column        | Type          | Constraints                                                 |
+| ------------- | ------------- | ----------------------------------------------------------- |
+| `user_id`     | `uuid`        | FK to `profiles.id` on delete cascade, part of composite PK |
+| `role_id`     | `int`         | FK to `roles.id`, part of composite PK                      |
+| `assigned_at` | `timestamptz` | Not null, default `now()`                                   |
 
 Composite primary key on `(user_id, role_id)`.
 
 ### Row Level Security
 
 **`roles` table:**
+
 - **SELECT**: All authenticated users can read roles
 - **INSERT / UPDATE / DELETE**: No user-facing mutations — managed via migrations/seed only
 
 **`user_roles` table:**
+
 - **SELECT**: Authenticated users can read all role assignments
 - **INSERT**: Only users with the `admin` role can assign roles
 - **UPDATE**: Only admins can change role assignments
@@ -62,12 +64,12 @@ Composite primary key on `(user_id, role_id)`.
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
+| Action | File                                                 | Description                                         |
+| ------ | ---------------------------------------------------- | --------------------------------------------------- |
 | Create | `supabase/migrations/XXXXXX_create_roles_tables.sql` | Migration for tables, RLS, helper function, trigger |
-| Create | `src/types/role.ts` | `Role` type definition |
-| Create | `src/lib/supabase/roles.ts` | Server-side `getUserRoles` and `hasRole` utilities |
-| Modify | `src/middleware.ts` | Updated with admin route protection |
+| Create | `src/types/role.ts`                                  | `Role` type definition                              |
+| Create | `src/lib/supabase/roles.ts`                          | Server-side `getUserRoles` and `hasRole` utilities  |
+| Modify | `src/middleware.ts`                                  | Updated with admin route protection                 |
 
 ## Implementation
 

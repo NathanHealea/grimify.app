@@ -20,11 +20,11 @@ For each color in a generated scheme, find and suggest the closest matching real
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/components/scheme-paint-suggestions.tsx` | Paint suggestions for scheme colors |
-| Modify | `src/app/schemes/page.tsx` | Integrate paint suggestions below scheme display |
-| Existing | `src/modules/paint/match-engine.ts` | Reuse matching engine with target hue/color input |
+| Action   | File                                          | Description                                       |
+| -------- | --------------------------------------------- | ------------------------------------------------- |
+| Create   | `src/components/scheme-paint-suggestions.tsx` | Paint suggestions for scheme colors               |
+| Modify   | `src/app/schemes/page.tsx`                    | Integrate paint suggestions below scheme display  |
+| Existing | `src/modules/paint/match-engine.ts`           | Reuse matching engine with target hue/color input |
 
 ## Implementation
 

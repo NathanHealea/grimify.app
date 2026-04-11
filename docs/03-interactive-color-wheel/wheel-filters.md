@@ -21,17 +21,18 @@ Add filter controls to the color wheel so users can narrow the displayed paints 
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/components/color-wheel/wheel-filters.tsx` | Filter panel component |
-| Create | `src/hooks/use-wheel-filters.ts` | Filter state management synced to URL params |
-| Modify | `src/components/color-wheel/color-wheel.tsx` | Apply filters to displayed paints |
+| Action | File                                           | Description                                  |
+| ------ | ---------------------------------------------- | -------------------------------------------- |
+| Create | `src/components/color-wheel/wheel-filters.tsx` | Filter panel component                       |
+| Create | `src/hooks/use-wheel-filters.ts`               | Filter state management synced to URL params |
+| Modify | `src/components/color-wheel/color-wheel.tsx`   | Apply filters to displayed paints            |
 
 ## Implementation
 
 ### 1. Filter panel
 
 A collapsible sidebar or toolbar with:
+
 - Brand multi-select checkboxes
 - Product line dropdown (filtered by selected brands)
 - Paint type toggles

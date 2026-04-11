@@ -5,7 +5,7 @@
  */
 
 :root {
-  --grimify-gold: oklch(0.60 0.14 80);
+  --grimify-gold: oklch(0.6 0.14 80);
   --grimify-gold-light: oklch(0.71 0.15 84);
   --grimify-gold-bright: oklch(0.82 0.16 88);
   --grimify-gold-dark: oklch(0.47 0.11 84);

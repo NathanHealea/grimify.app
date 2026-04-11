@@ -19,17 +19,17 @@ Provide tools for generating color schemes (complementary, split-complementary, 
 
 ## Routes
 
-| Route | Description |
-|---|---|
+| Route      | Description                |
+| ---------- | -------------------------- |
 | `/schemes` | Color scheme explorer page |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/app/schemes/page.tsx` | Scheme explorer page |
-| Create | `src/modules/color/scheme-generator.ts` | Color scheme generation logic |
-| Create | `src/components/scheme-display.tsx` | Scheme visualization component |
+| Action | File                                    | Description                    |
+| ------ | --------------------------------------- | ------------------------------ |
+| Create | `src/app/schemes/page.tsx`              | Scheme explorer page           |
+| Create | `src/modules/color/scheme-generator.ts` | Color scheme generation logic  |
+| Create | `src/components/scheme-display.tsx`     | Scheme visualization component |
 
 ## Implementation
 
@@ -48,6 +48,7 @@ All angles normalized to 0-360.
 ### 2. Scheme explorer page
 
 A page with:
+
 - Base color picker (select a paint from the database or enter a custom hex)
 - Scheme type selector (tabs)
 - Generated color swatches for the active scheme

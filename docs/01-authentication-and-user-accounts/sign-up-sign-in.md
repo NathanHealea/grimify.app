@@ -2,7 +2,7 @@
 
 **Epic:** Authentication & User Accounts
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `v1/feature/sign-up-sign-in`
 
 ## Summary
@@ -11,34 +11,34 @@ Allow users to create an account and log in using email and password through Sup
 
 ## Acceptance Criteria
 
-- [ ] Users can sign up with email and password
-- [ ] Users can sign in with existing credentials
-- [ ] Users can sign out
-- [ ] Auth state persists across page refreshes (SSR-compatible via `@supabase/ssr`)
-- [ ] Error messages display for invalid credentials or duplicate accounts
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Users can sign up with email and password
+- [x] Users can sign in with existing credentials
+- [x] Users can sign out
+- [x] Auth state persists across page refreshes (SSR-compatible via `@supabase/ssr`)
+- [x] Error messages display for invalid credentials or duplicate accounts
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
-| Route | Description |
-|---|---|
-| `/sign-up` | Registration page |
-| `/sign-in` | Login page |
+| Route            | Description                                                          |
+| ---------------- | -------------------------------------------------------------------- |
+| `/sign-up`       | Registration page                                                    |
+| `/sign-in`       | Login page                                                           |
 | `/auth/callback` | Supabase auth callback handler for confirming email/session exchange |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/lib/supabase/client.ts` | Browser Supabase client |
-| Create | `src/lib/supabase/server.ts` | Server-side Supabase client (cookies-based) |
-| Create | `src/middleware.ts` | Auth session refresh middleware |
-| Create | `src/app/(auth)/layout.tsx` | Minimal centered layout for auth pages |
-| Create | `src/app/(auth)/sign-up/page.tsx` | Sign up form |
-| Create | `src/app/(auth)/sign-in/page.tsx` | Sign in form |
-| Create | `src/app/(auth)/actions.ts` | Server actions for `signUp`, `signIn`, `signOut` |
-| Create | `src/app/auth/callback/route.ts` | Auth callback route handler |
-| Create | `.env.local` | Supabase environment variables |
+| Action | File                              | Description                                      |
+| ------ | --------------------------------- | ------------------------------------------------ |
+| Create | `src/lib/supabase/client.ts`      | Browser Supabase client                          |
+| Create | `src/lib/supabase/server.ts`      | Server-side Supabase client (cookies-based)      |
+| Create | `src/middleware.ts`               | Auth session refresh middleware                  |
+| Create | `src/app/(auth)/layout.tsx`       | Minimal centered layout for auth pages           |
+| Create | `src/app/(auth)/sign-up/page.tsx` | Sign up form                                     |
+| Create | `src/app/(auth)/sign-in/page.tsx` | Sign in form                                     |
+| Create | `src/app/(auth)/actions.ts`       | Server actions for `signUp`, `signIn`, `signOut` |
+| Create | `src/app/auth/callback/route.ts`  | Auth callback route handler                      |
+| Create | `.env.local`                      | Supabase environment variables                   |
 
 ## Implementation
 
@@ -67,7 +67,7 @@ Card classes: `.card`, `.card-body`, `.card-title`, `.card-description`, `.card-
 ```css
 @layer components {
   .card {
-    @apply rounded-xl border border-border bg-card text-card-foreground shadow-sm;
+    @apply border-border bg-card text-card-foreground rounded-xl border shadow-sm;
   }
 
   .card-body {
@@ -79,11 +79,11 @@ Card classes: `.card`, `.card-body`, `.card-title`, `.card-description`, `.card-
   }
 
   .card-title {
-    @apply text-lg font-semibold leading-none tracking-tight;
+    @apply text-lg leading-none font-semibold tracking-tight;
   }
 
   .card-description {
-    @apply text-sm text-muted-foreground;
+    @apply text-muted-foreground text-sm;
   }
 
   .card-footer {
@@ -103,42 +103,64 @@ Input classes: `.input` (base), sizes (`.input-xs`, `.input-sm`, `.input-md`, `.
 ```css
 @layer components {
   .input {
-    @apply h-9 w-full min-w-0 rounded-lg border border-input bg-transparent
-      px-3 py-1.5 text-sm transition-colors outline-none
-      placeholder:text-muted-foreground
-      focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50
-      disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50
-      aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20;
+    @apply border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 h-9 w-full min-w-0 rounded-lg border bg-transparent px-3 py-1.5 text-sm transition-colors outline-none focus-visible:ring-3 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-3;
   }
 
-  .input-xs { @apply h-6 px-2 py-0.5 text-xs; }
-  .input-sm { @apply h-7 px-2.5 py-1 text-xs; }
-  .input-md { @apply h-9 px-3 py-1.5 text-sm; }
-  .input-lg { @apply h-11 px-4 py-2.5 text-base; }
+  .input-xs {
+    @apply h-6 px-2 py-0.5 text-xs;
+  }
+  .input-sm {
+    @apply h-7 px-2.5 py-1 text-xs;
+  }
+  .input-md {
+    @apply h-9 px-3 py-1.5 text-sm;
+  }
+  .input-lg {
+    @apply h-11 px-4 py-2.5 text-base;
+  }
 
-  .input-primary { @apply border-primary focus-visible:border-primary focus-visible:ring-primary/50; }
-  .input-secondary { @apply border-secondary focus-visible:border-secondary focus-visible:ring-secondary/50; }
-  .input-accent { @apply border-accent focus-visible:border-accent focus-visible:ring-accent/50; }
-  .input-error { @apply border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20; }
+  .input-primary {
+    @apply border-primary focus-visible:border-primary focus-visible:ring-primary/50;
+  }
+  .input-secondary {
+    @apply border-secondary focus-visible:border-secondary focus-visible:ring-secondary/50;
+  }
+  .input-accent {
+    @apply border-accent focus-visible:border-accent focus-visible:ring-accent/50;
+  }
+  .input-error {
+    @apply border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20;
+  }
 
-  .input-disabled { @apply pointer-events-none cursor-not-allowed opacity-50; }
-  .input-ghost { @apply border-transparent bg-transparent focus-visible:border-ring focus-visible:bg-transparent; }
+  .input-disabled {
+    @apply pointer-events-none cursor-not-allowed opacity-50;
+  }
+  .input-ghost {
+    @apply focus-visible:border-ring border-transparent bg-transparent focus-visible:bg-transparent;
+  }
 
   .textarea {
-    @apply field-sizing-content w-full min-w-0 rounded-lg border border-input bg-transparent
-      px-3 py-2 text-sm transition-colors outline-none
-      placeholder:text-muted-foreground
-      focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50
-      disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50
-      aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20;
+    @apply border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 field-sizing-content w-full min-w-0 rounded-lg border bg-transparent px-3 py-2 text-sm transition-colors outline-none focus-visible:ring-3 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-3;
     min-height: 5rem;
     resize: vertical;
   }
 
-  .textarea-xs { @apply px-2 py-1 text-xs; min-height: 3rem; }
-  .textarea-sm { @apply px-2.5 py-1.5 text-xs; min-height: 4rem; }
-  .textarea-md { @apply px-3 py-2 text-sm; min-height: 5rem; }
-  .textarea-lg { @apply px-4 py-3 text-base; min-height: 7rem; }
+  .textarea-xs {
+    @apply px-2 py-1 text-xs;
+    min-height: 3rem;
+  }
+  .textarea-sm {
+    @apply px-2.5 py-1.5 text-xs;
+    min-height: 4rem;
+  }
+  .textarea-md {
+    @apply px-3 py-2 text-sm;
+    min-height: 5rem;
+  }
+  .textarea-lg {
+    @apply px-4 py-3 text-base;
+    min-height: 7rem;
+  }
 }
 ```
 
@@ -149,12 +171,15 @@ Label classes: `.label`, `.label-text`, `.label-text-alt`.
 ```css
 @layer components {
   .label {
-    @apply flex items-center gap-2 text-sm leading-none font-medium select-none
-      peer-disabled:cursor-not-allowed peer-disabled:opacity-50;
+    @apply flex items-center gap-2 text-sm leading-none font-medium select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-50;
   }
 
-  .label-text { @apply text-sm font-medium text-foreground; }
-  .label-text-alt { @apply text-xs font-normal text-muted-foreground; }
+  .label-text {
+    @apply text-foreground text-sm font-medium;
+  }
+  .label-text-alt {
+    @apply text-muted-foreground text-xs font-normal;
+  }
 }
 ```
 
@@ -164,14 +189,21 @@ Form layout classes: `.form-control`, `.form-item`, `.form-label`, `.form-messag
 
 ```css
 @layer components {
-  .form-control { @apply flex w-full flex-col gap-5; }
-  .form-item { @apply flex w-full flex-col gap-2; }
-  .form-label {
-    @apply text-sm leading-none font-medium select-none
-      peer-disabled:cursor-not-allowed peer-disabled:opacity-50;
+  .form-control {
+    @apply flex w-full flex-col gap-5;
   }
-  .form-message { @apply text-sm font-normal text-destructive; }
-  .form-description { @apply text-sm text-muted-foreground; }
+  .form-item {
+    @apply flex w-full flex-col gap-2;
+  }
+  .form-label {
+    @apply text-sm leading-none font-medium select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-50;
+  }
+  .form-message {
+    @apply text-destructive text-sm font-normal;
+  }
+  .form-description {
+    @apply text-muted-foreground text-sm;
+  }
 }
 ```
 
@@ -199,10 +231,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<supabase-anon-key>
 import { createBrowserClient } from '@supabase/ssr'
 
 export function createClient() {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  return createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
 }
 ```
 
@@ -217,27 +246,21 @@ import { cookies } from 'next/headers'
 export async function createClient() {
   const cookieStore = await cookies()
 
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          } catch {
-            // Called from a Server Component where cookies are read-only.
-            // Middleware handles the session refresh in this case.
-          }
-        },
+  return createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll()
       },
-    }
-  )
+      setAll(cookiesToSet) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+        } catch {
+          // Called from a Server Component where cookies are read-only.
+          // Middleware handles the session refresh in this case.
+        }
+      },
+    },
+  })
 }
 ```
 
@@ -269,9 +292,7 @@ export async function middleware(request: NextRequest) {
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
+          cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options))
         },
       },
     }
@@ -283,9 +304,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
 }
 ```
 
@@ -296,14 +315,8 @@ export const config = {
 Uses a `(auth)` route group so sign-up/sign-in pages share a minimal centered layout without the main app navigation.
 
 ```tsx
-export default function AuthLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <div className="flex min-h-screen w-full items-center justify-center px-4 py-24">
-      {children}
-    </div>
-  )
+export default function AuthLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <div className="flex min-h-screen w-full items-center justify-center px-4 py-24">{children}</div>
 }
 ```
 

@@ -1,3 +1,4 @@
+import { Navbar } from '@/components/navbar'
 import { cn } from '@/lib/utils'
 import { Geist } from 'next/font/google'
 import './globals.css'
@@ -11,7 +12,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn('font-sans', geist.variable)}>
-      <body>{children}</body>
+      <body>
+        <Navbar />
+        {children}
+      </body>
     </html>
   )
 }

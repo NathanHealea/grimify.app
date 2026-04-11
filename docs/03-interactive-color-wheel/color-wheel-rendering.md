@@ -21,30 +21,32 @@ Render an interactive color wheel that maps paints by hue (angle) and lightness 
 
 ## Routes
 
-| Route | Description |
-|---|---|
+| Route           | Description           |
+| --------------- | --------------------- |
 | `/` or `/wheel` | Main color wheel view |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/components/color-wheel/color-wheel.tsx` | Main color wheel component |
-| Create | `src/components/color-wheel/paint-marker.tsx` | Individual paint dot on the wheel |
-| Create | `src/modules/color/color-math.ts` | HSL to polar coordinate conversion utilities |
-| Create | `src/app/(main)/page.tsx` or `src/app/(main)/wheel/page.tsx` | Page hosting the wheel |
+| Action | File                                                         | Description                                  |
+| ------ | ------------------------------------------------------------ | -------------------------------------------- |
+| Create | `src/components/color-wheel/color-wheel.tsx`                 | Main color wheel component                   |
+| Create | `src/components/color-wheel/paint-marker.tsx`                | Individual paint dot on the wheel            |
+| Create | `src/modules/color/color-math.ts`                            | HSL to polar coordinate conversion utilities |
+| Create | `src/app/(main)/page.tsx` or `src/app/(main)/wheel/page.tsx` | Page hosting the wheel                       |
 
 ## Implementation
 
 ### 1. Color math utilities
 
 Functions to convert HSL values to polar coordinates for wheel placement:
+
 - `hslToPosition(hue, saturation, lightness, radius)` — returns `{ x, y }` for placing a paint on the wheel
 - Hue maps to angle, lightness maps to distance from center
 
 ### 2. Color wheel component
 
 A Canvas or SVG-based wheel with:
+
 - Background gradient showing the color spectrum (hue around the circumference)
 - Paint markers rendered as small colored circles at their computed positions
 - Responsive sizing via container queries or viewport units

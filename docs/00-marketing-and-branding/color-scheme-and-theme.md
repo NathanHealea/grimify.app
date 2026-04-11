@@ -36,54 +36,54 @@ Brand colors derived from `#b7882a`, `#d4a63a`, `#f1c84b`.
 
 Gold is a mid-lightness hue — it needs **dark text on gold backgrounds**, and a **darkened variant** for text on light backgrounds.
 
-| Usage | Colors | Ratio | AA (4.5:1) |
-|---|---|---|---|
-| **Button**: dark text on `#b7882a` bg | `#171717` on `#b7882a` | 5.61:1 | PASS |
-| **Button**: dark text on `#d4a63a` bg | `#171717` on `#d4a63a` | 7.95:1 | PASS |
-| **Button**: dark text on `#f1c84b` bg | `#171717` on `#f1c84b` | 11.19:1 | PASS |
-| **Button**: white text on `#b7882a` bg | `#fafafa` on `#b7882a` | 3.06:1 | FAIL |
-| **Light link**: `#b7882a` text on white | `#b7882a` on `#fafafa` | 3.06:1 | FAIL |
-| **Light link**: `#8a6a1e` text on white | `#8a6a1e` on `#fafafa` | 4.84:1 | PASS |
-| **Dark link**: `#d4a63a` text on dark bg | `#d4a63a` on `#171717` | 7.95:1 | PASS |
-| **Dark link**: `#f1c84b` text on dark bg | `#f1c84b` on `#171717` | 11.19:1 | PASS |
+| Usage                                    | Colors                 | Ratio   | AA (4.5:1) |
+| ---------------------------------------- | ---------------------- | ------- | ---------- |
+| **Button**: dark text on `#b7882a` bg    | `#171717` on `#b7882a` | 5.61:1  | PASS       |
+| **Button**: dark text on `#d4a63a` bg    | `#171717` on `#d4a63a` | 7.95:1  | PASS       |
+| **Button**: dark text on `#f1c84b` bg    | `#171717` on `#f1c84b` | 11.19:1 | PASS       |
+| **Button**: white text on `#b7882a` bg   | `#fafafa` on `#b7882a` | 3.06:1  | FAIL       |
+| **Light link**: `#b7882a` text on white  | `#b7882a` on `#fafafa` | 3.06:1  | FAIL       |
+| **Light link**: `#8a6a1e` text on white  | `#8a6a1e` on `#fafafa` | 4.84:1  | PASS       |
+| **Dark link**: `#d4a63a` text on dark bg | `#d4a63a` on `#171717` | 7.95:1  | PASS       |
+| **Dark link**: `#f1c84b` text on dark bg | `#f1c84b` on `#171717` | 11.19:1 | PASS       |
 
 ### Token Mapping
 
-| Token | Light Mode | Dark Mode |
-|---|---|---|
-| **Primary** | `#b7882a` — button bg, focus rings | `#d4a63a` — button bg, lighter for dark bg contrast |
-| **Primary Foreground** | `#171717` — dark text on gold | `#171717` — dark text on gold |
-| **Ring** | `#b7882a` | `#d4a63a` |
-| **Background** | `#fafafa` — near white, zero chroma | `#171717` — near black, zero chroma |
-| **Card** | `#ffffff` — white | `#262626` — dark gray |
-| **Foreground** | `#171717` — near black | `#f5f5f5` — near white |
-| **Muted** | `#f5f5f5` — light gray | `#2e2e2e` — dark gray |
-| **Muted Foreground** | `#737373` — mid gray | `#a3a3a3` — mid gray |
-| **Border** | `#e5e5e5` | `#333333` |
-| **Input** | `#e5e5e5` | `#333333` |
-| **Secondary** | `#f5f5f5` — neutral gray | `#2e2e2e` — neutral gray |
-| **Secondary Foreground** | `#171717` | `#f5f5f5` |
-| **Accent** | `#f5f5f5` — neutral gray | `#2e2e2e` — neutral gray |
-| **Accent Foreground** | `#171717` | `#f5f5f5` |
-| **Destructive** | `#dc2626` — functional red | `#ef4444` — functional red |
+| Token                    | Light Mode                          | Dark Mode                                           |
+| ------------------------ | ----------------------------------- | --------------------------------------------------- |
+| **Primary**              | `#b7882a` — button bg, focus rings  | `#d4a63a` — button bg, lighter for dark bg contrast |
+| **Primary Foreground**   | `#171717` — dark text on gold       | `#171717` — dark text on gold                       |
+| **Ring**                 | `#b7882a`                           | `#d4a63a`                                           |
+| **Background**           | `#fafafa` — near white, zero chroma | `#171717` — near black, zero chroma                 |
+| **Card**                 | `#ffffff` — white                   | `#262626` — dark gray                               |
+| **Foreground**           | `#171717` — near black              | `#f5f5f5` — near white                              |
+| **Muted**                | `#f5f5f5` — light gray              | `#2e2e2e` — dark gray                               |
+| **Muted Foreground**     | `#737373` — mid gray                | `#a3a3a3` — mid gray                                |
+| **Border**               | `#e5e5e5`                           | `#333333`                                           |
+| **Input**                | `#e5e5e5`                           | `#333333`                                           |
+| **Secondary**            | `#f5f5f5` — neutral gray            | `#2e2e2e` — neutral gray                            |
+| **Secondary Foreground** | `#171717`                           | `#f5f5f5`                                           |
+| **Accent**               | `#f5f5f5` — neutral gray            | `#2e2e2e` — neutral gray                            |
+| **Accent Foreground**    | `#171717`                           | `#f5f5f5`                                           |
+| **Destructive**          | `#dc2626` — functional red          | `#ef4444` — functional red                          |
 
 All surface tokens (background, card, muted, secondary, accent) are **zero chroma neutrals** — paint swatches always display accurately.
 
 ### Brand Color Variables
 
-| Variable | Value | Hex | Purpose |
-|---|---|---|---|
-| `--grimify-gold` | `oklch(0.60 0.14 80)` | `#b7882a` | Base brand gold |
-| `--grimify-gold-light` | `oklch(0.71 0.15 84)` | `#d4a63a` | Dark mode primary, hover states |
-| `--grimify-gold-bright` | `oklch(0.82 0.16 88)` | `#f1c84b` | Highlights, badges |
-| `--grimify-gold-dark` | `oklch(0.47 0.11 84)` | `#8a6a1e` | Light mode text on white (AA compliant) |
+| Variable                | Value                 | Hex       | Purpose                                 |
+| ----------------------- | --------------------- | --------- | --------------------------------------- |
+| `--grimify-gold`        | `oklch(0.60 0.14 80)` | `#b7882a` | Base brand gold                         |
+| `--grimify-gold-light`  | `oklch(0.71 0.15 84)` | `#d4a63a` | Dark mode primary, hover states         |
+| `--grimify-gold-bright` | `oklch(0.82 0.16 88)` | `#f1c84b` | Highlights, badges                      |
+| `--grimify-gold-dark`   | `oklch(0.47 0.11 84)` | `#8a6a1e` | Light mode text on white (AA compliant) |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/styles/variables.css` | Brand gold color definitions |
-| Modify | `src/app/globals.css` | Update `:root` and `.dark` theme variables, import variables.css |
+| Action | File                       | Description                                                      |
+| ------ | -------------------------- | ---------------------------------------------------------------- |
+| Create | `src/styles/variables.css` | Brand gold color definitions                                     |
+| Modify | `src/app/globals.css`      | Update `:root` and `.dark` theme variables, import variables.css |
 
 ## Implementation
 
@@ -97,7 +97,7 @@ All surface tokens (background, card, muted, secondary, accent) are **zero chrom
  */
 
 :root {
-  --grimify-gold: oklch(0.60 0.14 80);
+  --grimify-gold: oklch(0.6 0.14 80);
   --grimify-gold-light: oklch(0.71 0.15 84);
   --grimify-gold-bright: oklch(0.82 0.16 88);
   --grimify-gold-dark: oklch(0.47 0.11 84);

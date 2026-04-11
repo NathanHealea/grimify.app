@@ -20,17 +20,17 @@ Provide a fast, flexible search interface that lets painters find paints by name
 
 ## Routes
 
-| Route | Description |
-|---|---|
+| Route     | Description                              |
+| --------- | ---------------------------------------- |
 | `/search` | Paint search page with input and results |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/app/search/page.tsx` | Search page with input and result list |
-| Create | `src/modules/paint/search.ts` | Server-side search query logic |
-| Create | `src/components/paint-card.tsx` | Paint result card with color swatch |
+| Action | File                            | Description                            |
+| ------ | ------------------------------- | -------------------------------------- |
+| Create | `src/app/search/page.tsx`       | Search page with input and result list |
+| Create | `src/modules/paint/search.ts`   | Server-side search query logic         |
+| Create | `src/components/paint-card.tsx` | Paint result card with color swatch    |
 
 ## Implementation
 
@@ -45,6 +45,7 @@ Server-side search using Supabase `ilike` for name matching and exact/prefix mat
 ### 3. Paint card component
 
 A reusable card component showing:
+
 - Color swatch (rendered div with background-color from hex)
 - Paint name
 - Brand and product line

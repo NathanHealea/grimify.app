@@ -22,25 +22,25 @@ Add two password flows: (1) a "forgot password" flow from the sign-in page that 
 
 ## Routes
 
-| Route | Description |
-|---|---|
-| `/forgot-password` | Public page — email input to request password reset |
-| `/reset-password` | Public page — new password form after email verification |
-| `/auth/confirm` | API route — exchanges token hash for session (PKCE flow) |
-| `/profile/edit` | Existing — add "Change Password" section |
+| Route              | Description                                              |
+| ------------------ | -------------------------------------------------------- |
+| `/forgot-password` | Public page — email input to request password reset      |
+| `/reset-password`  | Public page — new password form after email verification |
+| `/auth/confirm`    | API route — exchanges token hash for session (PKCE flow) |
+| `/profile/edit`    | Existing — add "Change Password" section                 |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Modify | `src/app/(auth)/sign-in/page.tsx` | Add "Forgot your password?" link |
-| Create | `src/app/(auth)/forgot-password/page.tsx` | Email input form to request reset |
-| Create | `src/app/(auth)/reset-password/page.tsx` | New password form after token verification |
-| Modify | `src/app/(auth)/actions.ts` | Add `requestPasswordReset` and `updatePassword` actions |
-| Create | `src/app/auth/confirm/route.ts` | Token hash exchange endpoint for PKCE flow |
-| Modify | `src/app/profile/edit/edit-profile-form.tsx` | Add "Change Password" section |
-| Create | `src/app/profile/edit/actions.ts` | Add `changePassword` server action |
-| Modify | `src/middleware.ts` | Add `/forgot-password` and `/reset-password` to PUBLIC_ROUTES |
+| Action | File                                         | Description                                                   |
+| ------ | -------------------------------------------- | ------------------------------------------------------------- |
+| Modify | `src/app/(auth)/sign-in/page.tsx`            | Add "Forgot your password?" link                              |
+| Create | `src/app/(auth)/forgot-password/page.tsx`    | Email input form to request reset                             |
+| Create | `src/app/(auth)/reset-password/page.tsx`     | New password form after token verification                    |
+| Modify | `src/app/(auth)/actions.ts`                  | Add `requestPasswordReset` and `updatePassword` actions       |
+| Create | `src/app/auth/confirm/route.ts`              | Token hash exchange endpoint for PKCE flow                    |
+| Modify | `src/app/profile/edit/edit-profile-form.tsx` | Add "Change Password" section                                 |
+| Create | `src/app/profile/edit/actions.ts`            | Add `changePassword` server action                            |
+| Modify | `src/middleware.ts`                          | Add `/forgot-password` and `/reset-password` to PUBLIC_ROUTES |
 
 ## Implementation
 

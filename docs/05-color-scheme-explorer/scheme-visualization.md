@@ -20,17 +20,18 @@ Overlay color scheme relationships directly on the interactive color wheel, show
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/components/color-wheel/scheme-overlay.tsx` | SVG/Canvas overlay for scheme visualization |
-| Modify | `src/components/color-wheel/color-wheel.tsx` | Integrate scheme overlay layer |
-| Existing | `src/modules/color/scheme-generator.ts` | Scheme generation logic |
+| Action   | File                                            | Description                                 |
+| -------- | ----------------------------------------------- | ------------------------------------------- |
+| Create   | `src/components/color-wheel/scheme-overlay.tsx` | SVG/Canvas overlay for scheme visualization |
+| Modify   | `src/components/color-wheel/color-wheel.tsx`    | Integrate scheme overlay layer              |
+| Existing | `src/modules/color/scheme-generator.ts`         | Scheme generation logic                     |
 
 ## Implementation
 
 ### 1. Scheme overlay component
 
 A transparent layer rendered on top of the color wheel that draws:
+
 - Highlighted markers at each scheme hue position
 - Connecting lines between scheme colors (straight lines for complementary, triangle for triadic, etc.)
 - A subtle sector highlight or glow along the hue arcs
