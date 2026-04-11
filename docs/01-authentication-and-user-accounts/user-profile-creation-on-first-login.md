@@ -19,33 +19,33 @@ Automatically prompt new users to create their profile after their first success
 
 ## Routes
 
-| Route | Description |
-|---|---|
+| Route            | Description                                |
+| ---------------- | ------------------------------------------ |
 | `/profile/setup` | Profile setup form (display name required) |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/app/profile/setup/page.tsx` | Setup page (renders ProfileForm component) |
-| Create | `src/app/profile/setup/profile-form.tsx` | Client component with display name form |
-| Create | `src/app/profile/setup/actions.ts` | `setupProfile` server action |
-| Create | `src/modules/profile/validation.ts` | Shared validation logic and `ProfileFormState` type |
-| Modify | `src/middleware.ts` | Redirect authenticated users without a profile to `/profile/setup` |
-| Create | `supabase/migrations/XXXXXX_create_profiles_table.sql` | Creates profiles table with RLS policies |
+| Action | File                                                   | Description                                                        |
+| ------ | ------------------------------------------------------ | ------------------------------------------------------------------ |
+| Create | `src/app/profile/setup/page.tsx`                       | Setup page (renders ProfileForm component)                         |
+| Create | `src/app/profile/setup/profile-form.tsx`               | Client component with display name form                            |
+| Create | `src/app/profile/setup/actions.ts`                     | `setupProfile` server action                                       |
+| Create | `src/modules/profile/validation.ts`                    | Shared validation logic and `ProfileFormState` type                |
+| Modify | `src/middleware.ts`                                    | Redirect authenticated users without a profile to `/profile/setup` |
+| Create | `supabase/migrations/XXXXXX_create_profiles_table.sql` | Creates profiles table with RLS policies                           |
 
 ## Database
 
 ### `profiles` Table
 
-| Column | Type | Constraints |
-|---|---|---|
-| `id` | `uuid` | PK, FK to `auth.users.id` on delete cascade |
-| `display_name` | `text` | Not null, unique (case-insensitive index) |
-| `bio` | `text` | Nullable |
-| `avatar_url` | `text` | Nullable |
-| `created_at` | `timestamptz` | Not null, default `now()` |
-| `updated_at` | `timestamptz` | Not null, default `now()` |
+| Column         | Type          | Constraints                                 |
+| -------------- | ------------- | ------------------------------------------- |
+| `id`           | `uuid`        | PK, FK to `auth.users.id` on delete cascade |
+| `display_name` | `text`        | Not null, unique (case-insensitive index)   |
+| `bio`          | `text`        | Nullable                                    |
+| `avatar_url`   | `text`        | Nullable                                    |
+| `created_at`   | `timestamptz` | Not null, default `now()`                   |
+| `updated_at`   | `timestamptz` | Not null, default `now()`                   |
 
 ### Row Level Security
 

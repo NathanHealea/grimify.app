@@ -17,7 +17,5 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(
-    `${request.nextUrl.origin}/sign-in?error=Could not verify your email. Please try again.`
-  )
+  return NextResponse.redirect(`${request.nextUrl.origin}/sign-in?error=Could not verify your email. Please try again.`)
 }

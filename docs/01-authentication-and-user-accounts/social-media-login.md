@@ -24,16 +24,16 @@ Allow users to sign in or sign up using their Google or Discord accounts via Sup
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Modify | `src/app/(auth)/sign-in/page.tsx` | Add Google and Discord OAuth buttons |
-| Modify | `src/app/(auth)/sign-up/page.tsx` | Add Google and Discord OAuth buttons |
-| Modify | `src/app/(auth)/actions.ts` | Add `signInWithGoogle()` and `signInWithDiscord()` server actions |
-| Existing | `src/app/auth/callback/route.ts` | Handles code exchange for OAuth redirect |
-| Modify | `supabase/config.toml` | Enable Google and Discord providers |
-| Create | `supabase/migrations/XXXXXX_add_avatar_sync_trigger.sql` | Trigger to sync avatar from OAuth provider |
-| Modify | `src/app/profile/setup/page.tsx` | Fetch OAuth display name, check uniqueness |
-| Modify | `src/app/profile/setup/profile-form.tsx` | Accept `suggestedName` and `nameAlreadyTaken` props |
+| Action   | File                                                     | Description                                                       |
+| -------- | -------------------------------------------------------- | ----------------------------------------------------------------- |
+| Modify   | `src/app/(auth)/sign-in/page.tsx`                        | Add Google and Discord OAuth buttons                              |
+| Modify   | `src/app/(auth)/sign-up/page.tsx`                        | Add Google and Discord OAuth buttons                              |
+| Modify   | `src/app/(auth)/actions.ts`                              | Add `signInWithGoogle()` and `signInWithDiscord()` server actions |
+| Existing | `src/app/auth/callback/route.ts`                         | Handles code exchange for OAuth redirect                          |
+| Modify   | `supabase/config.toml`                                   | Enable Google and Discord providers                               |
+| Create   | `supabase/migrations/XXXXXX_add_avatar_sync_trigger.sql` | Trigger to sync avatar from OAuth provider                        |
+| Modify   | `src/app/profile/setup/page.tsx`                         | Fetch OAuth display name, check uniqueness                        |
+| Modify   | `src/app/profile/setup/profile-form.tsx`                 | Accept `suggestedName` and `nameAlreadyTaken` props               |
 
 ## Implementation
 

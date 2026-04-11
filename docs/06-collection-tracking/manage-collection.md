@@ -21,12 +21,12 @@ Allow authenticated users to add and remove paints from their personal collectio
 
 ### `user_paints` Table
 
-| Column | Type | Constraints |
-|---|---|---|
-| `user_id` | `uuid` | FK to `profiles.id` on delete cascade, part of composite PK |
-| `paint_id` | `int` | FK to `paints.id` on delete cascade, part of composite PK |
-| `added_at` | `timestamptz` | Not null, default `now()` |
-| `notes` | `text` | Nullable (personal notes about the paint) |
+| Column     | Type          | Constraints                                                 |
+| ---------- | ------------- | ----------------------------------------------------------- |
+| `user_id`  | `uuid`        | FK to `profiles.id` on delete cascade, part of composite PK |
+| `paint_id` | `int`         | FK to `paints.id` on delete cascade, part of composite PK   |
+| `added_at` | `timestamptz` | Not null, default `now()`                                   |
+| `notes`    | `text`        | Nullable (personal notes about the paint)                   |
 
 Composite primary key on `(user_id, paint_id)`.
 
@@ -38,12 +38,12 @@ Composite primary key on `(user_id, paint_id)`.
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `supabase/migrations/XXXXXX_create_user_paints_table.sql` | Migration for user_paints table |
-| Create | `src/modules/collection/actions.ts` | Server actions for add/remove paint |
-| Create | `src/components/collection-toggle.tsx` | Add/remove button component |
-| Create | `src/types/collection.ts` | TypeScript types |
+| Action | File                                                      | Description                         |
+| ------ | --------------------------------------------------------- | ----------------------------------- |
+| Create | `supabase/migrations/XXXXXX_create_user_paints_table.sql` | Migration for user_paints table     |
+| Create | `src/modules/collection/actions.ts`                       | Server actions for add/remove paint |
+| Create | `src/components/collection-toggle.tsx`                    | Add/remove button component         |
+| Create | `src/types/collection.ts`                                 | TypeScript types                    |
 
 ## Implementation
 

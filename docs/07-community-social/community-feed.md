@@ -20,16 +20,16 @@ Provide a central feed where users can discover recently shared recipes, palette
 
 ## Routes
 
-| Route | Description |
-|---|---|
+| Route        | Description         |
+| ------------ | ------------------- |
 | `/community` | Community feed page |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/app/(main)/community/page.tsx` | Community feed page |
-| Create | `src/components/feed-card.tsx` | Unified feed item card component |
+| Action | File                                | Description                      |
+| ------ | ----------------------------------- | -------------------------------- |
+| Create | `src/app/(main)/community/page.tsx` | Community feed page              |
+| Create | `src/components/feed-card.tsx`      | Unified feed item card component |
 
 ## Implementation
 
@@ -40,6 +40,7 @@ A server-side query that unions recent recipes, palettes, and shared collections
 ### 2. Feed card
 
 A polymorphic card component that renders differently based on content type:
+
 - **Recipe**: Title, author, step count, first few paint swatches
 - **Palette**: Title, author, color strip preview
 - **Collection**: Username, paint count, mini color wheel or swatch grid

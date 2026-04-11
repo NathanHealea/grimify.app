@@ -1,35 +1,23 @@
 'use client'
 
-import { useActionState } from 'react'
 import Link from 'next/link'
+import { useActionState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 import { type AuthState, signUp } from '../actions'
 
 export default function SignUpPage() {
-  const [state, formAction, pending] = useActionState<AuthState, FormData>(
-    signUp,
-    null
-  )
+  const [state, formAction, pending] = useActionState<AuthState, FormData>(signUp, null)
 
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Create an account</CardTitle>
-        <CardDescription>
-          Enter your email and password to get started.
-        </CardDescription>
+        <CardDescription>Enter your email and password to get started.</CardDescription>
       </CardHeader>
       <form action={formAction}>
         <CardContent className="flex flex-col gap-4">
@@ -45,14 +33,7 @@ export default function SignUpPage() {
           )}
           <div className="form-item">
             <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="you@example.com"
-              required
-              autoComplete="email"
-            />
+            <Input id="email" name="email" type="email" placeholder="you@example.com" required autoComplete="email" />
           </div>
           <div className="form-item">
             <Label htmlFor="password">Password</Label>

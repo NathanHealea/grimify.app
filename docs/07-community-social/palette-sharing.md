@@ -21,33 +21,33 @@ Allow users to create, save, and share curated color palettes — named collecti
 
 ## Routes
 
-| Route | Description |
-|---|---|
-| `/palettes` | Browse all public palettes |
-| `/palettes/[id]` | View a single palette |
-| `/palettes/new` | Create a new palette (auth required) |
-| `/palettes/[id]/edit` | Edit own palette (auth required) |
+| Route                 | Description                          |
+| --------------------- | ------------------------------------ |
+| `/palettes`           | Browse all public palettes           |
+| `/palettes/[id]`      | View a single palette                |
+| `/palettes/new`       | Create a new palette (auth required) |
+| `/palettes/[id]/edit` | Edit own palette (auth required)     |
 
 ## Database
 
 ### `palettes` Table
 
-| Column | Type | Constraints |
-|---|---|---|
-| `id` | `serial` | Primary key |
-| `user_id` | `uuid` | FK to `profiles.id`, not null |
-| `name` | `text` | Not null |
-| `description` | `text` | Nullable |
-| `created_at` | `timestamptz` | Not null, default `now()` |
-| `updated_at` | `timestamptz` | Not null, default `now()` |
+| Column        | Type          | Constraints                   |
+| ------------- | ------------- | ----------------------------- |
+| `id`          | `serial`      | Primary key                   |
+| `user_id`     | `uuid`        | FK to `profiles.id`, not null |
+| `name`        | `text`        | Not null                      |
+| `description` | `text`        | Nullable                      |
+| `created_at`  | `timestamptz` | Not null, default `now()`     |
+| `updated_at`  | `timestamptz` | Not null, default `now()`     |
 
 ### `palette_paints` Table
 
-| Column | Type | Constraints |
-|---|---|---|
+| Column       | Type  | Constraints                                                 |
+| ------------ | ----- | ----------------------------------------------------------- |
 | `palette_id` | `int` | FK to `palettes.id` on delete cascade, part of composite PK |
-| `paint_id` | `int` | FK to `paints.id`, part of composite PK |
-| `sort_order` | `int` | Not null |
+| `paint_id`   | `int` | FK to `paints.id`, part of composite PK                     |
+| `sort_order` | `int` | Not null                                                    |
 
 ### Row Level Security
 

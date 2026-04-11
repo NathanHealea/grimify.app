@@ -20,17 +20,18 @@ Add zoom, pan, and click-to-detail interactions to the color wheel so users can 
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Modify | `src/components/color-wheel/color-wheel.tsx` | Add zoom/pan transform handling |
-| Create | `src/components/color-wheel/paint-detail-panel.tsx` | Detail panel for selected paint |
-| Create | `src/hooks/use-wheel-transform.ts` | Zoom and pan state management hook |
+| Action | File                                                | Description                        |
+| ------ | --------------------------------------------------- | ---------------------------------- |
+| Modify | `src/components/color-wheel/color-wheel.tsx`        | Add zoom/pan transform handling    |
+| Create | `src/components/color-wheel/paint-detail-panel.tsx` | Detail panel for selected paint    |
+| Create | `src/hooks/use-wheel-transform.ts`                  | Zoom and pan state management hook |
 
 ## Implementation
 
 ### 1. Zoom and pan
 
 A custom hook (`useWheelTransform`) manages transform state (scale, translateX, translateY). Handles:
+
 - Mouse wheel for zoom
 - Mouse drag for pan
 - Touch pinch for mobile zoom

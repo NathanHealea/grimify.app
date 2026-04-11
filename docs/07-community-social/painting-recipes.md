@@ -21,37 +21,37 @@ Allow users to create and share painting recipes — step-by-step guides that de
 
 ## Routes
 
-| Route | Description |
-|---|---|
-| `/recipes` | Browse all recipes |
-| `/recipes/[id]` | View a single recipe |
-| `/recipes/new` | Create a new recipe (auth required) |
-| `/recipes/[id]/edit` | Edit own recipe (auth required) |
+| Route                | Description                         |
+| -------------------- | ----------------------------------- |
+| `/recipes`           | Browse all recipes                  |
+| `/recipes/[id]`      | View a single recipe                |
+| `/recipes/new`       | Create a new recipe (auth required) |
+| `/recipes/[id]/edit` | Edit own recipe (auth required)     |
 
 ## Database
 
 ### `recipes` Table
 
-| Column | Type | Constraints |
-|---|---|---|
-| `id` | `serial` | Primary key |
-| `user_id` | `uuid` | FK to `profiles.id`, not null |
-| `title` | `text` | Not null |
-| `description` | `text` | Nullable |
-| `cover_image_url` | `text` | Nullable |
-| `created_at` | `timestamptz` | Not null, default `now()` |
-| `updated_at` | `timestamptz` | Not null, default `now()` |
+| Column            | Type          | Constraints                   |
+| ----------------- | ------------- | ----------------------------- |
+| `id`              | `serial`      | Primary key                   |
+| `user_id`         | `uuid`        | FK to `profiles.id`, not null |
+| `title`           | `text`        | Not null                      |
+| `description`     | `text`        | Nullable                      |
+| `cover_image_url` | `text`        | Nullable                      |
+| `created_at`      | `timestamptz` | Not null, default `now()`     |
+| `updated_at`      | `timestamptz` | Not null, default `now()`     |
 
 ### `recipe_steps` Table
 
-| Column | Type | Constraints |
-|---|---|---|
-| `id` | `serial` | Primary key |
-| `recipe_id` | `int` | FK to `recipes.id` on delete cascade |
-| `step_order` | `int` | Not null |
-| `paint_id` | `int` | FK to `paints.id`, nullable |
-| `technique` | `text` | Not null (e.g., base, wash, drybrush, layer, edge highlight) |
-| `instructions` | `text` | Not null |
+| Column         | Type     | Constraints                                                  |
+| -------------- | -------- | ------------------------------------------------------------ |
+| `id`           | `serial` | Primary key                                                  |
+| `recipe_id`    | `int`    | FK to `recipes.id` on delete cascade                         |
+| `step_order`   | `int`    | Not null                                                     |
+| `paint_id`     | `int`    | FK to `paints.id`, nullable                                  |
+| `technique`    | `text`   | Not null (e.g., base, wash, drybrush, layer, edge highlight) |
+| `instructions` | `text`   | Not null                                                     |
 
 ### Row Level Security
 

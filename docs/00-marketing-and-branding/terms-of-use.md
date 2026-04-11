@@ -20,16 +20,16 @@ Create a Terms of Use page that outlines the rules and guidelines for using Grim
 
 ## Routes
 
-| Route | Description |
-|---|---|
+| Route    | Description       |
+| -------- | ----------------- |
 | `/terms` | Terms of Use page |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/app/(legal)/terms/page.tsx` | Terms of Use page |
-| Create | `src/app/(legal)/layout.tsx` | Shared layout for legal pages (centered, readable width) |
+| Action | File                             | Description                                              |
+| ------ | -------------------------------- | -------------------------------------------------------- |
+| Create | `src/app/(legal)/terms/page.tsx` | Terms of Use page                                        |
+| Create | `src/app/(legal)/layout.tsx`     | Shared layout for legal pages (centered, readable width) |
 
 ## Implementation
 

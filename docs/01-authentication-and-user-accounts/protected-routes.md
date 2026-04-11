@@ -18,10 +18,10 @@ Restrict access to authenticated-only pages so that unauthenticated users are re
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Modify | `src/middleware.ts` | Central auth and profile checks for all routes |
-| Existing | `src/app/(auth)/layout.tsx` | Auth page layout (sign-in, sign-up) |
+| Action   | File                        | Description                                    |
+| -------- | --------------------------- | ---------------------------------------------- |
+| Modify   | `src/middleware.ts`         | Central auth and profile checks for all routes |
+| Existing | `src/app/(auth)/layout.tsx` | Auth page layout (sign-in, sign-up)            |
 
 ## Implementation
 

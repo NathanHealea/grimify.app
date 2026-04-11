@@ -19,16 +19,16 @@ Surface substitute suggestions for discontinued paints, helping painters find av
 
 ## Routes
 
-| Route | Description |
-|---|---|
+| Route           | Description                                     |
+| --------------- | ----------------------------------------------- |
 | `/discontinued` | Browse all discontinued paints with substitutes |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/app/discontinued/page.tsx` | Discontinued paints listing with substitutes |
-| Modify | Paint detail panel/page | Add substitutes section for discontinued paints |
+| Action   | File                                | Description                                                       |
+| -------- | ----------------------------------- | ----------------------------------------------------------------- |
+| Create   | `src/app/discontinued/page.tsx`     | Discontinued paints listing with substitutes                      |
+| Modify   | Paint detail panel/page             | Add substitutes section for discontinued paints                   |
 | Existing | `src/modules/paint/match-engine.ts` | Reuse matching engine, excluding discontinued paints from results |
 
 ## Implementation

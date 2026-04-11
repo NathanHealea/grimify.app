@@ -22,14 +22,14 @@ Configure site-wide metadata, OpenGraph tags, and Twitter card tags so that Grim
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Modify | `src/app/layout.tsx` | Add metadata export with defaults |
-| Create | `public/og-image.png` | Default OpenGraph image (1200x630) |
-| Replace | `src/app/favicon.ico` | Brand favicon |
-| Create | `public/apple-touch-icon.png` | Apple touch icon (180x180) |
-| Create | `src/app/robots.ts` | Robots.txt generation |
-| Create | `src/app/sitemap.ts` | Sitemap generation |
+| Action  | File                          | Description                        |
+| ------- | ----------------------------- | ---------------------------------- |
+| Modify  | `src/app/layout.tsx`          | Add metadata export with defaults  |
+| Create  | `public/og-image.png`         | Default OpenGraph image (1200x630) |
+| Replace | `src/app/favicon.ico`         | Brand favicon                      |
+| Create  | `public/apple-touch-icon.png` | Apple touch icon (180x180)         |
+| Create  | `src/app/robots.ts`           | Robots.txt generation              |
+| Create  | `src/app/sitemap.ts`          | Sitemap generation                 |
 
 ## Implementation
 

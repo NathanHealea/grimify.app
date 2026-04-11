@@ -20,21 +20,21 @@ Allow users to browse paints organized by brand and product line, providing a st
 
 ## Routes
 
-| Route | Description |
-|---|---|
-| `/brands` | List of all paint brands |
-| `/brands/[slug]` | Single brand with its product lines |
+| Route                       | Description                           |
+| --------------------------- | ------------------------------------- |
+| `/brands`                   | List of all paint brands              |
+| `/brands/[slug]`            | Single brand with its product lines   |
 | `/brands/[slug]/[lineSlug]` | All paints in a specific product line |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/app/brands/page.tsx` | Brand listing page |
-| Create | `src/app/brands/[slug]/page.tsx` | Brand detail with product lines |
-| Create | `src/app/brands/[slug]/[lineSlug]/page.tsx` | Product line paint listing |
-| Create | `src/components/brand-card.tsx` | Brand card with logo/name |
-| Existing | `src/components/paint-card.tsx` | Paint card with color swatch |
+| Action   | File                                        | Description                     |
+| -------- | ------------------------------------------- | ------------------------------- |
+| Create   | `src/app/brands/page.tsx`                   | Brand listing page              |
+| Create   | `src/app/brands/[slug]/page.tsx`            | Brand detail with product lines |
+| Create   | `src/app/brands/[slug]/[lineSlug]/page.tsx` | Product line paint listing      |
+| Create   | `src/components/brand-card.tsx`             | Brand card with logo/name       |
+| Existing | `src/components/paint-card.tsx`             | Paint card with color swatch    |
 
 ## Implementation
 

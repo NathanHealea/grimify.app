@@ -20,17 +20,17 @@ Provide public user profile pages where painters can showcase their recipes, pal
 
 ## Routes
 
-| Route | Description |
-|---|---|
-| `/u/[displayName]` | Public user profile |
-| `/profile/edit` | Edit own profile (auth required) |
+| Route              | Description                      |
+| ------------------ | -------------------------------- |
+| `/u/[displayName]` | Public user profile              |
+| `/profile/edit`    | Edit own profile (auth required) |
 
 ## Database Changes
 
 Add to `profiles` table:
 
-| Column | Type | Constraints |
-|---|---|---|
+| Column              | Type      | Constraints               |
+| ------------------- | --------- | ------------------------- |
 | `collection_public` | `boolean` | Not null, default `false` |
 
 ### Row Level Security Updates
@@ -39,13 +39,13 @@ Add to `profiles` table:
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/app/u/[displayName]/page.tsx` | Public profile page |
-| Create | `src/app/profile/edit/page.tsx` | Profile edit page |
-| Create | `src/app/profile/edit/edit-profile-form.tsx` | Profile edit form component |
-| Create | `src/app/profile/edit/actions.ts` | Profile update server actions |
-| Create | `supabase/migrations/XXXXXX_add_collection_public.sql` | Add collection_public column |
+| Action | File                                                   | Description                   |
+| ------ | ------------------------------------------------------ | ----------------------------- |
+| Create | `src/app/u/[displayName]/page.tsx`                     | Public profile page           |
+| Create | `src/app/profile/edit/page.tsx`                        | Profile edit page             |
+| Create | `src/app/profile/edit/edit-profile-form.tsx`           | Profile edit form component   |
+| Create | `src/app/profile/edit/actions.ts`                      | Profile update server actions |
+| Create | `supabase/migrations/XXXXXX_add_collection_public.sql` | Add collection_public column  |
 
 ## Implementation
 

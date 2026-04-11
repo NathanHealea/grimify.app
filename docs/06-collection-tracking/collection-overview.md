@@ -20,16 +20,16 @@ Provide users with an overview of their paint collection, including statistics, 
 
 ## Routes
 
-| Route | Description |
-|---|---|
+| Route         | Description                                      |
+| ------------- | ------------------------------------------------ |
 | `/collection` | User's paint collection overview (auth required) |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/app/(main)/collection/page.tsx` | Collection overview page |
-| Create | `src/components/collection-stats.tsx` | Collection statistics component |
+| Action | File                                       | Description                                  |
+| ------ | ------------------------------------------ | -------------------------------------------- |
+| Create | `src/app/(main)/collection/page.tsx`       | Collection overview page                     |
+| Create | `src/components/collection-stats.tsx`      | Collection statistics component              |
 | Create | `src/components/collection-mini-wheel.tsx` | Mini color wheel showing collection coverage |
 
 ## Implementation
@@ -41,6 +41,7 @@ A page showing all paints the user owns as a grid of paint cards. Supports sorti
 ### 2. Collection statistics
 
 A summary panel showing:
+
 - Total paint count
 - Paints by brand (bar chart or list)
 - Paints by type (base, layer, shade, etc.)

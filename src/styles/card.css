@@ -1,6 +1,6 @@
 @layer components {
   .card {
-    @apply rounded-xl border border-border bg-card text-card-foreground shadow-sm;
+    @apply border-border bg-card text-card-foreground rounded-xl border shadow-sm;
   }
 
   .card-body {
@@ -12,11 +12,11 @@
   }
 
   .card-title {
-    @apply text-lg font-semibold leading-none tracking-tight;
+    @apply text-lg leading-none font-semibold tracking-tight;
   }
 
   .card-description {
-    @apply text-sm text-muted-foreground;
+    @apply text-muted-foreground text-sm;
   }
 
   .card-footer {

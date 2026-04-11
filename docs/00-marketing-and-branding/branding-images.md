@@ -21,19 +21,20 @@ Create and integrate the core branding assets for Grimify — logo, icon, and ke
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `public/branding/logo.svg` | Primary logo (full) |
-| Create | `public/branding/logo-dark.svg` | Logo variant for dark backgrounds |
-| Create | `public/branding/icon.svg` | Square icon/mark |
-| Create | `public/branding/icon.png` | Icon in PNG (512x512) |
-| Create | `src/components/logo.tsx` | Logo component with dark mode support |
+| Action | File                            | Description                           |
+| ------ | ------------------------------- | ------------------------------------- |
+| Create | `public/branding/logo.svg`      | Primary logo (full)                   |
+| Create | `public/branding/logo-dark.svg` | Logo variant for dark backgrounds     |
+| Create | `public/branding/icon.svg`      | Square icon/mark                      |
+| Create | `public/branding/icon.png`      | Icon in PNG (512x512)                 |
+| Create | `src/components/logo.tsx`       | Logo component with dark mode support |
 
 ## Implementation
 
 ### 1. Design logo assets
 
 Create the Grimify logo and icon mark. The logo should communicate:
+
 - Color/paint (the app's domain)
 - Tools/research (the app's purpose)
 - Clean, modern aesthetic that works at small and large sizes
@@ -41,6 +42,7 @@ Create the Grimify logo and icon mark. The logo should communicate:
 ### 2. Export assets
 
 Export in multiple formats:
+
 - SVG for web rendering (logo and icon)
 - PNG at 512x512 for icon contexts
 - Ensure logos work on both light and dark backgrounds

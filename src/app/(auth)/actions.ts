@@ -20,10 +20,7 @@ function getSiteUrl() {
   return 'http://localhost:3000'
 }
 
-export async function signUp(
-  _prevState: AuthState,
-  formData: FormData
-): Promise<AuthState> {
+export async function signUp(_prevState: AuthState, formData: FormData): Promise<AuthState> {
   const supabase = await createClient()
 
   const email = formData.get('email') as string
@@ -47,10 +44,7 @@ export async function signUp(
   return { success: 'Check your email to confirm your account.' }
 }
 
-export async function signIn(
-  _prevState: AuthState,
-  formData: FormData
-): Promise<AuthState> {
+export async function signIn(_prevState: AuthState, formData: FormData): Promise<AuthState> {
   const supabase = await createClient()
 
   const email = formData.get('email') as string

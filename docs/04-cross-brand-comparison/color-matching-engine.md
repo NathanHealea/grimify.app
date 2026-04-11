@@ -19,17 +19,18 @@ Implement a color distance algorithm that can find the closest matching paints a
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/modules/color/color-distance.ts` | Color distance algorithms (CIEDE2000 or similar) |
-| Create | `src/modules/color/color-convert.ts` | Color space conversion utilities (RGB to LAB, etc.) |
-| Create | `src/modules/paint/match-engine.ts` | Paint matching query logic |
+| Action | File                                  | Description                                         |
+| ------ | ------------------------------------- | --------------------------------------------------- |
+| Create | `src/modules/color/color-distance.ts` | Color distance algorithms (CIEDE2000 or similar)    |
+| Create | `src/modules/color/color-convert.ts`  | Color space conversion utilities (RGB to LAB, etc.) |
+| Create | `src/modules/paint/match-engine.ts`   | Paint matching query logic                          |
 
 ## Implementation
 
 ### 1. Color space conversion
 
 Implement conversion from RGB to CIELAB color space, which better represents human color perception. This involves:
+
 - RGB to XYZ conversion
 - XYZ to LAB conversion
 
@@ -40,6 +41,7 @@ Implement CIEDE2000 (or Delta E 2000) for perceptual color distance. This is the
 ### 3. Matching engine
 
 A function that takes a paint ID and returns the closest matches:
+
 - Fetches the source paint's color values
 - Computes distance against all other paints (optionally filtered by brand)
 - Returns top N results sorted by distance score

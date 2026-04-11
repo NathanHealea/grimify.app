@@ -20,18 +20,18 @@ Provide a UI for comparing two or more paints side by side, showing their color 
 
 ## Routes
 
-| Route | Description |
-|---|---|
-| `/compare` | Comparison page with selected paints |
-| `/compare?paints=id1,id2,id3` | Shareable comparison URL |
+| Route                         | Description                          |
+| ----------------------------- | ------------------------------------ |
+| `/compare`                    | Comparison page with selected paints |
+| `/compare?paints=id1,id2,id3` | Shareable comparison URL             |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/app/compare/page.tsx` | Comparison page |
-| Create | `src/components/paint-comparison-card.tsx` | Side-by-side paint card |
-| Create | `src/components/paint-picker.tsx` | Paint selector for adding to comparison |
+| Action | File                                       | Description                             |
+| ------ | ------------------------------------------ | --------------------------------------- |
+| Create | `src/app/compare/page.tsx`                 | Comparison page                         |
+| Create | `src/components/paint-comparison-card.tsx` | Side-by-side paint card                 |
+| Create | `src/components/paint-picker.tsx`          | Paint selector for adding to comparison |
 
 ## Implementation
 

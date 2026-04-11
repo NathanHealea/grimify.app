@@ -20,16 +20,16 @@ Create a Code of Conduct page that sets community expectations for behavior with
 
 ## Routes
 
-| Route | Description |
-|---|---|
+| Route              | Description          |
+| ------------------ | -------------------- |
 | `/code-of-conduct` | Code of Conduct page |
 
 ## Key Files
 
-| Action | File | Description |
-|---|---|---|
-| Create | `src/app/(legal)/code-of-conduct/page.tsx` | Code of Conduct page |
-| Existing | `src/app/(legal)/layout.tsx` | Shared legal layout |
+| Action   | File                                       | Description          |
+| -------- | ------------------------------------------ | -------------------- |
+| Create   | `src/app/(legal)/code-of-conduct/page.tsx` | Code of Conduct page |
+| Existing | `src/app/(legal)/layout.tsx`               | Shared legal layout  |
 
 ## Implementation
 
