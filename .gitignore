@@ -40,7 +40,14 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# claude
-.claude/
+# ai generated files
 CLAUDE.md
+.claude/
+.mcp.json
+.context.*
 
+# git worktrees
+.worktrees/
+
+# ide files
+.vscode/
