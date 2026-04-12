@@ -4,7 +4,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { OAuthButtons } from '@/modules/auth/components/oauth-buttons'
 import { SignInForm } from '@/modules/auth/components/sign-in-form'
 
-export default function SignInPage() {
+export default async function SignInPage({ searchParams }: { searchParams: Promise<{ message?: string; error?: string }> }) {
+  const { message, error } = await searchParams
+
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
@@ -12,6 +14,16 @@ export default function SignInPage() {
         <CardDescription>Sign in to your account to continue.</CardDescription>
       </CardHeader>
       <CardContent>
+        {message && (
+          <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-200">
+            {message}
+          </div>
+        )}
+        {error && (
+          <div className="mb-4 rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
         <SignInForm />
         <OAuthButtons />
       </CardContent>

@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { type NextRequest, NextResponse } from 'next/server'
 
 /** Routes that bypass authentication and profile-setup checks. */
-const PUBLIC_ROUTES = ['/sign-in', '/sign-up', '/auth/callback']
+const PUBLIC_ROUTES = ['/sign-in', '/sign-up', '/auth/callback', '/auth/confirm', '/forgot-password', '/reset-password']
 
 /** Route prefixes that require the `admin` role. */
 const ADMIN_ROUTES = ['/admin']

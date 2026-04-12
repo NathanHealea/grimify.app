@@ -238,6 +238,10 @@ otp_expiry = 3600
 subject = "Confirm Your Account — Grimify"
 content_path = "./supabase/templates/confirmation.html"
 
+[auth.email.template.recovery]
+subject = "Reset Your Password — Grimify"
+content_path = "./supabase/templates/recovery.html"
+
 # [auth.email.template.invite]
 # subject = "You have been invited"
 # content_path = "./supabase/templates/invite.html"
