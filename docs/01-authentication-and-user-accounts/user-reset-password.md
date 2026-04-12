@@ -2,7 +2,7 @@
 
 **Epic:** Authentication & User Accounts
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 
 ## Summary
 
