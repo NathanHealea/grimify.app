@@ -70,10 +70,10 @@ Core functionality:
 
 - [x] [Sign up / sign in via Supabase Auth](./01-authentication-and-user-accounts/sign-up-sign-in.md)
 - [x] [User profile creation on first login](./01-authentication-and-user-accounts/user-profile-creation-on-first-login.md)
-- [ ] [Protected routes for authenticated features](./01-authentication-and-user-accounts/protected-routes.md)
+- [x] [Protected routes for authenticated features](./01-authentication-and-user-accounts/protected-routes.md)
 - [ ] [User roles (user, admin)](./01-authentication-and-user-accounts/user-roles.md)
 - [x] [Social media login (Google, Discord)](./01-authentication-and-user-accounts/social-media-login.md)
-- [ ] [User password reset and change](./01-authentication-and-user-accounts/user-reset-password.md)
+- [x] [User password reset and change](./01-authentication-and-user-accounts/user-reset-password.md)
 
 ### Epic: Paint Data & Search
 
