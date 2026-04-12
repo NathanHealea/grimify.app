@@ -18,31 +18,51 @@ Restrict access to authenticated-only pages so that unauthenticated users are re
 
 ## Key Files
 
-| Action   | File                        | Description                                    |
-| -------- | --------------------------- | ---------------------------------------------- |
-| Modify   | `src/middleware.ts`         | Central auth and profile checks for all routes |
-| Existing | `src/app/(auth)/layout.tsx` | Auth page layout (sign-in, sign-up)            |
+| Action | File                            | Description                                    |
+| ------ | ------------------------------- | ---------------------------------------------- |
+| Modify | `src/middleware.ts`             | Add auth redirect for unauthenticated users    |
+| Modify | `src/app/profile/setup/page.tsx`| Remove redundant page-level auth guard         |
+| Modify | `src/app/profile/edit/page.tsx` | Remove redundant page-level auth guard         |
 
-## Implementation
+## Implementation Plan
 
-### 1. Middleware-based protection
+> **Branch prefix:** `v1/feature/`
 
-The middleware in `src/middleware.ts` runs on every non-static request. It:
+### 1. Update middleware to redirect unauthenticated users
 
-- Refreshes the auth session via `supabase.auth.getUser()`
-- Defines `PUBLIC_ROUTES` (`/sign-in`, `/sign-up`, `/auth/callback`) that skip all protection checks
-- For authenticated users without a profile, redirects to `/profile/setup`
-- For admin routes (`/admin/*`), checks the user has the `admin` role
+**File:** `src/middleware.ts`
 
-### 2. Public routes
+The middleware already skips public routes and passes unauthenticated users through without protection (line 50–52 has a placeholder comment). Update it to redirect unauthenticated users to `/sign-in`:
 
-Sign-in, sign-up, and the auth callback are accessible without authentication. The home page (`/`) renders different content based on auth state (server component checks `supabase.auth.getUser()`).
+1. Add `'/'` to a new `PUBLIC_EXACT_ROUTES` array — the home page must be public but cannot use `startsWith('/')` since that matches all routes
+2. Update the public route check to also match exact routes: `PUBLIC_EXACT_ROUTES.some(route => pathname === route)`
+3. Replace the `if (!user) { return supabaseResponse }` block with a redirect to `/sign-in`, appending a `next` query parameter with the original pathname so the user can be redirected back after sign-in
 
-### 3. Role-based route protection
+```typescript
+if (!user) {
+  const url = request.nextUrl.clone()
+  url.pathname = '/sign-in'
+  url.searchParams.set('next', pathname)
+  return NextResponse.redirect(url)
+}
+```
 
-Admin routes are additionally gated by role. See [User Roles](./user-roles.md) for details.
+### 2. Remove redundant page-level auth guards
+
+Now that middleware handles auth redirects consistently, remove the manual `if (!user) redirect('/sign-in')` checks from:
+
+- **`src/app/profile/setup/page.tsx`** (lines 13–15) — remove the `redirect('/sign-in')` guard; `user` is guaranteed by middleware
+- **`src/app/profile/edit/page.tsx`** (lines 13–15) — same removal
+
+In both files, also remove the `redirect` import from `'next/navigation'` if it becomes unused (profile/setup still uses it for the `has_setup_profile` redirect, so keep it there).
+
+### 3. Verify build and lint
+
+Run `npm run build` and `npm run lint` to confirm no errors.
 
 ## Notes
 
-- The middleware matcher excludes static assets (`_next/static`, `_next/image`, `favicon.ico`, image files).
-- Route protection and profile enforcement are handled in a single middleware pass to minimize overhead.
+- The middleware matcher already excludes static assets (`_next/static`, `_next/image`, `favicon.ico`, image files)
+- Route protection and profile enforcement are handled in a single middleware pass to minimize overhead
+- The `next` query parameter enables redirect-back-after-login (consuming it in the sign-in flow is out of scope for this feature but the parameter is set for future use)
+- Public routes use prefix matching (`startsWith`) for auth pages and exact matching for `/` to avoid matching all routes
