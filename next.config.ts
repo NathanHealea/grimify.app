@@ -1,12 +1,7 @@
-import type { NextConfig } from 'next'
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  images: {
-    remotePatterns: [
-      { hostname: 'lh3.googleusercontent.com' },
-      { hostname: 'cdn.discordapp.com' },
-    ],
-  },
-}
+  /* config options here */
+};
 
-export default nextConfig
+export default nextConfig;
