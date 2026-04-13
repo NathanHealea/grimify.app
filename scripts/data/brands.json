@@ -1,0 +1,37 @@
+[
+  {
+    "id": "citadel",
+    "name": "Citadel",
+    "icon": "⚔️",
+    "color": "#C7A74D",
+    "types": ["Base", "Layer", "Edge", "Contrast", "Shade", "Air", "Dry", "Spray", "Technical"]
+  },
+  {
+    "id": "army-painter",
+    "name": "Army Painter",
+    "icon": "🛡️",
+    "color": "#D32F2F",
+    "types": ["Fanatic", "Fanatic Metallic", "Fanatic Wash", "Masterclass", "Speedpaint", "Speedpaint Metallic", "Warpaints", "Warpaints Air", "Warpaints Metallic", "Warpaints Wash"]
+  },
+  {
+    "id": "vallejo",
+    "name": "Vallejo",
+    "icon": "🎯",
+    "color": "#1565C0",
+    "types": ["Game Air", "Game Color", "Game Color Ink", "Game Color Metallic", "Game Color Wash", "Liquid Metal", "Mecha Color", "Metal Color", "Model Air", "Model Color", "Model Wash", "Panzer Aces", "Surface Primer", "Xpress Color"]
+  },
+  {
+    "id": "green-stuff-world",
+    "name": "Green Stuff World",
+    "icon": "🧪",
+    "color": "#2E7D32",
+    "types": ["Acrylic", "Metallic"]
+  },
+  {
+    "id": "ak-interactive",
+    "name": "AK Interactive",
+    "icon": "🎨",
+    "color": "#F57C00",
+    "types": ["3rd Gen Acrylics", "3rd Gen Intense", "3rd Gen Metallic", "Abteilung 502", "Acrylics", "Acrylics AFV", "Acrylics Air", "Acrylics Figure", "Acrylics Naval", "Acrylics Primer"]
+  }
+]

@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Grimify
+
+Interactive color research and collection management app for miniature painters. Combines a visual paint library, cross-brand comparison tools, color theory exploration, and a social community for sharing recipes, palettes, and collections.
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/) 16 (App Router)
+- [React](https://react.dev/) 19
+- [TypeScript](https://www.typescriptlang.org/) 5
+- [Tailwind CSS](https://tailwindcss.com/) 4 with daisyUI-style utility classes
+- [shadcn/ui](https://ui.shadcn.com/) component primitives
+- [Supabase](https://supabase.com/) (Auth, Database, Storage)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js v20+
+- Docker (for local Supabase)
+- [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started)
+
+### Setup
 
 ```bash
+# Clone the repository
+git clone git@github.com:NathanHealea/grimify.app.git
+cd grimify.app
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Fill in NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
+# (printed by db:start for local dev, or from Supabase dashboard > Project Settings > API)
+
+# Start the local Supabase stack
+npm run db:start
+
+# Start the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script           | Description                                      |
+| ---------------- | ------------------------------------------------ |
+| `npm run dev`    | Start the Next.js development server             |
+| `npm run build`  | Create an optimized production build              |
+| `npm run lint`   | Run ESLint                                        |
+| `npm run format` | Format code with Prettier and fix lint issues     |
+| `npm run db:start`   | Start the local Supabase stack              |
+| `npm run db:stop`    | Stop the local Supabase stack               |
+| `npm run db:restart` | Restart the local Supabase stack            |
+| `npm run db:reset`   | Reset the local database (runs migrations)  |
+| `npm run db:types`   | Generate TypeScript types from the database |
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/              # Next.js App Router pages
+  components/ui/    # Shared UI primitives
+  lib/              # Shared utilities
+  modules/          # Feature modules (actions, components, types, validation)
+  styles/           # daisyUI-style CSS class definitions
+supabase/
+  config.toml       # Supabase local dev configuration
+  migrations/       # Database migrations
+  seed.sql          # Seed data
+docs/               # Planning and feature documentation
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions, coding conventions, and development workflow.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is privately maintained by [Nathan Healea](https://github.com/NathanHealea).
