@@ -6,7 +6,7 @@
 
 ## Summary
 
-Design and implement the core database schema for storing miniature paint data across multiple brands and product lines. Seed the database with paint data from major manufacturers.
+Design and implement the core database schema for storing miniature paint data across multiple brands and product lines. Build a seed generator that converts the existing JSON paint data (on `main` branch in `src/data/`) into SQL, covering all 5 brands and 2,337 paints with cross-brand references.
 
 ## Acceptance Criteria
 
@@ -14,8 +14,10 @@ Design and implement the core database schema for storing miniature paint data a
 - [ ] A `product_lines` table exists linking paint ranges to brands
 - [ ] A `paints` table exists with color data (name, hex, RGB, HSL values)
 - [ ] A `paint_references` table exists linking related paints with relationship type and similarity score
-- [ ] Seed data covers at least 3 major brands (e.g., Citadel, Vallejo, Army Painter)
-- [ ] Each paint has accurate hex color values
+- [ ] A seed generator script (`scripts/generate-seed.ts`) converts JSON data to SQL
+- [ ] Seed data covers all 5 brands from `main` branch data (Citadel, Army Painter, Vallejo, Green Stuff World, AK Interactive — 2,337 paints)
+- [ ] Each paint has accurate hex color values with computed RGB and HSL
+- [ ] Paint references are seeded from the `comparable` data (334 cross-brand alternatives)
 - [ ] RLS policies allow all users to read paint data
 - [ ] Only admins can insert/update/delete paint data
 - [ ] `npm run build` and `npm run lint` pass with no errors
@@ -157,62 +159,98 @@ Repeat the pattern for all four tables (brands, product_lines, paints, paint_ref
 |------|---------|
 | `supabase/migrations/20260413000000_create_paint_tables.sql` | New — full migration with tables, indexes, RLS |
 
-### Step 2: Seed data
+### Step 2: Build seed generator script
 
-Populate `supabase/seed.sql` with paint data for at least 3 major miniature paint brands. Each brand gets its product lines and individual paints with accurate hex values and pre-computed RGB/HSL values.
+Create a Node.js script (`scripts/generate-seed.ts`) that reads the JSON paint data from the `main` branch's `src/data/` directory and outputs a complete `supabase/seed.sql` file. This automates the conversion of 2,337+ paints into SQL and ensures the seed stays reproducible.
 
-#### Brands to seed
+#### Source data (on `main` branch in `src/data/`)
 
-| Brand | Website | Product Lines |
-|-------|---------|---------------|
-| **Citadel** (Games Workshop) | `https://www.games-workshop.com` | Base, Layer, Shade, Dry, Contrast, Technical |
-| **Vallejo** | `https://acrylicosvallejo.com` | Game Color, Model Color, Game Air, Metal Color |
-| **The Army Painter** | `https://thearmypainter.com` | Warpaints, Warpaints Fanatic, Speedpaint |
+| File | Records | Notes |
+|------|---------|-------|
+| `src/data/brands.json` | 5 brands | Citadel, Army Painter, Vallejo, Green Stuff World, AK Interactive |
+| `src/data/paints/citadel.json` | 341 paints | 9 types, 143 have comparable refs |
+| `src/data/paints/army-painter.json` | 461 paints | 10 types, 107 have comparable refs |
+| `src/data/paints/vallejo.json` | 763 paints | 14 types, 60 have comparable refs |
+| `src/data/paints/green-stuff-world.json` | 122 paints | 2 types, 0 comparable refs |
+| `src/data/paints/ak-interactive.json` | 650 paints | 10 types, 0 comparable refs |
+| **Total** | **2,337 paints** | **334 comparable references** |
 
-#### Data approach
+Each paint JSON entry has: `id`, `name`, `hex`, `type`, `description`, `comparable[]` (with `id` and `name` of related paints).
 
-Write SQL `INSERT` statements directly in `seed.sql`. Use a helper comment block to document the hex→RGB→HSL conversion formula. Seed a representative set of paints per product line (at minimum the most commonly used paints — approximately 20-40 paints per brand to cover the core palette). Each paint must include:
+#### Script responsibilities
 
-- Accurate hex value (sourced from manufacturer specifications)
-- RGB values derived from hex
-- HSL values computed from RGB (hue 0-360, saturation 0-100, lightness 0-100)
-- Correct `paint_type` for the product line
-- `is_metallic` flag set for metallic/gold/silver/copper paints
-- `is_discontinued` flag set for paints no longer in production
+1. **Copy JSON files** from `main` branch into `scripts/data/` (or read them directly via `git show main:...` at build time) so the generator is self-contained.
 
-#### Seed data structure
+2. **Parse brands** from `brands.json` → generate `INSERT INTO public.brands` statements. Map brand fields:
+   - `id` → `slug` (e.g., `"citadel"`)
+   - `name` → `name`
+   - Website URLs hardcoded per brand (not in the JSON)
 
-```sql
--- Brands
-INSERT INTO public.brands (name, slug, website_url) VALUES
-  ('Citadel', 'citadel', 'https://www.games-workshop.com'),
-  ('Vallejo', 'vallejo', 'https://acrylicosvallejo.com'),
-  ('The Army Painter', 'the-army-painter', 'https://thearmypainter.com');
+3. **Derive product lines** from the unique `type` values across each brand's paint entries → generate `INSERT INTO public.product_lines`. Slugify the type name (e.g., `"Game Color"` → `"game-color"`).
 
--- Product lines (reference brand IDs via subquery)
-INSERT INTO public.product_lines (brand_id, name, slug, description) VALUES
-  ((SELECT id FROM public.brands WHERE slug = 'citadel'), 'Base', 'base', 'High-pigment foundation paints'),
-  ...;
+4. **Convert paints** from each JSON file → generate `INSERT INTO public.paints`. For each paint:
+   - Parse `hex` → compute `r`, `g`, `b` (extract from hex string)
+   - Compute `hue`, `saturation`, `lightness` from RGB using the standard HSL algorithm
+   - Slugify `name` for the `slug` column
+   - Set `paint_type` from the JSON `type` field (lowercased)
+   - Set `is_metallic = true` when `type` contains "Metallic" or "Metal"
+   - Set `is_discontinued = false` for all (no discontinuation data in JSON)
+   - Reference `product_line_id` via subquery on `(brand_slug, type_slug)`
 
--- Paints (reference product_line IDs via subquery)
-INSERT INTO public.paints (product_line_id, name, slug, hex, r, g, b, hue, saturation, lightness, is_metallic, paint_type) VALUES
-  ((SELECT id FROM public.product_lines WHERE slug = 'base' AND brand_id = (SELECT id FROM public.brands WHERE slug = 'citadel')),
-   'Abaddon Black', 'abaddon-black', '#231F20', 35, 31, 32, 345, 6, 13, false, 'base'),
-  ...;
+5. **Convert comparable references** → generate `INSERT INTO public.paint_references`. For each paint that has a `comparable[]` array:
+   - Look up the source paint by its JSON `id` (e.g., `"cit-2"`) → map to its slug
+   - Look up the target paint by the comparable's `id` (e.g., `"ap-95"`) → map to its slug
+   - Set `relationship = 'alternative'` (the comparable data represents direct brand equivalents)
+   - Set `similarity_score = NULL` (no score data in the JSON; similarity scores will be computed later)
 
--- Paint references (cross-brand similarities and alternatives)
-INSERT INTO public.paint_references (paint_id, related_paint_id, relationship, similarity_score) VALUES
-  ((SELECT id FROM public.paints WHERE slug = 'averland-sunset'),
-   (SELECT id FROM public.paints WHERE slug = 'moon-yellow-76005'),
-   'similar', 97.2),
-  ...;
+6. **Write output** to `supabase/seed.sql` with clear section headers and comments.
+
+#### Hex → RGB → HSL conversion
+
+```typescript
+function hexToRgb(hex: string): { r: number; g: number; b: number } {
+  const h = hex.replace('#', '')
+  return {
+    r: parseInt(h.substring(0, 2), 16),
+    g: parseInt(h.substring(2, 4), 16),
+    b: parseInt(h.substring(4, 6), 16),
+  }
+}
+
+function rgbToHsl(r: number, g: number, b: number): { h: number; s: number; l: number } {
+  r /= 255; g /= 255; b /= 255
+  const max = Math.max(r, g, b), min = Math.min(r, g, b)
+  const l = (max + min) / 2
+  if (max === min) return { h: 0, s: 0, l: l * 100 }
+  const d = max - min
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+  let h = 0
+  if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6
+  else if (max === g) h = ((b - r) / d + 2) / 6
+  else h = ((r - g) / d + 4) / 6
+  return { h: h * 360, s: s * 100, l: l * 100 }
+}
 ```
+
+#### Running the script
+
+Add an npm script to `package.json`:
+
+```json
+"db:seed:generate": "npx tsx scripts/generate-seed.ts"
+```
+
+Workflow: run `npm run db:seed:generate` → review `supabase/seed.sql` → run `npm run db:reset` to apply.
 
 #### Affected files
 
 | File | Changes |
 |------|---------|
-| `supabase/seed.sql` | Replace placeholder comment with full seed data |
+| `scripts/generate-seed.ts` | New — reads JSON data, outputs SQL |
+| `scripts/data/brands.json` | New — copied from `main:src/data/brands.json` |
+| `scripts/data/paints/*.json` | New — copied from `main:src/data/paints/*.json` |
+| `supabase/seed.sql` | Replaced — generated output with all brands, product lines, paints, and references |
+| `package.json` | Add `db:seed:generate` script |
 
 ### Step 3: TypeScript types
 
@@ -291,11 +329,12 @@ export type PaintReference = {
 
 ### Risks & Considerations
 
-- **Hex accuracy**: Paint hex values must be sourced from reliable references. Inaccurate colors undermine the core feature. Cross-reference manufacturer swatches where possible.
-- **HSL computation**: Must be computed correctly from RGB. Use the standard algorithm (not approximations) to ensure color wheel mapping works properly.
+- **Hex accuracy**: The `main` branch data has already been compiled with sourced references (see `src/data/REFERENCES.md`). Translucent paints (Contrast, Shade, Speedpaint, Wash, Ink, Xpress Color) and metallic paints have estimated hex values — this is documented and acceptable.
+- **HSL computation**: The seed generator must use the standard RGB→HSL algorithm (not approximations) to ensure color wheel mapping works properly. Unit test the conversion with known values.
 - **Public SELECT policy**: Unlike the existing `profiles` and `roles` tables (which require authentication), paint data uses truly public access (`anon` + `authenticated`). Verify this works with the Supabase anon key.
-- **Seed data size**: Large INSERT statements in `seed.sql` are fine for local dev. For production, the migration itself creates empty tables and seed data would be loaded separately (e.g., via an admin tool or a separate migration).
-- **Serial IDs in seed references**: Use subqueries (`SELECT id FROM ... WHERE slug = ...`) instead of hardcoded IDs to avoid fragile references across seed reruns.
+- **Seed data size**: 2,337 paints + 334 references produce a large `seed.sql`. This is fine for local dev via `npm run db:reset`. For production, data should be loaded via a separate migration or admin tool.
+- **Serial IDs in seed references**: The generator must use subqueries (`SELECT id FROM ... WHERE slug = ...`) instead of hardcoded IDs to stay idempotent across seed reruns.
+- **JSON ID mapping for references**: The `comparable` array uses JSON IDs (e.g., `"cit-2"`, `"ap-95"`) which must be mapped to paint slugs. The generator needs a lookup table from JSON ID → slug built during the paint conversion pass.
 
 ## Notes
 
