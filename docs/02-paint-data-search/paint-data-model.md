@@ -13,6 +13,7 @@ Design and implement the core database schema for storing miniature paint data a
 - [ ] A `brands` table exists with manufacturer information
 - [ ] A `product_lines` table exists linking paint ranges to brands
 - [ ] A `paints` table exists with color data (name, hex, RGB, HSL values)
+- [ ] A `paint_references` table exists linking related paints with relationship type and similarity score
 - [ ] Seed data covers at least 3 major brands (e.g., Citadel, Vallejo, Army Painter)
 - [ ] Each paint has accurate hex color values
 - [ ] RLS policies allow all users to read paint data
@@ -68,9 +69,34 @@ Unique constraint on `(brand_id, slug)`.
 
 Unique constraint on `(product_line_id, slug)`.
 
+### `paint_references` Table
+
+Links paints to related paints across brands and product lines. Each row represents a directional relationship from one paint to another, categorized by type and scored by similarity. The UI groups "similar" references by the related paint's `paint_type` (e.g., "Similar base paints", "Similar layer paints").
+
+| Column             | Type          | Constraints                        |
+| ------------------ | ------------- | ---------------------------------- |
+| `id`               | `serial`      | Primary key                        |
+| `paint_id`         | `int`         | FK to `paints.id`, not null        |
+| `related_paint_id` | `int`         | FK to `paints.id`, not null        |
+| `relationship`     | `text`        | Not null (e.g., `similar`, `alternative`, `complement`) |
+| `similarity_score` | `float`       | Nullable (0-100, percentage match) |
+| `created_at`       | `timestamptz` | Not null, default `now()`          |
+
+Unique constraint on `(paint_id, related_paint_id, relationship)`.
+Check constraint: `paint_id != related_paint_id`.
+Check constraint: `similarity_score` between 0 and 100 (when not null).
+
+#### Relationship types
+
+| Value           | Meaning |
+| --------------- | ------- |
+| `similar`       | Color-similar paint (grouped in UI by the related paint's `paint_type`) |
+| `alternative`   | Direct equivalent/replacement from another brand |
+| `complement`    | Complementary color on the color wheel |
+
 ### Row Level Security
 
-All three tables:
+All four tables:
 
 - **SELECT**: Public read access (no auth required — paint data is browsable by everyone)
 - **INSERT / UPDATE / DELETE**: Only admin role users
@@ -83,7 +109,7 @@ Create `supabase/migrations/20260413000000_create_paint_tables.sql` following th
 
 #### Tables
 
-Create the three tables in order (`brands` → `product_lines` → `paints`) with all columns, constraints, and foreign keys as specified in the Database section above. Use `ON DELETE CASCADE` for foreign keys so deleting a brand cascades through product lines to paints.
+Create the four tables in order (`brands` → `product_lines` → `paints` → `paint_references`) with all columns, constraints, and foreign keys as specified in the Database section above. Use `ON DELETE CASCADE` for foreign keys so deleting a brand cascades through product lines to paints, and deleting a paint cascades its references.
 
 #### Indexes
 
@@ -99,6 +125,9 @@ Add indexes for common query patterns:
 - `paints.paint_type` — filter by type
 - `paints(is_metallic)` — filter metallics (partial index `WHERE is_metallic = true`)
 - `paints(is_discontinued)` — filter discontinued (partial index `WHERE is_discontinued = true`)
+- `paint_references.paint_id` — lookup references for a given paint
+- `paint_references.related_paint_id` — reverse lookup
+- `paint_references.relationship` — filter by relationship type
 
 #### RLS policies
 
@@ -120,7 +149,7 @@ Enable RLS on all three tables. Policy pattern:
     WITH CHECK ('admin' = ANY(public.get_user_roles(auth.uid())));
   ```
 
-Repeat the pattern for all three tables (brands, product_lines, paints).
+Repeat the pattern for all four tables (brands, product_lines, paints, paint_references).
 
 #### Affected files
 
@@ -169,6 +198,13 @@ INSERT INTO public.product_lines (brand_id, name, slug, description) VALUES
 INSERT INTO public.paints (product_line_id, name, slug, hex, r, g, b, hue, saturation, lightness, is_metallic, paint_type) VALUES
   ((SELECT id FROM public.product_lines WHERE slug = 'base' AND brand_id = (SELECT id FROM public.brands WHERE slug = 'citadel')),
    'Abaddon Black', 'abaddon-black', '#231F20', 35, 31, 32, 345, 6, 13, false, 'base'),
+  ...;
+
+-- Paint references (cross-brand similarities and alternatives)
+INSERT INTO public.paint_references (paint_id, related_paint_id, relationship, similarity_score) VALUES
+  ((SELECT id FROM public.paints WHERE slug = 'averland-sunset'),
+   (SELECT id FROM public.paints WHERE slug = 'moon-yellow-76005'),
+   'similar', 97.2),
   ...;
 ```
 
@@ -222,13 +258,23 @@ export type Paint = {
   created_at: string
   updated_at: string
 }
+
+/** A directional reference between two paints (e.g., similar, alternative). */
+export type PaintReference = {
+  id: number
+  paint_id: number
+  related_paint_id: number
+  relationship: 'similar' | 'alternative' | 'complement'
+  similarity_score: number | null
+  created_at: string
+}
 ```
 
 #### Affected files
 
 | File | Changes |
 |------|---------|
-| `src/types/paint.ts` | New — `Brand`, `ProductLine`, `Paint` type definitions |
+| `src/types/paint.ts` | New — `Brand`, `ProductLine`, `Paint`, `PaintReference` type definitions |
 
 ### Step 4: Regenerate Supabase types and verify
 
@@ -241,7 +287,7 @@ export type Paint = {
 
 | File | Changes |
 |------|---------|
-| `src/types/supabase.ts` | Regenerated — includes `brands`, `product_lines`, `paints` table types |
+| `src/types/supabase.ts` | Regenerated — includes `brands`, `product_lines`, `paints`, `paint_references` table types |
 
 ### Risks & Considerations
 
