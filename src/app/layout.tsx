@@ -1,24 +1,23 @@
-import type { Metadata, Viewport } from 'next';
+import type { ReactNode } from 'react'
 
-import './globals.css';
+import { Navbar } from '@/components/navbar'
+import { cn } from '@/lib/utils'
+import { Geist } from 'next/font/google'
+import './globals.css'
 
-export const metadata: Metadata = {
-  title: 'Miniature Paint Color Wheel',
-  description: 'Interactive color wheel for miniature paint hobbyists',
-};
-
-export const viewport: Viewport = {
-  themeColor: '#0a0a0a',
-};
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode
 }>) {
   return (
-    <html lang='en' data-theme='nord'>
-      <body className='overflow-hidden'>{children}</body>
+    <html lang="en" className={cn('font-sans', geist.variable)}>
+      <body>
+        <Navbar />
+        {children}
+      </body>
     </html>
-  );
+  )
 }

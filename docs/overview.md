@@ -1,23 +1,29 @@
 # Project Overview
 
-**Color Wheel** is an interactive color wheel for miniature paints by Vallejo, Green Stuff World, Citadel, and Army Painter. It maps 190+ paints by hue and lightness onto an SVG-based circular visualization, helping hobbyists find colors, compare across brands, and explore color relationships.
+**Grimify** — An interactive color research and collection management app for miniature painters.
 
 ## What It Does
 
-The app serves miniature painters who want to:
+Grimify helps miniature painters manage their paint collections, discover new colors, find cross-brand substitutes, explore color theory, and connect with a community of painters. Target users are hobbyist and competitive miniature painters who want to make intentional color choices, track what they own, and share their knowledge.
 
-- **Visualize** their paint collection on an interactive color wheel mapped by hue (angle) and lightness (radius)
-- **Compare** paints across brands to find duplicates and alternatives
-- **Explore** color relationships using complementary, split complementary, and analogous schemes
-- **Search** paints by name, hex code, or brand
+Core functionality:
+
+- Visual paint library mapped onto an interactive color wheel
+- Cross-brand paint comparison and substitute finder
+- Color scheme exploration (complementary, split-complementary, analogous)
+- Paint search by name, hex code, or brand
+- Community features for sharing recipes, palettes, and collections
+- Personal collection tracking and management
 
 ## Tech Stack
 
-| Layer             | Technology                              |
-| ----------------- | --------------------------------------- |
-| **Framework**     | Next.js (App Router), React, TypeScript |
-| **Styling**       | Tailwind CSS, DaisyUI                   |
-| **UI Components** | Headless UI, Heroicons                  |
+| Layer                | Technology                     |
+| -------------------- | ------------------------------ |
+| **Framework**        | Next.js                        |
+| **Styling**          | Tailwind CSS                   |
+| **UI Components**    | shadcn/ui                      |
+| **State Management** | Zustand                        |
+| **Backend / Auth**   | Supabase (Auth, Database, RLS) |
 
 ---
 
@@ -29,215 +35,116 @@ The app serves miniature painters who want to:
 | **In Progress** | Partially implemented — some acceptance criteria completed |
 | **Completed**   | Fully implemented — all acceptance criteria completed      |
 
+## Implementation Order
+
+<!-- Recommended sequence for building the MVP epics -->
+
+0. Marketing & Branding — Visual identity, metadata, and legal pages; sets the tone for everything else
+1. Authentication & User Accounts — Foundation for all personalized features; required before collection tracking, community, and any user-specific data
+2. Paint Data & Search — Core data layer; all paint features depend on having a searchable paint database
+3. Interactive Color Wheel — Core visual differentiator; requires paint data
+4. Cross-Brand Comparison — Builds on paint data to surface substitutes and near-matches
+5. Color Scheme Explorer — Extends the color wheel with color theory relationships
+6. Collection Tracking — Personalizes the experience; requires paint data and user accounts
+7. Community & Social — Highest complexity; depends on collections, recipes, and user accounts
+8. User Management — Admin tools for managing roles, users, and profiles; requires authentication and roles
+
 ## MVP Features (Epics)
 
-<!--
-Epic Template:
+### Epic: Marketing & Branding
 
-### Epic N: [Name]
-**Goal:** [What this epic delivers to the user]
-
-**High-Level Scope:**
-- [Capability or user story]
-- [Capability or user story]
-- [Capability or user story]
--->
-
-### Implementation Order
-
-| Order | Epic                      | Rationale                                                                         |
-| ----- | ------------------------- | --------------------------------------------------------------------------------- |
-| 1     | Paint Database            | Foundation — all features depend on paint data                                    |
-| 2     | Color Wheel Visualization | Core feature — renders the wheel and paint interactions                           |
-| 3     | UI & Layout               | Sidebar and stats bar provide the shell for remaining features                    |
-| 4     | Paint Information         | Detail panel populates the sidebar with paint data                                |
-| 5     | Brand Features            | Filtering, rings, and legend layer on top of the wheel and sidebar                |
-| 6     | Color Analysis            | Color schemes and search are advanced features that enhance the base experience   |
-| 7     | Paint Collection          | Personal collection tracking lets users mark owned paints and filter by ownership |
-| 8     | User Authentication       | User registration, login, profiles, and role-based authorization via Supabase     |
-| 9     | Recipe                    | Paint recipes, projects, tags, and sharing for documenting painting processes     |
-| 10    | SEO & Branding            | Branding assets, SEO metadata, sitemap, and discoverability                       |
-
----
-
-## Epic 1: Paint Database
-
-**Goal:** Establish the paint data foundation that all other features depend on.
+**Goal:** Establish the Grimify visual identity, SEO presence, and legal foundation before building features.
 
 **High-Level Scope:**
 
-- [x] [Paint database](./paint-information/paint-database.md)
+- [x] [Color scheme and theme](./00-marketing-and-branding/color-scheme-and-theme.md)
+- [ ] [Metadata and OpenGraph](./00-marketing-and-branding/metadata-and-opengraph.md)
+- [ ] [Branding images](./00-marketing-and-branding/branding-images.md)
+- [ ] [Terms of Use](./00-marketing-and-branding/terms-of-use.md)
+- [ ] [Code of Conduct](./00-marketing-and-branding/code-of-conduct.md)
 
-## Epic 2: Color Wheel Visualization
+### Epic: Authentication & User Accounts
 
-**Goal:** Provide an interactive SVG-based color wheel that maps paints by hue and lightness with zoom, pan, and reset controls.
-
-**High-Level Scope:**
-
-- [x] [Interactive color wheel (zoom, pan, reset)](./color-wheel-visualization/interactive-color-wheel.md)
-- [x] [Paint selection and hover](./color-wheel-visualization/paint-selection-and-hover.md)
-- [x] [Overlapping paint indicator](./color-wheel-visualization/overlapping-paint-indicator.md)
-- [x] [Grid View](./color-wheel-visualization/grid-view.md)
-- [x] [List View](./color-wheel-visualization/list-view.md)
-
-## Epic 3: UI & Layout
-
-**Goal:** Provide a responsive layout with a toggleable sidebar for controls and stats.
+**Goal:** Provide secure user registration, login, and profile management so users can have personalized experiences across the app.
 
 **High-Level Scope:**
 
-- [x] [Sidebar layout](./ui-and-layout/sidebar-layout.md)
-- [x] [Header stats](./ui-and-layout/header-stats.md)
+- [x] [Sign up / sign in via Supabase Auth](./01-authentication-and-user-accounts/sign-up-sign-in.md)
+- [x] [User profile creation on first login](./01-authentication-and-user-accounts/user-profile-creation-on-first-login.md)
+- [x] [Protected routes for authenticated features](./01-authentication-and-user-accounts/protected-routes.md)
+- [ ] [User roles (user, admin)](./01-authentication-and-user-accounts/user-roles.md)
+- [x] [Social media login (Google, Discord)](./01-authentication-and-user-accounts/social-media-login.md)
+- [x] [User password reset and change](./01-authentication-and-user-accounts/user-reset-password.md)
 
-## Epic 4: Paint Information
+### Epic: Paint Data & Search
 
-**Goal:** Display detailed paint information in the sidebar.
-
-**High-Level Scope:**
-
-- [x] [Detail panel](./paint-information/detail-panel.md)
-
-## Epic 5: Brand Features
-
-**Goal:** Allow users to filter, identify, and explore paints by brand.
+**Goal:** Provide a comprehensive, searchable database of miniature paints across major brands.
 
 **High-Level Scope:**
 
-- [x] [Brand filtering](./brand-features/brand-filtering.md)
-- [x] [Brand ring toggle](./brand-features/brand-ring-toggle.md)
-- [x] [Brand legend](./brand-features/brand-legend.md)
+- [ ] [Paint data model and seed data](./02-paint-data-search/paint-data-model.md)
+- [ ] [Itten hue self-referencing refactor](./02-paint-data-search/itten-hue-self-referencing-refactor.md)
+- [ ] [Paint search by name, hex, and brand](./02-paint-data-search/paint-search.md)
+- [ ] [Brand and product line browsing](./02-paint-data-search/brand-browsing.md)
 
-## Epic 6: Color Analysis
+### Epic: Interactive Color Wheel
 
-**Goal:** Help users explore color relationships and find paints through search and color scheme modes.
-
-**High-Level Scope:**
-
-- [x] [Color scheme modes (complementary, split complementary, analogous)](./color-analysis/color-scheme-modes.md)
-- [x] [Search](./color-analysis/search.md)
-
-## Epic 7: Paint Collection
-
-**Goal:** Let users track their personal paint collection with owned indicators, filtering, and localStorage persistence.
+**Goal:** Give painters a spatial, visual view of paints mapped by hue and lightness so they can spot gaps and relationships at a glance.
 
 **High-Level Scope:**
 
-- [x] [Owned paint collection](./paint-collection/owned-paint-collection.md)
+- [ ] [Color wheel rendering and paint mapping](./03-interactive-color-wheel/color-wheel-rendering.md)
+- [ ] [Zoom, pan, and paint detail interaction](./03-interactive-color-wheel/wheel-interaction.md)
+- [ ] [Filter wheel by brand, collection, or owned paints](./03-interactive-color-wheel/wheel-filters.md)
 
-## Epic 8: User Authentication
+### Epic: Cross-Brand Comparison
 
-**Goal:** Enable user registration, login, profiles, and role-based authorization so users can have persistent accounts and administrators can manage the platform.
-
-**High-Level Scope:**
-
-- [ ] [Supabase Setup](./user-authentication/supabase-setup.md)
-- [ ] [Email Authentication Pages](./user-authentication/email-auth-pages.md)
-- [ ] [User Profiles](./user-authentication/user-profiles.md)
-- [ ] [Navbar Auth UI](./user-authentication/navbar-auth-ui.md)
-- [ ] [Social Login (Google & Discord)](./user-authentication/social-login.md)
-- [ ] [Password Recovery](./user-authentication/password-recovery.md)
-- [ ] [Role-Based Authorization](./user-authentication/role-based-authorization.md)
-
-## Epic 9: Recipe
-
-**Goal:** Let users create step-by-step paint recipes for miniature model areas, group them into projects, and share recipes with the community.
+**Goal:** Help painters find duplicates, near-matches, and alternatives across manufacturers.
 
 **High-Level Scope:**
 
-- [ ] [Local Recipes](./recipe/local-recipes.md)
-- [ ] [Recipes](./recipe/recipes.md)
-- [ ] [Projects](./recipe/projects.md)
-- [ ] [Tags](./recipe/tags.md)
-- [ ] [Admin Management](./recipe/admin-management.md)
-- [ ] [Sharing](./recipe/sharing.md)
+- [ ] [Color distance algorithm and matching engine](./04-cross-brand-comparison/color-matching-engine.md)
+- [ ] [Side-by-side paint comparison UI](./04-cross-brand-comparison/comparison-ui.md)
+- [ ] [Substitute suggestions for discontinued paints](./04-cross-brand-comparison/substitute-suggestions.md)
 
-## Epic 10: SEO & Branding
+### Epic: Color Scheme Explorer
 
-**Goal:** Establish visual branding and implement SEO best practices so the site is discoverable and presents well in search results and social media.
+**Goal:** Provide color theory tools so painters can make intentional, harmonious color choices.
 
 **High-Level Scope:**
 
-- [ ] [Branding Assets](./seo-and-branding/branding-assets.md)
-- [ ] [SEO Metadata](./seo-and-branding/seo-metadata.md)
-- [ ] [Sitemap & Robots](./seo-and-branding/sitemap-and-robots.md)
+- [ ] [Color scheme generation (complementary, split-comp, analogous, triadic)](./05-color-scheme-explorer/scheme-generation.md)
+- [ ] [Scheme visualization on the color wheel](./05-color-scheme-explorer/scheme-visualization.md)
+- [ ] [Map schemes to available paints](./05-color-scheme-explorer/scheme-to-paints.md)
 
----
+### Epic: Collection Tracking
 
-## Features (Epics)
+**Goal:** Let users log and manage the paints they own for easy reference when planning projects.
 
-All documented features, bugs, enhancements, and refactors organized by epic.
+**High-Level Scope:**
 
-### Paint Information
+- [ ] [Add/remove paints to personal collection](./06-collection-tracking/manage-collection.md)
+- [ ] [Collection overview and statistics](./06-collection-tracking/collection-overview.md)
 
-|     | Name                                                                            | Type        | Status    |
-| --- | ------------------------------------------------------------------------------- | ----------- | --------- |
-| [x] | [Paint Database](./paint-information/paint-database.md)                         | Feature     | Completed |
-| [x] | [Detail Panel](./paint-information/detail-panel.md)                             | Feature     | Completed |
-| [ ] | [Grouped Paint Details](./paint-information/grouped-paint-details.md)           | Refactor    | Todo      |
-| [ ] | [Paint Data Migration](./paint-information/paint-data-migration.md)             | Enhancement | Todo      |
-| [x] | [Paint Range Data Expansion](./paint-information/paint-range-data-expansion.md) | Enhancement | Completed |
-| [ ] | [AK Interactive Paint Data](./paint-information/ak-interactive-paint-data.md) | Feature | Todo |
-| [x] | [Improve Paint Database via PaintPad.app](./paint-information/improve-paint-database.md) | Enhancement | Done |
+### Epic: Community & Social
 
-### Color Wheel Visualization
+**Goal:** Enable painters to share painting recipes, curated palettes, and collections with the community.
 
-|     | Name                                                                                      | Type    | Status    |
-| --- | ----------------------------------------------------------------------------------------- | ------- | --------- |
-| [x] | [Interactive Color Wheel](./color-wheel-visualization/interactive-color-wheel.md)         | Feature | Completed |
-| [x] | [Paint Selection & Hover](./color-wheel-visualization/paint-selection-and-hover.md)       | Feature | Completed |
-| [x] | [Overlapping Paint Indicator](./color-wheel-visualization/overlapping-paint-indicator.md) | Bug     | Completed |
-| [x] | [Filter Visibility Priority](./color-wheel-visualization/filter-visibility-priority.md)   | Bug     | Completed |
-| [ ] | [Auto-Center Selected Color](./color-wheel-visualization/auto-center-selected-color.md)   | Feature | Todo      |
-| [x] | [Grid View](./color-wheel-visualization/grid-view.md)                                     | Feature | Completed |
-| [x] | [List View](./color-wheel-visualization/list-view.md)                                     | Feature | Completed |
+**High-Level Scope:**
 
-### UI & Layout
+- [ ] [Painting recipes (step-by-step color layering guides)](./07-community-social/painting-recipes.md)
+- [ ] [Curated palette sharing](./07-community-social/palette-sharing.md)
+- [ ] [Community feed and discovery](./07-community-social/community-feed.md)
+- [ ] [User profiles and shared collections](./07-community-social/user-profiles.md)
 
-|     | Name                                                                                  | Type     | Status    |
-| --- | ------------------------------------------------------------------------------------- | -------- | --------- |
-| [x] | [Sidebar Layout](./ui-and-layout/sidebar-layout.md)                                   | Feature  | Completed |
-| [x] | [Header Stats](./ui-and-layout/header-stats.md)                                       | Feature  | Completed |
-| [x] | [Refactor DaisyUI Button Styling](./ui-and-layout/refactor-daisyui-button-styling.md) | Refactor | Completed |
-| [ ] | [Clear Filters Button](./ui-and-layout/clear-filters-button.md)                       | Feature  | Todo      |
-| [ ] | [Iconographic Sidebar Navigation](./ui-and-layout/iconographic-sidebar.md)            | Refactor | Todo      |
-| [ ] | [Browser History Navigation](./ui-and-layout/browser-history-navigation.md)           | Feature  | Todo      |
-| [x] | [State Management Refactor](./ui-and-layout/state-management-refactor.md)             | Refactor | Completed |
-| [x] | [Extract Filter Modules](./ui-and-layout/extract-filter-modules.md)                   | Refactor | Completed |
-| [ ] | [UI Refactor: Single Workspace Layout](./ui-and-layout/ui-refactor-single-workspace.md) | Refactor | Todo      |
+### Epic: User Management
 
-### Brand Features
+**Goal:** Provide administrators with tools to manage roles, user accounts, and profiles, including the ability to merge duplicate profiles.
 
-|     | Name                                                       | Type    | Status    |
-| --- | ---------------------------------------------------------- | ------- | --------- |
-| [x] | [Brand Filtering](./brand-features/brand-filtering.md)     | Feature | Completed |
-| [x] | [Brand Ring Toggle](./brand-features/brand-ring-toggle.md) | Feature | Completed |
-| [x] | [Brand Legend](./brand-features/brand-legend.md)           | Feature | Completed |
+**High-Level Scope:**
 
-### Color Analysis
-
-|     | Name                                                                                       | Type    | Status    |
-| --- | ------------------------------------------------------------------------------------------ | ------- | --------- |
-| [x] | [Color Scheme Modes](./color-analysis/color-scheme-modes.md)                               | Feature | Completed |
-| [x] | [Search](./color-analysis/search.md)                                                       | Feature | Completed |
-| [x] | [Split Complementary Zone Matching](./color-analysis/split-complementary-zone-matching.md) | Bug     | Completed |
-| [ ] | [Hue Value Suggestions](./color-analysis/hue-value-suggestions.md)                         | Feature | Todo      |
-| [ ] | [Scheme Selected Zone Matching](./color-analysis/scheme-selected-zone-matching.md)          | Bug     | Todo      |
-| [ ] | [Scheme Brand Filter Interaction](./color-analysis/scheme-brand-filter-interaction.md)      | Bug     | Todo      |
-
-### Paint Collection
-
-| | Name | Type | Status |
-|---|------|------|--------|
-| [x] | [Owned Paint Collection](./paint-collection/owned-paint-collection.md) | Feature | Completed |
-| [ ] | [Owned Collection UX Improvements](./paint-collection/owned-collection-ux-improvements.md) | Enhancement | Todo |
-
-### Recipe
-
-| | Name | Type | Status |
-|---|------|------|--------|
-| [ ] | [Local Recipes](./recipe/local-recipes.md) | Feature | Todo |
-| [ ] | [Recipes](./recipe/recipes.md) | Feature | Todo |
-| [ ] | [Projects](./recipe/projects.md) | Feature | Todo |
-| [ ] | [Tags](./recipe/tags.md) | Feature | Todo |
-| [ ] | [Admin Management](./recipe/admin-management.md) | Feature | Todo |
-| [ ] | [Sharing](./recipe/sharing.md) | Feature | Todo |
+- [ ] [Admin dashboard and navigation](./08-user-management/admin-dashboard.md)
+- [ ] [Role management (CRUD and assignment)](./08-user-management/role-management.md)
+- [ ] [User account management](./08-user-management/user-account-management.md)
+- [ ] [Admin profile editing](./08-user-management/admin-profile-editing.md)
+- [ ] [Profile and account merging](./08-user-management/profile-merging.md)

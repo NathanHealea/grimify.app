@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirm Your Account</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #0a0a0a;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    "
+  >
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      style="background-color: #0a0a0a; padding: 40px 20px"
+    >
+      <tr>
+        <td align="center">
+          <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width: 560px; width: 100%">
+            <!-- Header -->
+            <tr>
+              <td align="center" style="padding-bottom: 8px">
+                <span style="font-size: 32px">&#127912;</span>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-bottom: 32px">
+                <h1
+                  style="
+                    margin: 0;
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #d4a63a;
+                    letter-spacing: 3px;
+                    text-transform: uppercase;
+                  "
+                >
+                  Grimify
+                </h1>
+              </td>
+            </tr>
+
+            <!-- Main Card -->
+            <tr>
+              <td style="background-color: #141414; border: 1px solid #2a2a2a; border-radius: 8px; padding: 40px 36px">
+                <h2 style="margin: 0 0 8px 0; font-size: 22px; font-weight: 600; color: #e5e5e5">
+                  Your Palette Awaits
+                </h2>
+
+                <p style="margin: 0 0 24px 0; font-size: 14px; color: #737373; line-height: 1.6">
+                  A new painter has stepped up to the workstation. Before you can start mixing colors,
+                  building palettes, and cataloging your collection, we need to verify your identity.
+                </p>
+
+                <p style="margin: 0 0 24px 0; font-size: 14px; color: #a3a3a3; line-height: 1.6">
+                  Confirm your account by clicking the button below. Once verified, you'll have full access
+                  to research paints, compare brands, and share your recipes with the community.
+                </p>
+
+                <!-- CTA Button -->
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px">
+                  <tr>
+                    <td align="center">
+                      <a
+                        href="{{ .ConfirmationURL }}"
+                        target="_blank"
+                        style="
+                          display: inline-block;
+                          background-color: #d4a63a;
+                          color: #0a0a0a;
+                          font-size: 14px;
+                          font-weight: 700;
+                          text-decoration: none;
+                          padding: 14px 40px;
+                          border-radius: 6px;
+                          letter-spacing: 1px;
+                          text-transform: uppercase;
+                        "
+                      >
+                        Confirm Your Account
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Divider -->
+                <hr style="border: none; border-top: 1px solid #2a2a2a; margin: 24px 0" />
+
+                <p style="margin: 0 0 12px 0; font-size: 12px; color: #525252; line-height: 1.6">
+                  If the button above does not work, copy and paste this link into your browser:
+                </p>
+                <p style="margin: 0; font-size: 12px; word-break: break-all">
+                  <a href="{{ .ConfirmationURL }}" style="color: #d4a63a; text-decoration: underline"
+                    >{{ .ConfirmationURL }}</a
+                  >
+                </p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td align="center" style="padding-top: 32px">
+                <p
+                  style="
+                    margin: 0 0 4px 0;
+                    font-size: 11px;
+                    color: #404040;
+                    letter-spacing: 1px;
+                    text-transform: uppercase;
+                  "
+                >
+                  Thin your paints. Trust your palette.
+                </p>
+                <p style="margin: 0; font-size: 11px; color: #333333">
+                  You received this message because someone registered with this email at Grimify. If this
+                  was not you, you may safely ignore it.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
