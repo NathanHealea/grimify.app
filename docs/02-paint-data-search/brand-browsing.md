@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 
 ## Summary
 
@@ -10,48 +10,58 @@ Allow users to browse paints organized by brand and product line, providing a st
 
 ## Acceptance Criteria
 
-- [ ] Users can view a list of all brands
-- [ ] Clicking a brand shows its product lines
-- [ ] Clicking a product line shows all paints in that line
-- [ ] Paints are displayed with color swatches and names
-- [ ] Navigation breadcrumbs show the current brand/product line context
-- [ ] Pages are accessible without authentication
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Users can view a list of all brands with paint counts
+- [x] Clicking a brand shows its product lines and all paints grouped by product line
+- [x] Paints are displayed with color swatches and names via `paint-card.tsx`
+- [x] Navigation breadcrumbs show the current brand context on the detail page
+- [x] Brand cards show logo (or initial fallback) and paint count
+- [x] Pages are accessible without authentication
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
-| Route                       | Description                           |
-| --------------------------- | ------------------------------------- |
-| `/brands`                   | List of all paint brands              |
-| `/brands/[slug]`            | Single brand with its product lines   |
-| `/brands/[slug]/[lineSlug]` | All paints in a specific product line |
+| Route          | Description                                        |
+| -------------- | -------------------------------------------------- |
+| `/brands`      | List of all paint brands with paint counts         |
+| `/brands/[id]` | Brand detail with product lines and paints grouped |
 
-## Key Files
+## Existing Components & Services
 
-| Action   | File                                        | Description                     |
-| -------- | ------------------------------------------- | ------------------------------- |
-| Create   | `src/app/brands/page.tsx`                   | Brand listing page              |
-| Create   | `src/app/brands/[slug]/page.tsx`            | Brand detail with product lines |
-| Create   | `src/app/brands/[slug]/[lineSlug]/page.tsx` | Product line paint listing      |
-| Create   | `src/components/brand-card.tsx`             | Brand card with logo/name       |
-| Existing | `src/components/paint-card.tsx`             | Paint card with color swatch    |
+| File                                                              | Description                                                                |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `src/app/brands/page.tsx`                                         | Brand listing page — grid of `BrandCard` components                        |
+| `src/app/brands/[id]/page.tsx`                                    | Brand detail page with breadcrumbs, product lines, and grouped paints      |
+| `src/modules/brands/components/brand-card.tsx`                    | Card with logo/initial, brand name, and paint count; links to detail page  |
+| `src/modules/brands/components/brand-paint-list.tsx`              | Groups paints by product line on the brand detail page                     |
+| `src/modules/brands/services/brand-service.ts`                   | `getAllBrands()`, `getBrandById()`, `getBrandProductLines()`, `getBrandPaints()` |
+| `src/modules/brands/services/brand-service.server.ts`            | Server-side brand service factory                                          |
+| `src/modules/brands/services/brand-service.client.ts`            | Client-side brand service factory                                          |
+| `src/modules/paints/components/paint-card.tsx`                    | Reusable paint card with color swatch, name, brand, and type               |
+| `src/types/paint.ts`                                              | `Brand`, `ProductLine`, `Paint` types                                      |
 
 ## Implementation
 
 ### 1. Brands listing page
 
-Grid of brand cards showing brand name, logo (if available), and paint count. Links to brand detail page.
+Grid of brand cards showing brand name, logo (with initial fallback), and paint count. Each card links to the brand detail page at `/brands/[id]`.
 
 ### 2. Brand detail page
 
-Shows brand info and lists all product lines as cards with paint counts. Links to product line pages.
+Shows brand info (name, website link) with breadcrumbs back to `/brands`. Uses `BrandPaintList` to display all paints grouped by product line.
 
-### 3. Product line page
+### 3. Brand card component
 
-Grid of paint cards for all paints in the product line, sorted by paint type then name. Breadcrumb navigation back to brand and brands list.
+A clickable card showing:
+- Logo image (or first-letter initial in a styled circle as fallback)
+- Brand name
+- Paint count
+
+### 4. Brand paint list component
+
+Groups paints by product line for display on the brand detail page. Each section shows the product line name and its paints.
 
 ## Notes
 
 - All browse pages are public (no auth required).
-- Use Next.js dynamic routes with `generateStaticParams` for static generation where practical.
-- Paint counts can be fetched with Supabase aggregate queries.
+- Routes use numeric IDs (not slugs) for brand identification.
+- The brand service aggregates paint counts across product lines using a join through `product_lines` to `paints`.

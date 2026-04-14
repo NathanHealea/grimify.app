@@ -85,7 +85,7 @@ Core functionality:
 - [x] [Paint data model and seed data](./02-paint-data-search/paint-data-model.md)
 - [x] [Itten hue self-referencing refactor](./02-paint-data-search/itten-hue-self-referencing-refactor.md)
 - [ ] [Paint search by name, hex, and brand](./02-paint-data-search/paint-search.md)
-- [ ] [Brand and product line browsing](./02-paint-data-search/brand-browsing.md)
+- [x] [Brand and product line browsing](./02-paint-data-search/brand-browsing.md)
 
 ### Epic: Interactive Color Wheel
 
