@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/paint-search`
 **Merge into:** `v1/main`
 
