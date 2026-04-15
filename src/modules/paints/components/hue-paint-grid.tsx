@@ -28,7 +28,7 @@ export function HuePaintGrid({
   const fetchPaints = useCallback(
     async (options: { limit: number; offset: number }) => {
       const paintService = getPaintService()
-      return paintService.getPaintsByIttenHueId(hueId, options)
+      return paintService.getPaintsByHueId(hueId, options)
     },
     [hueId]
   )

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
-import type { IttenHue } from '@/types/color'
+import type { Hue } from '@/types/color'
 
 /**
  * A compact pill displaying a child hue with a color dot and name.
@@ -21,7 +21,7 @@ export function ChildHueCard({
   isSelected,
   onSelect,
 }: {
-  hue: IttenHue
+  hue: Hue
   paintCount: number
   isSelected?: boolean
   onSelect?: () => void

@@ -1,27 +1,27 @@
 import Link from 'next/link';
 
 import { cn } from '@/lib/utils';
-import type { IttenHue } from '@/types/color';
+import type { Hue } from '@/types/color';
 
 /**
- * A compact pill displaying an Itten hue group with a color dot and name.
+ * A compact pill displaying a Munsell hue group with a color dot and name.
  *
  * Supports two interaction modes:
  * - **Filter mode** (`onSelect` provided): clicking the pill toggles a filter callback.
  * - **Link mode** (no `onSelect`): the pill links to `/hues/[id]`.
  *
- * @param props.hue - The Itten hue data to display.
+ * @param props.hue - The hue data to display.
  * @param props.paintCount - Number of paints assigned to this hue group.
  * @param props.isSelected - Whether this hue is actively selected (visual highlight).
  * @param props.onSelect - Filter callback. When provided, pill click triggers filter instead of navigation.
  */
-export function IttenHueCard({
+export function HueCard({
   hue,
   paintCount,
   isSelected,
   onSelect,
 }: {
-  hue: IttenHue
+  hue: Hue
   paintCount: number
   isSelected?: boolean
   onSelect?: () => void

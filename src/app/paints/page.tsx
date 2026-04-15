@@ -23,14 +23,14 @@ export default async function PaintsPage({
   const paintService = await getPaintService()
   const hueService = await getHueService()
 
-  const [totalPaints, ittenHues] = await Promise.all([
+  const [totalPaints, topLevelHues] = await Promise.all([
     paintService.getTotalPaintCount(),
-    hueService.getIttenHues(),
+    hueService.getHues(),
   ])
 
   // Resolve hue names from URL to IDs
   const parentHue = parentHueName
-    ? ittenHues.find((h) => h.name.toLowerCase() === parentHueName)
+    ? topLevelHues.find((h) => h.name.toLowerCase() === parentHueName)
     : undefined
 
   let childHueId: string | undefined
@@ -62,8 +62,8 @@ export default async function PaintsPage({
     initialCount = result.count
   } else if (childHueId) {
     const [paints, count] = await Promise.all([
-      paintService.getPaintsByIttenHueId(childHueId, { limit: pageSize, offset }),
-      paintService.getPaintCountByIttenHueId(childHueId),
+      paintService.getPaintsByHueId(childHueId, { limit: pageSize, offset }),
+      paintService.getPaintCountByHueId(childHueId),
     ])
     initialPaints = paints
     initialCount = count
@@ -81,7 +81,7 @@ export default async function PaintsPage({
 
   // Fetch paint counts per hue group in parallel
   const hueCountEntries = await Promise.all(
-    ittenHues.map(async (h) => {
+    topLevelHues.map(async (h) => {
       const count = await paintService.getPaintCountByHueGroup(h.id)
       return [h.name.toLowerCase(), count] as const
     })
@@ -100,7 +100,7 @@ export default async function PaintsPage({
       <PaintExplorer
         initialPaints={initialPaints}
         initialTotalCount={initialCount}
-        ittenHues={ittenHues}
+        hues={topLevelHues}
         huePaintCounts={huePaintCounts}
       />
     </div>

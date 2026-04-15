@@ -1,19 +1,28 @@
 import Link from 'next/link'
 
-import type { PaintWithRelations } from '@/modules/paints/services/paint-service'
+import type { Hue } from '@/types/color'
+import type { PaintWithRelationsAndHue } from '@/modules/paints/services/paint-service'
 
 /**
  * Full detail view for a single paint.
  *
  * Displays a large color swatch, paint name, brand/product line info,
- * paint type, color values (hex, RGB, HSL), and status badges for
- * metallic or discontinued paints.
+ * paint type, color values (hex, RGB, HSL), hue classification links,
+ * and status badges for metallic or discontinued paints.
  *
- * @param props.paint - The paint record with joined product line and brand data.
+ * @param props.paint - The paint record with joined product line, brand, and hue data.
+ * @param props.parentHue - The parent Munsell principal hue, if the paint has a sub-hue.
  */
-export function PaintDetail({ paint }: { paint: PaintWithRelations }) {
+export function PaintDetail({
+  paint,
+  parentHue,
+}: {
+  paint: PaintWithRelationsAndHue
+  parentHue: Hue | null
+}) {
   const brand = paint.product_lines.brands
   const productLine = paint.product_lines
+  const subHue = paint.hues
 
   return (
     <div className="flex flex-col gap-8">
@@ -72,6 +81,42 @@ export function PaintDetail({ paint }: { paint: PaintWithRelations }) {
           </p>
         </div>
       </div>
+
+      {/* Hue classification */}
+      {subHue && (
+        <div className="flex flex-col gap-3">
+          <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Hue</h2>
+          <div className="flex flex-wrap items-center gap-2">
+            {parentHue && (
+              <Link
+                href={`/hues/${parentHue.id}`}
+                className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent"
+              >
+                <span
+                  className="size-3 shrink-0 rounded-full border border-border"
+                  style={{ backgroundColor: parentHue.hex_code }}
+                  aria-hidden="true"
+                />
+                {parentHue.name}
+              </Link>
+            )}
+            {parentHue && (
+              <span className="text-muted-foreground" aria-hidden="true">/</span>
+            )}
+            <Link
+              href={`/hues/${subHue.id}`}
+              className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent"
+            >
+              <span
+                className="size-3 shrink-0 rounded-full border border-border"
+                style={{ backgroundColor: subHue.hex_code }}
+                aria-hidden="true"
+              />
+              {subHue.name}
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

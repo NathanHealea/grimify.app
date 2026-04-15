@@ -54,7 +54,7 @@ export type Paint = {
   hue: number
   saturation: number
   lightness: number
-  itten_hue_id: string | null
+  hue_id: string | null
   is_metallic: boolean
   is_discontinued: boolean
   paint_type: string | null
