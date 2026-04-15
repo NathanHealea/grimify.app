@@ -101,3 +101,25 @@ Example header format:
  *   Sizes:   .component-sm    — Description
  */
 ```
+
+## Testing
+
+- **Framework**: none
+- **Test location**: no test files found
+- **Naming**: `*.test.ts` / `*.test.tsx` (default convention)
+- **Mocking**: none
+- **Run command**: `npm test`
+
+### What to test
+
+- Happy path and error states for all new components
+
+### What NOT to test
+
+- No specific exclusions — follow existing test patterns
+
+## Workflow
+
+- **Docs directory**: `docs/`
+- **Remote type**: `github`
+- **PR template**: `github-default`
