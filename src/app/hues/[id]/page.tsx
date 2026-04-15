@@ -65,7 +65,7 @@ export default async function HuePage({
         {childHues.length > 0 && (
           <section className="mb-12">
             <h2 className="mb-4 text-2xl font-semibold">Hues</h2>
-            <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+            <div className="flex flex-wrap gap-2">
               {childHues.map((child) => (
                 <ChildHueCard key={child.id} hue={child} paintCount={childPaintCounts.get(child.id) ?? 0} />
               ))}

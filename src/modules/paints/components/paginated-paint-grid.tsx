@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useMemo, useState, useTransition } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 
 import { PaintCard } from '@/modules/paints/components/paint-card'
 import { getPaintService } from '@/modules/paints/services/paint-service.client'
@@ -39,7 +39,6 @@ export function PaginatedPaintGrid({
   basePath?: string
   fetchPaints?: (options: { limit: number; offset: number }) => Promise<PaintWithBrand[]>
 }) {
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   const initialPage = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10) || 1)
@@ -54,11 +53,21 @@ export function PaginatedPaintGrid({
   const [pageSize, setPageSize] = useState<number>(initialSize)
   const [isPending, startTransition] = useTransition()
 
+  // Reset internal state when the parent provides new filtered data.
+  // Uses the "store previous props in state" pattern recommended by React
+  // to derive state during render instead of calling setState in an effect.
+  const [prevInitialPaints, setPrevInitialPaints] = useState(initialPaints)
+  if (prevInitialPaints !== initialPaints) {
+    setPrevInitialPaints(initialPaints)
+    setPaints(initialPaints)
+    setCurrentPage(1)
+  }
+
   const totalPages = Math.ceil(totalCount / pageSize)
 
   const updateUrl = useCallback(
     (page: number, size: number) => {
-      const params = new URLSearchParams(searchParams.toString())
+      const params = new URLSearchParams(window.location.search)
       if (page > 1) {
         params.set('page', String(page))
       } else {
@@ -70,9 +79,9 @@ export function PaginatedPaintGrid({
         params.delete('size')
       }
       const qs = params.toString()
-      router.replace(qs ? `${basePath}?${qs}` : basePath, { scroll: false })
+      window.history.replaceState(null, '', qs ? `${basePath}?${qs}` : basePath)
     },
-    [basePath, router, searchParams]
+    [basePath]
   )
 
   const fetchPage = useCallback(

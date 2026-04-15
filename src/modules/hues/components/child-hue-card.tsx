@@ -4,17 +4,16 @@ import { cn } from '@/lib/utils'
 import type { IttenHue } from '@/types/color'
 
 /**
- * A card displaying a child hue swatch, name, and paint count.
+ * A compact pill displaying a child hue with a color dot and name.
  *
  * Supports two interaction modes:
- * - **Filter mode** (`onSelect` provided): clicking the card body triggers a filter
- *   callback; a separate "Details" link navigates to `/hues/[id]`.
- * - **Link mode** (no `onSelect`): the entire card links to `/hues/[id]`.
+ * - **Filter mode** (`onSelect` provided): clicking the pill toggles a filter callback.
+ * - **Link mode** (no `onSelect`): the pill links to `/hues/[id]`.
  *
  * @param props.hue - The child hue (named color) data to display.
  * @param props.paintCount - Number of paints assigned to this child hue.
  * @param props.isSelected - Whether this child hue is actively selected (visual highlight).
- * @param props.onSelect - Filter callback. When provided, card click triggers filter instead of navigation.
+ * @param props.onSelect - Filter callback. When provided, pill click triggers filter instead of navigation.
  */
 export function ChildHueCard({
   hue,
@@ -27,50 +26,34 @@ export function ChildHueCard({
   isSelected?: boolean
   onSelect?: () => void
 }) {
+  const sharedClasses = cn(
+    'inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs transition-colors',
+    isSelected
+      ? 'border-primary bg-primary/10 text-foreground'
+      : 'bg-background text-muted-foreground hover:bg-muted hover:text-foreground'
+  )
+
   const content = (
     <>
-      <div
-        className="size-16 rounded-lg border border-border"
+      <span
+        className="size-3 shrink-0 rounded-full border border-border/50"
         style={{ backgroundColor: hue.hex_code }}
         aria-hidden="true"
       />
-      <p className="text-center text-sm font-medium leading-tight">{hue.name}</p>
-      <p className="text-xs text-muted-foreground">
-        {paintCount} {paintCount === 1 ? 'paint' : 'paints'}
-      </p>
-      {onSelect && (
-        <Link
-          href={`/hues/${hue.id}`}
-          className="btn btn-ghost btn-xs"
-          onClick={(e) => e.stopPropagation()}
-        >
-          Details
-        </Link>
-      )}
+      <span className="font-medium">{hue.name}</span>
+      <span className="opacity-60">{paintCount}</span>
     </>
-  )
-
-  const sharedClasses = cn(
-    'group flex flex-col items-center gap-2 rounded-lg border border-border p-3 transition-shadow hover:shadow-md',
-    isSelected && 'ring-2 ring-primary'
   )
 
   if (onSelect) {
     return (
-      <div
+      <button
+        type="button"
         className={cn(sharedClasses, 'cursor-pointer')}
         onClick={onSelect}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            onSelect()
-          }
-        }}
       >
         {content}
-      </div>
+      </button>
     )
   }
 
