@@ -261,6 +261,102 @@ export function createPaintService(supabase: SupabaseClient) {
     },
 
     /**
+     * Searches paints by name or hex value with optional filters.
+     *
+     * Name matching uses case-insensitive partial match (`ilike`).
+     * If the query starts with `#`, it matches against the `hex` column instead.
+     * An optional `hueId` filter combines search with hue group filtering.
+     *
+     * @param options.query - The search string (name or hex starting with `#`).
+     * @param options.hueId - Optional child hue UUID to filter by.
+     * @param options.limit - Maximum number of paints to return (default 50).
+     * @param options.offset - Number of paints to skip (default 0).
+     * @returns An object with matching paints and total count.
+     */
+    async searchPaints(options: {
+      query: string
+      hueId?: string
+      hueIds?: string[]
+      limit?: number
+      offset?: number
+    }): Promise<{ paints: PaintWithBrand[]; count: number }> {
+      const { query, hueId, hueIds, limit = 50, offset = 0 } = options
+      const pattern = `%${query}%`
+
+      // Step 1: Find product_line IDs whose brand name matches
+      const { data: matchingLines } = await supabase
+        .from('product_lines')
+        .select('id, brands!inner(name)')
+        .ilike('brands.name', pattern)
+
+      const lineIds = matchingLines?.map((l) => l.id) ?? []
+
+      // Step 2: Collect all paint IDs matching name, type, or brand
+      // Using three parallel queries to avoid PostgREST .or() string issues
+      const idQueries = [
+        supabase.from('paints').select('id').ilike('name', pattern),
+        supabase.from('paints').select('id').ilike('paint_type', pattern),
+      ]
+      if (lineIds.length > 0) {
+        idQueries.push(
+          supabase.from('paints').select('id').in('product_line_id', lineIds)
+        )
+      }
+
+      const idResults = await Promise.all(idQueries)
+      const matchingIds = [
+        ...new Set(idResults.flatMap((r) => r.data?.map((p) => p.id) ?? [])),
+      ]
+
+      if (matchingIds.length === 0) {
+        return { paints: [], count: 0 }
+      }
+
+      // Step 3: Fetch matching paints with hue scoping
+      let countQuery = supabase
+        .from('paints')
+        .select('*', { count: 'exact', head: true })
+        .in('id', matchingIds)
+
+      let dataQuery = supabase
+        .from('paints')
+        .select('*, product_lines(brands(name))')
+        .in('id', matchingIds)
+        .order('name')
+        .range(offset, offset + limit - 1)
+
+      if (hueId) {
+        countQuery = countQuery.eq('itten_hue_id', hueId)
+        dataQuery = dataQuery.eq('itten_hue_id', hueId)
+      } else if (hueIds && hueIds.length > 0) {
+        countQuery = countQuery.in('itten_hue_id', hueIds)
+        dataQuery = dataQuery.in('itten_hue_id', hueIds)
+      }
+
+      const [{ count }, { data }] = await Promise.all([countQuery, dataQuery])
+
+      return {
+        paints: (data as PaintWithBrand[] | null) ?? [],
+        count: count ?? 0,
+      }
+    },
+
+    /**
+     * Returns the total count of paints for a specific child hue.
+     *
+     * @param hueId - The child hue UUID.
+     * @returns The total number of paints assigned to the child hue.
+     */
+    async getPaintCountByIttenHueId(hueId: string): Promise<number> {
+      const { count } = await supabase
+        .from('paints')
+        .select('*', { count: 'exact', head: true })
+        .eq('itten_hue_id', hueId)
+
+      return count ?? 0
+    },
+
+    /**
      * Fetches all paint references for a given paint, with the related paint
      * data joined (including product line and brand).
      *
