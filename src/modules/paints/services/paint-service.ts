@@ -121,22 +121,22 @@ export function createPaintService(supabase: SupabaseClient) {
     },
 
     /**
-     * Fetches paints belonging to a specific Itten hue group,
+     * Fetches paints belonging to a specific hue (sub-hue),
      * including the brand name from the joined product line.
      *
-     * @param hueId - The Itten hue UUID.
+     * @param hueId - The hue UUID.
      * @param options.limit - Maximum number of paints to return.
      * @param options.offset - Number of paints to skip (for pagination).
      * @returns Array of paints with brand info, ordered by name.
      */
-    async getPaintsByIttenHueId(
+    async getPaintsByHueId(
       hueId: string,
       options?: { limit?: number; offset?: number }
     ): Promise<PaintWithBrand[]> {
       let query = supabase
         .from('paints')
         .select('*, product_lines(brands(name))')
-        .eq('itten_hue_id', hueId)
+        .eq('hue_id', hueId)
         .order('name')
 
       if (options?.offset) {
@@ -156,7 +156,7 @@ export function createPaintService(supabase: SupabaseClient) {
      * Fetches paints belonging to any child hue of a top-level hue group,
      * including the brand name from the joined product line.
      *
-     * @param parentHueId - The top-level Itten hue UUID.
+     * @param parentHueId - The top-level hue UUID.
      * @param options.limit - Maximum number of paints to return.
      * @param options.offset - Number of paints to skip (for pagination).
      * @returns Array of paints with brand info, ordered by name.
@@ -166,7 +166,7 @@ export function createPaintService(supabase: SupabaseClient) {
       options?: { limit?: number; offset?: number }
     ): Promise<PaintWithBrand[]> {
       const { data: children } = await supabase
-        .from('itten_hues')
+        .from('hues')
         .select('id')
         .eq('parent_id', parentHueId)
 
@@ -176,7 +176,7 @@ export function createPaintService(supabase: SupabaseClient) {
       let query = supabase
         .from('paints')
         .select('*, product_lines(brands(name))')
-        .in('itten_hue_id', childIds)
+        .in('hue_id', childIds)
         .order('name')
 
       if (options?.offset) {
@@ -196,12 +196,12 @@ export function createPaintService(supabase: SupabaseClient) {
      * Returns the total count of paints for a top-level hue group
      * (all paints assigned to any child hue of the given parent).
      *
-     * @param parentHueId - The top-level Itten hue UUID.
+     * @param parentHueId - The top-level hue UUID.
      * @returns The total number of paints in the hue group.
      */
     async getPaintCountByHueGroup(parentHueId: string): Promise<number> {
       const { data: children } = await supabase
-        .from('itten_hues')
+        .from('hues')
         .select('id')
         .eq('parent_id', parentHueId)
 
@@ -211,27 +211,27 @@ export function createPaintService(supabase: SupabaseClient) {
       const { count } = await supabase
         .from('paints')
         .select('*', { count: 'exact', head: true })
-        .in('itten_hue_id', childIds)
+        .in('hue_id', childIds)
 
       return count ?? 0
     },
 
     /**
-     * Counts the number of paints in each Itten hue group.
+     * Counts the number of paints in each hue group.
      *
      * Uses individual count queries per hue to avoid the default row limit
      * that truncates results when fetching all paint rows client-side.
      *
-     * @param hueIds - The Itten hue UUIDs to count paints for.
-     * @returns A map of itten_hue_id → paint count.
+     * @param hueIds - The hue UUIDs to count paints for.
+     * @returns A map of hue_id to paint count.
      */
-    async getPaintCountsByIttenHue(hueIds: string[]): Promise<Map<string, number>> {
+    async getPaintCountsByHue(hueIds: string[]): Promise<Map<string, number>> {
       const entries = await Promise.all(
         hueIds.map(async (id) => {
           const { count } = await supabase
             .from('paints')
             .select('*', { count: 'exact', head: true })
-            .eq('itten_hue_id', id)
+            .eq('hue_id', id)
           return [id, count ?? 0] as const
         })
       )
@@ -326,11 +326,11 @@ export function createPaintService(supabase: SupabaseClient) {
         .range(offset, offset + limit - 1)
 
       if (hueId) {
-        countQuery = countQuery.eq('itten_hue_id', hueId)
-        dataQuery = dataQuery.eq('itten_hue_id', hueId)
+        countQuery = countQuery.eq('hue_id', hueId)
+        dataQuery = dataQuery.eq('hue_id', hueId)
       } else if (hueIds && hueIds.length > 0) {
-        countQuery = countQuery.in('itten_hue_id', hueIds)
-        dataQuery = dataQuery.in('itten_hue_id', hueIds)
+        countQuery = countQuery.in('hue_id', hueIds)
+        dataQuery = dataQuery.in('hue_id', hueIds)
       }
 
       const [{ count }, { data }] = await Promise.all([countQuery, dataQuery])
@@ -347,11 +347,11 @@ export function createPaintService(supabase: SupabaseClient) {
      * @param hueId - The child hue UUID.
      * @returns The total number of paints assigned to the child hue.
      */
-    async getPaintCountByIttenHueId(hueId: string): Promise<number> {
+    async getPaintCountByHueId(hueId: string): Promise<number> {
       const { count } = await supabase
         .from('paints')
         .select('*', { count: 'exact', head: true })
-        .eq('itten_hue_id', hueId)
+        .eq('hue_id', hueId)
 
       return count ?? 0
     },
