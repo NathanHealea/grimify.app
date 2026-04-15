@@ -372,7 +372,7 @@ export function PaintExplorer({
       </div>
 
       {/* Top-level hue pills */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      <div className="flex flex-wrap gap-2">
         {ittenHues.map((hue) => (
           <IttenHueCard
             key={hue.id}
@@ -386,7 +386,7 @@ export function PaintExplorer({
 
       {/* Child hue pills (conditional) */}
       {childHues.length > 0 && (
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2">
           {childHues.map((hue) => (
             <ChildHueCard
               key={hue.id}
