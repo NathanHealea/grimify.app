@@ -1,7 +1,7 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 import { ChildHueCard } from '@/modules/hues/components/child-hue-card'
 import { IttenHueCard } from '@/modules/hues/components/itten-hue-card'
@@ -34,7 +34,6 @@ export function PaintExplorer({
   ittenHues: IttenHue[]
   huePaintCounts: Record<string, number>
 }) {
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   // Parse URL params for initial state
@@ -79,9 +78,12 @@ export function PaintExplorer({
   )
 
   // --- URL sync ---
+  // Uses replaceState instead of router.replace to avoid triggering a server
+  // component re-render, which would pass new prop references and cause an
+  // infinite effect loop.
   const updateUrl = useCallback(
     (params: { q?: string; hue?: string; resetPage?: boolean }) => {
-      const next = new URLSearchParams(searchParams.toString())
+      const next = new URLSearchParams(window.location.search)
 
       if (params.q !== undefined) {
         if (params.q) {
@@ -104,9 +106,9 @@ export function PaintExplorer({
       }
 
       const qs = next.toString()
-      router.replace(qs ? `/paints?${qs}` : '/paints', { scroll: false })
+      window.history.replaceState(null, '', qs ? `/paints?${qs}` : '/paints')
     },
-    [router, searchParams]
+    []
   )
 
   // --- Debounce ---
@@ -156,17 +158,21 @@ export function PaintExplorer({
   }, [selectedHueName, resolveParentHueId])
 
   // --- Fetch paints when filters change ---
-  // Also depends on childHues so that URL-restored child hue names can be resolved
-  // once the child hue list has been fetched.
+  // Skips the initial mount because the server already pre-fetched the correct
+  // data for the current URL params (including page offset).
+  // Does NOT depend on childHues — the server handles child-hue URL restoration,
+  // and for user interactions child hues are already loaded before a child can
+  // be selected.
+  const isInitialMount = useRef(true)
   useEffect(() => {
-    const parentHueId = resolveParentHueId(selectedHueName)
-    const childHueId = resolveChildHueId(selectedChildHueName)
-
-    // If a child hue is selected but can't be resolved yet (child hues not loaded),
-    // wait for the child hues effect to populate the list first.
-    if (selectedChildHueName && !childHueId && selectedHueName) {
+    // On initial mount the server already provided correct data for the URL params.
+    if (isInitialMount.current) {
+      isInitialMount.current = false
       return
     }
+
+    const parentHueId = resolveParentHueId(selectedHueName)
+    const childHueId = resolveChildHueId(selectedChildHueName)
 
     // Build hue param string for URL
     let hueParam = ''
@@ -178,17 +184,6 @@ export function PaintExplorer({
     }
 
     updateUrl({ q: debouncedQuery, hue: hueParam, resetPage: true })
-
-    // Skip initial fetch if we already have the right data
-    const isInitialState =
-      !debouncedQuery && !selectedHueName && !selectedChildHueName
-
-    if (isInitialState) {
-      setGridPaints(initialPaints)
-      setGridTotalCount(initialTotalCount)
-      setIsFiltering(false)
-      return
-    }
 
     let cancelled = false
     setIsFiltering(true)
@@ -238,6 +233,14 @@ export function PaintExplorer({
         ])
         paints = data
         count = total
+      } else {
+        // No filters — fetch all paints
+        const [data, total] = await Promise.all([
+          paintService.getAllPaints({ limit: 50, offset: 0 }),
+          paintService.getTotalPaintCount(),
+        ])
+        paints = data
+        count = total
       }
 
       if (cancelled) return
@@ -252,7 +255,7 @@ export function PaintExplorer({
       cancelled = true
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery, selectedHueName, selectedChildHueName, childHues])
+  }, [debouncedQuery, selectedHueName, selectedChildHueName])
 
   // --- fetchPaints callback for PaginatedPaintGrid pagination ---
   const fetchPaintsWithFilters = useCallback(
@@ -323,6 +326,7 @@ export function PaintExplorer({
   )
 
   // --- Clear All ---
+  // Resets filter state and URL. The fetch paints effect handles reloading all paints.
   const handleClearAll = useCallback(() => {
     setSearchQuery('')
     setDebouncedQuery('')
@@ -330,33 +334,36 @@ export function PaintExplorer({
     setSelectedChildHueName(null)
     setChildHues([])
     setChildHuePaintCounts({})
-    setGridPaints(initialPaints)
-    setGridTotalCount(initialTotalCount)
 
-    const next = new URLSearchParams(searchParams.toString())
-    next.delete('q')
-    next.delete('hue')
-    next.delete('page')
-    const qs = next.toString()
-    router.replace(qs ? `/paints?${qs}` : '/paints', { scroll: false })
-  }, [initialPaints, initialTotalCount, router, searchParams])
+    window.history.replaceState(null, '', '/paints')
+  }, [])
 
   const hasActiveFilters = !!searchQuery || !!selectedHueName
-
-  // Grid key forces remount when filters change, resetting PaginatedPaintGrid internal state
-  const gridKey = `${debouncedQuery}-${selectedHueName ?? ''}-${selectedChildHueName ?? ''}`
 
   return (
     <div className="flex flex-col gap-6">
       {/* Search + Clear All row */}
       <div className="flex items-center gap-3">
-        <input
-          type="text"
-          placeholder="Search paints by name, brand, or type..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="input flex-1"
-        />
+        <div className="relative flex-1">
+          <input
+            type="text"
+            placeholder="Search paints by name, brand, or type..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="input w-full pr-9"
+          />
+          {searchQuery.length >= 3 && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute inset-y-0 right-0 flex w-9 items-center justify-center text-muted-foreground hover:text-foreground"
+              aria-label="Clear search"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-4">
+                <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+              </svg>
+            </button>
+          )}
+        </div>
         {hasActiveFilters && (
           <button onClick={handleClearAll} className="btn btn-ghost shrink-0">
             Clear All
@@ -395,7 +402,6 @@ export function PaintExplorer({
       {/* Paint grid with loading state */}
       <div className={isFiltering ? 'opacity-50 transition-opacity' : ''}>
         <PaginatedPaintGrid
-          key={gridKey}
           initialPaints={gridPaints}
           totalCount={gridTotalCount}
           basePath="/paints"

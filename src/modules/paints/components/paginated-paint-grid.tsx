@@ -1,7 +1,7 @@
 'use client'
 
-import { useCallback, useMemo, useState, useTransition } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 import { PaintCard } from '@/modules/paints/components/paint-card'
 import { getPaintService } from '@/modules/paints/services/paint-service.client'
@@ -39,7 +39,6 @@ export function PaginatedPaintGrid({
   basePath?: string
   fetchPaints?: (options: { limit: number; offset: number }) => Promise<PaintWithBrand[]>
 }) {
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   const initialPage = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10) || 1)
@@ -54,11 +53,23 @@ export function PaginatedPaintGrid({
   const [pageSize, setPageSize] = useState<number>(initialSize)
   const [isPending, startTransition] = useTransition()
 
+  // Sync internal paints state when the parent provides new filtered data.
+  // Skips the first render to preserve URL-based initial page.
+  const isFirstRender = useRef(true)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+    setPaints(initialPaints)
+    setCurrentPage(1)
+  }, [initialPaints])
+
   const totalPages = Math.ceil(totalCount / pageSize)
 
   const updateUrl = useCallback(
     (page: number, size: number) => {
-      const params = new URLSearchParams(searchParams.toString())
+      const params = new URLSearchParams(window.location.search)
       if (page > 1) {
         params.set('page', String(page))
       } else {
@@ -70,9 +81,9 @@ export function PaginatedPaintGrid({
         params.delete('size')
       }
       const qs = params.toString()
-      router.replace(qs ? `${basePath}?${qs}` : basePath, { scroll: false })
+      window.history.replaceState(null, '', qs ? `${basePath}?${qs}` : basePath)
     },
-    [basePath, router, searchParams]
+    [basePath]
   )
 
   const fetchPage = useCallback(
