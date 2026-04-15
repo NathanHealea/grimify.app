@@ -86,6 +86,7 @@ Core functionality:
 - [x] [Itten hue self-referencing refactor](./02-paint-data-search/itten-hue-self-referencing-refactor.md)
 - [x] [Paint search by name, hex, and brand](./02-paint-data-search/paint-search.md)
 - [x] [Brand and product line browsing](./02-paint-data-search/brand-browsing.md)
+- [x] [Munsell hue system refactor](./02-paint-data-search/munsell-hue-refactor.md)
 
 ### Epic: Interactive Color Wheel
 

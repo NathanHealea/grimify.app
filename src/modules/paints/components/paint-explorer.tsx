@@ -4,12 +4,12 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 import { ChildHueCard } from '@/modules/hues/components/child-hue-card'
-import { IttenHueCard } from '@/modules/hues/components/itten-hue-card'
+import { HueCard } from '@/modules/hues/components/hue-card'
 import { getHueService } from '@/modules/hues/services/hue-service.client'
 import { PaginatedPaintGrid } from '@/modules/paints/components/paginated-paint-grid'
 import { getPaintService } from '@/modules/paints/services/paint-service.client'
 import type { PaintWithBrand } from '@/modules/paints/services/paint-service'
-import type { IttenHue } from '@/types/color'
+import type { Hue } from '@/types/color'
 
 /**
  * Interactive paint explorer component with search, hue filtering, and pagination.
@@ -20,18 +20,18 @@ import type { IttenHue } from '@/types/color'
  *
  * @param props.initialPaints - First page of paints (server-rendered for hydration).
  * @param props.initialTotalCount - Total paint count for the initial unfiltered view.
- * @param props.ittenHues - All top-level Itten hues (server-fetched to avoid client round-trip).
+ * @param props.hues - All top-level Munsell hues (server-fetched to avoid client round-trip).
  * @param props.huePaintCounts - Paint count per top-level hue group (server-fetched).
  */
 export function PaintExplorer({
   initialPaints,
   initialTotalCount,
-  ittenHues,
+  hues,
   huePaintCounts,
 }: {
   initialPaints: PaintWithBrand[]
   initialTotalCount: number
-  ittenHues: IttenHue[]
+  hues: Hue[]
   huePaintCounts: Record<string, number>
 }) {
   const searchParams = useSearchParams()
@@ -52,7 +52,7 @@ export function PaintExplorer({
   const [selectedChildHueName, setSelectedChildHueName] = useState<string | null>(
     initialChildHueName || null
   )
-  const [childHues, setChildHues] = useState<IttenHue[]>([])
+  const [childHues, setChildHues] = useState<Hue[]>([])
   const [childHuePaintCounts, setChildHuePaintCounts] = useState<Record<string, number>>({})
   const [gridPaints, setGridPaints] = useState<PaintWithBrand[]>(initialPaints)
   const [gridTotalCount, setGridTotalCount] = useState(initialTotalCount)
@@ -62,10 +62,10 @@ export function PaintExplorer({
   const resolveParentHueId = useCallback(
     (name: string | null): string | null => {
       if (!name) return null
-      const hue = ittenHues.find((h) => h.name.toLowerCase() === name.toLowerCase())
+      const hue = hues.find((h) => h.name.toLowerCase() === name.toLowerCase())
       return hue?.id ?? null
     },
-    [ittenHues]
+    [hues]
   )
 
   const resolveChildHueId = useCallback(
@@ -141,7 +141,7 @@ export function PaintExplorer({
       // Fetch paint counts for each child hue in parallel
       const entries = await Promise.all(
         children.map(async (child) => {
-          const count = await paintService.getPaintCountByIttenHueId(child.id)
+          const count = await paintService.getPaintCountByHueId(child.id)
           return [child.name.toLowerCase(), count] as const
         })
       )
@@ -220,8 +220,8 @@ export function PaintExplorer({
       } else if (childHueId) {
         // Child hue filter only
         const [data, total] = await Promise.all([
-          paintService.getPaintsByIttenHueId(childHueId, { limit: 50, offset: 0 }),
-          paintService.getPaintCountByIttenHueId(childHueId),
+          paintService.getPaintsByHueId(childHueId, { limit: 50, offset: 0 }),
+          paintService.getPaintCountByHueId(childHueId),
         ])
         paints = data
         count = total
@@ -285,7 +285,7 @@ export function PaintExplorer({
         })
         return result.paints
       } else if (childHueId) {
-        return paintService.getPaintsByIttenHueId(childHueId, options)
+        return paintService.getPaintsByHueId(childHueId, options)
       } else if (parentHueId) {
         return paintService.getPaintsByHueGroup(parentHueId, options)
       }
@@ -373,8 +373,8 @@ export function PaintExplorer({
 
       {/* Top-level hue pills */}
       <div className="flex flex-wrap gap-2">
-        {ittenHues.map((hue) => (
-          <IttenHueCard
+        {hues.map((hue) => (
+          <HueCard
             key={hue.id}
             hue={hue}
             paintCount={huePaintCounts[hue.name.toLowerCase()] ?? 0}

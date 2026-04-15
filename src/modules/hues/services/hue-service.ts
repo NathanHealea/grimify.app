@@ -1,12 +1,12 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
-import type { IttenHue } from '@/types/color'
+import type { Hue } from '@/types/color'
 
 /**
  * Creates a hue service bound to the given Supabase client.
  *
- * Encapsulates all queries for the self-referencing Itten hue table.
- * Top-level hues have `parent_id = null`; child entries (named colors)
+ * Encapsulates all queries for the self-referencing Munsell hue table.
+ * Top-level hues have `parent_id = null`; child entries (ISCC-NBS sub-hues)
  * have `parent_id` set to their parent hue.
  *
  * Use the `.server.ts` wrapper to obtain an instance with the correct client.
@@ -17,13 +17,13 @@ import type { IttenHue } from '@/types/color'
 export function createHueService(supabase: SupabaseClient) {
   return {
     /**
-     * Fetches all top-level Itten hues ordered by their color wheel position.
+     * Fetches all top-level Munsell hues ordered by their color wheel position.
      *
      * @returns Array of top-level hues sorted by `sort_order`, or an empty array on error.
      */
-    async getIttenHues(): Promise<IttenHue[]> {
+    async getHues(): Promise<Hue[]> {
       const { data } = await supabase
-        .from('itten_hues')
+        .from('hues')
         .select('*')
         .is('parent_id', null)
         .order('sort_order', { ascending: true })
@@ -32,14 +32,14 @@ export function createHueService(supabase: SupabaseClient) {
     },
 
     /**
-     * Fetches a single Itten hue entry by ID (works for both top-level hues and child colors).
+     * Fetches a single hue entry by ID (works for both top-level hues and sub-hues).
      *
      * @param id - The hue's UUID.
-     * @returns The Itten hue, or `null` if not found.
+     * @returns The hue, or `null` if not found.
      */
-    async getIttenHueById(id: string): Promise<IttenHue | null> {
+    async getHueById(id: string): Promise<Hue | null> {
       const { data } = await supabase
-        .from('itten_hues')
+        .from('hues')
         .select('*')
         .eq('id', id)
         .single()
@@ -48,14 +48,14 @@ export function createHueService(supabase: SupabaseClient) {
     },
 
     /**
-     * Fetches all child hues (named colors) that belong to a given parent hue.
+     * Fetches all child hues (ISCC-NBS sub-hues) that belong to a given parent hue.
      *
      * @param parentId - The parent hue's UUID.
      * @returns Array of child hues ordered by name, or an empty array on error.
      */
-    async getChildHues(parentId: string): Promise<IttenHue[]> {
+    async getChildHues(parentId: string): Promise<Hue[]> {
       const { data } = await supabase
-        .from('itten_hues')
+        .from('hues')
         .select('*')
         .eq('parent_id', parentId)
         .order('name')

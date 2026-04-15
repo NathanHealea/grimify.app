@@ -28,7 +28,7 @@ export default async function HuePage({
     getPaintService(),
   ])
 
-  const hue = await hueService.getIttenHueById(id)
+  const hue = await hueService.getHueById(id)
   if (!hue) notFound()
 
   const isTopLevel = hue.parent_id === null
@@ -40,7 +40,7 @@ export default async function HuePage({
       hueService.getChildHues(id),
     ])
 
-    const childPaintCounts = await paintService.getPaintCountsByIttenHue(
+    const childPaintCounts = await paintService.getPaintCountsByHue(
       childHues.map((c) => c.id)
     )
 
@@ -83,12 +83,12 @@ export default async function HuePage({
   }
 
   // Child hue (named color)
-  const parentHue = await hueService.getIttenHueById(hue.parent_id!)
+  const parentHue = await hueService.getHueById(hue.parent_id!)
 
-  const paintCounts = await paintService.getPaintCountsByIttenHue([id])
+  const paintCounts = await paintService.getPaintCountsByHue([id])
   const totalCount = paintCounts.get(id) ?? 0
 
-  const paints = await paintService.getPaintsByIttenHueId(id, { limit: pageSize, offset })
+  const paints = await paintService.getPaintsByHueId(id, { limit: pageSize, offset })
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-12">
