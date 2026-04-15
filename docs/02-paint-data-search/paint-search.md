@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Feature
-**Status:** Done
+**Status:** In Progress
 
 ## Summary
 
@@ -25,19 +25,19 @@ Refactor `/paints` into a single interactive page where all actions — search, 
 
 ## Acceptance Criteria
 
-- [x] Search input triggers async typeahead after 3+ characters with 300ms debounce
-- [x] Search results update the paint grid without a page reload
-- [x] Clicking a top-level hue card filters the paint grid to that hue group (async fetch)
-- [x] When a top-level hue is selected, its child hues appear below the hue cards
-- [x] Clicking a child hue card filters the paint grid to just that child hue (async fetch)
+- [ ] Search input triggers async typeahead after 3+ characters with 300ms debounce
+- [ ] Search results update the paint grid without a page reload
+- [ ] Clicking a top-level hue card filters the paint grid to that hue group (async fetch)
+- [ ] When a top-level hue is selected, its child hues appear below the hue cards
+- [ ] Clicking a child hue card filters the paint grid to just that child hue (async fetch)
 - [x] Each hue card has a "Details" button that links to `/hues/[id]`
-- [x] Clicking a hue card to filter does NOT navigate away from `/paints`
-- [x] Clearing the search input or deselecting a hue returns to the default all-paints view
+- [ ] Clicking a hue card to filter does NOT navigate away from `/paints`
+- [ ] Clearing the search input or deselecting a hue returns to the default all-paints view
 - [x] Active hue filter is visually indicated (selected state on the card)
-- [x] Search and hue filter state syncs to URL params (`?q=...&hue=...&childHue=...`)
-- [x] Only clicking a paint card navigates to `/paints/[id]`
-- [x] Loading states shown during async fetches
-- [x] Empty state shown when no results match
+- [ ] Search and hue filter state syncs to URL params (`?q=...&hue=...&childHue=...`)
+- [ ] Only clicking a paint card navigates to `/paints/[id]`
+- [ ] Loading states shown during async fetches
+- [ ] Empty state shown when no results match
 - [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Existing Components & Services
