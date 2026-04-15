@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Refactor
-**Status:** Done
+**Status:** Completed
 **Branch:** `refactor/munsell-hue-refactor`
 **Merge into:** `v1/main`
 
