@@ -156,9 +156,17 @@ export function PaintExplorer({
   }, [selectedHueName, resolveParentHueId])
 
   // --- Fetch paints when filters change ---
+  // Also depends on childHues so that URL-restored child hue names can be resolved
+  // once the child hue list has been fetched.
   useEffect(() => {
     const parentHueId = resolveParentHueId(selectedHueName)
     const childHueId = resolveChildHueId(selectedChildHueName)
+
+    // If a child hue is selected but can't be resolved yet (child hues not loaded),
+    // wait for the child hues effect to populate the list first.
+    if (selectedChildHueName && !childHueId && selectedHueName) {
+      return
+    }
 
     // Build hue param string for URL
     let hueParam = ''
@@ -178,6 +186,7 @@ export function PaintExplorer({
     if (isInitialState) {
       setGridPaints(initialPaints)
       setGridTotalCount(initialTotalCount)
+      setIsFiltering(false)
       return
     }
 
@@ -243,7 +252,7 @@ export function PaintExplorer({
       cancelled = true
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery, selectedHueName, selectedChildHueName])
+  }, [debouncedQuery, selectedHueName, selectedChildHueName, childHues])
 
   // --- fetchPaints callback for PaginatedPaintGrid pagination ---
   const fetchPaintsWithFilters = useCallback(
