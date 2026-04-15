@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Refactor
-**Status:** Done
+**Status:** Completed
 
 ## Summary
 
@@ -48,20 +48,20 @@ The `colors` table and `paints.color_id` column are dropped.
 
 ## Acceptance Criteria
 
-- [ ] `itten_hues` table has a `parent_id` column (uuid, nullable, self-referencing FK)
-- [ ] All 72 existing color rows are present in `itten_hues` with `parent_id` set to their former `itten_hue_id`
-- [ ] All 13 top-level hues retain their existing stable UUIDs and have `parent_id = NULL`
-- [ ] `paints.itten_hue_id` points to the color-level row (formerly `color_id` target)
-- [ ] `paints.color_id` column is removed
-- [ ] `colors` table is dropped
-- [ ] `IttenHue` TypeScript type includes `parent_id: string | null`
-- [ ] `Color` TypeScript type is removed; all code uses `IttenHue`
-- [ ] Color service methods are updated: `getColorsByHueId` → `getChildHues`, `getColorById` → `getIttenHueById` (already exists)
-- [ ] Paint service methods are updated: `getPaintsByColorId` → uses `itten_hue_id`, `color_id` references removed
-- [ ] All route pages (`/paints`, `/paints/group/[id]`, `/colors/[id]`) work correctly with the new model
-- [ ] `/colors/[id]` route still functions (now queries `itten_hues` instead of `colors`)
-- [ ] RLS policies on `itten_hues` cover the merged rows (existing policies already allow public SELECT)
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] `itten_hues` table has a `parent_id` column (uuid, nullable, self-referencing FK)
+- [x] All 72 existing color rows are present in `itten_hues` with `parent_id` set to their former `itten_hue_id`
+- [x] All 13 top-level hues retain their existing stable UUIDs and have `parent_id = NULL`
+- [x] `paints.itten_hue_id` points to the color-level row (formerly `color_id` target)
+- [x] `paints.color_id` column is removed
+- [x] `colors` table is dropped
+- [x] `IttenHue` TypeScript type includes `parent_id: string | null`
+- [x] `Color` TypeScript type is removed; all code uses `IttenHue`
+- [x] Color service methods are updated: `getColorsByHueId` → `getChildHues`, `getColorById` → `getIttenHueById` (already exists)
+- [x] Paint service methods are updated: `getPaintsByColorId` → uses `itten_hue_id`, `color_id` references removed
+- [x] All route pages (`/paints`, `/paints/group/[id]`, `/colors/[id]`) work correctly with the new model
+- [x] `/colors/[id]` route still functions (now queries `itten_hues` instead of `colors`)
+- [x] RLS policies on `itten_hues` cover the merged rows (existing policies already allow public SELECT)
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Database Changes
 

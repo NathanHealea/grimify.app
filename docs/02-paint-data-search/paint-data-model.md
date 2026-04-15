@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 
 ## Summary
 
