@@ -58,13 +58,21 @@ export function PaginatedPaintGrid({
 
   const updateUrl = useCallback(
     (page: number, size: number) => {
-      const params = new URLSearchParams()
-      if (page > 1) params.set('page', String(page))
-      if (size !== DEFAULT_PAGE_SIZE) params.set('size', String(size))
+      const params = new URLSearchParams(searchParams.toString())
+      if (page > 1) {
+        params.set('page', String(page))
+      } else {
+        params.delete('page')
+      }
+      if (size !== DEFAULT_PAGE_SIZE) {
+        params.set('size', String(size))
+      } else {
+        params.delete('size')
+      }
       const qs = params.toString()
       router.replace(qs ? `${basePath}?${qs}` : basePath, { scroll: false })
     },
-    [basePath, router]
+    [basePath, router, searchParams]
   )
 
   const fetchPage = useCallback(

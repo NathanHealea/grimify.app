@@ -9,12 +9,12 @@ import { getPaintService } from '@/modules/paints/services/paint-service.client'
 /**
  * Paginated paint grid filtered to a specific child hue.
  *
- * Wraps {@link PaginatedPaintGrid} with a hue-specific fetch function
+ * Wraps {@link PaginatedPaintGrid} with a child-hue-specific fetch function
  * and URL base path.
  *
  * @param props.hueId - The child hue UUID to filter paints by.
  * @param props.initialPaints - First page of paints (server-rendered).
- * @param props.totalCount - Total number of paints assigned to this hue.
+ * @param props.totalCount - Total number of paints for this child hue.
  */
 export function HuePaintGrid({
   hueId,
