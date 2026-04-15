@@ -9,6 +9,20 @@ export type PaintWithRelations = Paint & {
   }
 }
 
+/** Subset of hue fields returned when joining from a paint row. */
+export type PaintHueJoin = {
+  id: string
+  parent_id: string | null
+  name: string
+  slug: string
+  hex_code: string
+}
+
+/** Paint with relations and its ISCC-NBS sub-hue. */
+export type PaintWithRelationsAndHue = PaintWithRelations & {
+  hues: PaintHueJoin | null
+}
+
 /** A paint reference row with the related paint joined (including its product line and brand). */
 export type PaintReferenceWithRelated = PaintReference & {
   related_paint: PaintWithRelations
@@ -244,7 +258,7 @@ export function createPaintService(supabase: SupabaseClient) {
      * @param id - The paint's UUID.
      * @returns The paint with relations, or `null` if not found.
      */
-    async getPaintById(id: string): Promise<PaintWithRelations | null> {
+    async getPaintById(id: string): Promise<PaintWithRelationsAndHue | null> {
       const { data } = await supabase
         .from('paints')
         .select(`
@@ -252,12 +266,15 @@ export function createPaintService(supabase: SupabaseClient) {
           product_lines (
             *,
             brands (*)
+          ),
+          hues (
+            id, parent_id, name, slug, hex_code
           )
         `)
         .eq('id', id)
         .single()
 
-      return data as PaintWithRelations | null
+      return data as PaintWithRelationsAndHue | null
     },
 
     /**

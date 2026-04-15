@@ -55,6 +55,30 @@ const PAINT_FILES: Record<string, string> = {
   'ak-interactive': 'ak-interactive.json',
 }
 
+/** Munsell principal hues (top-level rows in the hues table). */
+const MUNSELL_HUES: {
+  id: string
+  name: string
+  slug: string
+  hex: string
+  sortOrder: number
+}[] = [
+  { id: '10000000-0000-0000-0000-000000000001', name: 'Red', slug: 'red', hex: '#FF0000', sortOrder: 1 },
+  { id: '10000000-0000-0000-0000-000000000002', name: 'Yellow-Red', slug: 'yellow-red', hex: '#FF8C00', sortOrder: 2 },
+  { id: '10000000-0000-0000-0000-000000000003', name: 'Yellow', slug: 'yellow', hex: '#FFFF00', sortOrder: 3 },
+  { id: '10000000-0000-0000-0000-000000000004', name: 'Green-Yellow', slug: 'green-yellow', hex: '#9ACD32', sortOrder: 4 },
+  { id: '10000000-0000-0000-0000-000000000005', name: 'Green', slug: 'green', hex: '#008000', sortOrder: 5 },
+  { id: '10000000-0000-0000-0000-000000000006', name: 'Blue-Green', slug: 'blue-green', hex: '#008080', sortOrder: 6 },
+  { id: '10000000-0000-0000-0000-000000000007', name: 'Blue', slug: 'blue', hex: '#0000FF', sortOrder: 7 },
+  { id: '10000000-0000-0000-0000-000000000008', name: 'Purple-Blue', slug: 'purple-blue', hex: '#4B0082', sortOrder: 8 },
+  { id: '10000000-0000-0000-0000-000000000009', name: 'Purple', slug: 'purple', hex: '#800080', sortOrder: 9 },
+  { id: '10000000-0000-0000-0000-00000000000a', name: 'Red-Purple', slug: 'red-purple', hex: '#FF00FF', sortOrder: 10 },
+  { id: '10000000-0000-0000-0000-00000000000b', name: 'Neutral', slug: 'neutral', hex: '#808080', sortOrder: 11 },
+]
+
+/** Number of ISCC-NBS sub-hues per principal hue. */
+const SUB_HUES_PER_PARENT = 11
+
 // ---------------------------------------------------------------------------
 // Color conversion helpers
 // ---------------------------------------------------------------------------
@@ -109,6 +133,32 @@ function esc(value: string): string {
 /** Round a number to 2 decimal places. */
 function round2(n: number): number {
   return Math.round(n * 100) / 100
+}
+
+/**
+ * Derive the human-readable name for a sub-hue from its slug and parent hue.
+ *
+ * Chromatic hues follow the pattern "{Modifier} {Parent Name}" (e.g. "Vivid Red",
+ * "Light Greyish Yellow-Red"). Neutral sub-hues are standalone names derived
+ * directly from the slug (e.g. "White", "Dark Brown").
+ */
+function subHueName(
+  subSlug: string,
+  parentSlug: string,
+  parentName: string
+): string {
+  if (parentSlug === 'neutral') {
+    return subSlug
+      .split('-')
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ')
+  }
+  const modifierSlug = subSlug.slice(0, -(parentSlug.length + 1))
+  const modifier = modifierSlug
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
+  return `${modifier} ${parentName}`
 }
 
 /**
@@ -259,15 +309,72 @@ const COLOR_CATALOG_RGB = COLOR_CATALOG.map((c) => ({
 }))
 
 /**
- * Finds the closest ISCC-NBS sub-hue to a given RGB value using Euclidean distance.
+ * HSL hue-angle ranges mapping to Munsell principal hue indices.
+ *
+ * Each range is a half-open interval [min, max) in degrees. Red wraps around
+ * 360°/0° and is handled separately in {@link findPrincipalHueIndex}.
+ */
+const HUE_ANGLE_RANGES: { min: number; max: number; hueIndex: number }[] = [
+  { min: 14, max: 44, hueIndex: 1 },   // Yellow-Red
+  { min: 44, max: 74, hueIndex: 2 },   // Yellow
+  { min: 74, max: 105, hueIndex: 3 },  // Green-Yellow
+  { min: 105, max: 157, hueIndex: 4 }, // Green
+  { min: 157, max: 200, hueIndex: 5 }, // Blue-Green
+  { min: 200, max: 258, hueIndex: 6 }, // Blue
+  { min: 258, max: 280, hueIndex: 7 }, // Purple-Blue
+  { min: 280, max: 320, hueIndex: 8 }, // Purple
+  { min: 320, max: 350, hueIndex: 9 }, // Red-Purple
+]
+
+/** HSL saturation (%) below which a color is classified as Neutral. */
+const NEUTRAL_SATURATION_THRESHOLD = 15
+
+/**
+ * Determines which Munsell principal hue family a color belongs to
+ * based on its HSL hue angle and saturation.
+ *
+ * @returns Index into {@link MUNSELL_HUES} (0–9 chromatic, 10 Neutral).
+ */
+function findPrincipalHueIndex(h: number, s: number): number {
+  if (s < NEUTRAL_SATURATION_THRESHOLD) return 10
+
+  // Red wraps around 0°/360°
+  if (h >= 350 || h < 14) return 0
+
+  for (const range of HUE_ANGLE_RANGES) {
+    if (h >= range.min && h < range.max) return range.hueIndex
+  }
+
+  return 10 // fallback
+}
+
+/**
+ * Finds the closest ISCC-NBS sub-hue for a paint color using a two-step approach:
+ *
+ * 1. Determine the principal hue family from HSL hue angle and saturation.
+ * 2. Find the closest sub-hue within that family by RGB Euclidean distance.
+ *
+ * This ensures paints stay in the correct hue family (e.g. a green paint is always
+ * matched to a Green sub-hue) while still picking the best lightness/chroma variant.
  *
  * @returns The slug of the closest sub-hue from the catalog.
  */
-function findClosestColor(r: number, g: number, b: number): string {
-  let bestSlug = 'medium-grey'
+function findClosestColor(
+  r: number,
+  g: number,
+  b: number,
+  h: number,
+  s: number
+): string {
+  const parentIdx = findPrincipalHueIndex(h, s)
+  const startIdx = parentIdx * SUB_HUES_PER_PARENT
+  const endIdx = startIdx + SUB_HUES_PER_PARENT
+
+  let bestSlug = COLOR_CATALOG[startIdx].slug
   let bestDist = Infinity
 
-  for (const c of COLOR_CATALOG_RGB) {
+  for (let i = startIdx; i < endIdx; i++) {
+    const c = COLOR_CATALOG_RGB[i]
     const dr = r - c.r
     const dg = g - c.g
     const db = b - c.b
@@ -348,7 +455,40 @@ function main(): void {
   lines.push('')
 
   // ------------------------------------------------------------------
-  // 2. Product Lines (derived from unique types per brand)
+  // 2. Hues (Munsell principal hues + ISCC-NBS sub-hues)
+  // ------------------------------------------------------------------
+  lines.push('-- ----------------------------------------------------------')
+  lines.push('-- Hues (11 Munsell principal hues + 121 ISCC-NBS sub-hues)')
+  lines.push('-- ----------------------------------------------------------')
+  lines.push('')
+
+  // Principal hues (ON CONFLICT safe when migration already seeded them)
+  for (const hue of MUNSELL_HUES) {
+    lines.push(
+      `INSERT INTO public.hues (id, name, slug, hex_code, sort_order) VALUES ('${hue.id}', '${esc(hue.name)}', '${esc(hue.slug)}', '${hue.hex}', ${hue.sortOrder}) ON CONFLICT (id) DO NOTHING;`
+    )
+  }
+  lines.push('')
+
+  // Sub-hues (11 per principal hue)
+  for (let i = 0; i < MUNSELL_HUES.length; i++) {
+    const parent = MUNSELL_HUES[i]
+    const startIdx = i * SUB_HUES_PER_PARENT
+    const subHues = COLOR_CATALOG.slice(startIdx, startIdx + SUB_HUES_PER_PARENT)
+
+    lines.push(`-- ${parent.name} sub-hues`)
+    for (let j = 0; j < subHues.length; j++) {
+      const sub = subHues[j]
+      const name = subHueName(sub.slug, parent.slug, parent.name)
+      lines.push(
+        `INSERT INTO public.hues (parent_id, name, slug, hex_code, sort_order) VALUES ('${parent.id}', '${esc(name)}', '${esc(sub.slug)}', '${sub.hex}', ${j + 1}) ON CONFLICT (parent_id, slug) WHERE parent_id IS NOT NULL DO NOTHING;`
+      )
+    }
+  }
+  lines.push('')
+
+  // ------------------------------------------------------------------
+  // 3. Product Lines (derived from unique types per brand)
   // ------------------------------------------------------------------
   lines.push('-- ----------------------------------------------------------')
   lines.push('-- Product Lines')
@@ -376,7 +516,7 @@ function main(): void {
   lines.push('')
 
   // ------------------------------------------------------------------
-  // 3. Paints
+  // 4. Paints
   // ------------------------------------------------------------------
   lines.push('-- ----------------------------------------------------------')
   lines.push('-- Paints')
@@ -419,7 +559,7 @@ function main(): void {
         paint.type.toLowerCase().includes('metallic') ||
         paint.type.toLowerCase().includes('metal')
       const paintType = paint.type.toLowerCase()
-      const closestColorSlug = findClosestColor(r, g, b)
+      const closestColorSlug = findClosestColor(r, g, b, h, s)
 
       jsonIdLookup.set(paint.id, {
         uuid,
@@ -448,7 +588,7 @@ function main(): void {
   }
 
   // ------------------------------------------------------------------
-  // 4. Paint References
+  // 5. Paint References
   // ------------------------------------------------------------------
   lines.push('-- ----------------------------------------------------------')
   lines.push(`-- Paint References (${references.length} cross-brand alternatives)`)
