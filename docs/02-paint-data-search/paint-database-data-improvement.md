@@ -49,10 +49,36 @@ Improve the quality and accuracy of paint data in the Grimify database. The curr
 Identify and document the authoritative sources for each brand's paint hex values. The user will provide example sites and data. Potential sources include:
 
 - **Citadel** — Games Workshop product pages, Citadel Colour app exports, community databases
+  - https://paintpad.app/paints/citadel-painting-system
 - **Army Painter** — The Army Painter website swatches, Fanatic paint range data
+  - https://paintpad.app/paints/the-army-painter-masterclass
+  - https://paintpad.app/paints/the-army-painter-speedpaint-2-0
+  - https://paintpad.app/paints/the-army-painter-warpaints
+  - https://paintpad.app/paints/the-army-painter-warpaints-air
+  - https://paintpad.app/paints/the-army-painter-warpaints-fanatic
 - **Vallejo** — Vallejo official color charts, acrylicosvallejo.com product pages
+  - https://paintpad.app/paints/vallejo-auxiliaries
+  - https://paintpad.app/paints/vallejo-game-air
+  - https://paintpad.app/paints/vallejo-game-color
+  - https://paintpad.app/paints/vallejo-hobby-spray-paint
+  - https://paintpad.app/paints/vallejo-liquid-gold
+  - https://paintpad.app/paints/vallejo-mecha-color
+  - https://paintpad.app/paints/vallejo-metal-color
+  - https://paintpad.app/paints/vallejo-model-air
+  - https://paintpad.app/paints/vallejo-model-color
+  - https://paintpad.app/paints/vallejo-model-wash
+  - https://paintpad.app/paints/vallejo-panzer-aces
+  - https://paintpad.app/paints/vallejo-surface-primer
+  - https://paintpad.app/paints/vallejo-the-shifters
+  - https://paintpad.app/paints/vallejo-xpress
 - **Green Stuff World** — greenstuffworld.com product listings
+  - https://paintpad.app/paints/green-stuff-world
 - **AK Interactive** — ak-interactive.com product catalog
+  - https://paintpad.app/paints/ak-interactive
+  - https://paintpad.app/paints/ak-interactive-3rd-gen-acrylics
+  - https://paintpad.app/paints/ak-interactive-acrylics
+  - https://paintpad.app/paints/ak-interactive-real-color
+  - https://paintpad.app/paints/amsterdam-acrylic-ink
 
 Create a reference document at `scripts/data/REFERENCES.md` listing the sources used for each brand's color data.
 
@@ -61,6 +87,32 @@ Create a reference document at `scripts/data/REFERENCES.md` listing the sources 
 | File | Changes |
 |------|---------|
 | `scripts/data/REFERENCES.md` | New or updated — document all reference sources |
+
+#### HTML Parsing for paintpad.app
+
+##### Paint Type (Section)
+
+Heading 2 Content contains paint type.
+
+```html
+<h2 class="paint-collection__paint_type___heading">...</h2>
+```
+
+##### Visual Color Representing  
+
+`style="background: rgb(DDD,DDD,DDD)` can be parsed from
+
+```html
+<span class="paint-swatch__sample" style="background: rgb(74, 176, 106); color: rgb(74, 176, 106);"></span>
+```
+
+Value that can transformed to application Paint `r`, `g`, `b`, `hex` and `hue`, `saturation`, and `lightness` values.
+
+Metallic and some other paints use a variety of colors to as representation
+
+```html
+<span class="paint-swatch__sample" style="background: linear-gradient(90deg, rgb(70, 61, 34) 0%, rgb(125, 107, 61) 50%, rgb(228, 195, 112) 100%); color: rgb(70, 61, 34);"></span>
+```
 
 ### Step 2: Update paint JSON data files
 
