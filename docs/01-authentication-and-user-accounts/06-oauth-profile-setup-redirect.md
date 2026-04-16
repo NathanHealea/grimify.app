@@ -2,7 +2,7 @@
 
 **Epic:** Authentication & User Accounts
 **Type:** Bug
-**Status:** Done
+**Status:** Completed
 **Branch:** `bug/oauth-profile-setup-redirect`
 **Merge into:** `v1/main`
 
