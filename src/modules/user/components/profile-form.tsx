@@ -66,8 +66,8 @@ export function ProfileForm({
           defaultValue={defaultValues.display_name}
           placeholder="e.g. Ragnar_42"
           required
-          minLength={2}
-          maxLength={50}
+          minLength={3}
+          maxLength={20}
           pattern="^[a-zA-Z0-9_-]+$"
           autoComplete="username"
         />
@@ -78,7 +78,7 @@ export function ProfileForm({
             The name &apos;{suggestedName}&apos; is already taken. Please choose a different name.
           </p>
         ) : (
-          <p className="text-sm text-muted-foreground">2-50 characters. Letters, numbers, hyphens, and underscores only.</p>
+          <p className="text-sm text-muted-foreground">3-20 characters. Letters, numbers, hyphens, and underscores only.</p>
         )}
       </div>
       <Button type="submit" disabled={pending}>

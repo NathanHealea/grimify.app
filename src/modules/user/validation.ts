@@ -10,7 +10,7 @@
  * @remarks
  * Rules:
  * - Required (non-empty after trim)
- * - 2-50 characters
+ * - 3-20 characters
  * - Only letters, numbers, hyphens, underscores (`/^[a-zA-Z0-9_-]+$/`)
  */
 export function validateDisplayName(name: string): string | null {
@@ -20,12 +20,12 @@ export function validateDisplayName(name: string): string | null {
     return 'Display name is required.'
   }
 
-  if (trimmed.length < 2) {
-    return 'Display name must be at least 2 characters.'
+  if (trimmed.length < 3) {
+    return 'Display name must be at least 3 characters.'
   }
 
-  if (trimmed.length > 50) {
-    return 'Display name must be 50 characters or fewer.'
+  if (trimmed.length > 20) {
+    return 'Display name must be 20 characters or fewer.'
   }
 
   if (!/^[a-zA-Z0-9_-]+$/.test(trimmed)) {
