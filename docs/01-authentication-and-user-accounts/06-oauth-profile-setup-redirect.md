@@ -2,7 +2,7 @@
 
 **Epic:** Authentication & User Accounts
 **Type:** Bug
-**Status:** Todo
+**Status:** Done
 **Branch:** `bug/oauth-profile-setup-redirect`
 **Merge into:** `v1/main`
 
@@ -46,13 +46,13 @@ VALUES (NEW.id, public.generate_profile_name(), false);
 
 ## Acceptance Criteria
 
-- [ ] Authenticated users with `has_setup_profile = false` are redirected to `/profile/setup` on ANY route (public or protected), except auth flow routes
-- [ ] Auth flow routes (`/sign-in`, `/sign-up`, `/auth/callback`, `/auth/confirm`, `/forgot-password`, `/reset-password`) remain fully exempt from profile-setup checks
-- [ ] Unauthenticated users can still access public routes without being redirected to profile setup
-- [ ] The `handle_new_user()` trigger uses the OAuth provider's name (from `raw_user_meta_data`) as `display_name` when available, falling back to `generate_profile_name()` on conflict or absence
-- [ ] The `handle_user_login()` trigger also uses OAuth metadata for the display name when creating a profile for a user who lacks one
-- [ ] Existing profiles are not affected by the trigger change (migration is additive)
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Authenticated users with `has_setup_profile = false` are redirected to `/profile/setup` on ANY route (public or protected), except auth flow routes
+- [x] Auth flow routes (`/sign-in`, `/sign-up`, `/auth/callback`, `/auth/confirm`, `/forgot-password`, `/reset-password`) remain fully exempt from profile-setup checks
+- [x] Unauthenticated users can still access public routes without being redirected to profile setup
+- [x] The `handle_new_user()` trigger uses the OAuth provider's name (from `raw_user_meta_data`) as `display_name` when available, falling back to `generate_profile_name()` on conflict or absence
+- [x] The `handle_user_login()` trigger also uses OAuth metadata for the display name when creating a profile for a user who lacks one
+- [x] Existing profiles are not affected by the trigger change (migration is additive)
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Key Files
 
