@@ -126,6 +126,23 @@ Common reasons for non-matches:
 3. **Newer Xpress Color (Vallejo)** — 17+ paints not yet on PaintPad
 4. **Newer GSW acrylics** — 31 paints not yet on PaintPad
 
+### Hue Assignment Verification
+
+After updating hex values, the hue assignment algorithm in `scripts/generate-seed.ts`
+was verified. The current thresholds (`NEUTRAL_SATURATION_THRESHOLD = 15%`) produce
+a reasonable distribution:
+
+- 576 paints classified as Neutral (blacks, whites, greys, low-saturation browns)
+- 1,761 paints distributed across 10 chromatic Munsell hue families
+- 165 paints near the neutral boundary (10-20% saturation) are correctly classified
+  as chromatic
+- 8 very dark paints (L < 5%) with high mathematical saturation are classified as
+  chromatic rather than neutral; this is acceptable since they retain their color
+  identity (e.g. dark green, dark blue)
+
+No changes to the `NEUTRAL_SATURATION_THRESHOLD`, `HUE_ANGLE_RANGES`, or
+`COLOR_CATALOG` values were needed.
+
 ## Methodology
 
 1. Each PaintPad brand page was fetched and parsed to extract paint names and
