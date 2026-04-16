@@ -2,7 +2,7 @@
 
 **Epic:** Authentication & User Accounts
 **Type:** Bug
-**Status:** Todo
+**Status:** Done
 **Branch:** `bug/oauth-profile-setup-redirect`
 **Merge into:** `v1/main`
 
@@ -46,19 +46,20 @@ VALUES (NEW.id, public.generate_profile_name(), false);
 
 ## Acceptance Criteria
 
-- [ ] Authenticated users with `has_setup_profile = false` are redirected to `/profile/setup` on ANY route (public or protected), except auth flow routes
-- [ ] Auth flow routes (`/sign-in`, `/sign-up`, `/auth/callback`, `/auth/confirm`, `/forgot-password`, `/reset-password`) remain fully exempt from profile-setup checks
-- [ ] Unauthenticated users can still access public routes without being redirected to profile setup
-- [ ] The `handle_new_user()` trigger uses the OAuth provider's name (from `raw_user_meta_data`) as `display_name` when available, falling back to `generate_profile_name()` on conflict or absence
-- [ ] Existing profiles are not affected by the trigger change (migration is additive)
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Authenticated users with `has_setup_profile = false` are redirected to `/profile/setup` on ANY route (public or protected), except auth flow routes
+- [x] Auth flow routes (`/sign-in`, `/sign-up`, `/auth/callback`, `/auth/confirm`, `/forgot-password`, `/reset-password`) remain fully exempt from profile-setup checks
+- [x] Unauthenticated users can still access public routes without being redirected to profile setup
+- [x] The `handle_new_user()` trigger uses the OAuth provider's name (from `raw_user_meta_data`) as `display_name` when available, falling back to `generate_profile_name()` on conflict or absence
+- [x] The `handle_user_login()` trigger also uses OAuth metadata for the display name when creating a profile for a user who lacks one
+- [x] Existing profiles are not affected by the trigger change (migration is additive)
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Key Files
 
 | Action | File                                                              | Description                                                  |
 | ------ | ----------------------------------------------------------------- | ------------------------------------------------------------ |
 | Modify | `src/middleware.ts`                                               | Restructure to check profile setup for authenticated users on public routes |
-| Create | `supabase/migrations/20260416000000_fix_profile_display_name.sql` | Update `handle_new_user()` to read OAuth metadata            |
+| Create | `supabase/migrations/20260416000000_fix_profile_display_name.sql` | Add `extract_oauth_display_name()` helper, update `handle_new_user()` and `handle_user_login()` to use OAuth metadata |
 
 ## Implementation
 
@@ -110,11 +111,37 @@ Key changes from the current implementation:
 
 Commit: `fix(auth): enforce profile setup redirect on public routes`
 
-### Step 2: Update `handle_new_user()` trigger to use OAuth display name
+### Step 2: Update profile triggers to use OAuth display name
 
 Create `supabase/migrations/20260416000000_fix_profile_display_name.sql`:
 
-Replace the `handle_new_user()` function to extract a display name from `raw_user_meta_data` when available:
+Two trigger functions create profile rows: `handle_new_user()` (on signup) and `handle_user_login()` (safety net on login). Both currently ignore OAuth metadata and use `generate_profile_name()`. Update both to extract a display name from `raw_user_meta_data`.
+
+#### 2a. Helper function: `extract_oauth_display_name(meta jsonb)`
+
+Create a reusable SQL function to avoid duplicating the metadata extraction logic:
+
+```sql
+CREATE OR REPLACE FUNCTION public.extract_oauth_display_name(meta jsonb)
+RETURNS text
+LANGUAGE sql
+IMMUTABLE
+AS $$
+  SELECT COALESCE(
+    NULLIF(TRIM(meta ->> 'full_name'), ''),
+    NULLIF(TRIM(meta ->> 'name'), ''),
+    NULLIF(TRIM(meta ->> 'custom_username'), ''),
+    NULLIF(TRIM(meta ->> 'preferred_username'), ''),
+    NULLIF(TRIM(meta ->> 'user_name'), '')
+  );
+$$;
+```
+
+- Reads the same metadata fields that `/profile/setup` checks, in the same priority order.
+- Uses `NULLIF(TRIM(...), '')` to skip empty strings.
+- Returns `NULL` if no name is found, signaling the caller to fall back to a generated name.
+
+#### 2b. Replace `handle_new_user()`
 
 ```sql
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -125,16 +152,8 @@ SET search_path = ''
 AS $$
 DECLARE
   oauth_name text;
-  chosen_name text;
 BEGIN
-  -- Try to extract a display name from OAuth provider metadata
-  oauth_name := COALESCE(
-    NULLIF(TRIM(NEW.raw_user_meta_data ->> 'full_name'), ''),
-    NULLIF(TRIM(NEW.raw_user_meta_data ->> 'name'), ''),
-    NULLIF(TRIM(NEW.raw_user_meta_data ->> 'custom_username'), ''),
-    NULLIF(TRIM(NEW.raw_user_meta_data ->> 'preferred_username'), ''),
-    NULLIF(TRIM(NEW.raw_user_meta_data ->> 'user_name'), '')
-  );
+  oauth_name := public.extract_oauth_display_name(NEW.raw_user_meta_data);
 
   -- Use the OAuth name if available and not already taken
   IF oauth_name IS NOT NULL THEN
@@ -149,9 +168,36 @@ BEGIN
   END IF;
 
   -- Fallback: auto-generated name
-  chosen_name := public.generate_profile_name();
   INSERT INTO public.profiles (id, display_name, has_setup_profile)
-  VALUES (NEW.id, chosen_name, false);
+  VALUES (NEW.id, public.generate_profile_name(), false);
+
+  RETURN NEW;
+END;
+$$;
+```
+
+#### 2c. Replace `handle_user_login()`
+
+```sql
+CREATE OR REPLACE FUNCTION public.handle_user_login()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+DECLARE
+  oauth_name text;
+  chosen_name text;
+BEGIN
+  oauth_name := public.extract_oauth_display_name(NEW.raw_user_meta_data);
+  chosen_name := COALESCE(oauth_name, public.generate_profile_name());
+
+  INSERT INTO public.profiles (id, display_name, has_setup_profile)
+  VALUES (NEW.id, chosen_name, false)
+  ON CONFLICT (id) DO UPDATE
+    SET display_name = COALESCE(public.profiles.display_name, chosen_name),
+        updated_at = now()
+    WHERE public.profiles.display_name IS NULL;
 
   RETURN NEW;
 END;
@@ -159,14 +205,14 @@ $$;
 ```
 
 Key points:
-- Reads the same metadata fields that `/profile/setup` checks, in the same priority order.
-- Uses `NULLIF(TRIM(...), '')` to skip empty strings.
-- Handles unique constraint violations gracefully — if the OAuth name is taken, falls back to `ProfileDDDD`.
-- `has_setup_profile` remains `false` — the user is still prompted to confirm/change their name on the setup page.
-- The `SECURITY DEFINER` and `SET search_path = ''` attributes are preserved.
-- This is a `CREATE OR REPLACE`, so it safely updates the existing function without dropping triggers.
+- Both functions now default to the OAuth provider's display name when available.
+- Unique constraint violations in `handle_new_user()` fall back to `ProfileDDDD` gracefully.
+- `handle_user_login()` only updates `display_name` when it's `NULL` — existing names are never overwritten.
+- `has_setup_profile` remains `false` in all paths — the user is still prompted to confirm/change their name on the setup page.
+- All `SECURITY DEFINER` and `SET search_path = ''` attributes are preserved.
+- `CREATE OR REPLACE` safely updates the existing functions without dropping triggers.
 
-Commit: `fix(auth): use OAuth display name in profile trigger`
+Commit: `fix(auth): use OAuth display name in profile triggers`
 
 ### Step 3: Build and verify
 

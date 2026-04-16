@@ -15,7 +15,7 @@ Allow administrators to edit any user's profile fields (display name, bio, avata
 - [ ] Admins can edit a user's display name from the admin user detail page
 - [ ] Admins can edit a user's bio from the admin user detail page
 - [ ] Admins can edit a user's avatar URL from the admin user detail page
-- [ ] Display name validation enforces the same rules as user self-edit (2-50 chars, alphanumeric + hyphen/underscore, unique)
+- [ ] Display name validation enforces the same rules as user self-edit (3-20 chars, alphanumeric + hyphen/underscore, unique)
 - [ ] Changes are saved to the `profiles` table
 - [ ] The admin edit form pre-fills with the user's current profile data
 - [ ] Non-admin users cannot access admin profile editing

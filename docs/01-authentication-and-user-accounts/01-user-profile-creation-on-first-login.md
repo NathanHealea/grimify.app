@@ -53,7 +53,7 @@ Sign Up / Sign In
 │  • Form pre-populated with       │
 │    auto-generated ProfileDDDD   │
 │  • User chooses a display name   │
-│  • Validates: 2-50 chars,        │
+│  • Validates: 3-20 chars,        │
 │    [a-zA-Z0-9_-] only            │
 │  • Checks uniqueness (case-      │
 │    insensitive)                   │
