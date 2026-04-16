@@ -4,7 +4,7 @@
 
 -- Roles table: stores available role names
 CREATE TABLE public.roles (
-  id serial PRIMARY KEY,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   name text UNIQUE NOT NULL
 );
 
@@ -14,7 +14,7 @@ INSERT INTO public.roles (name) VALUES ('user'), ('admin');
 -- User-roles junction table: many-to-many between profiles and roles
 CREATE TABLE public.user_roles (
   user_id uuid NOT NULL REFERENCES public.profiles (id) ON DELETE CASCADE,
-  role_id int NOT NULL REFERENCES public.roles (id),
+  role_id uuid NOT NULL REFERENCES public.roles (id),
   assigned_at timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (user_id, role_id)
 );
