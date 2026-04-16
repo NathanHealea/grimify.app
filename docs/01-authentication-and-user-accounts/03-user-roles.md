@@ -2,7 +2,7 @@
 
 **Epic:** Authentication & User Accounts
 **Type:** Feature
-**Status:** In Progress
+**Status:** Done
 **Branch:** `feature/user-roles`
 **Merge into:** `v1/main`
 
@@ -21,8 +21,8 @@ Admins can grant or revoke the `admin` role through an admin interface. The `use
 - [x] A `user_roles` table links users to roles (many-to-many)
 - [x] New users are automatically assigned the `user` role upon profile creation
 - [x] The `user` role cannot be removed from any account
-- [ ] At least one admin is seeded or manually assigned in the database
-- [ ] Admins can grant or revoke the `admin` role via an admin interface
+- [x] At least one admin is seeded or manually assigned in the database
+- [x] Admins can grant or revoke the `admin` role via an admin interface
 - [x] RLS policies on `user_roles` prevent non-admin users from modifying role assignments
 - [x] A helper function or utility exists to check a user's roles on the server
 - [x] Role information is available in middleware for route-level access control
@@ -74,11 +74,11 @@ Composite primary key on `(user_id, role_id)`.
 | Move   | `src/modules/profile/` → `src/modules/user/`                                 | Consolidate profile code into user module           | Done   |
 | Move   | `src/modules/auth/components/user-menu.tsx` → `src/modules/user/components/` | User display belongs in user module                 | Done   |
 | Modify | `src/middleware.ts`                                                           | Add admin route protection                          | Done   |
-| Create | `src/app/admin/page.tsx`                                                     | Admin landing — redirect to `/admin/users`          | Todo   |
-| Create | `src/app/admin/users/page.tsx`                                               | User management page with role controls             | Todo   |
-| Create | `src/modules/user/types/user-with-roles.ts`                                  | Type for profile joined with role names             | Todo   |
-| Create | `src/modules/user/actions/toggle-admin-role.ts`                              | Server action — grant or revoke `admin` role        | Todo   |
-| Create | `src/modules/user/components/admin-users-table.tsx`                          | Client component — user table with role toggles     | Todo   |
+| Create | `src/app/admin/page.tsx`                                                     | Admin landing — redirect to `/admin/users`          | Done   |
+| Create | `src/app/admin/users/page.tsx`                                               | User management page with role controls             | Done   |
+| Create | `src/modules/user/types/user-with-roles.ts`                                  | Type for profile joined with role names             | Done   |
+| Create | `src/modules/user/actions/toggle-admin-role.ts`                              | Server action — grant or revoke `admin` role        | Done   |
+| Create | `src/modules/user/components/admin-users-table.tsx`                          | Client component — user table with role toggles     | Done   |
 
 ## Implementation
 
