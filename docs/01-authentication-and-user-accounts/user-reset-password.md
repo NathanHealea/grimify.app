@@ -3,6 +3,8 @@
 **Epic:** Authentication & User Accounts
 **Type:** Feature
 **Status:** Completed
+**Branch:** `feature/user-reset-password`
+**Merge into:** `v1/main`
 
 ## Summary
 

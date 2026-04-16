@@ -4,6 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `v1/feature/metadata-and-opengraph`
+**Merge into:** `v1/main`
 
 ## Summary
 

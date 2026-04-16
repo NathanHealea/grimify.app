@@ -3,6 +3,8 @@
 **Epic:** Authentication & User Accounts
 **Type:** Feature
 **Status:** In Progress
+**Branch:** `feature/user-roles`
+**Merge into:** `v1/main`
 
 ## Summary
 

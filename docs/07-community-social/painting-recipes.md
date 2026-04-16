@@ -3,6 +3,8 @@
 **Epic:** Community & Social
 **Type:** Feature
 **Status:** Todo
+**Branch:** `feature/painting-recipes`
+**Merge into:** `v1/main`
 
 ## Summary
 

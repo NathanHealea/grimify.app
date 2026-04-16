@@ -3,6 +3,8 @@
 **Epic:** Cross-Brand Comparison
 **Type:** Feature
 **Status:** Todo
+**Branch:** `feature/substitute-suggestions`
+**Merge into:** `v1/main`
 
 ## Summary
 

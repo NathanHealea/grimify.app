@@ -4,6 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `v1/feature/branding-images`
+**Merge into:** `v1/main`
 
 ## Summary
 

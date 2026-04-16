@@ -3,6 +3,8 @@
 **Epic:** Paint Data & Search
 **Type:** Refactor
 **Status:** Completed
+**Branch:** `refactor/itten-hue-self-referencing-refactor`
+**Merge into:** `v1/main`
 
 ## Summary
 

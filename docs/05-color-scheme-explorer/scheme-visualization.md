@@ -3,6 +3,8 @@
 **Epic:** Color Scheme Explorer
 **Type:** Feature
 **Status:** Todo
+**Branch:** `feature/scheme-visualization`
+**Merge into:** `v1/main`
 
 ## Summary
 

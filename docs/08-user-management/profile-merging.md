@@ -3,6 +3,8 @@
 **Epic:** User Management
 **Type:** Feature
 **Status:** Todo
+**Branch:** `feature/profile-merging`
+**Merge into:** `v1/main`
 
 ## Summary
 

@@ -3,6 +3,8 @@
 **Epic:** Authentication & User Accounts
 **Type:** Feature
 **Status:** Completed
+**Branch:** `feature/social-media-login`
+**Merge into:** `v1/main`
 
 ## Summary
 

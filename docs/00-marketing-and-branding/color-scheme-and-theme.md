@@ -4,6 +4,7 @@
 **Type:** Feature
 **Status:** Completed
 **Branch:** `v1/feature/color-scheme-and-theme`
+**Merge into:** `v1/main`
 
 ## Summary
 

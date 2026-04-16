@@ -3,6 +3,8 @@
 **Epic:** Authentication & User Accounts
 **Type:** Feature
 **Status:** Completed
+**Branch:** `feature/user-profile-creation-on-first-login`
+**Merge into:** `v1/main`
 
 ## Summary
 

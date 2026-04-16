@@ -3,6 +3,8 @@
 **Epic:** Community & Social
 **Type:** Feature
 **Status:** Todo
+**Branch:** `feature/community-feed`
+**Merge into:** `v1/main`
 
 ## Summary
 

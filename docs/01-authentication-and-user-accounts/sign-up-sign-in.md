@@ -4,6 +4,7 @@
 **Type:** Feature
 **Status:** Completed
 **Branch:** `v1/feature/sign-up-sign-in`
+**Merge into:** `v1/main`
 
 ## Summary
 

@@ -3,6 +3,8 @@
 **Epic:** Paint Data & Search
 **Type:** Feature
 **Status:** Completed
+**Branch:** `feature/brand-browsing`
+**Merge into:** `v1/main`
 
 ## Summary
 

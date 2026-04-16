@@ -3,6 +3,8 @@
 **Epic:** Interactive Color Wheel
 **Type:** Feature
 **Status:** Todo
+**Branch:** `feature/wheel-filters`
+**Merge into:** `v1/main`
 
 ## Summary
 

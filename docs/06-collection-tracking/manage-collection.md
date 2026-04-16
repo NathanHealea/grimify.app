@@ -3,6 +3,8 @@
 **Epic:** Collection Tracking
 **Type:** Feature
 **Status:** Todo
+**Branch:** `feature/manage-collection`
+**Merge into:** `v1/main`
 
 ## Summary
 
