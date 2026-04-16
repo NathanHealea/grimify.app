@@ -87,6 +87,7 @@ Core functionality:
 - [x] [Paint search by name, hex, and brand](./02-paint-data-search/paint-search.md)
 - [x] [Brand and product line browsing](./02-paint-data-search/brand-browsing.md)
 - [x] [Munsell hue system refactor](./02-paint-data-search/munsell-hue-refactor.md)
+- [ ] [Paint database data improvement](./02-paint-data-search/paint-database-data-improvement.md)
 
 ### Epic: Interactive Color Wheel
 
