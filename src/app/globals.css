@@ -11,6 +11,7 @@
 @import '../styles/form.css' layer(components);
 @import '../styles/avatar.css' layer(components);
 @import '../styles/dropdown.css' layer(components);
+@import '../styles/badge.css' layer(components);
 @import '../styles/navbar.css' layer(components);
 
 @custom-variant dark (&:is(.dark *));

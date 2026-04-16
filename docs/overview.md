@@ -73,7 +73,7 @@ Core functionality:
 - [x] [Sign up / sign in via Supabase Auth](./01-authentication-and-user-accounts/00-sign-up-sign-in.md)
 - [x] [User profile creation on first login](./01-authentication-and-user-accounts/01-user-profile-creation-on-first-login.md)
 - [x] [Protected routes for authenticated features](./01-authentication-and-user-accounts/02-protected-routes.md)
-- [ ] [User roles (user, admin)](./01-authentication-and-user-accounts/03-user-roles.md)
+- [x] [User roles (user, admin)](./01-authentication-and-user-accounts/03-user-roles.md)
 - [x] [Social media login (Google, Discord)](./01-authentication-and-user-accounts/04-social-media-login.md)
 - [x] [User password reset and change](./01-authentication-and-user-accounts/05-user-reset-password.md)
 
