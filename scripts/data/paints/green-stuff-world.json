@@ -2,7 +2,7 @@
   {
     "id": "gsw-1",
     "name": "Cyber Yellow",
-    "hex": "#FFE600",
+    "hex": "#FAD612",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -10,7 +10,7 @@
   {
     "id": "gsw-2",
     "name": "Hellfire Red",
-    "hex": "#C02020",
+    "hex": "#E00008",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -34,7 +34,7 @@
   {
     "id": "gsw-5",
     "name": "Sangria Red",
-    "hex": "#6E1A2E",
+    "hex": "#7B0118",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -42,7 +42,7 @@
   {
     "id": "gsw-6",
     "name": "Cutthroat Red",
-    "hex": "#A02020",
+    "hex": "#BB0009",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -50,7 +50,7 @@
   {
     "id": "gsw-7",
     "name": "Lollipop Magenta",
-    "hex": "#C8307A",
+    "hex": "#AB0061",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -58,7 +58,7 @@
   {
     "id": "gsw-8",
     "name": "Ember Orange",
-    "hex": "#E05820",
+    "hex": "#E6471D",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -74,7 +74,7 @@
   {
     "id": "gsw-10",
     "name": "Marine Blue",
-    "hex": "#1A3A6A",
+    "hex": "#154283",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -82,7 +82,7 @@
   {
     "id": "gsw-11",
     "name": "Summersea Blue",
-    "hex": "#3878A8",
+    "hex": "#1C64D0",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -90,7 +90,7 @@
   {
     "id": "gsw-12",
     "name": "Warcry Green",
-    "hex": "#3A6830",
+    "hex": "#3E6400",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -98,7 +98,7 @@
   {
     "id": "gsw-13",
     "name": "Hunter Green",
-    "hex": "#2E5028",
+    "hex": "#008F13",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -106,7 +106,7 @@
   {
     "id": "gsw-14",
     "name": "Forest Green",
-    "hex": "#1A4020",
+    "hex": "#003A08",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -114,7 +114,7 @@
   {
     "id": "gsw-15",
     "name": "Flubber Green",
-    "hex": "#60C830",
+    "hex": "#69E52B",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -122,7 +122,7 @@
   {
     "id": "gsw-16",
     "name": "Rocket Green",
-    "hex": "#48B038",
+    "hex": "#4C602D",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -154,7 +154,7 @@
   {
     "id": "gsw-20",
     "name": "Overlord Olive",
-    "hex": "#6A6828",
+    "hex": "#373425",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -162,7 +162,7 @@
   {
     "id": "gsw-21",
     "name": "Sun Bleached Bone",
-    "hex": "#D8C898",
+    "hex": "#C08E53",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -178,7 +178,7 @@
   {
     "id": "gsw-23",
     "name": "Ancient Sepia",
-    "hex": "#A08050",
+    "hex": "#F3F3ED",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -186,7 +186,7 @@
   {
     "id": "gsw-24",
     "name": "Bestial Brown",
-    "hex": "#6B4020",
+    "hex": "#2C1D00",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -194,7 +194,7 @@
   {
     "id": "gsw-25",
     "name": "Quicksand Brown",
-    "hex": "#9A7848",
+    "hex": "#7B4918",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -202,7 +202,7 @@
   {
     "id": "gsw-26",
     "name": "Redwood Brown",
-    "hex": "#784028",
+    "hex": "#3F0E00",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -210,7 +210,7 @@
   {
     "id": "gsw-27",
     "name": "Ochre Desert",
-    "hex": "#C09840",
+    "hex": "#C88400",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -218,7 +218,7 @@
   {
     "id": "gsw-28",
     "name": "Elven Flesh",
-    "hex": "#E8B890",
+    "hex": "#F2AA82",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -226,7 +226,7 @@
   {
     "id": "gsw-29",
     "name": "Dwarven Flesh",
-    "hex": "#C89070",
+    "hex": "#E47B4C",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -234,7 +234,7 @@
   {
     "id": "gsw-30",
     "name": "Liche Purple",
-    "hex": "#582878",
+    "hex": "#451D5B",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -242,7 +242,7 @@
   {
     "id": "gsw-31",
     "name": "Steel Grey",
-    "hex": "#808888",
+    "hex": "#29313C",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -258,7 +258,7 @@
   {
     "id": "gsw-33",
     "name": "Nuclear White",
-    "hex": "#FFFFFF",
+    "hex": "#FEFEFE",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -266,7 +266,7 @@
   {
     "id": "gsw-34",
     "name": "Black Stallion",
-    "hex": "#1A1A18",
+    "hex": "#050006",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -274,7 +274,7 @@
   {
     "id": "gsw-35",
     "name": "Banana Split",
-    "hex": "#FDE857",
+    "hex": "#EAE041",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -282,7 +282,7 @@
   {
     "id": "gsw-36",
     "name": "Go Mango",
-    "hex": "#F8B655",
+    "hex": "#FEA700",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -290,7 +290,7 @@
   {
     "id": "gsw-37",
     "name": "Mustard Yellow",
-    "hex": "#D0A040",
+    "hex": "#966600",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -298,7 +298,7 @@
   {
     "id": "gsw-38",
     "name": "Flaming Orange",
-    "hex": "#F58651",
+    "hex": "#FF7200",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -306,7 +306,7 @@
   {
     "id": "gsw-39",
     "name": "Majin Pink",
-    "hex": "#D47A83",
+    "hex": "#E46598",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -314,7 +314,7 @@
   {
     "id": "gsw-40",
     "name": "Abyss Blue",
-    "hex": "#002051",
+    "hex": "#01004C",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -322,7 +322,7 @@
   {
     "id": "gsw-41",
     "name": "Zima Blue",
-    "hex": "#33A2CF",
+    "hex": "#48ACCC",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -330,7 +330,7 @@
   {
     "id": "gsw-42",
     "name": "Tropical Turquoise",
-    "hex": "#0C6A74",
+    "hex": "#2CBFAF",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -338,7 +338,7 @@
   {
     "id": "gsw-43",
     "name": "Kraken Green",
-    "hex": "#028D66",
+    "hex": "#034E3A",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -346,7 +346,7 @@
   {
     "id": "gsw-44",
     "name": "Camouflage Green",
-    "hex": "#758E3A",
+    "hex": "#646000",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -354,7 +354,7 @@
   {
     "id": "gsw-45",
     "name": "Olivegrove Green",
-    "hex": "#304921",
+    "hex": "#1E280F",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -362,7 +362,7 @@
   {
     "id": "gsw-46",
     "name": "Zombie Flesh",
-    "hex": "#849B63",
+    "hex": "#CFAE6B",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -370,7 +370,7 @@
   {
     "id": "gsw-47",
     "name": "Sun-bleached Bone",
-    "hex": "#BCBC80",
+    "hex": "#C08E53",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -378,7 +378,7 @@
   {
     "id": "gsw-48",
     "name": "Komodo Khaki",
-    "hex": "#8C806D",
+    "hex": "#835D30",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -386,7 +386,7 @@
   {
     "id": "gsw-49",
     "name": "Peach Flesh",
-    "hex": "#E89C6C",
+    "hex": "#D97400",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -394,7 +394,7 @@
   {
     "id": "gsw-50",
     "name": "Blushing Flesh",
-    "hex": "#BC745E",
+    "hex": "#BD523E",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -402,7 +402,7 @@
   {
     "id": "gsw-51",
     "name": "Leather Brown",
-    "hex": "#764823",
+    "hex": "#AE6715",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -410,7 +410,7 @@
   {
     "id": "gsw-52",
     "name": "Foxhide Brown",
-    "hex": "#A14322",
+    "hex": "#C15E00",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -418,7 +418,7 @@
   {
     "id": "gsw-53",
     "name": "Choco Brown",
-    "hex": "#34312C",
+    "hex": "#280000",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -426,7 +426,7 @@
   {
     "id": "gsw-54",
     "name": "Wolven Grey",
-    "hex": "#547588",
+    "hex": "#AFB5C5",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -434,7 +434,7 @@
   {
     "id": "gsw-55",
     "name": "Bluegrey Dusk",
-    "hex": "#4A4F53",
+    "hex": "#2A2D40",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -442,7 +442,7 @@
   {
     "id": "gsw-56",
     "name": "Moonstone Grey",
-    "hex": "#949B94",
+    "hex": "#8C8C8C",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -450,7 +450,7 @@
   {
     "id": "gsw-57",
     "name": "Slate Grey",
-    "hex": "#70756E",
+    "hex": "#565656",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -458,7 +458,7 @@
   {
     "id": "gsw-58",
     "name": "Mirage Blue",
-    "hex": "#5F6772",
+    "hex": "#354459",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -466,7 +466,7 @@
   {
     "id": "gsw-59",
     "name": "Dark Umber",
-    "hex": "#654641",
+    "hex": "#3C2E2D",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -474,7 +474,7 @@
   {
     "id": "gsw-60",
     "name": "Ivory Tusk",
-    "hex": "#D2D4C7",
+    "hex": "#FFFDD7",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -482,7 +482,7 @@
   {
     "id": "gsw-61",
     "name": "Pale Flesh",
-    "hex": "#CBB48B",
+    "hex": "#E7B8A4",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -490,7 +490,7 @@
   {
     "id": "gsw-62",
     "name": "Imperium Blue",
-    "hex": "#002B5C",
+    "hex": "#1A2E85",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -498,7 +498,7 @@
   {
     "id": "gsw-63",
     "name": "Malefic Purple",
-    "hex": "#440052",
+    "hex": "#181648",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -506,7 +506,7 @@
   {
     "id": "gsw-64",
     "name": "Military Green",
-    "hex": "#00401E",
+    "hex": "#272816",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -514,7 +514,7 @@
   {
     "id": "gsw-65",
     "name": "Field Green Grey",
-    "hex": "#074864",
+    "hex": "#2E4729",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -522,7 +522,7 @@
   {
     "id": "gsw-66",
     "name": "Gangrene",
-    "hex": "#5D6732",
+    "hex": "#3F441C",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -530,7 +530,7 @@
   {
     "id": "gsw-67",
     "name": "Scorched Wood",
-    "hex": "#493335",
+    "hex": "#1B120D",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -538,7 +538,7 @@
   {
     "id": "gsw-68",
     "name": "Dark Beige",
-    "hex": "#8B5910",
+    "hex": "#6C5C43",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -546,7 +546,7 @@
   {
     "id": "gsw-69",
     "name": "English Field Brown",
-    "hex": "#715E40",
+    "hex": "#63471F",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -554,7 +554,7 @@
   {
     "id": "gsw-70",
     "name": "Coyote Brown",
-    "hex": "#927F6E",
+    "hex": "#6E6137",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -562,7 +562,7 @@
   {
     "id": "gsw-71",
     "name": "Desert Camo",
-    "hex": "#A67610",
+    "hex": "#846F36",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -570,7 +570,7 @@
   {
     "id": "gsw-72",
     "name": "Yellow Brown Ops",
-    "hex": "#856D49",
+    "hex": "#7D5C29",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -578,7 +578,7 @@
   {
     "id": "gsw-73",
     "name": "Valkyrie Yellow",
-    "hex": "#CBBE78",
+    "hex": "#E2D974",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -586,7 +586,7 @@
   {
     "id": "gsw-74",
     "name": "Barrel Grey",
-    "hex": "#4A4F53",
+    "hex": "#292621",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -594,7 +594,7 @@
   {
     "id": "gsw-75",
     "name": "Gengis Khaki",
-    "hex": "#9C9171",
+    "hex": "#635A3D",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -602,7 +602,7 @@
   {
     "id": "gsw-76",
     "name": "Sandstorm",
-    "hex": "#BB9662",
+    "hex": "#B39C68",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -610,7 +610,7 @@
   {
     "id": "gsw-77",
     "name": "Deck Grey",
-    "hex": "#B1B1A7",
+    "hex": "#CABFA3",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -618,7 +618,7 @@
   {
     "id": "gsw-78",
     "name": "Prussian Green",
-    "hex": "#0B4849",
+    "hex": "#243022",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -626,7 +626,7 @@
   {
     "id": "gsw-79",
     "name": "Olive Brown Ops",
-    "hex": "#544F4B",
+    "hex": "#373014",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -666,7 +666,7 @@
   {
     "id": "gsw-84",
     "name": "Tiger Brown",
-    "hex": "#8B5910",
+    "hex": "#6A350D",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -770,7 +770,7 @@
   {
     "id": "gsw-97",
     "name": "Viridian Green",
-    "hex": "#30A66C",
+    "hex": "#BCD9D1",
     "type": "Acrylic",
     "description": "",
     "comparable": []
@@ -834,7 +834,7 @@
   {
     "id": "gsw-105",
     "name": "Gunmetal Grey",
-    "hex": "#5A5A5A",
+    "hex": "#51545A",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -842,7 +842,7 @@
   {
     "id": "gsw-106",
     "name": "Quicksilver",
-    "hex": "#C0C0C0",
+    "hex": "#9D9EA2",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -850,7 +850,7 @@
   {
     "id": "gsw-107",
     "name": "Anthrax Metal",
-    "hex": "#A0A0A0",
+    "hex": "#34353A",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -858,7 +858,7 @@
   {
     "id": "gsw-108",
     "name": "Mystic White",
-    "hex": "#E0E0E0",
+    "hex": "#BEBFC1",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -866,7 +866,7 @@
   {
     "id": "gsw-109",
     "name": "Sharkfin Blue",
-    "hex": "#8090A0",
+    "hex": "#4D7FAD",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -874,7 +874,7 @@
   {
     "id": "gsw-110",
     "name": "Tinmetal Grey",
-    "hex": "#808080",
+    "hex": "#5E5251",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -882,7 +882,7 @@
   {
     "id": "gsw-111",
     "name": "Dark Elder Bronze",
-    "hex": "#6A4A30",
+    "hex": "#1F1506",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -890,7 +890,7 @@
   {
     "id": "gsw-112",
     "name": "Gladius Bronze",
-    "hex": "#8A6A40",
+    "hex": "#874B0E",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -898,7 +898,7 @@
   {
     "id": "gsw-113",
     "name": "Steampunk Copper",
-    "hex": "#B06030",
+    "hex": "#834824",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -906,7 +906,7 @@
   {
     "id": "gsw-114",
     "name": "Shiny Gold",
-    "hex": "#D0A840",
+    "hex": "#B1942B",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -914,7 +914,7 @@
   {
     "id": "gsw-115",
     "name": "El Dorado",
-    "hex": "#C0A030",
+    "hex": "#AD8323",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -922,7 +922,7 @@
   {
     "id": "gsw-116",
     "name": "Antique Gold",
-    "hex": "#A08830",
+    "hex": "#735D17",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -930,7 +930,7 @@
   {
     "id": "gsw-117",
     "name": "Neptunus Blue",
-    "hex": "#4070A0",
+    "hex": "#1D65A5",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -938,7 +938,7 @@
   {
     "id": "gsw-118",
     "name": "Sirenscale Green",
-    "hex": "#308060",
+    "hex": "#075F38",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -946,7 +946,7 @@
   {
     "id": "gsw-119",
     "name": "Caesar Red",
-    "hex": "#A03030",
+    "hex": "#821A12",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -954,7 +954,7 @@
   {
     "id": "gsw-120",
     "name": "Persian Violet",
-    "hex": "#6030A0",
+    "hex": "#130151",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -962,7 +962,7 @@
   {
     "id": "gsw-121",
     "name": "Aqua Turquoise",
-    "hex": "#2090A0",
+    "hex": "#538584",
     "type": "Metallic",
     "description": "",
     "comparable": []
@@ -970,7 +970,7 @@
   {
     "id": "gsw-122",
     "name": "Orchid Purple",
-    "hex": "#7040A0",
+    "hex": "#3A0A36",
     "type": "Metallic",
     "description": "",
     "comparable": []

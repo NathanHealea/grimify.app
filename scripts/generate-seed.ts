@@ -46,6 +46,42 @@ const BRAND_WEBSITES: Record<string, string> = {
   'ak-interactive': 'https://ak-interactive.com',
 }
 
+/**
+ * Paintpad.app-sourced hue overrides keyed by paint JSON id.
+ * When present, the sub-hue slug from paintpad takes precedence over
+ * the algorithmic `findClosestColor()` result.
+ */
+interface HueOverride {
+  subHueSlug: string
+  principalHue: string
+  paintpadPage: string
+  paintpadSection: string
+  paintpadSectionHex: string | null
+}
+
+interface HueOverridesFile {
+  overrides: Record<string, HueOverride>
+}
+
+const HUE_OVERRIDES_PATH = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  'data',
+  'hue-overrides.json'
+)
+
+let hueOverrides: Record<string, HueOverride> = {}
+try {
+  const overridesData: HueOverridesFile = JSON.parse(
+    readFileSync(HUE_OVERRIDES_PATH, 'utf-8')
+  )
+  hueOverrides = overridesData.overrides
+  console.log(
+    `Loaded ${Object.keys(hueOverrides).length} paintpad hue overrides`
+  )
+} catch {
+  console.warn('No hue-overrides.json found, using algorithmic hue assignment only')
+}
+
 /** Paint file names keyed by brand slug. */
 const PAINT_FILES: Record<string, string> = {
   citadel: 'citadel.json',
@@ -168,137 +204,137 @@ function subHueName(
  * to set `hue_id` on each paint (pointing to the sub-hue row).
  */
 const COLOR_CATALOG: { slug: string; hex: string }[] = [
-  // Red sub-hues
-  { slug: 'vivid-red', hex: '#FF0000' },
-  { slug: 'strong-red', hex: '#CF1717' },
-  { slug: 'deep-red', hex: '#8A0F0F' },
-  { slug: 'very-deep-red', hex: '#500B0B' },
-  { slug: 'moderate-red', hex: '#BF4040' },
-  { slug: 'dark-red', hex: '#6F2A2A' },
-  { slug: 'very-dark-red', hex: '#361717' },
-  { slug: 'light-greyish-red', hex: '#CCB3B3' },
-  { slug: 'greyish-red', hex: '#996666' },
-  { slug: 'dark-greyish-red', hex: '#584141' },
-  { slug: 'blackish-red', hex: '#221C1C' },
-  // Yellow-Red sub-hues
-  { slug: 'vivid-yellow-red', hex: '#FF8C00' },
-  { slug: 'strong-yellow-red', hex: '#CF7C17' },
-  { slug: 'deep-yellow-red', hex: '#8A530F' },
-  { slug: 'very-deep-yellow-red', hex: '#50310B' },
-  { slug: 'moderate-yellow-red', hex: '#BF8640' },
-  { slug: 'dark-yellow-red', hex: '#6F502A' },
-  { slug: 'very-dark-yellow-red', hex: '#362817' },
-  { slug: 'light-greyish-yellow-red', hex: '#CCC1B3' },
-  { slug: 'greyish-yellow-red', hex: '#998266' },
-  { slug: 'dark-greyish-yellow-red', hex: '#584E41' },
-  { slug: 'blackish-yellow-red', hex: '#221F1C' },
-  // Yellow sub-hues
-  { slug: 'vivid-yellow', hex: '#FFFF00' },
-  { slug: 'strong-yellow', hex: '#CFCF17' },
-  { slug: 'deep-yellow', hex: '#8A8A0F' },
+  // Red sub-hues (ISCC-NBS reference colors from paintpad.app)
+  { slug: 'vivid-red', hex: '#BE0032' },
+  { slug: 'strong-red', hex: '#BC3F4A' },
+  { slug: 'deep-red', hex: '#841B2D' },
+  { slug: 'very-deep-red', hex: '#5C0923' },
+  { slug: 'moderate-red', hex: '#AB4E52' },
+  { slug: 'dark-red', hex: '#722F37' },
+  { slug: 'very-dark-red', hex: '#3F1728' },
+  { slug: 'light-greyish-red', hex: '#AD8884' },
+  { slug: 'greyish-red', hex: '#905D5D' },
+  { slug: 'dark-greyish-red', hex: '#543D3F' },
+  { slug: 'blackish-red', hex: '#2E1D21' },
+  // Yellow-Red sub-hues (ISCC-NBS reference colors from paintpad.app)
+  { slug: 'vivid-yellow-red', hex: '#F38400' },
+  { slug: 'strong-yellow-red', hex: '#E66721' },
+  { slug: 'deep-yellow-red', hex: '#AA381E' },
+  { slug: 'very-deep-yellow-red', hex: '#593319' },
+  { slug: 'moderate-yellow-red', hex: '#F99379' },
+  { slug: 'dark-yellow-red', hex: '#6F4E37' },
+  { slug: 'very-dark-yellow-red', hex: '#3E322C' },
+  { slug: 'light-greyish-yellow-red', hex: '#FFB7A5' },
+  { slug: 'greyish-yellow-red', hex: '#C48379' },
+  { slug: 'dark-greyish-yellow-red', hex: '#635147' },
+  { slug: 'blackish-yellow-red', hex: '#28201C' },
+  // Yellow sub-hues (ISCC-NBS reference colors from paintpad.app)
+  { slug: 'vivid-yellow', hex: '#F3C300' },
+  { slug: 'strong-yellow', hex: '#D4AF37' },
+  { slug: 'deep-yellow', hex: '#AF8D13' },
   { slug: 'very-deep-yellow', hex: '#50500B' },
-  { slug: 'moderate-yellow', hex: '#BFBF40' },
-  { slug: 'dark-yellow', hex: '#6F6F2A' },
-  { slug: 'very-dark-yellow', hex: '#363617' },
-  { slug: 'light-greyish-yellow', hex: '#CCCCB3' },
-  { slug: 'greyish-yellow', hex: '#999966' },
-  { slug: 'dark-greyish-yellow', hex: '#585841' },
+  { slug: 'moderate-yellow', hex: '#C9AE5D' },
+  { slug: 'dark-yellow', hex: '#AB9144' },
+  { slug: 'very-dark-yellow', hex: '#3B3121' },
+  { slug: 'light-greyish-yellow', hex: '#FBC97F' },
+  { slug: 'greyish-yellow', hex: '#C2B280' },
+  { slug: 'dark-greyish-yellow', hex: '#A18F60' },
   { slug: 'blackish-yellow', hex: '#22221C' },
-  // Green-Yellow sub-hues
-  { slug: 'vivid-green-yellow', hex: '#AAFF00' },
-  { slug: 'strong-green-yellow', hex: '#91CF17' },
-  { slug: 'deep-green-yellow', hex: '#618A0F' },
+  // Green-Yellow sub-hues (ISCC-NBS reference colors from paintpad.app)
+  { slug: 'vivid-green-yellow', hex: '#DCD300' },
+  { slug: 'strong-green-yellow', hex: '#8DB600' },
+  { slug: 'deep-green-yellow', hex: '#9B9400' },
   { slug: 'very-deep-green-yellow', hex: '#39500B' },
-  { slug: 'moderate-green-yellow', hex: '#95BF40' },
-  { slug: 'dark-green-yellow', hex: '#586F2A' },
-  { slug: 'very-dark-green-yellow', hex: '#2B3617' },
-  { slug: 'light-greyish-green-yellow', hex: '#C4CCB3' },
-  { slug: 'greyish-green-yellow', hex: '#889966' },
-  { slug: 'dark-greyish-green-yellow', hex: '#505841' },
-  { slug: 'blackish-green-yellow', hex: '#20221C' },
-  // Green sub-hues
-  { slug: 'vivid-green', hex: '#00FF00' },
-  { slug: 'strong-green', hex: '#17CF17' },
-  { slug: 'deep-green', hex: '#0F8A0F' },
-  { slug: 'very-deep-green', hex: '#0B500B' },
-  { slug: 'moderate-green', hex: '#40BF40' },
-  { slug: 'dark-green', hex: '#2A6F2A' },
-  { slug: 'very-dark-green', hex: '#173617' },
-  { slug: 'light-greyish-green', hex: '#B3CCB3' },
-  { slug: 'greyish-green', hex: '#669966' },
-  { slug: 'dark-greyish-green', hex: '#415841' },
-  { slug: 'blackish-green', hex: '#1C221C' },
-  // Blue-Green sub-hues
+  { slug: 'moderate-green-yellow', hex: '#E9E450' },
+  { slug: 'dark-green-yellow', hex: '#867E36' },
+  { slug: 'very-dark-green-yellow', hex: '#403D21' },
+  { slug: 'light-greyish-green-yellow', hex: '#EAE679' },
+  { slug: 'greyish-green-yellow', hex: '#8C8767' },
+  { slug: 'dark-greyish-green-yellow', hex: '#5B5842' },
+  { slug: 'blackish-green-yellow', hex: '#25241D' },
+  // Green sub-hues (ISCC-NBS reference colors from paintpad.app)
+  { slug: 'vivid-green', hex: '#008856' },
+  { slug: 'strong-green', hex: '#007959' },
+  { slug: 'deep-green', hex: '#00543D' },
+  { slug: 'very-deep-green', hex: '#00622D' },
+  { slug: 'moderate-green', hex: '#3B7861' },
+  { slug: 'dark-green', hex: '#1B4D3E' },
+  { slug: 'very-dark-green', hex: '#1C352D' },
+  { slug: 'light-greyish-green', hex: '#B6E5AF' },
+  { slug: 'greyish-green', hex: '#5E716A' },
+  { slug: 'dark-greyish-green', hex: '#3A4B47' },
+  { slug: 'blackish-green', hex: '#1A2421' },
+  // Blue-Green sub-hues (ISCC-NBS reference colors from paintpad.app where available)
   { slug: 'vivid-blue-green', hex: '#00FFFF' },
   { slug: 'strong-blue-green', hex: '#17CFCF' },
-  { slug: 'deep-blue-green', hex: '#0F8A8A' },
-  { slug: 'very-deep-blue-green', hex: '#0B5050' },
-  { slug: 'moderate-blue-green', hex: '#40BFBF' },
-  { slug: 'dark-blue-green', hex: '#2A6F6F' },
-  { slug: 'very-dark-blue-green', hex: '#173636' },
-  { slug: 'light-greyish-blue-green', hex: '#B3CCCC' },
-  { slug: 'greyish-blue-green', hex: '#669999' },
+  { slug: 'deep-blue-green', hex: '#008882' },
+  { slug: 'very-deep-blue-green', hex: '#00443F' },
+  { slug: 'moderate-blue-green', hex: '#239EBA' },
+  { slug: 'dark-blue-green', hex: '#317873' },
+  { slug: 'very-dark-blue-green', hex: '#002A29' },
+  { slug: 'light-greyish-blue-green', hex: '#96DED1' },
+  { slug: 'greyish-blue-green', hex: '#66ADA4' },
   { slug: 'dark-greyish-blue-green', hex: '#415858' },
   { slug: 'blackish-blue-green', hex: '#1C2222' },
-  // Blue sub-hues
-  { slug: 'vivid-blue', hex: '#0000FF' },
-  { slug: 'strong-blue', hex: '#1717CF' },
-  { slug: 'deep-blue', hex: '#0F0F8A' },
+  // Blue sub-hues (ISCC-NBS reference colors from paintpad.app)
+  { slug: 'vivid-blue', hex: '#00A1C2' },
+  { slug: 'strong-blue', hex: '#0067A5' },
+  { slug: 'deep-blue', hex: '#00416A' },
   { slug: 'very-deep-blue', hex: '#0B0B50' },
-  { slug: 'moderate-blue', hex: '#4040BF' },
-  { slug: 'dark-blue', hex: '#2A2A6F' },
+  { slug: 'moderate-blue', hex: '#436B95' },
+  { slug: 'dark-blue', hex: '#00304E' },
   { slug: 'very-dark-blue', hex: '#171736' },
-  { slug: 'light-greyish-blue', hex: '#B3B3CC' },
-  { slug: 'greyish-blue', hex: '#666699' },
-  { slug: 'dark-greyish-blue', hex: '#414158' },
-  { slug: 'blackish-blue', hex: '#1C1C22' },
-  // Purple-Blue sub-hues
+  { slug: 'light-greyish-blue', hex: '#A1CAF1' },
+  { slug: 'greyish-blue', hex: '#536878' },
+  { slug: 'dark-greyish-blue', hex: '#36454F' },
+  { slug: 'blackish-blue', hex: '#202830' },
+  // Purple-Blue sub-hues (ISCC-NBS reference colors from paintpad.app where available)
   { slug: 'vivid-purple-blue', hex: '#5500FF' },
   { slug: 'strong-purple-blue', hex: '#5417CF' },
   { slug: 'deep-purple-blue', hex: '#380F8A' },
-  { slug: 'very-deep-purple-blue', hex: '#220B50' },
-  { slug: 'moderate-purple-blue', hex: '#6A40BF' },
-  { slug: 'dark-purple-blue', hex: '#412A6F' },
-  { slug: 'very-dark-purple-blue', hex: '#211736' },
-  { slug: 'light-greyish-purple-blue', hex: '#BBB3CC' },
-  { slug: 'greyish-purple-blue', hex: '#776699' },
-  { slug: 'dark-greyish-purple-blue', hex: '#494158' },
+  { slug: 'very-deep-purple-blue', hex: '#272458' },
+  { slug: 'moderate-purple-blue', hex: '#9065CA' },
+  { slug: 'dark-purple-blue', hex: '#30267A' },
+  { slug: 'very-dark-purple-blue', hex: '#252440' },
+  { slug: 'light-greyish-purple-blue', hex: '#B3BCE2' },
+  { slug: 'greyish-purple-blue', hex: '#6C79B8' },
+  { slug: 'dark-greyish-purple-blue', hex: '#4E5180' },
   { slug: 'blackish-purple-blue', hex: '#1E1C22' },
-  // Purple sub-hues
-  { slug: 'vivid-purple', hex: '#FF00FF' },
-  { slug: 'strong-purple', hex: '#CF17CF' },
-  { slug: 'deep-purple', hex: '#8A0F8A' },
-  { slug: 'very-deep-purple', hex: '#500B50' },
-  { slug: 'moderate-purple', hex: '#BF40BF' },
-  { slug: 'dark-purple', hex: '#6F2A6F' },
-  { slug: 'very-dark-purple', hex: '#361736' },
-  { slug: 'light-greyish-purple', hex: '#CCB3CC' },
-  { slug: 'greyish-purple', hex: '#996699' },
-  { slug: 'dark-greyish-purple', hex: '#584158' },
-  { slug: 'blackish-purple', hex: '#221C22' },
-  // Red-Purple sub-hues
+  // Purple sub-hues (ISCC-NBS reference colors from paintpad.app)
+  { slug: 'vivid-purple', hex: '#9A4EAE' },
+  { slug: 'strong-purple', hex: '#875692' },
+  { slug: 'deep-purple', hex: '#602F6B' },
+  { slug: 'very-deep-purple', hex: '#401A4C' },
+  { slug: 'moderate-purple', hex: '#86608E' },
+  { slug: 'dark-purple', hex: '#563C5C' },
+  { slug: 'very-dark-purple', hex: '#301934' },
+  { slug: 'light-greyish-purple', hex: '#D399E6' },
+  { slug: 'greyish-purple', hex: '#796878' },
+  { slug: 'dark-greyish-purple', hex: '#50404D' },
+  { slug: 'blackish-purple', hex: '#291E29' },
+  // Red-Purple sub-hues (ISCC-NBS reference colors from paintpad.app where available)
   { slug: 'vivid-red-purple', hex: '#FF0080' },
   { slug: 'strong-red-purple', hex: '#CF1773' },
-  { slug: 'deep-red-purple', hex: '#8A0F4D' },
-  { slug: 'very-deep-red-purple', hex: '#500B2E' },
-  { slug: 'moderate-red-purple', hex: '#BF4080' },
-  { slug: 'dark-red-purple', hex: '#6F2A4D' },
-  { slug: 'very-dark-red-purple', hex: '#361726' },
-  { slug: 'light-greyish-red-purple', hex: '#CCB3BF' },
-  { slug: 'greyish-red-purple', hex: '#996680' },
-  { slug: 'dark-greyish-red-purple', hex: '#58414D' },
+  { slug: 'deep-red-purple', hex: '#870074' },
+  { slug: 'very-deep-red-purple', hex: '#54133B' },
+  { slug: 'moderate-red-purple', hex: '#E4717A' },
+  { slug: 'dark-red-purple', hex: '#702963' },
+  { slug: 'very-dark-red-purple', hex: '#341731' },
+  { slug: 'light-greyish-red-purple', hex: '#FFB5BA' },
+  { slug: 'greyish-red-purple', hex: '#C08081' },
+  { slug: 'dark-greyish-red-purple', hex: '#5D3954' },
   { slug: 'blackish-red-purple', hex: '#221C1F' },
   // Neutral sub-hues
   { slug: 'white', hex: '#FFFFFF' },
   { slug: 'near-white', hex: '#F5F5F5' },
-  { slug: 'light-grey', hex: '#C0C0C0' },
-  { slug: 'medium-grey', hex: '#808080' },
-  { slug: 'dark-grey', hex: '#404040' },
+  { slug: 'light-grey', hex: '#B9B8B5' },
+  { slug: 'medium-grey', hex: '#848482' },
+  { slug: 'dark-grey', hex: '#555555' },
   { slug: 'near-black', hex: '#1A1A1A' },
   { slug: 'black', hex: '#000000' },
   { slug: 'brown', hex: '#8B4513' },
-  { slug: 'dark-brown', hex: '#3B2F2F' },
-  { slug: 'light-brown', hex: '#D2B48C' },
+  { slug: 'dark-brown', hex: '#422518' },
+  { slug: 'light-brown', hex: '#A67B5B' },
   { slug: 'ivory', hex: '#FFFFF0' },
 ]
 
@@ -536,6 +572,8 @@ function main(): void {
   }> = []
 
   let totalPaints = 0
+  let overrideCount = 0
+  let algorithmicCount = 0
 
   for (const brand of brands) {
     const paintFile = PAINT_FILES[brand.id]
@@ -559,7 +597,28 @@ function main(): void {
         paint.type.toLowerCase().includes('metallic') ||
         paint.type.toLowerCase().includes('metal')
       const paintType = paint.type.toLowerCase()
-      const closestColorSlug = findClosestColor(r, g, b, h, s)
+      // Use paintpad override if available, otherwise fall back to algorithmic matching
+      const override = hueOverrides[paint.id]
+      let closestColorSlug = override
+        ? override.subHueSlug
+        : findClosestColor(r, g, b, h, s)
+      if (override) overrideCount++
+      else algorithmicCount++
+
+      // Force very dark paints named "Black" / "Black Wash" / "Black Primer" etc.
+      // to the neutral "black" sub-hue regardless of slight color tints in their hex.
+      // Painters expect these under Neutral, not under a chromatic hue.
+      const nameLower = paint.name.toLowerCase()
+      if (
+        l < 25 &&
+        (nameLower === 'black' ||
+          nameLower.startsWith('black ') ||
+          nameLower.endsWith(' black')) &&
+        closestColorSlug !== 'black' &&
+        closestColorSlug !== 'near-black'
+      ) {
+        closestColorSlug = l < 10 ? 'black' : 'near-black'
+      }
 
       jsonIdLookup.set(paint.id, {
         uuid,
@@ -626,6 +685,7 @@ function main(): void {
   console.log(`  Brands: ${brands.length}`)
   console.log(`  Paints: ${totalPaints}`)
   console.log(`  References: ${refCount}`)
+  console.log(`  Hue assignments: ${overrideCount} paintpad overrides, ${algorithmicCount} algorithmic`)
 }
 
 main()

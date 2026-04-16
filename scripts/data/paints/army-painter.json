@@ -2,7 +2,7 @@
   {
     "id": "ap-1",
     "name": "Matt Black",
-    "hex": "#231F20",
+    "hex": "#000000",
     "type": "Fanatic",
     "description": "Black",
     "comparable": [
@@ -15,7 +15,7 @@
   {
     "id": "ap-2",
     "name": "Deep Grey",
-    "hex": "#3C3D37",
+    "hex": "#484B58",
     "type": "Fanatic",
     "description": "Very Dark Grey",
     "comparable": [
@@ -28,7 +28,7 @@
   {
     "id": "ap-3",
     "name": "Uniform Grey",
-    "hex": "#5E6A73",
+    "hex": "#63676E",
     "type": "Fanatic",
     "description": "Dark Grey",
     "comparable": [
@@ -41,7 +41,7 @@
   {
     "id": "ap-4",
     "name": "Ash Grey",
-    "hex": "#A2A5A4",
+    "hex": "#7B7E80",
     "type": "Fanatic",
     "description": "Grey",
     "comparable": [
@@ -54,7 +54,7 @@
   {
     "id": "ap-5",
     "name": "Company Grey",
-    "hex": "#B5B7B9",
+    "hex": "#B6B7B7",
     "type": "Fanatic",
     "description": "Light Grey",
     "comparable": [
@@ -67,7 +67,7 @@
   {
     "id": "ap-6",
     "name": "Brigade Grey",
-    "hex": "#CDCED0",
+    "hex": "#CCCCCB",
     "type": "Fanatic",
     "description": "Very Light Grey",
     "comparable": [
@@ -80,7 +80,7 @@
   {
     "id": "ap-7",
     "name": "Grey Castle",
-    "hex": "#A0A2A4",
+    "hex": "#87877D",
     "type": "Fanatic",
     "description": "",
     "comparable": []
@@ -88,7 +88,7 @@
   {
     "id": "ap-8",
     "name": "Gargoyle Grey",
-    "hex": "#7A7D6E",
+    "hex": "#9E9A8A",
     "type": "Fanatic",
     "description": "Olive Grey",
     "comparable": []
@@ -96,7 +96,7 @@
   {
     "id": "ap-9",
     "name": "Great Hall Grey",
-    "hex": "#B5B8A8",
+    "hex": "#B5AF9E",
     "type": "Fanatic",
     "description": "Light Olive Grey",
     "comparable": []
@@ -104,7 +104,7 @@
   {
     "id": "ap-10",
     "name": "Worn Stone",
-    "hex": "#CFCBB4",
+    "hex": "#BDBAA8",
     "type": "Fanatic",
     "description": "Pale Olive Grey",
     "comparable": [
@@ -117,7 +117,7 @@
   {
     "id": "ap-11",
     "name": "Brainmatter Beige",
-    "hex": "#F1F0E0",
+    "hex": "#DCD9CB",
     "type": "Fanatic",
     "description": "Very Light Yellowish Grey",
     "comparable": [
@@ -143,7 +143,7 @@
   {
     "id": "ap-13",
     "name": "Night Sky",
-    "hex": "#2B4B5F",
+    "hex": "#303F4E",
     "type": "Fanatic",
     "description": "Very Pale Bluish Grey",
     "comparable": [
@@ -156,7 +156,7 @@
   {
     "id": "ap-14",
     "name": "Thunderous Blue",
-    "hex": "#215383",
+    "hex": "#384D68",
     "type": "Fanatic",
     "description": "Pale Bluish Grey",
     "comparable": [
@@ -169,7 +169,7 @@
   {
     "id": "ap-15",
     "name": "Stratos Blue",
-    "hex": "#4A7090",
+    "hex": "#3B5D7E",
     "type": "Fanatic",
     "description": "Light Bluish Grey",
     "comparable": []
@@ -177,7 +177,7 @@
   {
     "id": "ap-16",
     "name": "Wolf Grey",
-    "hex": "#5B8093",
+    "hex": "#527393",
     "type": "Fanatic",
     "description": "Bluish Grey",
     "comparable": [
@@ -190,7 +190,7 @@
   {
     "id": "ap-17",
     "name": "Runic Cobalt",
-    "hex": "#6C8FAC",
+    "hex": "#738EA4",
     "type": "Fanatic",
     "description": "Dark Bluish Grey",
     "comparable": [
@@ -203,7 +203,7 @@
   {
     "id": "ap-18",
     "name": "Frost Blue",
-    "hex": "#3A5570",
+    "hex": "#97B7CF",
     "type": "Fanatic",
     "description": "Black Bluish Grey",
     "comparable": []
@@ -211,7 +211,7 @@
   {
     "id": "ap-19",
     "name": "Augur Blue",
-    "hex": "#8BA0D0",
+    "hex": "#A8B8D4",
     "type": "Fanatic",
     "description": "Very Light Purplish Blue",
     "comparable": []
@@ -219,7 +219,7 @@
   {
     "id": "ap-20",
     "name": "Baron Blue",
-    "hex": "#5B7DB8",
+    "hex": "#778EBB",
     "type": "Fanatic",
     "description": "Light Purplish Blue",
     "comparable": []
@@ -227,7 +227,7 @@
   {
     "id": "ap-21",
     "name": "Alpha Blue",
-    "hex": "#4272B8",
+    "hex": "#6375AA",
     "type": "Fanatic",
     "description": "Purplish Blue",
     "comparable": [
@@ -240,7 +240,7 @@
   {
     "id": "ap-22",
     "name": "Ultramarine Blue",
-    "hex": "#0F4E85",
+    "hex": "#2C477B",
     "type": "Fanatic",
     "description": "Strong Purplish Blue",
     "comparable": [
@@ -253,7 +253,7 @@
   {
     "id": "ap-23",
     "name": "Gothic Blue",
-    "hex": "#1A3A70",
+    "hex": "#2C3862",
     "type": "Fanatic",
     "description": "Deep Purplish Blue",
     "comparable": [
@@ -266,7 +266,7 @@
   {
     "id": "ap-24",
     "name": "Triumphant Navy",
-    "hex": "#0A2050",
+    "hex": "#192742",
     "type": "Fanatic",
     "description": "Black Purplish Blue",
     "comparable": [
@@ -279,7 +279,7 @@
   {
     "id": "ap-25",
     "name": "Bright Sapphire",
-    "hex": "#50A0E0",
+    "hex": "#87C7E3",
     "type": "Fanatic",
     "description": "Light Blue",
     "comparable": []
@@ -287,7 +287,7 @@
   {
     "id": "ap-26",
     "name": "Arctic Gem",
-    "hex": "#3090D0",
+    "hex": "#1C8BBF",
     "type": "Fanatic",
     "description": "Brilliant Blue",
     "comparable": [
@@ -300,7 +300,7 @@
   {
     "id": "ap-27",
     "name": "Crystal Blue",
-    "hex": "#0083C2",
+    "hex": "#0C69A5",
     "type": "Fanatic",
     "description": "Vivid Blue",
     "comparable": [
@@ -313,7 +313,7 @@
   {
     "id": "ap-28",
     "name": "Royal Blue",
-    "hex": "#00609A",
+    "hex": "#005899",
     "type": "Fanatic",
     "description": "Strong Blue",
     "comparable": [
@@ -326,7 +326,7 @@
   {
     "id": "ap-29",
     "name": "Regal Blue",
-    "hex": "#003070",
+    "hex": "#004675",
     "type": "Fanatic",
     "description": "Deep Blue",
     "comparable": []
@@ -334,7 +334,7 @@
   {
     "id": "ap-30",
     "name": "Imperial Navy",
-    "hex": "#2B4B5F",
+    "hex": "#0D2F4F",
     "type": "Fanatic",
     "description": "Very Deep Blue",
     "comparable": [
@@ -347,7 +347,7 @@
   {
     "id": "ap-31",
     "name": "Deep Ocean Blue",
-    "hex": "#1A4060",
+    "hex": "#202D36",
     "type": "Fanatic",
     "description": "",
     "comparable": [
@@ -360,7 +360,7 @@
   {
     "id": "ap-32",
     "name": "Abyssal Blue",
-    "hex": "#0A3050",
+    "hex": "#00475B",
     "type": "Fanatic",
     "description": "Deep Greenish Blue",
     "comparable": [
@@ -373,7 +373,7 @@
   {
     "id": "ap-33",
     "name": "Phalanx Blue",
-    "hex": "#2070A0",
+    "hex": "#11809E",
     "type": "Fanatic",
     "description": "Strong Greenish Blue",
     "comparable": []
@@ -381,7 +381,7 @@
   {
     "id": "ap-34",
     "name": "Shieldwall Blue",
-    "hex": "#508CBE",
+    "hex": "#229AB9",
     "type": "Fanatic",
     "description": "Greenish Blue",
     "comparable": [
@@ -394,7 +394,7 @@
   {
     "id": "ap-35",
     "name": "Tidal Blue",
-    "hex": "#15999C",
+    "hex": "#006483",
     "type": "Fanatic",
     "description": "Dark Greenish Blue",
     "comparable": [
@@ -407,7 +407,7 @@
   {
     "id": "ap-36",
     "name": "Aegis Aqua",
-    "hex": "#2CA2D9",
+    "hex": "#45ABC3",
     "type": "Fanatic",
     "description": "Light Greenish Blue",
     "comparable": []
@@ -415,7 +415,7 @@
   {
     "id": "ap-37",
     "name": "Marine Mist",
-    "hex": "#39C0C5",
+    "hex": "#94D0C8",
     "type": "Fanatic",
     "description": "Very Light Turquoise",
     "comparable": []
@@ -423,7 +423,7 @@
   {
     "id": "ap-38",
     "name": "Neptune Glow",
-    "hex": "#30B0B8",
+    "hex": "#77C7C6",
     "type": "Fanatic",
     "description": "Light Turquoise",
     "comparable": []
@@ -431,7 +431,7 @@
   {
     "id": "ap-39",
     "name": "Aquamarine",
-    "hex": "#40D0D0",
+    "hex": "#5ABDBE",
     "type": "Fanatic",
     "description": "Brilliant Turquoise",
     "comparable": [
@@ -444,7 +444,7 @@
   {
     "id": "ap-40",
     "name": "Turquoise Siren",
-    "hex": "#00A8A8",
+    "hex": "#39ABAB",
     "type": "Fanatic",
     "description": "Vivid Turquoise",
     "comparable": []
@@ -452,7 +452,7 @@
   {
     "id": "ap-41",
     "name": "Hydra Turquoise",
-    "hex": "#199BA3",
+    "hex": "#208B8A",
     "type": "Fanatic",
     "description": "Strong Turquoise",
     "comparable": [
@@ -465,7 +465,7 @@
   {
     "id": "ap-42",
     "name": "Deep Azure",
-    "hex": "#0A6878",
+    "hex": "#00616A",
     "type": "Fanatic",
     "description": "Deep Turquoise",
     "comparable": [
@@ -478,7 +478,7 @@
   {
     "id": "ap-43",
     "name": "Amulet Aqua",
-    "hex": "#40C0A0",
+    "hex": "#68BEA7",
     "type": "Fanatic",
     "description": "Light Bluish Green",
     "comparable": []
@@ -486,7 +486,7 @@
   {
     "id": "ap-44",
     "name": "Aqua Alchemy",
-    "hex": "#009A82",
+    "hex": "#3BB297",
     "type": "Fanatic",
     "description": "Brilliant Bluish Green",
     "comparable": []
@@ -494,7 +494,7 @@
   {
     "id": "ap-45",
     "name": "Talisman Teal",
-    "hex": "#009870",
+    "hex": "#10A485",
     "type": "Fanatic",
     "description": "Vivid Bluish Green",
     "comparable": []
@@ -502,7 +502,7 @@
   {
     "id": "ap-46",
     "name": "Pharaoh Guard",
-    "hex": "#00726A",
+    "hex": "#007059",
     "type": "Fanatic",
     "description": "Bluish Green",
     "comparable": []
@@ -510,7 +510,7 @@
   {
     "id": "ap-47",
     "name": "Temple Gate Teal",
-    "hex": "#005850",
+    "hex": "#005649",
     "type": "Fanatic",
     "description": "Deep Bluish Green",
     "comparable": [
@@ -523,7 +523,7 @@
   {
     "id": "ap-48",
     "name": "Scarab Green",
-    "hex": "#003830",
+    "hex": "#223638",
     "type": "Fanatic",
     "description": "Dark Bluish Green",
     "comparable": [
@@ -536,7 +536,7 @@
   {
     "id": "ap-49",
     "name": "Ferocious Green",
-    "hex": "#71C591",
+    "hex": "#6FBB73",
     "type": "Fanatic",
     "description": "Very Light Green",
     "comparable": []
@@ -544,7 +544,7 @@
   {
     "id": "ap-50",
     "name": "Wild Green",
-    "hex": "#40B060",
+    "hex": "#45AD56",
     "type": "Fanatic",
     "description": "Light Green",
     "comparable": []
@@ -552,7 +552,7 @@
   {
     "id": "ap-51",
     "name": "Greenskin",
-    "hex": "#136232",
+    "hex": "#236D3F",
     "type": "Fanatic",
     "description": "Green",
     "comparable": [
@@ -565,7 +565,7 @@
   {
     "id": "ap-52",
     "name": "Guardian Green",
-    "hex": "#0A5028",
+    "hex": "#285841",
     "type": "Fanatic",
     "description": "Strong Green",
     "comparable": []
@@ -573,7 +573,7 @@
   {
     "id": "ap-53",
     "name": "Angel Green",
-    "hex": "#0C391D",
+    "hex": "#1F382C",
     "type": "Fanatic",
     "description": "Deep Green",
     "comparable": [
@@ -586,7 +586,7 @@
   {
     "id": "ap-54",
     "name": "Eternal Hunt",
-    "hex": "#003020",
+    "hex": "#329149",
     "type": "Fanatic",
     "description": "Very Dark Green",
     "comparable": [
@@ -599,7 +599,7 @@
   {
     "id": "ap-55",
     "name": "Afterglow",
-    "hex": "#CDDE4A",
+    "hex": "#E2E68B",
     "type": "Fanatic",
     "description": "Very Light Greenish Yellow",
     "comparable": []
@@ -607,7 +607,7 @@
   {
     "id": "ap-56",
     "name": "Vivid Volt",
-    "hex": "#B0E020",
+    "hex": "#CBDA56",
     "type": "Fanatic",
     "description": "Brilliant Greenish Yellow",
     "comparable": []
@@ -615,7 +615,7 @@
   {
     "id": "ap-57",
     "name": "Electric Lime",
-    "hex": "#90D020",
+    "hex": "#B6D038",
     "type": "Fanatic",
     "description": "Light Yellowish Green",
     "comparable": []
@@ -623,7 +623,7 @@
   {
     "id": "ap-58",
     "name": "Rainforest",
-    "hex": "#88AC2E",
+    "hex": "#84BF42",
     "type": "Fanatic",
     "description": "Brilliant Yellowish Green",
     "comparable": [
@@ -636,7 +636,7 @@
   {
     "id": "ap-59",
     "name": "Leafy Green",
-    "hex": "#88AC2E",
+    "hex": "#71B943",
     "type": "Fanatic",
     "description": "Yellowish Green",
     "comparable": []
@@ -644,7 +644,7 @@
   {
     "id": "ap-60",
     "name": "Emerald Forest",
-    "hex": "#8AB239",
+    "hex": "#5AB24C",
     "type": "Fanatic",
     "description": "Vivid Green",
     "comparable": []
@@ -652,7 +652,7 @@
   {
     "id": "ap-61",
     "name": "Mossy Green",
-    "hex": "#A8B8A0",
+    "hex": "#AFD7B7",
     "type": "Fanatic",
     "description": "Very Pale Greyish Green",
     "comparable": []
@@ -660,7 +660,7 @@
   {
     "id": "ap-62",
     "name": "Forest Faun",
-    "hex": "#8A9878",
+    "hex": "#9BC2A3",
     "type": "Fanatic",
     "description": "Pale Greyish Green",
     "comparable": []
@@ -668,7 +668,7 @@
   {
     "id": "ap-63",
     "name": "Autumn Sage",
-    "hex": "#708868",
+    "hex": "#72A58C",
     "type": "Fanatic",
     "description": "Light Greyish Green",
     "comparable": []
@@ -676,7 +676,7 @@
   {
     "id": "ap-64",
     "name": "Patagon Pine",
-    "hex": "#506050",
+    "hex": "#618A75",
     "type": "Fanatic",
     "description": "Greyish Green",
     "comparable": []
@@ -684,7 +684,7 @@
   {
     "id": "ap-65",
     "name": "Medieval Forest",
-    "hex": "#3A4838",
+    "hex": "#447263",
     "type": "Fanatic",
     "description": "Dark Greyish Green",
     "comparable": []
@@ -692,7 +692,7 @@
   {
     "id": "ap-66",
     "name": "Evergreen Fog",
-    "hex": "#2A3828",
+    "hex": "#395B54",
     "type": "Fanatic",
     "description": "Very Dark Greyish Green",
     "comparable": []
@@ -700,7 +700,7 @@
   {
     "id": "ap-67",
     "name": "Grotesque Green",
-    "hex": "#C8CCA0",
+    "hex": "#ACBC95",
     "type": "Fanatic",
     "description": "Very Pale Olive Green",
     "comparable": [
@@ -713,7 +713,7 @@
   {
     "id": "ap-68",
     "name": "Necrotic Flesh",
-    "hex": "#BFC292",
+    "hex": "#95A27C",
     "type": "Fanatic",
     "description": "Pale Olive Green",
     "comparable": [
@@ -726,7 +726,7 @@
   {
     "id": "ap-69",
     "name": "Olive Drab",
-    "hex": "#92963E",
+    "hex": "#74885A",
     "type": "Fanatic",
     "description": "Light Olive Green",
     "comparable": [
@@ -739,7 +739,7 @@
   {
     "id": "ap-70",
     "name": "Camouflage Green",
-    "hex": "#827B39",
+    "hex": "#677A51",
     "type": "Fanatic",
     "description": "Olive Green",
     "comparable": [
@@ -752,7 +752,7 @@
   {
     "id": "ap-71",
     "name": "Army Green",
-    "hex": "#6E7645",
+    "hex": "#576D4C",
     "type": "Fanatic",
     "description": "Strong Olive Green",
     "comparable": [
@@ -765,7 +765,7 @@
   {
     "id": "ap-72",
     "name": "Woodland Camo",
-    "hex": "#495122",
+    "hex": "#455944",
     "type": "Fanatic",
     "description": "Deep Olive Green",
     "comparable": [
@@ -778,7 +778,7 @@
   {
     "id": "ap-73",
     "name": "Urban Buff",
-    "hex": "#D8D0C0",
+    "hex": "#D3B3A2",
     "type": "Fanatic",
     "description": "Very Pale Brown",
     "comparable": []
@@ -786,7 +786,7 @@
   {
     "id": "ap-74",
     "name": "Command Khaki",
-    "hex": "#C0A880",
+    "hex": "#AB8D80",
     "type": "Fanatic",
     "description": "Pale Brown",
     "comparable": [
@@ -799,7 +799,7 @@
   {
     "id": "ap-75",
     "name": "Paratrooper Tan",
-    "hex": "#A08868",
+    "hex": "#8D7064",
     "type": "Fanatic",
     "description": "Light Brown",
     "comparable": [
@@ -812,7 +812,7 @@
   {
     "id": "ap-76",
     "name": "Leather Brown",
-    "hex": "#764823",
+    "hex": "#6F534C",
     "type": "Fanatic",
     "description": "Brown",
     "comparable": [
@@ -825,7 +825,7 @@
   {
     "id": "ap-77",
     "name": "Bootstrap Brown",
-    "hex": "#503020",
+    "hex": "#534746",
     "type": "Fanatic",
     "description": "Deep Brown",
     "comparable": [
@@ -838,7 +838,7 @@
   {
     "id": "ap-78",
     "name": "Brigandine Brown",
-    "hex": "#382820",
+    "hex": "#3C3738",
     "type": "Fanatic",
     "description": "Blackish Brown",
     "comparable": []
@@ -846,7 +846,7 @@
   {
     "id": "ap-79",
     "name": "Barren Dune",
-    "hex": "#D8C8A0",
+    "hex": "#D3B56F",
     "type": "Fanatic",
     "description": "Very Light Yellowish Brown",
     "comparable": [
@@ -859,7 +859,7 @@
   {
     "id": "ap-80",
     "name": "Burnt Turf",
-    "hex": "#B8A068",
+    "hex": "#B39357",
     "type": "Fanatic",
     "description": "Light Yellowish Brown",
     "comparable": []
@@ -867,7 +867,7 @@
   {
     "id": "ap-81",
     "name": "Wasteland Clay",
-    "hex": "#A89060",
+    "hex": "#998151",
     "type": "Fanatic",
     "description": "Yellowish Brown",
     "comparable": []
@@ -875,7 +875,7 @@
   {
     "id": "ap-82",
     "name": "Desert Yellow",
-    "hex": "#C7952C",
+    "hex": "#776742",
     "type": "Fanatic",
     "description": "Strong Yellowish Brown",
     "comparable": [
@@ -888,7 +888,7 @@
   {
     "id": "ap-83",
     "name": "Prairie Ochre",
-    "hex": "#A88040",
+    "hex": "#5D5B3E",
     "type": "Fanatic",
     "description": "Dark Yellowish Brown",
     "comparable": [
@@ -901,7 +901,7 @@
   {
     "id": "ap-84",
     "name": "Tundra Taupe",
-    "hex": "#706848",
+    "hex": "#44493A",
     "type": "Fanatic",
     "description": "Deep Olive Brown",
     "comparable": [
@@ -914,7 +914,7 @@
   {
     "id": "ap-85",
     "name": "Pale Sand",
-    "hex": "#E8E0C8",
+    "hex": "#EFE6CE",
     "type": "Fanatic",
     "description": "Yellowish White",
     "comparable": [
@@ -927,7 +927,7 @@
   {
     "id": "ap-86",
     "name": "Bony Spikes",
-    "hex": "#D8D0A8",
+    "hex": "#E3D1B9",
     "type": "Fanatic",
     "description": "Very Pale Yellowish Brown",
     "comparable": [
@@ -940,7 +940,7 @@
   {
     "id": "ap-87",
     "name": "Ancient Stone",
-    "hex": "#C0B890",
+    "hex": "#C9BE9D",
     "type": "Fanatic",
     "description": "Pale Olive Brown",
     "comparable": []
@@ -948,7 +948,7 @@
   {
     "id": "ap-88",
     "name": "Skeleton Bone",
-    "hex": "#D3C89D",
+    "hex": "#B7AB8B",
     "type": "Fanatic",
     "description": "Light Olive Brown",
     "comparable": [
@@ -961,7 +961,7 @@
   {
     "id": "ap-89",
     "name": "Tomb King Tan",
-    "hex": "#B0A078",
+    "hex": "#98886F",
     "type": "Fanatic",
     "description": "Greyish Olive Brown",
     "comparable": [
@@ -974,7 +974,7 @@
   {
     "id": "ap-90",
     "name": "Dusty Skull",
-    "hex": "#908060",
+    "hex": "#7E725F",
     "type": "Fanatic",
     "description": "Strong Olive Brown",
     "comparable": [
@@ -987,7 +987,7 @@
   {
     "id": "ap-91",
     "name": "Ice Yellow",
-    "hex": "#F8F0B0",
+    "hex": "#FFEDA9",
     "type": "Fanatic",
     "description": "Very Light Yellow",
     "comparable": [
@@ -1000,7 +1000,7 @@
   {
     "id": "ap-92",
     "name": "Space Dust",
-    "hex": "#F0E868",
+    "hex": "#FEE185",
     "type": "Fanatic",
     "description": "Light Yellow",
     "comparable": [
@@ -1013,7 +1013,7 @@
   {
     "id": "ap-93",
     "name": "Warped Yellow",
-    "hex": "#F8D830",
+    "hex": "#FCD151",
     "type": "Fanatic",
     "description": "Brilliant Orange Yellow",
     "comparable": [
@@ -1026,7 +1026,7 @@
   {
     "id": "ap-94",
     "name": "Daemonic Yellow",
-    "hex": "#FADA06",
+    "hex": "#F9C93A",
     "type": "Fanatic",
     "description": "Orange Yellow",
     "comparable": []
@@ -1034,7 +1034,7 @@
   {
     "id": "ap-95",
     "name": "Fiendish Yellow",
-    "hex": "#E8C020",
+    "hex": "#E2944B",
     "type": "Fanatic",
     "description": "Strong Orange Yellow",
     "comparable": [
@@ -1047,7 +1047,7 @@
   {
     "id": "ap-96",
     "name": "Demigod Flames",
-    "hex": "#D0A010",
+    "hex": "#C57444",
     "type": "Fanatic",
     "description": "Deep Orange Yellow",
     "comparable": [
@@ -1060,7 +1060,7 @@
   {
     "id": "ap-97",
     "name": "Inner Light",
-    "hex": "#F0D060",
+    "hex": "#F9C662",
     "type": "Fanatic",
     "description": "Light Orange Yellow",
     "comparable": []
@@ -1068,7 +1068,7 @@
   {
     "id": "ap-98",
     "name": "Glowing Inferno",
-    "hex": "#F0A020",
+    "hex": "#ED9549",
     "type": "Fanatic",
     "description": "Brilliant Orange",
     "comparable": []
@@ -1076,7 +1076,7 @@
   {
     "id": "ap-99",
     "name": "Flickering Flame",
-    "hex": "#F08020",
+    "hex": "#E98443",
     "type": "Fanatic",
     "description": "Vivid Orange",
     "comparable": [
@@ -1089,7 +1089,7 @@
   {
     "id": "ap-100",
     "name": "Lava Orange",
-    "hex": "#E65525",
+    "hex": "#E57131",
     "type": "Fanatic",
     "description": "Orange",
     "comparable": []
@@ -1097,7 +1097,7 @@
   {
     "id": "ap-101",
     "name": "Burning Ore",
-    "hex": "#D04020",
+    "hex": "#E15F40",
     "type": "Fanatic",
     "description": "Vivid Reddish Orange",
     "comparable": []
@@ -1105,7 +1105,7 @@
   {
     "id": "ap-102",
     "name": "Molten Lava",
-    "hex": "#C03010",
+    "hex": "#E05441",
     "type": "Fanatic",
     "description": "Strong Reddish Orange",
     "comparable": []
@@ -1113,7 +1113,7 @@
   {
     "id": "ap-103",
     "name": "Raging Rouge",
-    "hex": "#F0A0A0",
+    "hex": "#E9897B",
     "type": "Fanatic",
     "description": "Very Pale Red",
     "comparable": []
@@ -1121,7 +1121,7 @@
   {
     "id": "ap-104",
     "name": "Violent Vermillion",
-    "hex": "#E07070",
+    "hex": "#E5745F",
     "type": "Fanatic",
     "description": "Pale Red",
     "comparable": []
@@ -1129,7 +1129,7 @@
   {
     "id": "ap-105",
     "name": "Sacred Scarlet",
-    "hex": "#E04030",
+    "hex": "#E15E4A",
     "type": "Fanatic",
     "description": "Light Reddish Orange",
     "comparable": []
@@ -1137,7 +1137,7 @@
   {
     "id": "ap-106",
     "name": "Legendary Red",
-    "hex": "#D03020",
+    "hex": "#DE4740",
     "type": "Fanatic",
     "description": "Reddish Orange",
     "comparable": [
@@ -1150,7 +1150,7 @@
   {
     "id": "ap-107",
     "name": "Angelic Red",
-    "hex": "#C02020",
+    "hex": "#C3313B",
     "type": "Fanatic",
     "description": "Strong Red",
     "comparable": [
@@ -1163,7 +1163,7 @@
   {
     "id": "ap-108",
     "name": "Resplendent Red",
-    "hex": "#901010",
+    "hex": "#822A2E",
     "type": "Fanatic",
     "description": "Dark Red",
     "comparable": []
@@ -1171,7 +1171,7 @@
   {
     "id": "ap-109",
     "name": "Buffed Hide",
-    "hex": "#D8B898",
+    "hex": "#A67062",
     "type": "Fanatic",
     "description": "Very Light Reddish Brown",
     "comparable": [
@@ -1184,7 +1184,7 @@
   {
     "id": "ap-110",
     "name": "Ruddy Umber",
-    "hex": "#B87050",
+    "hex": "#87554B",
     "type": "Fanatic",
     "description": "Light Reddish Brown",
     "comparable": []
@@ -1192,7 +1192,7 @@
   {
     "id": "ap-111",
     "name": "Fur Brown",
-    "hex": "#A14322",
+    "hex": "#6A3F3E",
     "type": "Fanatic",
     "description": "Reddish Brown",
     "comparable": []
@@ -1200,7 +1200,7 @@
   {
     "id": "ap-112",
     "name": "Dryad Brown",
-    "hex": "#803020",
+    "hex": "#53342E",
     "type": "Fanatic",
     "description": "Strong Reddish Brown",
     "comparable": [
@@ -1213,7 +1213,7 @@
   {
     "id": "ap-113",
     "name": "Tree Ancient",
-    "hex": "#602818",
+    "hex": "#43312D",
     "type": "Fanatic",
     "description": "Dark Reddish Brown",
     "comparable": []
@@ -1221,7 +1221,7 @@
   {
     "id": "ap-114",
     "name": "Oak Brown",
-    "hex": "#432010",
+    "hex": "#2F2626",
     "type": "Fanatic",
     "description": "Very Dark Reddish Brown",
     "comparable": []
@@ -1229,7 +1229,7 @@
   {
     "id": "ap-115",
     "name": "Raging Rose",
-    "hex": "#E89088",
+    "hex": "#DA615C",
     "type": "Fanatic",
     "description": "Light Red",
     "comparable": [
@@ -1242,7 +1242,7 @@
   {
     "id": "ap-116",
     "name": "Blood Chalice",
-    "hex": "#E03030",
+    "hex": "#C8484B",
     "type": "Fanatic",
     "description": "Brilliant Red",
     "comparable": []
@@ -1250,7 +1250,7 @@
   {
     "id": "ap-117",
     "name": "Pure Red",
-    "hex": "#CF2127",
+    "hex": "#BA2129",
     "type": "Fanatic",
     "description": "Red",
     "comparable": [
@@ -1263,7 +1263,7 @@
   {
     "id": "ap-118",
     "name": "Dragon Red",
-    "hex": "#9A1B1E",
+    "hex": "#AC2D3A",
     "type": "Fanatic",
     "description": "Vivid Purplish Red",
     "comparable": [
@@ -1276,7 +1276,7 @@
   {
     "id": "ap-119",
     "name": "Wyvern Fury",
-    "hex": "#781018",
+    "hex": "#86313D",
     "type": "Fanatic",
     "description": "Deep Purplish Red",
     "comparable": [
@@ -1289,7 +1289,7 @@
   {
     "id": "ap-120",
     "name": "Basilisk Red",
-    "hex": "#500810",
+    "hex": "#5B2733",
     "type": "Fanatic",
     "description": "Dark Purplish Red",
     "comparable": []
@@ -1297,7 +1297,7 @@
   {
     "id": "ap-121",
     "name": "Doomfire Drab",
-    "hex": "#F0C8C0",
+    "hex": "#F7D6DF",
     "type": "Fanatic",
     "description": "Very Light Pink",
     "comparable": []
@@ -1305,7 +1305,7 @@
   {
     "id": "ap-122",
     "name": "Pink Potion",
-    "hex": "#E8A0B0",
+    "hex": "#EFB4C9",
     "type": "Fanatic",
     "description": "Light Pink",
     "comparable": []
@@ -1313,7 +1313,7 @@
   {
     "id": "ap-123",
     "name": "Weird Elixir",
-    "hex": "#E088A0",
+    "hex": "#D68BB1",
     "type": "Fanatic",
     "description": "Brilliant Pink",
     "comparable": []
@@ -1321,7 +1321,7 @@
   {
     "id": "ap-124",
     "name": "Pixie Pink",
-    "hex": "#D47A83",
+    "hex": "#CA699C",
     "type": "Fanatic",
     "description": "Pink",
     "comparable": [
@@ -1334,7 +1334,7 @@
   {
     "id": "ap-125",
     "name": "Impish Rouge",
-    "hex": "#C06070",
+    "hex": "#C95291",
     "type": "Fanatic",
     "description": "Vivid Pink",
     "comparable": []
@@ -1342,7 +1342,7 @@
   {
     "id": "ap-126",
     "name": "Wicked Pink",
-    "hex": "#B04060",
+    "hex": "#BA1776",
     "type": "Fanatic",
     "description": "Strong Pink",
     "comparable": [
@@ -1355,7 +1355,7 @@
   {
     "id": "ap-127",
     "name": "Kraken Lavender",
-    "hex": "#C0A8D0",
+    "hex": "#D1C6D8",
     "type": "Fanatic",
     "description": "Pale Violet",
     "comparable": []
@@ -1363,7 +1363,7 @@
   {
     "id": "ap-128",
     "name": "Violet Coven",
-    "hex": "#9080B0",
+    "hex": "#A392B9",
     "type": "Fanatic",
     "description": "Light Violet",
     "comparable": []
@@ -1371,7 +1371,7 @@
   {
     "id": "ap-129",
     "name": "Hexed Violet",
-    "hex": "#706090",
+    "hex": "#8679AC",
     "type": "Fanatic",
     "description": "Violet",
     "comparable": [
@@ -1384,7 +1384,7 @@
   {
     "id": "ap-130",
     "name": "Cultist Purple",
-    "hex": "#604080",
+    "hex": "#645C98",
     "type": "Fanatic",
     "description": "Strong Violet",
     "comparable": [
@@ -1397,7 +1397,7 @@
   {
     "id": "ap-131",
     "name": "Alien Purple",
-    "hex": "#50317B",
+    "hex": "#584E8F",
     "type": "Fanatic",
     "description": "Deep Violet",
     "comparable": [
@@ -1410,7 +1410,7 @@
   {
     "id": "ap-132",
     "name": "Terrestrial Titan",
-    "hex": "#302050",
+    "hex": "#2C2D3C",
     "type": "Fanatic",
     "description": "Dark Violet",
     "comparable": [
@@ -1423,7 +1423,7 @@
   {
     "id": "ap-133",
     "name": "Diviner Light",
-    "hex": "#D0B0D0",
+    "hex": "#CA97B8",
     "type": "Fanatic",
     "description": "Pale Reddish Purple",
     "comparable": []
@@ -1431,7 +1431,7 @@
   {
     "id": "ap-134",
     "name": "Enchanted Pink",
-    "hex": "#C090C0",
+    "hex": "#A8649A",
     "type": "Fanatic",
     "description": "Light Reddish Purple",
     "comparable": [
@@ -1444,7 +1444,7 @@
   {
     "id": "ap-135",
     "name": "Spellbound Fuchsia",
-    "hex": "#B050A0",
+    "hex": "#A04B8C",
     "type": "Fanatic",
     "description": "Vivid Reddish Purple",
     "comparable": []
@@ -1452,7 +1452,7 @@
   {
     "id": "ap-136",
     "name": "Warlock Magenta",
-    "hex": "#A03090",
+    "hex": "#78478A",
     "type": "Fanatic",
     "description": "Vivid Purple",
     "comparable": []
@@ -1460,7 +1460,7 @@
   {
     "id": "ap-137",
     "name": "Magecast Magenta",
-    "hex": "#802070",
+    "hex": "#663B83",
     "type": "Fanatic",
     "description": "Strong Purple",
     "comparable": [
@@ -1473,7 +1473,7 @@
   {
     "id": "ap-138",
     "name": "Diabolic Plum",
-    "hex": "#501848",
+    "hex": "#4C2B5E",
     "type": "Fanatic",
     "description": "Deep Purple",
     "comparable": []
@@ -1481,7 +1481,7 @@
   {
     "id": "ap-139",
     "name": "Wilted Rose",
-    "hex": "#D8B0B8",
+    "hex": "#E5C0CD",
     "type": "Fanatic",
     "description": "Very Pale Purplish Red",
     "comparable": []
@@ -1489,7 +1489,7 @@
   {
     "id": "ap-140",
     "name": "Figgy Pink",
-    "hex": "#D090A0",
+    "hex": "#DAA9BA",
     "type": "Fanatic",
     "description": "Pale Purplish Red",
     "comparable": [
@@ -1502,7 +1502,7 @@
   {
     "id": "ap-141",
     "name": "Forbidden Fruit",
-    "hex": "#C07088",
+    "hex": "#C28399",
     "type": "Fanatic",
     "description": "Light Purplish Red",
     "comparable": []
@@ -1510,7 +1510,7 @@
   {
     "id": "ap-142",
     "name": "Elder Flower",
-    "hex": "#A05070",
+    "hex": "#9A546F",
     "type": "Fanatic",
     "description": "Purplish Red",
     "comparable": []
@@ -1518,7 +1518,7 @@
   {
     "id": "ap-143",
     "name": "Moldy Wine",
-    "hex": "#803050",
+    "hex": "#6C3246",
     "type": "Fanatic",
     "description": "Deep Purplish Red",
     "comparable": [
@@ -1531,7 +1531,7 @@
   {
     "id": "ap-144",
     "name": "Mulled Berry",
-    "hex": "#602040",
+    "hex": "#53313E",
     "type": "Fanatic",
     "description": "Dark Purplish Red",
     "comparable": []
@@ -1539,7 +1539,7 @@
   {
     "id": "ap-145",
     "name": "Pearl Skin",
-    "hex": "#F0E8E0",
+    "hex": "#FCDFD1",
     "type": "Fanatic",
     "description": "White Yellowish Pink",
     "comparable": []
@@ -1547,7 +1547,7 @@
   {
     "id": "ap-146",
     "name": "Opal Skin",
-    "hex": "#F0D8C8",
+    "hex": "#F7CFBD",
     "type": "Fanatic",
     "description": "Very Light Yellowish Pink",
     "comparable": []
@@ -1555,7 +1555,7 @@
   {
     "id": "ap-147",
     "name": "Ruby Skin",
-    "hex": "#E8C0A8",
+    "hex": "#F1B298",
     "type": "Fanatic",
     "description": "Light Yellowish Pink",
     "comparable": [
@@ -1568,7 +1568,7 @@
   {
     "id": "ap-148",
     "name": "Barbarian Flesh",
-    "hex": "#E89C6C",
+    "hex": "#EB947A",
     "type": "Fanatic",
     "description": "Yellowish Pink",
     "comparable": [
@@ -1581,7 +1581,7 @@
   {
     "id": "ap-149",
     "name": "Agate Skin",
-    "hex": "#D08060",
+    "hex": "#CB7F74",
     "type": "Fanatic",
     "description": "Strong Yellowish Pink",
     "comparable": [
@@ -1594,7 +1594,7 @@
   {
     "id": "ap-150",
     "name": "Moonstone Skin",
-    "hex": "#B06848",
+    "hex": "#B9746B",
     "type": "Fanatic",
     "description": "Deep Yellowish Pink",
     "comparable": []
@@ -1602,7 +1602,7 @@
   {
     "id": "ap-151",
     "name": "Leopard Stone Skin",
-    "hex": "#C8A090",
+    "hex": "#E1B0A9",
     "type": "Fanatic",
     "description": "Pale Brownish Pink",
     "comparable": []
@@ -1610,7 +1610,7 @@
   {
     "id": "ap-152",
     "name": "Tourmaline Skin",
-    "hex": "#B88878",
+    "hex": "#D89484",
     "type": "Fanatic",
     "description": "Light Brownish Pink",
     "comparable": []
@@ -1618,7 +1618,7 @@
   {
     "id": "ap-153",
     "name": "Jasper Skin",
-    "hex": "#A07060",
+    "hex": "#AE706C",
     "type": "Fanatic",
     "description": "Brownish Pink",
     "comparable": [
@@ -1631,7 +1631,7 @@
   {
     "id": "ap-154",
     "name": "Topaz Skin",
-    "hex": "#885040",
+    "hex": "#A4554E",
     "type": "Fanatic",
     "description": "Brownish Red",
     "comparable": []
@@ -1639,7 +1639,7 @@
   {
     "id": "ap-155",
     "name": "Tiger's Eye Skin",
-    "hex": "#704030",
+    "hex": "#81484A",
     "type": "Fanatic",
     "description": "Dark Brownish Red",
     "comparable": []
@@ -1647,7 +1647,7 @@
   {
     "id": "ap-156",
     "name": "Carnelian Skin",
-    "hex": "#583028",
+    "hex": "#523B3E",
     "type": "Fanatic",
     "description": "Deep Brownish Red",
     "comparable": []
@@ -1655,7 +1655,7 @@
   {
     "id": "ap-157",
     "name": "Quartz Skin",
-    "hex": "#D8C8A8",
+    "hex": "#EBCDAC",
     "type": "Fanatic",
     "description": "Very Light Yellowish Brown",
     "comparable": []
@@ -1663,7 +1663,7 @@
   {
     "id": "ap-158",
     "name": "Dorado Skin",
-    "hex": "#C0A880",
+    "hex": "#E7C498",
     "type": "Fanatic",
     "description": "Light Yellowish Brown",
     "comparable": [
@@ -1676,7 +1676,7 @@
   {
     "id": "ap-159",
     "name": "Amber Skin",
-    "hex": "#A08860",
+    "hex": "#B99A7C",
     "type": "Fanatic",
     "description": "Yellowish Brown",
     "comparable": [
@@ -1689,7 +1689,7 @@
   {
     "id": "ap-160",
     "name": "Mocca Skin",
-    "hex": "#807060",
+    "hex": "#775E52",
     "type": "Fanatic",
     "description": "Greyish Brown",
     "comparable": [
@@ -1702,7 +1702,7 @@
   {
     "id": "ap-161",
     "name": "Onyx Skin",
-    "hex": "#605048",
+    "hex": "#594542",
     "type": "Fanatic",
     "description": "Dark Greyish Brown",
     "comparable": [
@@ -1715,7 +1715,7 @@
   {
     "id": "ap-162",
     "name": "Obsidian Skin",
-    "hex": "#403830",
+    "hex": "#413C3E",
     "type": "Fanatic",
     "description": "Brownish Black",
     "comparable": []
@@ -1723,7 +1723,7 @@
   {
     "id": "ap-163",
     "name": "Rough Iron",
-    "hex": "#4A4040",
+    "hex": "#231F19",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": [
@@ -1736,7 +1736,7 @@
   {
     "id": "ap-164",
     "name": "Red Copper",
-    "hex": "#8A4830",
+    "hex": "#5B3736",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": []
@@ -1744,7 +1744,7 @@
   {
     "id": "ap-165",
     "name": "Weapon Bronze",
-    "hex": "#8A7050",
+    "hex": "#8F541C",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": [
@@ -1757,7 +1757,7 @@
   {
     "id": "ap-166",
     "name": "True Copper",
-    "hex": "#A06840",
+    "hex": "#7A5039",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": [
@@ -1770,7 +1770,7 @@
   {
     "id": "ap-167",
     "name": "Evil Chrome",
-    "hex": "#B0A890",
+    "hex": "#654435",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": [
@@ -1783,7 +1783,7 @@
   {
     "id": "ap-168",
     "name": "True Brass",
-    "hex": "#B89040",
+    "hex": "#6E695B",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": [
@@ -1796,7 +1796,7 @@
   {
     "id": "ap-169",
     "name": "Tainted Gold",
-    "hex": "#A89050",
+    "hex": "#605C3B",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": []
@@ -1804,7 +1804,7 @@
   {
     "id": "ap-170",
     "name": "Greedy Gold",
-    "hex": "#D0A838",
+    "hex": "#996B29",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": [
@@ -1817,7 +1817,7 @@
   {
     "id": "ap-171",
     "name": "Bright Gold",
-    "hex": "#E8C060",
+    "hex": "#876C23",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": [
@@ -1830,7 +1830,7 @@
   {
     "id": "ap-172",
     "name": "Mithril",
-    "hex": "#C8D0D0",
+    "hex": "#A0A19E",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": []
@@ -1838,7 +1838,7 @@
   {
     "id": "ap-173",
     "name": "Shining Silver",
-    "hex": "#C0C8D0",
+    "hex": "#767776",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": [
@@ -1851,7 +1851,7 @@
   {
     "id": "ap-174",
     "name": "Plate Mail Metal",
-    "hex": "#A8B0B8",
+    "hex": "#545554",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": [
@@ -1864,7 +1864,7 @@
   {
     "id": "ap-175",
     "name": "Gun Metal",
-    "hex": "#707880",
+    "hex": "#404140",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": [
@@ -1877,7 +1877,7 @@
   {
     "id": "ap-176",
     "name": "Cobalt Metal",
-    "hex": "#8898A0",
+    "hex": "#2C3E3D",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": [
@@ -1890,7 +1890,7 @@
   {
     "id": "ap-177",
     "name": "Death Metal",
-    "hex": "#383838",
+    "hex": "#202120",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": []
@@ -1898,7 +1898,7 @@
   {
     "id": "ap-178",
     "name": "Dark Emerald",
-    "hex": "#205038",
+    "hex": "#354123",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": []
@@ -1906,7 +1906,7 @@
   {
     "id": "ap-179",
     "name": "Glittering Green",
-    "hex": "#40A050",
+    "hex": "#2D6D42",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": []
@@ -1914,7 +1914,7 @@
   {
     "id": "ap-180",
     "name": "Gemstone Red",
-    "hex": "#A01020",
+    "hex": "#621B20",
     "type": "Fanatic Metallic",
     "description": "",
     "comparable": []
@@ -1922,7 +1922,7 @@
   {
     "id": "ap-181",
     "name": "Dark Tone",
-    "hex": "#2B2B2B",
+    "hex": "#141413",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": [
@@ -1935,7 +1935,7 @@
   {
     "id": "ap-182",
     "name": "Strong Tone",
-    "hex": "#63452A",
+    "hex": "#1A1511",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": [
@@ -1948,7 +1948,7 @@
   {
     "id": "ap-183",
     "name": "Soft Tone",
-    "hex": "#D7A94B",
+    "hex": "#34261B",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": [
@@ -1961,7 +1961,7 @@
   {
     "id": "ap-184",
     "name": "Light Tone",
-    "hex": "#E0D8C0",
+    "hex": "#4E3312",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": []
@@ -1969,7 +1969,7 @@
   {
     "id": "ap-185",
     "name": "Sepia Tone",
-    "hex": "#C8A050",
+    "hex": "#462813",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": []
@@ -1977,7 +1977,7 @@
   {
     "id": "ap-186",
     "name": "Rust Tone",
-    "hex": "#A85020",
+    "hex": "#2A1B10",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": []
@@ -1985,7 +1985,7 @@
   {
     "id": "ap-187",
     "name": "Dark Red Tone",
-    "hex": "#6B1020",
+    "hex": "#1B0F12",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": [
@@ -1998,7 +1998,7 @@
   {
     "id": "ap-188",
     "name": "Red Tone",
-    "hex": "#A83040",
+    "hex": "#311418",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": [
@@ -2011,7 +2011,7 @@
   {
     "id": "ap-189",
     "name": "Orange Tone",
-    "hex": "#C87028",
+    "hex": "#421F11",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": [
@@ -2024,7 +2024,7 @@
   {
     "id": "ap-190",
     "name": "Green Tone",
-    "hex": "#1B7D3F",
+    "hex": "#152218",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": [
@@ -2037,7 +2037,7 @@
   {
     "id": "ap-191",
     "name": "Military Shade",
-    "hex": "#6B6B2E",
+    "hex": "#1C1F12",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": [
@@ -2050,7 +2050,7 @@
   {
     "id": "ap-192",
     "name": "Blue Tone",
-    "hex": "#2B4B6F",
+    "hex": "#15212E",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": [
@@ -2063,7 +2063,7 @@
   {
     "id": "ap-193",
     "name": "Dark Blue Tone",
-    "hex": "#182848",
+    "hex": "#12161B",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": []
@@ -2071,7 +2071,7 @@
   {
     "id": "ap-194",
     "name": "Purple Tone",
-    "hex": "#6B395F",
+    "hex": "#201825",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": [
@@ -2084,7 +2084,7 @@
   {
     "id": "ap-195",
     "name": "Magenta Tone",
-    "hex": "#803060",
+    "hex": "#400625",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": []
@@ -2092,7 +2092,7 @@
   {
     "id": "ap-196",
     "name": "Strong Skin Shade",
-    "hex": "#CA6C4D",
+    "hex": "#1E1413",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": [
@@ -2105,7 +2105,7 @@
   {
     "id": "ap-197",
     "name": "Dark Skin Shade",
-    "hex": "#8A4830",
+    "hex": "#1F1A19",
     "type": "Fanatic Wash",
     "description": "",
     "comparable": []
@@ -2113,7 +2113,7 @@
   {
     "id": "ap-198",
     "name": "Grim Black",
-    "hex": "#1A1A1A",
+    "hex": "#000000",
     "type": "Speedpaint",
     "description": "Black",
     "comparable": []
@@ -2121,7 +2121,7 @@
   {
     "id": "ap-199",
     "name": "Occultist Cloak",
-    "hex": "#302048",
+    "hex": "#303142",
     "type": "Speedpaint",
     "description": "Blackish Blue Grey",
     "comparable": []
@@ -2129,7 +2129,7 @@
   {
     "id": "ap-200",
     "name": "Gravelord Grey",
-    "hex": "#606060",
+    "hex": "#45484F",
     "type": "Speedpaint",
     "description": "Grey",
     "comparable": []
@@ -2137,7 +2137,7 @@
   {
     "id": "ap-201",
     "name": "Holy White",
-    "hex": "#F0F0F0",
+    "hex": "#EDEDED",
     "type": "Speedpaint",
     "description": "Greyish White",
     "comparable": []
@@ -2145,7 +2145,7 @@
   {
     "id": "ap-202",
     "name": "Blinding Light",
-    "hex": "#FAFAE8",
+    "hex": "#FFFFFF",
     "type": "Speedpaint",
     "description": "White",
     "comparable": []
@@ -2153,7 +2153,7 @@
   {
     "id": "ap-203",
     "name": "Murder Scene",
-    "hex": "#6B0810",
+    "hex": "#71293C",
     "type": "Speedpaint",
     "description": "Black Purplish Red",
     "comparable": []
@@ -2161,7 +2161,7 @@
   {
     "id": "ap-204",
     "name": "Slaughter Red",
-    "hex": "#A01018",
+    "hex": "#A01526",
     "type": "Speedpaint",
     "description": "Deep Red",
     "comparable": []
@@ -2169,7 +2169,7 @@
   {
     "id": "ap-205",
     "name": "Blood Red",
-    "hex": "#C01820",
+    "hex": "#E63413",
     "type": "Speedpaint",
     "description": "Strong Red",
     "comparable": []
@@ -2177,7 +2177,7 @@
   {
     "id": "ap-206",
     "name": "Poppy Red",
-    "hex": "#D83028",
+    "hex": "#CD493E",
     "type": "Speedpaint",
     "description": "Brilliant Red",
     "comparable": []
@@ -2185,7 +2185,7 @@
   {
     "id": "ap-207",
     "name": "Bright Red",
-    "hex": "#E02020",
+    "hex": "#EA5D41",
     "type": "Speedpaint",
     "description": "Reddish Orange",
     "comparable": []
@@ -2193,7 +2193,7 @@
   {
     "id": "ap-208",
     "name": "Maize Yellow",
-    "hex": "#E8C030",
+    "hex": "#FEDE15",
     "type": "Speedpaint",
     "description": "Vivid Yellow",
     "comparable": []
@@ -2201,7 +2201,7 @@
   {
     "id": "ap-209",
     "name": "Ancient Honey",
-    "hex": "#D0A030",
+    "hex": "#F4C71D",
     "type": "Speedpaint",
     "description": "Yellow",
     "comparable": []
@@ -2209,7 +2209,7 @@
   {
     "id": "ap-210",
     "name": "Zealot Yellow",
-    "hex": "#F8D010",
+    "hex": "#FFDB00",
     "type": "Speedpaint",
     "description": "Orange Yellow",
     "comparable": []
@@ -2217,7 +2217,7 @@
   {
     "id": "ap-211",
     "name": "Sand Golem",
-    "hex": "#B89858",
+    "hex": "#D39C0C",
     "type": "Speedpaint",
     "description": "Deep Orange",
     "comparable": []
@@ -2225,7 +2225,7 @@
   {
     "id": "ap-212",
     "name": "Nuclear Sunrise",
-    "hex": "#F8A020",
+    "hex": "#EE7227",
     "type": "Speedpaint",
     "description": "Vivid Orange",
     "comparable": []
@@ -2233,7 +2233,7 @@
   {
     "id": "ap-213",
     "name": "Fire Giant Orange",
-    "hex": "#E86020",
+    "hex": "#F07D27",
     "type": "Speedpaint",
     "description": "Light Orange",
     "comparable": []
@@ -2241,7 +2241,7 @@
   {
     "id": "ap-214",
     "name": "Aged Hide",
-    "hex": "#987858",
+    "hex": "#DD7154",
     "type": "Speedpaint",
     "description": "Pale Yellowish Pink",
     "comparable": []
@@ -2249,7 +2249,7 @@
   {
     "id": "ap-215",
     "name": "Peachy Flesh",
-    "hex": "#F0B090",
+    "hex": "#F5AC6F",
     "type": "Speedpaint",
     "description": "Light Yellowish Pink",
     "comparable": []
@@ -2257,7 +2257,7 @@
   {
     "id": "ap-216",
     "name": "Crusader Skin",
-    "hex": "#E0A078",
+    "hex": "#F4A262",
     "type": "Speedpaint",
     "description": "Pale Reddish Brown",
     "comparable": []
@@ -2265,7 +2265,7 @@
   {
     "id": "ap-217",
     "name": "Fire Drake",
-    "hex": "#D05010",
+    "hex": "#DB9972",
     "type": "Speedpaint",
     "description": "Brownish Orange",
     "comparable": []
@@ -2273,7 +2273,7 @@
   {
     "id": "ap-218",
     "name": "Bony Matter",
-    "hex": "#D8C8A0",
+    "hex": "#BC9979",
     "type": "Speedpaint",
     "description": "Pale Brown",
     "comparable": []
@@ -2281,7 +2281,7 @@
   {
     "id": "ap-219",
     "name": "Pallid Bone",
-    "hex": "#E8D8B8",
+    "hex": "#EBD69E",
     "type": "Speedpaint",
     "description": "Pale Yellowish Brown",
     "comparable": []
@@ -2289,7 +2289,7 @@
   {
     "id": "ap-220",
     "name": "Howling Sand",
-    "hex": "#C8B078",
+    "hex": "#D6D9BE",
     "type": "Speedpaint",
     "description": "Pale Yellowish Grey",
     "comparable": []
@@ -2297,7 +2297,7 @@
   {
     "id": "ap-221",
     "name": "Burnt Moss",
-    "hex": "#506030",
+    "hex": "#4D5D54",
     "type": "Speedpaint",
     "description": "Blackish Green Grey",
     "comparable": []
@@ -2305,7 +2305,7 @@
   {
     "id": "ap-222",
     "name": "Gunner Camo",
-    "hex": "#687840",
+    "hex": "#204B29",
     "type": "Speedpaint",
     "description": "Dark Greyish Green",
     "comparable": []
@@ -2313,7 +2313,7 @@
   {
     "id": "ap-223",
     "name": "Absolution Green",
-    "hex": "#184028",
+    "hex": "#4AB06A",
     "type": "Speedpaint",
     "description": "Deep Green",
     "comparable": []
@@ -2321,7 +2321,7 @@
   {
     "id": "ap-224",
     "name": "Orc Skin",
-    "hex": "#508830",
+    "hex": "#355446",
     "type": "Speedpaint",
     "description": "Strong Green",
     "comparable": []
@@ -2329,7 +2329,7 @@
   {
     "id": "ap-225",
     "name": "Mummified Grime",
-    "hex": "#786840",
+    "hex": "#696B4C",
     "type": "Speedpaint",
     "description": "Greenish Grey",
     "comparable": []
@@ -2337,7 +2337,7 @@
   {
     "id": "ap-226",
     "name": "Camo Cloak",
-    "hex": "#607038",
+    "hex": "#74A74A",
     "type": "Speedpaint",
     "description": "Greyish Green",
     "comparable": []
@@ -2345,7 +2345,7 @@
   {
     "id": "ap-227",
     "name": "Shamrock Green",
-    "hex": "#208038",
+    "hex": "#2D8429",
     "type": "Speedpaint",
     "description": "Vivid Green",
     "comparable": []
@@ -2353,7 +2353,7 @@
   {
     "id": "ap-228",
     "name": "Ghoul Green",
-    "hex": "#30A858",
+    "hex": "#6AC0A3",
     "type": "Speedpaint",
     "description": "Brilliant Green",
     "comparable": []
@@ -2361,7 +2361,7 @@
   {
     "id": "ap-229",
     "name": "Forest Sprite",
-    "hex": "#306828",
+    "hex": "#66B330",
     "type": "Speedpaint",
     "description": "Yellowish Green",
     "comparable": []
@@ -2369,7 +2369,7 @@
   {
     "id": "ap-230",
     "name": "Brownish Decay",
-    "hex": "#685840",
+    "hex": "#807033",
     "type": "Speedpaint",
     "description": "Strong Yellowish Brown",
     "comparable": []
@@ -2377,7 +2377,7 @@
   {
     "id": "ap-231",
     "name": "Desolate Brown",
-    "hex": "#604028",
+    "hex": "#7D753D",
     "type": "Speedpaint",
     "description": "Olive",
     "comparable": []
@@ -2385,7 +2385,7 @@
   {
     "id": "ap-232",
     "name": "Algae Green",
-    "hex": "#488848",
+    "hex": "#5E773F",
     "type": "Speedpaint",
     "description": "Light Olive Green",
     "comparable": []
@@ -2393,7 +2393,7 @@
   {
     "id": "ap-233",
     "name": "Ghillie Dew",
-    "hex": "#78A850",
+    "hex": "#A2B259",
     "type": "Speedpaint",
     "description": "Brilliant Yellowish Green",
     "comparable": []
@@ -2401,7 +2401,7 @@
   {
     "id": "ap-234",
     "name": "Charming Chartreuse",
-    "hex": "#A0C830",
+    "hex": "#96B522",
     "type": "Speedpaint",
     "description": "Greenish Yellow",
     "comparable": []
@@ -2409,7 +2409,7 @@
   {
     "id": "ap-235",
     "name": "Malignant Green",
-    "hex": "#60B830",
+    "hex": "#D2DA4E",
     "type": "Speedpaint",
     "description": "Light Greenish Yellow",
     "comparable": []
@@ -2417,7 +2417,7 @@
   {
     "id": "ap-236",
     "name": "Maggot Skin",
-    "hex": "#D8D0A8",
+    "hex": "#D3D066",
     "type": "Speedpaint",
     "description": "Pale Yellowish Green",
     "comparable": []
@@ -2425,7 +2425,7 @@
   {
     "id": "ap-237",
     "name": "Rigor Mortis",
-    "hex": "#687070",
+    "hex": "#B5B575",
     "type": "Speedpaint",
     "description": "Light Greyish Green",
     "comparable": []
@@ -2433,7 +2433,7 @@
   {
     "id": "ap-238",
     "name": "Ochre Clay",
-    "hex": "#A88030",
+    "hex": "#C0AF37",
     "type": "Speedpaint",
     "description": "Strong Greenish Yellow",
     "comparable": []
@@ -2441,7 +2441,7 @@
   {
     "id": "ap-239",
     "name": "Tyrian Navy",
-    "hex": "#182848",
+    "hex": "#294352",
     "type": "Speedpaint",
     "description": "Blackish Blue",
     "comparable": []
@@ -2449,7 +2449,7 @@
   {
     "id": "ap-240",
     "name": "Beowulf Blue",
-    "hex": "#4888C0",
+    "hex": "#BECFD9",
     "type": "Speedpaint",
     "description": "Dark Purplish Blue",
     "comparable": []
@@ -2457,7 +2457,7 @@
   {
     "id": "ap-241",
     "name": "Highlord Blue",
-    "hex": "#2058A0",
+    "hex": "#5667AE",
     "type": "Speedpaint",
     "description": "Deep Blue",
     "comparable": []
@@ -2465,7 +2465,7 @@
   {
     "id": "ap-242",
     "name": "Plasmatic Bolt",
-    "hex": "#30B8D8",
+    "hex": "#3CA0A8",
     "type": "Speedpaint",
     "description": "Vivid Bluish Green",
     "comparable": []
@@ -2473,7 +2473,7 @@
   {
     "id": "ap-243",
     "name": "Thunderbird Blue",
-    "hex": "#1850A8",
+    "hex": "#02A195",
     "type": "Speedpaint",
     "description": "Bluish Green",
     "comparable": []
@@ -2481,7 +2481,7 @@
   {
     "id": "ap-244",
     "name": "Lizardfolk Cyan",
-    "hex": "#20A0B0",
+    "hex": "#139BAF",
     "type": "Speedpaint",
     "description": "Greenish Blue",
     "comparable": []
@@ -2489,7 +2489,7 @@
   {
     "id": "ap-245",
     "name": "Raging Sea",
-    "hex": "#186888",
+    "hex": "#00AEC3",
     "type": "Speedpaint",
     "description": "Deep Greenish Blue",
     "comparable": []
@@ -2497,7 +2497,7 @@
   {
     "id": "ap-246",
     "name": "Caribbean Ocean",
-    "hex": "#1898A0",
+    "hex": "#007EC3",
     "type": "Speedpaint",
     "description": "Brilliant Greenish Blue",
     "comparable": []
@@ -2505,7 +2505,7 @@
   {
     "id": "ap-247",
     "name": "Magic Blue",
-    "hex": "#1048A0",
+    "hex": "#11588B",
     "type": "Speedpaint",
     "description": "Vivid Blue",
     "comparable": []
@@ -2513,7 +2513,7 @@
   {
     "id": "ap-248",
     "name": "Tidal Wave",
-    "hex": "#2878B8",
+    "hex": "#007EB9",
     "type": "Speedpaint",
     "description": "Light Blue",
     "comparable": []
@@ -2521,7 +2521,7 @@
   {
     "id": "ap-249",
     "name": "Royal Robes",
-    "hex": "#283888",
+    "hex": "#034088",
     "type": "Speedpaint",
     "description": "Brilliant Blue",
     "comparable": []
@@ -2529,7 +2529,7 @@
   {
     "id": "ap-250",
     "name": "Periwinkle Purple",
-    "hex": "#7868B0",
+    "hex": "#5C57A2",
     "type": "Speedpaint",
     "description": "Purplish Blue",
     "comparable": []
@@ -2537,7 +2537,7 @@
   {
     "id": "ap-251",
     "name": "Purple Swarm",
-    "hex": "#402858",
+    "hex": "#67368C",
     "type": "Speedpaint",
     "description": "Vivid Purple",
     "comparable": []
@@ -2545,7 +2545,7 @@
   {
     "id": "ap-252",
     "name": "Hive Dweller Purple",
-    "hex": "#583070",
+    "hex": "#583877",
     "type": "Speedpaint",
     "description": "Very Dark Purple",
     "comparable": []
@@ -2553,7 +2553,7 @@
   {
     "id": "ap-253",
     "name": "Moody Mauve",
-    "hex": "#987088",
+    "hex": "#A65385",
     "type": "Speedpaint",
     "description": "Strong Purple",
     "comparable": []
@@ -2561,7 +2561,7 @@
   {
     "id": "ap-254",
     "name": "Moonlake Coral",
-    "hex": "#D06878",
+    "hex": "#AC3973",
     "type": "Speedpaint",
     "description": "Strong Reddish Purple",
     "comparable": []
@@ -2569,7 +2569,7 @@
   {
     "id": "ap-255",
     "name": "Purple Alchemy",
-    "hex": "#782888",
+    "hex": "#B3406F",
     "type": "Speedpaint",
     "description": "Strong Pink",
     "comparable": []
@@ -2577,7 +2577,7 @@
   {
     "id": "ap-256",
     "name": "Familiar Pink",
-    "hex": "#E87890",
+    "hex": "#DE3189",
     "type": "Speedpaint",
     "description": "Vivid Pink",
     "comparable": []
@@ -2585,7 +2585,7 @@
   {
     "id": "ap-257",
     "name": "Cloudburst Blue",
-    "hex": "#3868A8",
+    "hex": "#3C445F",
     "type": "Speedpaint",
     "description": "Dark Blue",
     "comparable": []
@@ -2593,7 +2593,7 @@
   {
     "id": "ap-258",
     "name": "Runic Grey",
-    "hex": "#808080",
+    "hex": "#597F94",
     "type": "Speedpaint",
     "description": "Bluish Grey",
     "comparable": []
@@ -2601,7 +2601,7 @@
   {
     "id": "ap-259",
     "name": "Ashen Stone",
-    "hex": "#A0A098",
+    "hex": "#B9C0C6",
     "type": "Speedpaint",
     "description": "Light Grey",
     "comparable": []
@@ -2617,7 +2617,7 @@
   {
     "id": "ap-261",
     "name": "Dusk Red",
-    "hex": "#783028",
+    "hex": "#614042",
     "type": "Speedpaint",
     "description": "Pale Purplish Red",
     "comparable": []
@@ -2625,7 +2625,7 @@
   {
     "id": "ap-262",
     "name": "Satchel Brown",
-    "hex": "#8B5820",
+    "hex": "#5B3E34",
     "type": "Speedpaint",
     "description": "Dark Reddish Brown",
     "comparable": []
@@ -2633,7 +2633,7 @@
   {
     "id": "ap-263",
     "name": "Dark Wood",
-    "hex": "#503018",
+    "hex": "#4A2E18",
     "type": "Speedpaint",
     "description": "Deep Brown",
     "comparable": []
@@ -2641,7 +2641,7 @@
   {
     "id": "ap-264",
     "name": "Burnished Red",
-    "hex": "#8B3020",
+    "hex": "#693C36",
     "type": "Speedpaint",
     "description": "Reddish Brown",
     "comparable": []
@@ -2649,7 +2649,7 @@
   {
     "id": "ap-265",
     "name": "Ruddy Fur",
-    "hex": "#885030",
+    "hex": "#A44C26",
     "type": "Speedpaint",
     "description": "Deep Reddish Brown",
     "comparable": []
@@ -2657,7 +2657,7 @@
   {
     "id": "ap-266",
     "name": "Hardened Leather",
-    "hex": "#704020",
+    "hex": "#91541D",
     "type": "Speedpaint",
     "description": "Light Brown",
     "comparable": []
@@ -2665,7 +2665,7 @@
   {
     "id": "ap-267",
     "name": "Noble Skin",
-    "hex": "#A07048",
+    "hex": "#504B3E",
     "type": "Speedpaint",
     "description": "Dark Brown",
     "comparable": []
@@ -2673,7 +2673,7 @@
   {
     "id": "ap-268",
     "name": "Goddess Glow",
-    "hex": "#F0C8A8",
+    "hex": "#9F5956",
     "type": "Speedpaint",
     "description": "Light Purplish Red",
     "comparable": []
@@ -2681,7 +2681,7 @@
   {
     "id": "ap-269",
     "name": "Warrior Skin",
-    "hex": "#C88858",
+    "hex": "#AA7657",
     "type": "Speedpaint",
     "description": "Light Reddish Brown",
     "comparable": []
@@ -2689,7 +2689,7 @@
   {
     "id": "ap-270",
     "name": "Carmine Dragon",
-    "hex": "#881020",
+    "hex": "#E7335E",
     "type": "Speedpaint",
     "description": "Brilliant Pinkish Red",
     "comparable": []
@@ -2697,7 +2697,7 @@
   {
     "id": "ap-271",
     "name": "Pastel Yellow",
-    "hex": "#F0E880",
+    "hex": "#FEEB81",
     "type": "Speedpaint",
     "description": "Very Light Yellow",
     "comparable": []
@@ -2705,7 +2705,7 @@
   {
     "id": "ap-272",
     "name": "Pastel Salmon",
-    "hex": "#F0A898",
+    "hex": "#FACBA2",
     "type": "Speedpaint",
     "description": "Very Light Orange",
     "comparable": []
@@ -2713,7 +2713,7 @@
   {
     "id": "ap-273",
     "name": "Princess Pink",
-    "hex": "#F0A0C0",
+    "hex": "#EBA5BD",
     "type": "Speedpaint",
     "description": "Very Light Pink",
     "comparable": []
@@ -2721,7 +2721,7 @@
   {
     "id": "ap-274",
     "name": "Pastel Lavender",
-    "hex": "#C0A8D0",
+    "hex": "#DCC7E3",
     "type": "Speedpaint",
     "description": "Very Light Purple",
     "comparable": []
@@ -2729,7 +2729,7 @@
   {
     "id": "ap-275",
     "name": "Pastel Indigo",
-    "hex": "#8898C8",
+    "hex": "#A2C4E9",
     "type": "Speedpaint",
     "description": "Very Light Blue",
     "comparable": []
@@ -2737,7 +2737,7 @@
   {
     "id": "ap-276",
     "name": "Pastel Seafoam",
-    "hex": "#88D0C0",
+    "hex": "#BFE0D8",
     "type": "Speedpaint",
     "description": "Very Light Bluish Green",
     "comparable": []
@@ -2745,7 +2745,7 @@
   {
     "id": "ap-277",
     "name": "Glittering Loot",
-    "hex": "#D8C870",
+    "hex": "#443700",
     "type": "Speedpaint",
     "description": "",
     "comparable": []
@@ -2753,7 +2753,7 @@
   {
     "id": "ap-278",
     "name": "Hoplite Gold",
-    "hex": "#C8A850",
+    "hex": "#4E3E05",
     "type": "Speedpaint",
     "description": "",
     "comparable": []
@@ -2761,7 +2761,7 @@
   {
     "id": "ap-279",
     "name": "Golden Armour",
-    "hex": "#B89030",
+    "hex": "#3C2700",
     "type": "Speedpaint",
     "description": "",
     "comparable": []
@@ -2769,7 +2769,7 @@
   {
     "id": "ap-280",
     "name": "Hoard Bronze",
-    "hex": "#807048",
+    "hex": "#463D22",
     "type": "Speedpaint",
     "description": "",
     "comparable": []
@@ -2777,7 +2777,7 @@
   {
     "id": "ap-281",
     "name": "Brazen Copper",
-    "hex": "#A07040",
+    "hex": "#39221D",
     "type": "Speedpaint",
     "description": "",
     "comparable": []
@@ -2785,7 +2785,7 @@
   {
     "id": "ap-282",
     "name": "Talos Bronze",
-    "hex": "#906838",
+    "hex": "#44261B",
     "type": "Speedpaint",
     "description": "",
     "comparable": []
@@ -2793,7 +2793,7 @@
   {
     "id": "ap-283",
     "name": "Enchanted Steel",
-    "hex": "#889098",
+    "hex": "#2A2F31",
     "type": "Speedpaint",
     "description": "",
     "comparable": []
@@ -2801,7 +2801,7 @@
   {
     "id": "ap-284",
     "name": "Broadsword Silver",
-    "hex": "#A8B0B8",
+    "hex": "#2F2F2F",
     "type": "Speedpaint",
     "description": "",
     "comparable": []
@@ -2809,7 +2809,7 @@
   {
     "id": "ap-285",
     "name": "Polished Silver",
-    "hex": "#C0C8D0",
+    "hex": "#484848",
     "type": "Speedpaint",
     "description": "",
     "comparable": []
@@ -2817,7 +2817,7 @@
   {
     "id": "ap-286",
     "name": "Aztec Gold",
-    "hex": "#A88828",
+    "hex": "#353D19",
     "type": "Speedpaint",
     "description": "",
     "comparable": []
@@ -2825,7 +2825,7 @@
   {
     "id": "ap-287",
     "name": "Abomination Gore",
-    "hex": "#6C1E10",
+    "hex": "#A13B37",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2833,7 +2833,7 @@
   {
     "id": "ap-288",
     "name": "Arid Earth",
-    "hex": "#FAECC3",
+    "hex": "#F8E9C4",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2841,7 +2841,7 @@
   {
     "id": "ap-289",
     "name": "Babe Blonde",
-    "hex": "#F8DD0D",
+    "hex": "#F8DB31",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2849,7 +2849,7 @@
   {
     "id": "ap-290",
     "name": "Banshee Brown",
-    "hex": "#C3B097",
+    "hex": "#C2B098",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -2857,7 +2857,7 @@
   {
     "id": "ap-291",
     "name": "Basilisk Brown",
-    "hex": "#CD8315",
+    "hex": "#CA8428",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2865,7 +2865,7 @@
   {
     "id": "ap-292",
     "name": "Castle Grey",
-    "hex": "#F1F0E0",
+    "hex": "#84817A",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2873,7 +2873,7 @@
   {
     "id": "ap-293",
     "name": "Centaur Skin",
-    "hex": "#DEABA0",
+    "hex": "#DBABA1",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2881,7 +2881,7 @@
   {
     "id": "ap-294",
     "name": "Chaotic Red",
-    "hex": "#6C1E10",
+    "hex": "#692115",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2889,7 +2889,7 @@
   {
     "id": "ap-295",
     "name": "Combat Fatigue",
-    "hex": "#878E5C",
+    "hex": "#868E60",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2897,7 +2897,7 @@
   {
     "id": "ap-296",
     "name": "Commando Green",
-    "hex": "#827B39",
+    "hex": "#817C3E",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2905,7 +2905,7 @@
   {
     "id": "ap-297",
     "name": "Corpse Pale",
-    "hex": "#EDCCAD",
+    "hex": "#EACBAE",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2913,7 +2913,7 @@
   {
     "id": "ap-298",
     "name": "Crusted Sore",
-    "hex": "#611624",
+    "hex": "#5D1B26",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2921,7 +2921,7 @@
   {
     "id": "ap-299",
     "name": "Crypt Wraith",
-    "hex": "#606050",
+    "hex": "#5F6050",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2929,7 +2929,7 @@
   {
     "id": "ap-300",
     "name": "Cultist Robe",
-    "hex": "#756E60",
+    "hex": "#756D61",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2937,7 +2937,7 @@
   {
     "id": "ap-301",
     "name": "Dark Sky",
-    "hex": "#2B4B5F",
+    "hex": "#2B4A5F",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2945,7 +2945,7 @@
   {
     "id": "ap-302",
     "name": "Dark Stone",
-    "hex": "#605752",
+    "hex": "#5E5754",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2953,7 +2953,7 @@
   {
     "id": "ap-303",
     "name": "Deep Blue",
-    "hex": "#083251",
+    "hex": "#0A3351",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2961,7 +2961,7 @@
   {
     "id": "ap-304",
     "name": "Dirt Spatter",
-    "hex": "#5E3827",
+    "hex": "#5B3829",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2969,7 +2969,7 @@
   {
     "id": "ap-305",
     "name": "Drake Tooth",
-    "hex": "#CFCBB4",
+    "hex": "#CDCBB5",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2977,7 +2977,7 @@
   {
     "id": "ap-306",
     "name": "Dungeon Grey",
-    "hex": "#686C71",
+    "hex": "#676C73",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2985,7 +2985,7 @@
   {
     "id": "ap-307",
     "name": "Electric Blue",
-    "hex": "#508CBE",
+    "hex": "#528BBB",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -2993,7 +2993,7 @@
   {
     "id": "ap-308",
     "name": "Elemental Bolt",
-    "hex": "#009A82",
+    "hex": "#0F9982",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3001,7 +3001,7 @@
   {
     "id": "ap-309",
     "name": "Elf Green",
-    "hex": "#495122",
+    "hex": "#495225",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3009,7 +3009,7 @@
   {
     "id": "ap-310",
     "name": "Elven Flesh",
-    "hex": "#F5D5B0",
+    "hex": "#F8BF98",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3017,7 +3017,7 @@
   {
     "id": "ap-311",
     "name": "Field Grey",
-    "hex": "#787C78",
+    "hex": "#757B78",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3025,7 +3025,7 @@
   {
     "id": "ap-312",
     "name": "Filthy Cape",
-    "hex": "#7C7863",
+    "hex": "#7B7963",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3033,7 +3033,7 @@
   {
     "id": "ap-313",
     "name": "Fire Lizard",
-    "hex": "#D67128",
+    "hex": "#D27334",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3041,7 +3041,7 @@
   {
     "id": "ap-314",
     "name": "Fog Grey",
-    "hex": "#6C8FAC",
+    "hex": "#6C90AB",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3049,7 +3049,7 @@
   {
     "id": "ap-315",
     "name": "Goblin Green",
-    "hex": "#348941",
+    "hex": "#3A8943",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3057,7 +3057,7 @@
   {
     "id": "ap-316",
     "name": "Gorgon Hide",
-    "hex": "#C7D2E4",
+    "hex": "#C5D0E2",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3065,7 +3065,7 @@
   {
     "id": "ap-317",
     "name": "Griffon Blue",
-    "hex": "#215383",
+    "hex": "#285380",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3073,7 +3073,7 @@
   {
     "id": "ap-318",
     "name": "Grimoire Purple",
-    "hex": "#805259",
+    "hex": "#7D545A",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3081,7 +3081,7 @@
   {
     "id": "ap-319",
     "name": "Hardened Carapace",
-    "hex": "#4C473F",
+    "hex": "#4B4840",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3089,7 +3089,7 @@
   {
     "id": "ap-320",
     "name": "Hemp Rope",
-    "hex": "#94763A",
+    "hex": "#907740",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3097,7 +3097,7 @@
   {
     "id": "ap-321",
     "name": "Ice Storm",
-    "hex": "#639EC9",
+    "hex": "#659EC7",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3105,7 +3105,7 @@
   {
     "id": "ap-322",
     "name": "Jungle Green",
-    "hex": "#88AC2E",
+    "hex": "#86AD37",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3113,7 +3113,7 @@
   {
     "id": "ap-323",
     "name": "Kobold Skin",
-    "hex": "#C9A484",
+    "hex": "#C7A485",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3121,7 +3121,7 @@
   {
     "id": "ap-324",
     "name": "Kraken Skin",
-    "hex": "#71C591",
+    "hex": "#73C492",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3129,7 +3129,7 @@
   {
     "id": "ap-325",
     "name": "Mars Red",
-    "hex": "#B73B37",
+    "hex": "#B43F3C",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3137,7 +3137,7 @@
   {
     "id": "ap-326",
     "name": "Monster Brown",
-    "hex": "#855C2A",
+    "hex": "#815C2E",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3145,7 +3145,7 @@
   {
     "id": "ap-327",
     "name": "Moon Dust",
-    "hex": "#E8D468",
+    "hex": "#E5D46F",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3153,7 +3153,7 @@
   {
     "id": "ap-328",
     "name": "Mouldy Clothes",
-    "hex": "#447B3A",
+    "hex": "#457C3E",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3161,7 +3161,7 @@
   {
     "id": "ap-329",
     "name": "Mummy Robes",
-    "hex": "#EBDED5",
+    "hex": "#E8DED6",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3169,7 +3169,7 @@
   {
     "id": "ap-330",
     "name": "Mutant Hue",
-    "hex": "#A58084",
+    "hex": "#A38185",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3177,7 +3177,7 @@
   {
     "id": "ap-331",
     "name": "Mythical Orange",
-    "hex": "#E73D24",
+    "hex": "#E24330",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3185,7 +3185,7 @@
   {
     "id": "ap-332",
     "name": "Necromancer Cloak",
-    "hex": "#3C3D37",
+    "hex": "#3B3E37",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3193,7 +3193,7 @@
   {
     "id": "ap-333",
     "name": "Oozing Purple",
-    "hex": "#AA94B4",
+    "hex": "#A793B4",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3201,7 +3201,7 @@
   {
     "id": "ap-334",
     "name": "Orc Blood",
-    "hex": "#925F6E",
+    "hex": "#906270",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3209,7 +3209,7 @@
   {
     "id": "ap-335",
     "name": "Phoenix Flames",
-    "hex": "#FAA61A",
+    "hex": "#F7A832",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3217,7 +3217,7 @@
   {
     "id": "ap-336",
     "name": "Poisonous Cloud",
-    "hex": "#CDDE4A",
+    "hex": "#CDDD55",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3225,7 +3225,7 @@
   {
     "id": "ap-337",
     "name": "Royal Cloak",
-    "hex": "#15999C",
+    "hex": "#10999B",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3233,7 +3233,7 @@
   {
     "id": "ap-338",
     "name": "Scaly Hide",
-    "hex": "#859852",
+    "hex": "#829754",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3241,7 +3241,7 @@
   {
     "id": "ap-339",
     "name": "Scar Tissue",
-    "hex": "#CA8772",
+    "hex": "#C88775",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3249,7 +3249,7 @@
   {
     "id": "ap-340",
     "name": "Snake Scales",
-    "hex": "#8AB239",
+    "hex": "#89B241",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3257,7 +3257,7 @@
   {
     "id": "ap-341",
     "name": "Spaceship Exterior",
-    "hex": "#CDCED0",
+    "hex": "#CCD0D1",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3265,7 +3265,7 @@
   {
     "id": "ap-342",
     "name": "Stone Golem",
-    "hex": "#B9BAB7",
+    "hex": "#B6BBB6",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3273,7 +3273,7 @@
   {
     "id": "ap-343",
     "name": "Sulphide Ochre",
-    "hex": "#C68512",
+    "hex": "#C38626",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3281,7 +3281,7 @@
   {
     "id": "ap-344",
     "name": "Tanned Flesh",
-    "hex": "#BC745E",
+    "hex": "#B87662",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3289,7 +3289,7 @@
   {
     "id": "ap-345",
     "name": "Toxic Boils",
-    "hex": "#A67284",
+    "hex": "#A17283",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3297,7 +3297,7 @@
   {
     "id": "ap-346",
     "name": "Toxic Mist",
-    "hex": "#39C0C5",
+    "hex": "#41C0C4",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3305,7 +3305,7 @@
   {
     "id": "ap-347",
     "name": "Troglodyte Blue",
-    "hex": "#0889BA",
+    "hex": "#0E87B9",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3313,7 +3313,7 @@
   {
     "id": "ap-348",
     "name": "Troll Claws",
-    "hex": "#CB8B4E",
+    "hex": "#CB8D55",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3321,7 +3321,7 @@
   {
     "id": "ap-349",
     "name": "Vampire Red",
-    "hex": "#981D34",
+    "hex": "#952337",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3329,7 +3329,7 @@
   {
     "id": "ap-350",
     "name": "Venom Wyrm",
-    "hex": "#6A653E",
+    "hex": "#696541",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3337,7 +3337,7 @@
   {
     "id": "ap-351",
     "name": "Viking Blue",
-    "hex": "#00609A",
+    "hex": "#086098",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3345,7 +3345,7 @@
   {
     "id": "ap-352",
     "name": "Voidshield Blue",
-    "hex": "#2CA2D9",
+    "hex": "#33A0D7",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3353,7 +3353,7 @@
   {
     "id": "ap-353",
     "name": "Warlock Purple",
-    "hex": "#BB5B64",
+    "hex": "#B85E66",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3361,7 +3361,7 @@
   {
     "id": "ap-354",
     "name": "Wasteland Soil",
-    "hex": "#774B58",
+    "hex": "#754D59",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3369,7 +3369,7 @@
   {
     "id": "ap-355",
     "name": "Werewolf Fur",
-    "hex": "#785E4E",
+    "hex": "#765F50",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3377,7 +3377,7 @@
   {
     "id": "ap-356",
     "name": "Witch Brew",
-    "hex": "#92963E",
+    "hex": "#8F9642",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3385,7 +3385,7 @@
   {
     "id": "ap-357",
     "name": "Wizards Orb",
-    "hex": "#00726A",
+    "hex": "#097169",
     "type": "Warpaints",
     "description": "",
     "comparable": []
@@ -3393,7 +3393,7 @@
   {
     "id": "ap-358",
     "name": "Azure Magic",
-    "hex": "#4A90C8",
+    "hex": "#005F7C",
     "type": "Warpaints Metallic",
     "description": "",
     "comparable": []
@@ -3401,7 +3401,7 @@
   {
     "id": "ap-359",
     "name": "Elven Armour",
-    "hex": "#8DB580",
+    "hex": "#063D86",
     "type": "Warpaints Metallic",
     "description": "",
     "comparable": []
@@ -3409,7 +3409,7 @@
   {
     "id": "ap-360",
     "name": "Fairy Dust",
-    "hex": "#E8D8F0",
+    "hex": "#ACAEAD",
     "type": "Warpaints Metallic",
     "description": "",
     "comparable": []
@@ -3417,7 +3417,7 @@
   {
     "id": "ap-361",
     "name": "Gemstone",
-    "hex": "#2AAF6E",
+    "hex": "#9E1E21",
     "type": "Warpaints Metallic",
     "description": "",
     "comparable": []
@@ -3425,7 +3425,7 @@
   {
     "id": "ap-362",
     "name": "Glitter Green",
-    "hex": "#5AB872",
+    "hex": "#147A38",
     "type": "Warpaints Metallic",
     "description": "",
     "comparable": []
@@ -3433,7 +3433,7 @@
   {
     "id": "ap-363",
     "name": "Night Scales",
-    "hex": "#2A3A40",
+    "hex": "#332C2D",
     "type": "Warpaints Metallic",
     "description": "",
     "comparable": []
@@ -3441,7 +3441,7 @@
   {
     "id": "ap-364",
     "name": "Royal Purple",
-    "hex": "#6A3085",
+    "hex": "#641953",
     "type": "Warpaints Metallic",
     "description": "",
     "comparable": []
@@ -3449,7 +3449,7 @@
   {
     "id": "ap-365",
     "name": "Zephyr Pink",
-    "hex": "#F0B0C0",
+    "hex": "#A44372",
     "type": "Warpaints Metallic",
     "description": "",
     "comparable": []
@@ -3457,7 +3457,7 @@
   {
     "id": "ap-366",
     "name": "Flesh Wash",
-    "hex": "#C08060",
+    "hex": "#471717",
     "type": "Warpaints Wash",
     "description": "",
     "comparable": []
@@ -3465,7 +3465,7 @@
   {
     "id": "ap-367",
     "name": "Mid Brown",
-    "hex": "#6A4A30",
+    "hex": "#905F2D",
     "type": "Warpaints Wash",
     "description": "",
     "comparable": []
@@ -3473,7 +3473,7 @@
   {
     "id": "ap-368",
     "name": "Military Shader",
-    "hex": "#4A5040",
+    "hex": "#4D642F",
     "type": "Warpaints Wash",
     "description": "",
     "comparable": []
@@ -3481,7 +3481,7 @@
   {
     "id": "ap-369",
     "name": "Blighted Green",
-    "hex": "#4A6A3A",
+    "hex": "#1E2B2E",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3489,7 +3489,7 @@
   {
     "id": "ap-370",
     "name": "Bloodmoon Red",
-    "hex": "#8C1A1A",
+    "hex": "#9A2927",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3497,7 +3497,7 @@
   {
     "id": "ap-371",
     "name": "Emperor Gold",
-    "hex": "#C8A840",
+    "hex": "#5D4629",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3505,7 +3505,7 @@
   {
     "id": "ap-372",
     "name": "Grimdark Shadow",
-    "hex": "#3A3430",
+    "hex": "#2D2E29",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3513,7 +3513,7 @@
   {
     "id": "ap-373",
     "name": "Ironclad Grey",
-    "hex": "#6A6E70",
+    "hex": "#333438",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3521,7 +3521,7 @@
   {
     "id": "ap-374",
     "name": "Ivory White",
-    "hex": "#F5F0E0",
+    "hex": "#EAD9B5",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3529,7 +3529,7 @@
   {
     "id": "ap-375",
     "name": "Moonbeam Yellow",
-    "hex": "#F8E870",
+    "hex": "#F0B71C",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3537,7 +3537,7 @@
   {
     "id": "ap-376",
     "name": "The Darkness",
-    "hex": "#1A1A18",
+    "hex": "#21242C",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3545,7 +3545,7 @@
   {
     "id": "ap-377",
     "name": "Warm Skin Shade",
-    "hex": "#C08A6A",
+    "hex": "#463121",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3553,7 +3553,7 @@
   {
     "id": "ap-378",
     "name": "Blanched Berry",
-    "hex": "#C8708A",
+    "hex": "#38242D",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3561,7 +3561,7 @@
   {
     "id": "ap-379",
     "name": "Fiery Vermilion",
-    "hex": "#E84030",
+    "hex": "#B01C13",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3569,7 +3569,7 @@
   {
     "id": "ap-380",
     "name": "Grim Rust",
-    "hex": "#8A4A20",
+    "hex": "#331D0C",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3577,7 +3577,7 @@
   {
     "id": "ap-381",
     "name": "Heavy Metal",
-    "hex": "#808080",
+    "hex": "#444444",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3585,7 +3585,7 @@
   {
     "id": "ap-382",
     "name": "Midnight Olive",
-    "hex": "#3A3A20",
+    "hex": "#32352D",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3593,7 +3593,7 @@
   {
     "id": "ap-383",
     "name": "Ruddy Terra",
-    "hex": "#A06040",
+    "hex": "#794338",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3601,7 +3601,7 @@
   {
     "id": "ap-384",
     "name": "Sunburst Ochre",
-    "hex": "#D8A030",
+    "hex": "#714629",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3609,7 +3609,7 @@
   {
     "id": "ap-385",
     "name": "Tainted Garden",
-    "hex": "#5A8A40",
+    "hex": "#3E3F2A",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3617,7 +3617,7 @@
   {
     "id": "ap-386",
     "name": "Turnbull Turquoise",
-    "hex": "#30A0A0",
+    "hex": "#29373B",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3625,7 +3625,7 @@
   {
     "id": "ap-387",
     "name": "Voodoo Shade",
-    "hex": "#4A3050",
+    "hex": "#3A301F",
     "type": "Masterclass",
     "description": "",
     "comparable": []
@@ -3633,7 +3633,7 @@
   {
     "id": "ap-388",
     "name": "Barren Yellow",
-    "hex": "#D8C060",
+    "hex": "#B58523",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3641,7 +3641,7 @@
   {
     "id": "ap-389",
     "name": "Brethil Blush",
-    "hex": "#E0B0A0",
+    "hex": "#E9AB6F",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3649,7 +3649,7 @@
   {
     "id": "ap-390",
     "name": "Broodmother Purple",
-    "hex": "#5A2A5A",
+    "hex": "#413563",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3657,7 +3657,7 @@
   {
     "id": "ap-391",
     "name": "Charred Bone",
-    "hex": "#A0987A",
+    "hex": "#B99D76",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3665,7 +3665,7 @@
   {
     "id": "ap-392",
     "name": "Chimera Red",
-    "hex": "#C03030",
+    "hex": "#9E142E",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3673,7 +3673,7 @@
   {
     "id": "ap-393",
     "name": "Encarmine Red",
-    "hex": "#A02020",
+    "hex": "#AA002D",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3681,7 +3681,7 @@
   {
     "id": "ap-394",
     "name": "Fairy Pink",
-    "hex": "#F0C0D0",
+    "hex": "#B55789",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3689,7 +3689,7 @@
   {
     "id": "ap-395",
     "name": "Gnome Cheeks",
-    "hex": "#E0A090",
+    "hex": "#BDA699",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3697,7 +3697,7 @@
   {
     "id": "ap-396",
     "name": "Gremlin Green",
-    "hex": "#50AA50",
+    "hex": "#6F833B",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3705,7 +3705,7 @@
   {
     "id": "ap-397",
     "name": "Hazardous Smog",
-    "hex": "#C0C050",
+    "hex": "#64C5B4",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3713,7 +3713,7 @@
   {
     "id": "ap-398",
     "name": "Husk Brown",
-    "hex": "#8A7050",
+    "hex": "#8D492E",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3721,7 +3721,7 @@
   {
     "id": "ap-399",
     "name": "Incursion Orange",
-    "hex": "#E07030",
+    "hex": "#F89501",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3729,7 +3729,7 @@
   {
     "id": "ap-400",
     "name": "Iron Wolf",
-    "hex": "#6A6A70",
+    "hex": "#4E7385",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3737,7 +3737,7 @@
   {
     "id": "ap-401",
     "name": "Magnolia Brown",
-    "hex": "#9A7A5A",
+    "hex": "#4D493E",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3745,7 +3745,7 @@
   {
     "id": "ap-402",
     "name": "Majestic Fortress",
-    "hex": "#6A6A68",
+    "hex": "#008E7C",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3753,7 +3753,7 @@
   {
     "id": "ap-403",
     "name": "Meteor Rock",
-    "hex": "#7A7A78",
+    "hex": "#F1C301",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3761,7 +3761,7 @@
   {
     "id": "ap-404",
     "name": "Militia Green",
-    "hex": "#5A7A40",
+    "hex": "#40543B",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3769,7 +3769,7 @@
   {
     "id": "ap-405",
     "name": "Molten Orange",
-    "hex": "#F08030",
+    "hex": "#B34D24",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3777,7 +3777,7 @@
   {
     "id": "ap-406",
     "name": "Nomad Flesh",
-    "hex": "#D0A080",
+    "hex": "#E08667",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3785,7 +3785,7 @@
   {
     "id": "ap-407",
     "name": "Ocean Depths",
-    "hex": "#1A3A5A",
+    "hex": "#007183",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3793,7 +3793,7 @@
   {
     "id": "ap-408",
     "name": "Omega Blue",
-    "hex": "#2A5090",
+    "hex": "#145B93",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3801,7 +3801,7 @@
   {
     "id": "ap-409",
     "name": "Pestilent Flesh",
-    "hex": "#B0A870",
+    "hex": "#9E9C52",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3809,7 +3809,7 @@
   {
     "id": "ap-410",
     "name": "Rawhide Brown",
-    "hex": "#9A7A50",
+    "hex": "#815936",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3817,7 +3817,7 @@
   {
     "id": "ap-411",
     "name": "Regiment Grey",
-    "hex": "#808080",
+    "hex": "#687274",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3825,7 +3825,7 @@
   {
     "id": "ap-412",
     "name": "Ruinous Spell",
-    "hex": "#6A40A0",
+    "hex": "#3C614F",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3833,7 +3833,7 @@
   {
     "id": "ap-413",
     "name": "Sapphire Gem",
-    "hex": "#2050B0",
+    "hex": "#00AFDA",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3841,7 +3841,7 @@
   {
     "id": "ap-414",
     "name": "Savage Green",
-    "hex": "#308A30",
+    "hex": "#00763C",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3849,7 +3849,7 @@
   {
     "id": "ap-415",
     "name": "Shark White",
-    "hex": "#F0F0F0",
+    "hex": "#AFB5B1",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3857,7 +3857,7 @@
   {
     "id": "ap-416",
     "name": "Thunder Storm",
-    "hex": "#4A5060",
+    "hex": "#2D4255",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3865,7 +3865,7 @@
   {
     "id": "ap-417",
     "name": "Traitor Red",
-    "hex": "#A02828",
+    "hex": "#89214E",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3873,7 +3873,7 @@
   {
     "id": "ap-418",
     "name": "Undergrowth Green",
-    "hex": "#4A6A30",
+    "hex": "#6AA233",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3881,7 +3881,7 @@
   {
     "id": "ap-419",
     "name": "Unforgiven Green",
-    "hex": "#2A4A20",
+    "hex": "#39433B",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3889,7 +3889,7 @@
   {
     "id": "ap-420",
     "name": "Witchbane Plum",
-    "hex": "#6A3050",
+    "hex": "#9A1F68",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3897,7 +3897,7 @@
   {
     "id": "ap-421",
     "name": "Raven Black",
-    "hex": "#1A1A20",
+    "hex": "#445255",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3905,7 +3905,7 @@
   {
     "id": "ap-422",
     "name": "Yeti White",
-    "hex": "#F8F8F8",
+    "hex": "#CCCDD1",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3913,7 +3913,7 @@
   {
     "id": "ap-423",
     "name": "Archangel Red",
-    "hex": "#B82020",
+    "hex": "#F8320A",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3921,7 +3921,7 @@
   {
     "id": "ap-424",
     "name": "Bleached Bone",
-    "hex": "#E0D8C0",
+    "hex": "#F3E4C7",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3929,7 +3929,7 @@
   {
     "id": "ap-425",
     "name": "Bogey Green",
-    "hex": "#3A6A3A",
+    "hex": "#B3CF7A",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3937,7 +3937,7 @@
   {
     "id": "ap-426",
     "name": "Bullwhack Brown",
-    "hex": "#7A5A30",
+    "hex": "#BA895E",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3945,7 +3945,7 @@
   {
     "id": "ap-427",
     "name": "Cadre Grey",
-    "hex": "#7A7A78",
+    "hex": "#AFB4B7",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3953,7 +3953,7 @@
   {
     "id": "ap-428",
     "name": "Canopy Green",
-    "hex": "#3A7A3A",
+    "hex": "#BFD25D",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3961,7 +3961,7 @@
   {
     "id": "ap-429",
     "name": "Consul Blue",
-    "hex": "#2A4A7A",
+    "hex": "#7090B9",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3969,7 +3969,7 @@
   {
     "id": "ap-430",
     "name": "Cosmic Dust",
-    "hex": "#9090A0",
+    "hex": "#FEEA91",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3977,7 +3977,7 @@
   {
     "id": "ap-431",
     "name": "Coven Purple",
-    "hex": "#5A2A6A",
+    "hex": "#AB82AC",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3985,7 +3985,7 @@
   {
     "id": "ap-432",
     "name": "Crow Hue",
-    "hex": "#2A2A28",
+    "hex": "#67726E",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -3993,7 +3993,7 @@
   {
     "id": "ap-433",
     "name": "Cypress Brown",
-    "hex": "#6A5A40",
+    "hex": "#866957",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4001,7 +4001,7 @@
   {
     "id": "ap-434",
     "name": "Drab Green",
-    "hex": "#5A6A40",
+    "hex": "#A7A57F",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4009,7 +4009,7 @@
   {
     "id": "ap-435",
     "name": "Exile Green",
-    "hex": "#1A4A2A",
+    "hex": "#689085",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4017,7 +4017,7 @@
   {
     "id": "ap-436",
     "name": "Feral Green",
-    "hex": "#50A040",
+    "hex": "#7AAA7A",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4025,7 +4025,7 @@
   {
     "id": "ap-437",
     "name": "Fey Pink",
-    "hex": "#F0A0B0",
+    "hex": "#E8A2BF",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4033,7 +4033,7 @@
   {
     "id": "ap-438",
     "name": "Feywild Glow",
-    "hex": "#A0F0A0",
+    "hex": "#FEDAB2",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4041,7 +4041,7 @@
   {
     "id": "ap-439",
     "name": "Hobgoblin Hue",
-    "hex": "#A06840",
+    "hex": "#FFE6CE",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4049,7 +4049,7 @@
   {
     "id": "ap-440",
     "name": "Imp Yellow",
-    "hex": "#F0D020",
+    "hex": "#FFD083",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4057,7 +4057,7 @@
   {
     "id": "ap-441",
     "name": "Ionic Blue",
-    "hex": "#3070C0",
+    "hex": "#00AFE6",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4065,7 +4065,7 @@
   {
     "id": "ap-442",
     "name": "Leviathan Light",
-    "hex": "#B0D0E0",
+    "hex": "#CAE1CF",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4073,7 +4073,7 @@
   {
     "id": "ap-443",
     "name": "Orange Magma",
-    "hex": "#F06020",
+    "hex": "#FEAD69",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4081,7 +4081,7 @@
   {
     "id": "ap-444",
     "name": "Phantasmal Blue",
-    "hex": "#7090C0",
+    "hex": "#38C5C7",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4089,7 +4089,7 @@
   {
     "id": "ap-445",
     "name": "Potion Green",
-    "hex": "#30A060",
+    "hex": "#7BAC96",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4097,7 +4097,7 @@
   {
     "id": "ap-446",
     "name": "Psychic Shock",
-    "hex": "#A040D0",
+    "hex": "#60BEAC",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4105,7 +4105,7 @@
   {
     "id": "ap-447",
     "name": "Rebel Red",
-    "hex": "#D03030",
+    "hex": "#A81661",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4113,7 +4113,7 @@
   {
     "id": "ap-448",
     "name": "Storm Wolf",
-    "hex": "#6080A0",
+    "hex": "#B0C3E3",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4121,7 +4121,7 @@
   {
     "id": "ap-449",
     "name": "Talisman Purple",
-    "hex": "#7A40A0",
+    "hex": "#F3A2B5",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4129,7 +4129,7 @@
   {
     "id": "ap-450",
     "name": "Twilight Sky",
-    "hex": "#4060A0",
+    "hex": "#006C87",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4137,7 +4137,7 @@
   {
     "id": "ap-451",
     "name": "Viper Brown",
-    "hex": "#6A4A20",
+    "hex": "#CA856B",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4145,7 +4145,7 @@
   {
     "id": "ap-452",
     "name": "Wildling Flesh",
-    "hex": "#D0A070",
+    "hex": "#FEA688",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4153,7 +4153,7 @@
   {
     "id": "ap-453",
     "name": "Wyrmling Red",
-    "hex": "#C02830",
+    "hex": "#E54E61",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4161,7 +4161,7 @@
   {
     "id": "ap-454",
     "name": "Yellow Dune",
-    "hex": "#D8C060",
+    "hex": "#E3B258",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4169,7 +4169,7 @@
   {
     "id": "ap-455",
     "name": "Zombie Flesh",
-    "hex": "#A0A870",
+    "hex": "#CCC8AF",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4177,7 +4177,7 @@
   {
     "id": "ap-456",
     "name": "Blue Flux",
-    "hex": "#3060F0",
+    "hex": "#00A6CF",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4185,7 +4185,7 @@
   {
     "id": "ap-457",
     "name": "Gauss Green",
-    "hex": "#30F060",
+    "hex": "#6CBE3E",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4193,7 +4193,7 @@
   {
     "id": "ap-458",
     "name": "Hot Pink",
-    "hex": "#F030A0",
+    "hex": "#FA4FA0",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4201,7 +4201,7 @@
   {
     "id": "ap-459",
     "name": "Neon Yellow",
-    "hex": "#F0F030",
+    "hex": "#FEE900",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4209,7 +4209,7 @@
   {
     "id": "ap-460",
     "name": "Safety Orange",
-    "hex": "#F07020",
+    "hex": "#FEA356",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
@@ -4217,7 +4217,7 @@
   {
     "id": "ap-461",
     "name": "Violet Volt",
-    "hex": "#8030F0",
+    "hex": "#A862AA",
     "type": "Warpaints Air",
     "description": "",
     "comparable": []

@@ -1,0 +1,1398 @@
+{
+  "description": "Paintpad.app section → DB sub-hue mapping with ISCC-NBS sample hex colors",
+  "mappings": {
+    "pink": [
+      {
+        "paintpadSection": "vivid-pink",
+        "sampleHex": "#ffb5ba",
+        "dbSubHue": "light-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "strong-pink",
+        "sampleHex": "#ea9399",
+        "dbSubHue": "light-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "deep-pink",
+        "sampleHex": "#e4717a",
+        "dbSubHue": "moderate-red-purple"
+      },
+      {
+        "paintpadSection": "light-pink",
+        "sampleHex": "#f9ccca",
+        "dbSubHue": "light-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "moderate-pink",
+        "sampleHex": "#dea5a4",
+        "dbSubHue": "light-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "dark-pink",
+        "sampleHex": "#c08081",
+        "dbSubHue": "greyish-red-purple"
+      },
+      {
+        "paintpadSection": "pale-pink",
+        "sampleHex": "#ead8d7",
+        "dbSubHue": "light-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "greyish-pink",
+        "sampleHex": "#c4aead",
+        "dbSubHue": "light-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "pinkish-white",
+        "sampleHex": "#eae3e1",
+        "dbSubHue": "light-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "pinkish-grey",
+        "sampleHex": "#c1b6b3",
+        "dbSubHue": "light-greyish-red-purple"
+      }
+    ],
+    "red": [
+      {
+        "paintpadSection": "vivid-red",
+        "sampleHex": "#be0032",
+        "dbSubHue": "vivid-red"
+      },
+      {
+        "paintpadSection": "strong-red",
+        "sampleHex": "#bc3f4a",
+        "dbSubHue": "strong-red"
+      },
+      {
+        "paintpadSection": "deep-red",
+        "sampleHex": "#841b2d",
+        "dbSubHue": "deep-red"
+      },
+      {
+        "paintpadSection": "very-deep-red",
+        "sampleHex": "#5c0923",
+        "dbSubHue": "very-deep-red"
+      },
+      {
+        "paintpadSection": "moderate-red",
+        "sampleHex": "#ab4e52",
+        "dbSubHue": "moderate-red"
+      },
+      {
+        "paintpadSection": "dark-red",
+        "sampleHex": "#722f37",
+        "dbSubHue": "dark-red"
+      },
+      {
+        "paintpadSection": "very-dark-red",
+        "sampleHex": "#3f1728",
+        "dbSubHue": "very-dark-red"
+      },
+      {
+        "paintpadSection": "light-greyish-red",
+        "sampleHex": "#ad8884",
+        "dbSubHue": "light-greyish-red"
+      },
+      {
+        "paintpadSection": "greyish-red",
+        "sampleHex": "#905d5d",
+        "dbSubHue": "greyish-red"
+      },
+      {
+        "paintpadSection": "dark-greyish-red",
+        "sampleHex": "#543d3f",
+        "dbSubHue": "dark-greyish-red"
+      },
+      {
+        "paintpadSection": "blackish-red",
+        "sampleHex": "#2e1d21",
+        "dbSubHue": "blackish-red"
+      },
+      {
+        "paintpadSection": "reddish-grey",
+        "sampleHex": "#8f817f",
+        "dbSubHue": "greyish-red"
+      },
+      {
+        "paintpadSection": "dark-reddish-grey",
+        "sampleHex": "#5c504f",
+        "dbSubHue": "dark-greyish-red"
+      },
+      {
+        "paintpadSection": "reddish-black",
+        "sampleHex": "#282022",
+        "dbSubHue": "blackish-red"
+      }
+    ],
+    "yellowish-pink": [
+      {
+        "paintpadSection": "vivid-yellowish-pink",
+        "sampleHex": "#ffb7a5",
+        "dbSubHue": "light-greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "strong-yellowish-pink",
+        "sampleHex": "#f99379",
+        "dbSubHue": "moderate-yellow-red"
+      },
+      {
+        "paintpadSection": "deep-yellowish-pink",
+        "sampleHex": "#e66721",
+        "dbSubHue": "strong-yellow-red"
+      },
+      {
+        "paintpadSection": "light-yellowish-pink",
+        "sampleHex": "#f4c2c2",
+        "dbSubHue": "light-greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "moderate-yellowish-pink",
+        "sampleHex": "#d9a6a9",
+        "dbSubHue": "light-greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "dark-yellowish-pink",
+        "sampleHex": "#c48379",
+        "dbSubHue": "greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "pale-yellowish-pink",
+        "sampleHex": "#ecd5c5",
+        "dbSubHue": "light-greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "greyish-yellowish-pink",
+        "sampleHex": "#c7ada3",
+        "dbSubHue": "light-greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "brownish-pink",
+        "sampleHex": "#c2ac99",
+        "dbSubHue": "light-greyish-yellow-red"
+      }
+    ],
+    "reddish-orange": [
+      {
+        "paintpadSection": "vivid-reddish-orange",
+        "sampleHex": "#e25822",
+        "dbSubHue": "strong-yellow-red"
+      },
+      {
+        "paintpadSection": "strong-reddish-orange",
+        "sampleHex": "#d9603b",
+        "dbSubHue": "moderate-yellow-red"
+      },
+      {
+        "paintpadSection": "deep-reddish-orange",
+        "sampleHex": "#aa381e",
+        "dbSubHue": "deep-yellow-red"
+      },
+      {
+        "paintpadSection": "moderate-reddish-orange",
+        "sampleHex": "#cb6d51",
+        "dbSubHue": "moderate-yellow-red"
+      },
+      {
+        "paintpadSection": "dark-reddish-orange",
+        "sampleHex": "#9e4732",
+        "dbSubHue": "deep-yellow-red"
+      },
+      {
+        "paintpadSection": "grayish-reddish-orange",
+        "sampleHex": "#b4745e",
+        "dbSubHue": "greyish-yellow-red"
+      }
+    ],
+    "reddish-brown": [
+      {
+        "paintpadSection": "strong-reddish-brown",
+        "sampleHex": "#882d17",
+        "dbSubHue": "deep-red"
+      },
+      {
+        "paintpadSection": "deep-reddish-brown",
+        "sampleHex": "#56070c",
+        "dbSubHue": "very-deep-red"
+      },
+      {
+        "paintpadSection": "light-reddish-brown",
+        "sampleHex": "#a87c6d",
+        "dbSubHue": "greyish-red"
+      },
+      {
+        "paintpadSection": "moderate-reddish-brown",
+        "sampleHex": "#79443b",
+        "dbSubHue": "dark-red"
+      },
+      {
+        "paintpadSection": "dark-reddish-brown",
+        "sampleHex": "#3e1d1e",
+        "dbSubHue": "very-dark-red"
+      },
+      {
+        "paintpadSection": "light-greyish-reddish-brown",
+        "sampleHex": "#977f73",
+        "dbSubHue": "greyish-red"
+      },
+      {
+        "paintpadSection": "greyish-reddish-brown",
+        "sampleHex": "#674c47",
+        "dbSubHue": "dark-greyish-red"
+      },
+      {
+        "paintpadSection": "dark-greyish-reddish-brown",
+        "sampleHex": "#43302e",
+        "dbSubHue": "dark-greyish-red"
+      }
+    ],
+    "orange": [
+      {
+        "paintpadSection": "vivid-orange",
+        "sampleHex": "#f38400",
+        "dbSubHue": "vivid-yellow-red"
+      },
+      {
+        "paintpadSection": "brilliant-orange",
+        "sampleHex": "#fd943f",
+        "dbSubHue": "vivid-yellow-red"
+      },
+      {
+        "paintpadSection": "strong-orange",
+        "sampleHex": "#ed872d",
+        "dbSubHue": "strong-yellow-red"
+      },
+      {
+        "paintpadSection": "deep-orange",
+        "sampleHex": "#be6516",
+        "dbSubHue": "strong-yellow-red"
+      },
+      {
+        "paintpadSection": "light-orange",
+        "sampleHex": "#fab57f",
+        "dbSubHue": "light-greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "moderate-orange",
+        "sampleHex": "#d99058",
+        "dbSubHue": "moderate-yellow-red"
+      },
+      {
+        "paintpadSection": "brownish-orange",
+        "sampleHex": "#ae6938",
+        "dbSubHue": "moderate-yellow-red"
+      }
+    ],
+    "brown": [
+      {
+        "paintpadSection": "strong-brown",
+        "sampleHex": "#80461b",
+        "dbSubHue": "deep-yellow-red"
+      },
+      {
+        "paintpadSection": "deep-brown",
+        "sampleHex": "#593319",
+        "dbSubHue": "very-deep-yellow-red"
+      },
+      {
+        "paintpadSection": "light-brown",
+        "sampleHex": "#a67b5b",
+        "dbSubHue": "light-brown"
+      },
+      {
+        "paintpadSection": "moderate-brown",
+        "sampleHex": "#6f4e37",
+        "dbSubHue": "dark-yellow-red"
+      },
+      {
+        "paintpadSection": "dark-brown",
+        "sampleHex": "#422518",
+        "dbSubHue": "dark-brown"
+      },
+      {
+        "paintpadSection": "light-greyish-brown",
+        "sampleHex": "#958070",
+        "dbSubHue": "greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "greyish-brown",
+        "sampleHex": "#635147",
+        "dbSubHue": "dark-greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "dark-greyish-brown",
+        "sampleHex": "#3e322c",
+        "dbSubHue": "very-dark-yellow-red"
+      },
+      {
+        "paintpadSection": "light-brownish-grey",
+        "sampleHex": "#8e8279",
+        "dbSubHue": "greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "brownish-grey",
+        "sampleHex": "#5b504f",
+        "dbSubHue": "dark-greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "brownish-black",
+        "sampleHex": "#28201c",
+        "dbSubHue": "blackish-yellow-red"
+      }
+    ],
+    "orange-yellow": [
+      {
+        "paintpadSection": "vivid-orange-yellow",
+        "sampleHex": "#f6a600",
+        "dbSubHue": "strong-yellow"
+      },
+      {
+        "paintpadSection": "brilliant-orange-yellow",
+        "sampleHex": "#ffc14f",
+        "dbSubHue": "moderate-yellow"
+      },
+      {
+        "paintpadSection": "strong-orange-yellow",
+        "sampleHex": "#eaa221",
+        "dbSubHue": "strong-yellow"
+      },
+      {
+        "paintpadSection": "deep-orange-yellow",
+        "sampleHex": "#c98500",
+        "dbSubHue": "deep-yellow"
+      },
+      {
+        "paintpadSection": "light-orange-yellow",
+        "sampleHex": "#fbc97f",
+        "dbSubHue": "light-greyish-yellow"
+      },
+      {
+        "paintpadSection": "moderate-orange-yellow",
+        "sampleHex": "#e3a857",
+        "dbSubHue": "moderate-yellow"
+      },
+      {
+        "paintpadSection": "dark-orange-yellow",
+        "sampleHex": "#be8a3d",
+        "dbSubHue": "moderate-yellow"
+      },
+      {
+        "paintpadSection": "pale-orange-yellow",
+        "sampleHex": "#fad6a5",
+        "dbSubHue": "light-greyish-yellow"
+      }
+    ],
+    "yellowish-brown": [
+      {
+        "paintpadSection": "strong-yellowish-brown",
+        "sampleHex": "#996515",
+        "dbSubHue": "deep-yellow-red"
+      },
+      {
+        "paintpadSection": "deep-yellowish-brown",
+        "sampleHex": "#654522",
+        "dbSubHue": "dark-yellow-red"
+      },
+      {
+        "paintpadSection": "light-yellowish-brown",
+        "sampleHex": "#c19a6b",
+        "dbSubHue": "greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "moderate-yellowish-brown",
+        "sampleHex": "#826644",
+        "dbSubHue": "dark-yellow-red"
+      },
+      {
+        "paintpadSection": "dark-yellowish-brown",
+        "sampleHex": "#4b3621",
+        "dbSubHue": "very-deep-yellow-red"
+      },
+      {
+        "paintpadSection": "light-greyish-yellowish-brown",
+        "sampleHex": "#ae9b82",
+        "dbSubHue": "greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "greyish-yellowish-brown",
+        "sampleHex": "#7e6d5a",
+        "dbSubHue": "greyish-yellow-red"
+      },
+      {
+        "paintpadSection": "dark-greyish-yellowish-brown",
+        "sampleHex": "#483c32",
+        "dbSubHue": "dark-greyish-yellow-red"
+      }
+    ],
+    "yellow": [
+      {
+        "paintpadSection": "vivid-yellow",
+        "sampleHex": "#f3c300",
+        "dbSubHue": "vivid-yellow"
+      },
+      {
+        "paintpadSection": "brilliant-yellow",
+        "sampleHex": "#fada5e",
+        "dbSubHue": "moderate-yellow"
+      },
+      {
+        "paintpadSection": "strong-yellow",
+        "sampleHex": "#d4af37",
+        "dbSubHue": "strong-yellow"
+      },
+      {
+        "paintpadSection": "deep-yellow",
+        "sampleHex": "#af8d13",
+        "dbSubHue": "deep-yellow"
+      },
+      {
+        "paintpadSection": "light-yellow",
+        "sampleHex": "#f8de7e",
+        "dbSubHue": "light-greyish-yellow"
+      },
+      {
+        "paintpadSection": "moderate-yellow",
+        "sampleHex": "#c9ae5d",
+        "dbSubHue": "moderate-yellow"
+      },
+      {
+        "paintpadSection": "dark-yellow",
+        "sampleHex": "#ab9144",
+        "dbSubHue": "dark-yellow"
+      },
+      {
+        "paintpadSection": "pale-yellow",
+        "sampleHex": "#f3e5ab",
+        "dbSubHue": "light-greyish-yellow"
+      },
+      {
+        "paintpadSection": "greyish-yellow",
+        "sampleHex": "#c2b280",
+        "dbSubHue": "greyish-yellow"
+      },
+      {
+        "paintpadSection": "dark-greyish-yellow",
+        "sampleHex": "#a18f60",
+        "dbSubHue": "dark-greyish-yellow"
+      },
+      {
+        "paintpadSection": "yellowish-white",
+        "sampleHex": "#f0ead6",
+        "dbSubHue": "light-greyish-yellow"
+      },
+      {
+        "paintpadSection": "yellowish-grey",
+        "sampleHex": "#bfb8a5",
+        "dbSubHue": "light-greyish-yellow"
+      }
+    ],
+    "olive-brown": [
+      {
+        "paintpadSection": "light-olive-brown",
+        "sampleHex": "#967117",
+        "dbSubHue": "deep-yellow"
+      },
+      {
+        "paintpadSection": "moderate-olive-brown",
+        "sampleHex": "#6c541e",
+        "dbSubHue": "dark-yellow"
+      },
+      {
+        "paintpadSection": "dark-olive-brown",
+        "sampleHex": "#3b3121",
+        "dbSubHue": "very-dark-yellow"
+      }
+    ],
+    "greenish-yellow": [
+      {
+        "paintpadSection": "vivid-greenish-yellow",
+        "sampleHex": "#dcd300",
+        "dbSubHue": "vivid-green-yellow"
+      },
+      {
+        "paintpadSection": "brilliant-greenish-yellow",
+        "sampleHex": "#e9e450",
+        "dbSubHue": "moderate-green-yellow"
+      },
+      {
+        "paintpadSection": "strong-greenish-yellow",
+        "sampleHex": "#beb72e",
+        "dbSubHue": "moderate-green-yellow"
+      },
+      {
+        "paintpadSection": "deep-greenish-yellow",
+        "sampleHex": "#9b9400",
+        "dbSubHue": "deep-green-yellow"
+      },
+      {
+        "paintpadSection": "light-greenish-yellow",
+        "sampleHex": "#eae679",
+        "dbSubHue": "light-greyish-green-yellow"
+      },
+      {
+        "paintpadSection": "moderate-greenish-yellow",
+        "sampleHex": "#b9b459",
+        "dbSubHue": "moderate-green-yellow"
+      },
+      {
+        "paintpadSection": "dark-greenish-yellow",
+        "sampleHex": "#98943e",
+        "dbSubHue": "moderate-green-yellow"
+      },
+      {
+        "paintpadSection": "pale-greenish-yellow",
+        "sampleHex": "#ebe8a4",
+        "dbSubHue": "light-greyish-green-yellow"
+      },
+      {
+        "paintpadSection": "greyish-greenish-yellow",
+        "sampleHex": "#b9b57d",
+        "dbSubHue": "light-greyish-green-yellow"
+      }
+    ],
+    "olive": [
+      {
+        "paintpadSection": "light-olive",
+        "sampleHex": "#867e36",
+        "dbSubHue": "dark-green-yellow"
+      },
+      {
+        "paintpadSection": "moderate-olive",
+        "sampleHex": "#665d1e",
+        "dbSubHue": "dark-green-yellow"
+      },
+      {
+        "paintpadSection": "dark-olive",
+        "sampleHex": "#403d21",
+        "dbSubHue": "very-dark-green-yellow"
+      },
+      {
+        "paintpadSection": "light-greyish-olive",
+        "sampleHex": "#8c8767",
+        "dbSubHue": "greyish-green-yellow"
+      },
+      {
+        "paintpadSection": "greyish-olive",
+        "sampleHex": "#5b5842",
+        "dbSubHue": "dark-greyish-green-yellow"
+      },
+      {
+        "paintpadSection": "dark-greyish-olive",
+        "sampleHex": "#363527",
+        "dbSubHue": "very-dark-green-yellow"
+      },
+      {
+        "paintpadSection": "light-olive-grey",
+        "sampleHex": "#8a8776",
+        "dbSubHue": "greyish-green-yellow"
+      },
+      {
+        "paintpadSection": "olive-grey",
+        "sampleHex": "#57554c",
+        "dbSubHue": "dark-greyish-green-yellow"
+      },
+      {
+        "paintpadSection": "olive-black",
+        "sampleHex": "#25241d",
+        "dbSubHue": "blackish-green-yellow"
+      }
+    ],
+    "yellow-green": [
+      {
+        "paintpadSection": "vivid-yellow-green",
+        "sampleHex": "#8db600",
+        "dbSubHue": "strong-green-yellow"
+      },
+      {
+        "paintpadSection": "brilliant-yellow-green",
+        "sampleHex": "#bdda57",
+        "dbSubHue": "moderate-green-yellow"
+      },
+      {
+        "paintpadSection": "strong-yellow-green",
+        "sampleHex": "#7e9f2e",
+        "dbSubHue": "moderate-green-yellow"
+      },
+      {
+        "paintpadSection": "deep-yellow-green",
+        "sampleHex": "#467129",
+        "dbSubHue": "dark-green-yellow"
+      },
+      {
+        "paintpadSection": "light-yellow-green",
+        "sampleHex": "#c9dc89",
+        "dbSubHue": "light-greyish-green-yellow"
+      },
+      {
+        "paintpadSection": "moderate-yellow-green",
+        "sampleHex": "#8a9a5b",
+        "dbSubHue": "greyish-green-yellow"
+      },
+      {
+        "paintpadSection": "pale-yellow-green",
+        "sampleHex": "#dadfb7",
+        "dbSubHue": "light-greyish-green-yellow"
+      },
+      {
+        "paintpadSection": "greyish-yellow-green",
+        "sampleHex": "#8f9779",
+        "dbSubHue": "greyish-green-yellow"
+      }
+    ],
+    "olive-green": [
+      {
+        "paintpadSection": "strong-olive-green",
+        "sampleHex": "#404f00",
+        "dbSubHue": "very-dark-green"
+      },
+      {
+        "paintpadSection": "deep-olive-green",
+        "sampleHex": "#232f00",
+        "dbSubHue": "very-dark-green"
+      },
+      {
+        "paintpadSection": "moderate-olive-green",
+        "sampleHex": "#4a5d23",
+        "dbSubHue": "dark-greyish-green"
+      },
+      {
+        "paintpadSection": "dark-olive-green",
+        "sampleHex": "#2b3d26",
+        "dbSubHue": "very-dark-green"
+      },
+      {
+        "paintpadSection": "greyish-olive-green",
+        "sampleHex": "#515744",
+        "dbSubHue": "dark-greyish-green"
+      },
+      {
+        "paintpadSection": "dark-greyish-olive-green",
+        "sampleHex": "#31362b",
+        "dbSubHue": "blackish-green"
+      }
+    ],
+    "yellowish-green": [
+      {
+        "paintpadSection": "vivid-yellowish-green",
+        "sampleHex": "#27a64c",
+        "dbSubHue": "moderate-green"
+      },
+      {
+        "paintpadSection": "brilliant-yellowish-green",
+        "sampleHex": "#83d37d",
+        "dbSubHue": "greyish-green"
+      },
+      {
+        "paintpadSection": "strong-yellowish-green",
+        "sampleHex": "#44944a",
+        "dbSubHue": "moderate-green"
+      },
+      {
+        "paintpadSection": "deep-yellowish-green",
+        "sampleHex": "#00622d",
+        "dbSubHue": "very-deep-green"
+      },
+      {
+        "paintpadSection": "very-deep-yellowish-green",
+        "sampleHex": "#003118",
+        "dbSubHue": "very-dark-green"
+      },
+      {
+        "paintpadSection": "very-light-yellowish-green",
+        "sampleHex": "#b6e5af",
+        "dbSubHue": "light-greyish-green"
+      },
+      {
+        "paintpadSection": "light-yellowish-green",
+        "sampleHex": "#93c592",
+        "dbSubHue": "light-greyish-green"
+      },
+      {
+        "paintpadSection": "moderate-yellowish-green",
+        "sampleHex": "#679267",
+        "dbSubHue": "greyish-green"
+      },
+      {
+        "paintpadSection": "dark-yellowish-green",
+        "sampleHex": "#355e3b",
+        "dbSubHue": "dark-greyish-green"
+      },
+      {
+        "paintpadSection": "very-dark-yellowish-green",
+        "sampleHex": "#173620",
+        "dbSubHue": "very-dark-green"
+      }
+    ],
+    "green": [
+      {
+        "paintpadSection": "vivid-green",
+        "sampleHex": "#008856",
+        "dbSubHue": "vivid-green"
+      },
+      {
+        "paintpadSection": "brilliant-green",
+        "sampleHex": "#3eb489",
+        "dbSubHue": "greyish-green"
+      },
+      {
+        "paintpadSection": "strong-green",
+        "sampleHex": "#007959",
+        "dbSubHue": "strong-green"
+      },
+      {
+        "paintpadSection": "deep-green",
+        "sampleHex": "#00543d",
+        "dbSubHue": "deep-green"
+      },
+      {
+        "paintpadSection": "very-light-green",
+        "sampleHex": "#8ed1b2",
+        "dbSubHue": "light-greyish-green"
+      },
+      {
+        "paintpadSection": "light-green",
+        "sampleHex": "#6aab8e",
+        "dbSubHue": "greyish-green"
+      },
+      {
+        "paintpadSection": "moderate-green",
+        "sampleHex": "#3b7861",
+        "dbSubHue": "moderate-green"
+      },
+      {
+        "paintpadSection": "dark-green",
+        "sampleHex": "#1b4d3e",
+        "dbSubHue": "dark-green"
+      },
+      {
+        "paintpadSection": "very-dark-green",
+        "sampleHex": "#1c352d",
+        "dbSubHue": "very-dark-green"
+      },
+      {
+        "paintpadSection": "very-pale-green",
+        "sampleHex": "#c7e6d7",
+        "dbSubHue": "light-greyish-green"
+      },
+      {
+        "paintpadSection": "pale-green",
+        "sampleHex": "#8da399",
+        "dbSubHue": "light-greyish-green"
+      },
+      {
+        "paintpadSection": "greyish-green",
+        "sampleHex": "#5e716a",
+        "dbSubHue": "greyish-green"
+      },
+      {
+        "paintpadSection": "dark-greyish-green",
+        "sampleHex": "#3a4b47",
+        "dbSubHue": "dark-greyish-green"
+      },
+      {
+        "paintpadSection": "blackish-green",
+        "sampleHex": "#1a2421",
+        "dbSubHue": "blackish-green"
+      },
+      {
+        "paintpadSection": "greenish-white",
+        "sampleHex": "#dfede8",
+        "dbSubHue": "light-greyish-green"
+      },
+      {
+        "paintpadSection": "light-greenish-grey",
+        "sampleHex": "#b2beb5",
+        "dbSubHue": "light-greyish-green"
+      },
+      {
+        "paintpadSection": "greenish-grey",
+        "sampleHex": "#7d8984",
+        "dbSubHue": "greyish-green"
+      },
+      {
+        "paintpadSection": "dark-greenish-grey",
+        "sampleHex": "#4e5755",
+        "dbSubHue": "dark-greyish-green"
+      },
+      {
+        "paintpadSection": "greenish-black",
+        "sampleHex": "#1e2321",
+        "dbSubHue": "blackish-green"
+      }
+    ],
+    "bluish-green": [
+      {
+        "paintpadSection": "vivid-bluish-green",
+        "sampleHex": "#008882",
+        "dbSubHue": "deep-blue-green"
+      },
+      {
+        "paintpadSection": "brilliant-bluish-green",
+        "sampleHex": "#00a693",
+        "dbSubHue": "deep-blue-green"
+      },
+      {
+        "paintpadSection": "strong-bluish-green",
+        "sampleHex": "#007a74",
+        "dbSubHue": "deep-blue-green"
+      },
+      {
+        "paintpadSection": "deep-bluish-green",
+        "sampleHex": "#00443f",
+        "dbSubHue": "very-deep-blue-green"
+      },
+      {
+        "paintpadSection": "very-light-bluish-green",
+        "sampleHex": "#96ded1",
+        "dbSubHue": "light-greyish-blue-green"
+      },
+      {
+        "paintpadSection": "light-bluish-green",
+        "sampleHex": "#66ada4",
+        "dbSubHue": "greyish-blue-green"
+      },
+      {
+        "paintpadSection": "moderate-bluish-green",
+        "sampleHex": "#317873",
+        "dbSubHue": "dark-blue-green"
+      },
+      {
+        "paintpadSection": "dark-bluish-green",
+        "sampleHex": "#004b49",
+        "dbSubHue": "very-deep-blue-green"
+      },
+      {
+        "paintpadSection": "very-dark-bluish-green",
+        "sampleHex": "#002a29",
+        "dbSubHue": "very-dark-blue-green"
+      }
+    ],
+    "greenish-blue": [
+      {
+        "paintpadSection": "vivid-greenish-blue",
+        "sampleHex": "#0085a1",
+        "dbSubHue": "deep-blue-green"
+      },
+      {
+        "paintpadSection": "brilliant-greenish-blue",
+        "sampleHex": "#239eba",
+        "dbSubHue": "moderate-blue-green"
+      },
+      {
+        "paintpadSection": "strong-greenish-blue",
+        "sampleHex": "#007791",
+        "dbSubHue": "deep-blue-green"
+      },
+      {
+        "paintpadSection": "deep-greenish-blue",
+        "sampleHex": "#2e8495",
+        "dbSubHue": "deep-blue-green"
+      },
+      {
+        "paintpadSection": "very-light-greenish-blue",
+        "sampleHex": "#9cd1dc",
+        "dbSubHue": "light-greyish-blue-green"
+      },
+      {
+        "paintpadSection": "light-greenish-blue",
+        "sampleHex": "#66aabc",
+        "dbSubHue": "greyish-blue-green"
+      },
+      {
+        "paintpadSection": "moderate-greenish-blue",
+        "sampleHex": "#367588",
+        "dbSubHue": "dark-blue-green"
+      },
+      {
+        "paintpadSection": "dark-greenish-blue",
+        "sampleHex": "#004958",
+        "dbSubHue": "very-deep-blue-green"
+      },
+      {
+        "paintpadSection": "very-dark-greenish-blue",
+        "sampleHex": "#002e3b",
+        "dbSubHue": "very-dark-blue-green"
+      }
+    ],
+    "blue": [
+      {
+        "paintpadSection": "vivid-blue",
+        "sampleHex": "#00a1c2",
+        "dbSubHue": "vivid-blue"
+      },
+      {
+        "paintpadSection": "brilliant-blue",
+        "sampleHex": "#4997d0",
+        "dbSubHue": "greyish-blue"
+      },
+      {
+        "paintpadSection": "strong-blue",
+        "sampleHex": "#0067a5",
+        "dbSubHue": "strong-blue"
+      },
+      {
+        "paintpadSection": "deep-blue",
+        "sampleHex": "#00416a",
+        "dbSubHue": "deep-blue"
+      },
+      {
+        "paintpadSection": "very-light-blue",
+        "sampleHex": "#a1caf1",
+        "dbSubHue": "light-greyish-blue"
+      },
+      {
+        "paintpadSection": "light-blue",
+        "sampleHex": "#70a3cc",
+        "dbSubHue": "light-greyish-blue"
+      },
+      {
+        "paintpadSection": "moderate-blue",
+        "sampleHex": "#436b95",
+        "dbSubHue": "moderate-blue"
+      },
+      {
+        "paintpadSection": "dark-blue",
+        "sampleHex": "#00304e",
+        "dbSubHue": "dark-blue"
+      },
+      {
+        "paintpadSection": "very-pale-blue",
+        "sampleHex": "#bcd4e6",
+        "dbSubHue": "light-greyish-blue"
+      },
+      {
+        "paintpadSection": "pale-blue",
+        "sampleHex": "#91a3b0",
+        "dbSubHue": "light-greyish-blue"
+      },
+      {
+        "paintpadSection": "greyish-blue",
+        "sampleHex": "#536878",
+        "dbSubHue": "greyish-blue"
+      },
+      {
+        "paintpadSection": "dark-greyish-blue",
+        "sampleHex": "#36454f",
+        "dbSubHue": "dark-greyish-blue"
+      },
+      {
+        "paintpadSection": "blackish-blue",
+        "sampleHex": "#202830",
+        "dbSubHue": "blackish-blue"
+      },
+      {
+        "paintpadSection": "bluish-white",
+        "sampleHex": "#e9e9ed",
+        "dbSubHue": "light-greyish-blue"
+      },
+      {
+        "paintpadSection": "light-bluish-grey",
+        "sampleHex": "#b4bcc0",
+        "dbSubHue": "light-greyish-blue"
+      },
+      {
+        "paintpadSection": "bluish-grey",
+        "sampleHex": "#81878b",
+        "dbSubHue": "greyish-blue"
+      },
+      {
+        "paintpadSection": "dark-bluish-grey",
+        "sampleHex": "#51585e",
+        "dbSubHue": "dark-greyish-blue"
+      },
+      {
+        "paintpadSection": "bluish-black",
+        "sampleHex": "#202428",
+        "dbSubHue": "blackish-blue"
+      }
+    ],
+    "purplish-blue": [
+      {
+        "paintpadSection": "vivid-purplish-blue",
+        "sampleHex": "#30267a",
+        "dbSubHue": "dark-purple-blue"
+      },
+      {
+        "paintpadSection": "brilliant-purplish-blue",
+        "sampleHex": "#6c79b8",
+        "dbSubHue": "greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "strong-purplish-blue",
+        "sampleHex": "#545aa7",
+        "dbSubHue": "greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "deep-purplish-blue",
+        "sampleHex": "#272458",
+        "dbSubHue": "very-deep-purple-blue"
+      },
+      {
+        "paintpadSection": "very-light-purplish-blue",
+        "sampleHex": "#b3bce2",
+        "dbSubHue": "light-greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "light-purplish-blue",
+        "sampleHex": "#8791bf",
+        "dbSubHue": "greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "moderate-purplish-blue",
+        "sampleHex": "#4e5180",
+        "dbSubHue": "dark-greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "dark-purplish-blue",
+        "sampleHex": "#252440",
+        "dbSubHue": "very-dark-purple-blue"
+      },
+      {
+        "paintpadSection": "very-pale-purplish-blue",
+        "sampleHex": "#c0c8e1",
+        "dbSubHue": "light-greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "pale-purplish-blue",
+        "sampleHex": "#8c92ac",
+        "dbSubHue": "greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "greyish-purplish-blue",
+        "sampleHex": "#4c516d",
+        "dbSubHue": "dark-greyish-purple-blue"
+      }
+    ],
+    "violet": [
+      {
+        "paintpadSection": "vivid-violet",
+        "sampleHex": "#9065ca",
+        "dbSubHue": "moderate-purple-blue"
+      },
+      {
+        "paintpadSection": "brilliant-violet",
+        "sampleHex": "#7e73b8",
+        "dbSubHue": "greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "strong-violet",
+        "sampleHex": "#604e97",
+        "dbSubHue": "greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "deep-violet",
+        "sampleHex": "#32174d",
+        "dbSubHue": "very-deep-purple-blue"
+      },
+      {
+        "paintpadSection": "very-light-violet",
+        "sampleHex": "#dcd0ff",
+        "dbSubHue": "light-greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "light-violet",
+        "sampleHex": "#8c82b6",
+        "dbSubHue": "greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "moderate-violet",
+        "sampleHex": "#604e81",
+        "dbSubHue": "greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "dark-violet",
+        "sampleHex": "#2f2140",
+        "dbSubHue": "very-dark-purple-blue"
+      },
+      {
+        "paintpadSection": "very-pale-violet",
+        "sampleHex": "#c4c3dd",
+        "dbSubHue": "light-greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "pale-violet",
+        "sampleHex": "#9690ab",
+        "dbSubHue": "greyish-purple-blue"
+      },
+      {
+        "paintpadSection": "greyish-violet",
+        "sampleHex": "#554c69",
+        "dbSubHue": "dark-greyish-purple-blue"
+      }
+    ],
+    "purple": [
+      {
+        "paintpadSection": "vivid-purple",
+        "sampleHex": "#9a4eae",
+        "dbSubHue": "vivid-purple"
+      },
+      {
+        "paintpadSection": "brilliant-purple",
+        "sampleHex": "#d399e6",
+        "dbSubHue": "light-greyish-purple"
+      },
+      {
+        "paintpadSection": "strong-purple",
+        "sampleHex": "#875692",
+        "dbSubHue": "strong-purple"
+      },
+      {
+        "paintpadSection": "deep-purple",
+        "sampleHex": "#602f6b",
+        "dbSubHue": "deep-purple"
+      },
+      {
+        "paintpadSection": "very-deep-purple",
+        "sampleHex": "#401a4c",
+        "dbSubHue": "very-deep-purple"
+      },
+      {
+        "paintpadSection": "very-light-purple",
+        "sampleHex": "#d5badb",
+        "dbSubHue": "light-greyish-purple"
+      },
+      {
+        "paintpadSection": "light-purple",
+        "sampleHex": "#b695c0",
+        "dbSubHue": "light-greyish-purple"
+      },
+      {
+        "paintpadSection": "moderate-purple",
+        "sampleHex": "#86608e",
+        "dbSubHue": "moderate-purple"
+      },
+      {
+        "paintpadSection": "dark-purple",
+        "sampleHex": "#563c5c",
+        "dbSubHue": "dark-purple"
+      },
+      {
+        "paintpadSection": "very-dark-purple",
+        "sampleHex": "#301934",
+        "dbSubHue": "very-dark-purple"
+      },
+      {
+        "paintpadSection": "very-pale-purple",
+        "sampleHex": "#d6cadd",
+        "dbSubHue": "light-greyish-purple"
+      },
+      {
+        "paintpadSection": "pale-purple",
+        "sampleHex": "#aa98a9",
+        "dbSubHue": "greyish-purple"
+      },
+      {
+        "paintpadSection": "greyish-purple",
+        "sampleHex": "#796878",
+        "dbSubHue": "greyish-purple"
+      },
+      {
+        "paintpadSection": "dark-greyish-purple",
+        "sampleHex": "#50404d",
+        "dbSubHue": "dark-greyish-purple"
+      },
+      {
+        "paintpadSection": "blackish-purple",
+        "sampleHex": "#291e29",
+        "dbSubHue": "blackish-purple"
+      },
+      {
+        "paintpadSection": "purplish-white",
+        "sampleHex": "#e8e3e5",
+        "dbSubHue": "light-greyish-purple"
+      },
+      {
+        "paintpadSection": "light-purplish-grey",
+        "sampleHex": "#bfb9bd",
+        "dbSubHue": "light-greyish-purple"
+      },
+      {
+        "paintpadSection": "purplish-grey",
+        "sampleHex": "#8b8589",
+        "dbSubHue": "greyish-purple"
+      },
+      {
+        "paintpadSection": "dark-purplish-grey",
+        "sampleHex": "#5d555b",
+        "dbSubHue": "dark-greyish-purple"
+      },
+      {
+        "paintpadSection": "purplish-black",
+        "sampleHex": "#242124",
+        "dbSubHue": "blackish-purple"
+      }
+    ],
+    "reddish-purple": [
+      {
+        "paintpadSection": "vivid-reddish-purple",
+        "sampleHex": "#870074",
+        "dbSubHue": "deep-red-purple"
+      },
+      {
+        "paintpadSection": "strong-reddish-purple",
+        "sampleHex": "#9e4f88",
+        "dbSubHue": "greyish-red-purple"
+      },
+      {
+        "paintpadSection": "deep-reddish-purple",
+        "sampleHex": "#702963",
+        "dbSubHue": "dark-red-purple"
+      },
+      {
+        "paintpadSection": "very-deep-reddish-purple",
+        "sampleHex": "#54194e",
+        "dbSubHue": "dark-red-purple"
+      },
+      {
+        "paintpadSection": "light-reddish-purple",
+        "sampleHex": "#b784a7",
+        "dbSubHue": "light-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "moderate-reddish-purple",
+        "sampleHex": "#915c83",
+        "dbSubHue": "greyish-red-purple"
+      },
+      {
+        "paintpadSection": "dark-reddish-purple",
+        "sampleHex": "#5d3954",
+        "dbSubHue": "dark-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "very-dark-reddish-purple",
+        "sampleHex": "#341731",
+        "dbSubHue": "very-dark-red-purple"
+      },
+      {
+        "paintpadSection": "pale-reddish-purple",
+        "sampleHex": "#aa8a9e",
+        "dbSubHue": "greyish-red-purple"
+      },
+      {
+        "paintpadSection": "greyish-reddish-purple",
+        "sampleHex": "#836479",
+        "dbSubHue": "greyish-red-purple"
+      }
+    ],
+    "purplish-pink": [
+      {
+        "paintpadSection": "brilliant-purplish-pink",
+        "sampleHex": "#ffc8d6",
+        "dbSubHue": "light-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "strong-purplish-pink",
+        "sampleHex": "#e68fac",
+        "dbSubHue": "light-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "deep-purplish-pink",
+        "sampleHex": "#de6fa1",
+        "dbSubHue": "moderate-red-purple"
+      },
+      {
+        "paintpadSection": "light-purplish-pink",
+        "sampleHex": "#efbbcc",
+        "dbSubHue": "light-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "moderate-purplish-pink",
+        "sampleHex": "#d597ae",
+        "dbSubHue": "light-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "dark-purplish-pink",
+        "sampleHex": "#c17e91",
+        "dbSubHue": "greyish-red-purple"
+      },
+      {
+        "paintpadSection": "pale-purplish-pink",
+        "sampleHex": "#e8ccd7",
+        "dbSubHue": "light-greyish-red-purple"
+      },
+      {
+        "paintpadSection": "greyish-purplish-pink",
+        "sampleHex": "#c3a6b1",
+        "dbSubHue": "light-greyish-red-purple"
+      }
+    ],
+    "purplish-red": [
+      {
+        "paintpadSection": "vivid-purplish-red",
+        "sampleHex": "#ce4676",
+        "dbSubHue": "moderate-red-purple"
+      },
+      {
+        "paintpadSection": "strong-purplish-red",
+        "sampleHex": "#b3446c",
+        "dbSubHue": "moderate-red-purple"
+      },
+      {
+        "paintpadSection": "deep-purplish-red",
+        "sampleHex": "#78184a",
+        "dbSubHue": "deep-red-purple"
+      },
+      {
+        "paintpadSection": "very-deep-purplish-red",
+        "sampleHex": "#54133b",
+        "dbSubHue": "very-deep-red-purple"
+      },
+      {
+        "paintpadSection": "moderate-purplish-red",
+        "sampleHex": "#a8516e",
+        "dbSubHue": "greyish-red-purple"
+      },
+      {
+        "paintpadSection": "dark-purplish-red",
+        "sampleHex": "#673147",
+        "dbSubHue": "dark-red-purple"
+      },
+      {
+        "paintpadSection": "very-dark-purplish-red",
+        "sampleHex": "#38152c",
+        "dbSubHue": "very-dark-red-purple"
+      },
+      {
+        "paintpadSection": "light-greyish-purplish-red",
+        "sampleHex": "#af868e",
+        "dbSubHue": "greyish-red-purple"
+      },
+      {
+        "paintpadSection": "greyish-purplish-red",
+        "sampleHex": "#915f6d",
+        "dbSubHue": "greyish-red-purple"
+      }
+    ],
+    "white": [
+      {
+        "paintpadSection": "white",
+        "sampleHex": null,
+        "dbSubHue": "white"
+      }
+    ],
+    "grey": [
+      {
+        "paintpadSection": "light-grey",
+        "sampleHex": "#b9b8b5",
+        "dbSubHue": "light-grey"
+      },
+      {
+        "paintpadSection": "medium-grey",
+        "sampleHex": "#848482",
+        "dbSubHue": "medium-grey"
+      },
+      {
+        "paintpadSection": "dark-grey",
+        "sampleHex": "#555555",
+        "dbSubHue": "dark-grey"
+      }
+    ],
+    "black": [
+      {
+        "paintpadSection": "black",
+        "sampleHex": null,
+        "dbSubHue": "black"
+      }
+    ]
+  }
+}

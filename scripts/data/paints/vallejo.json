@@ -10,7 +10,7 @@
   {
     "id": "val-2",
     "name": "White Grey",
-    "hex": "#EEF1EC",
+    "hex": "#EEF0EF",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -18,7 +18,7 @@
   {
     "id": "val-3",
     "name": "Ivory",
-    "hex": "#EFF1D9",
+    "hex": "#F3EFD2",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -26,7 +26,7 @@
   {
     "id": "val-4",
     "name": "Offwhite",
-    "hex": "#EFEEE2",
+    "hex": "#EBEBE1",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -34,7 +34,7 @@
   {
     "id": "val-5",
     "name": "Light Flesh",
-    "hex": "#FEEDD0",
+    "hex": "#F8D9C7",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -42,7 +42,7 @@
   {
     "id": "val-6",
     "name": "Basic Skintone",
-    "hex": "#FBBC8C",
+    "hex": "#F0BA9E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -50,7 +50,7 @@
   {
     "id": "val-7",
     "name": "Sunny Skintone",
-    "hex": "#F4B171",
+    "hex": "#EAAF77",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -58,7 +58,7 @@
   {
     "id": "val-8",
     "name": "Flat Flesh",
-    "hex": "#D8A977",
+    "hex": "#E1A67A",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -66,7 +66,7 @@
   {
     "id": "val-9",
     "name": "Medium Fleshtone",
-    "hex": "#C08245",
+    "hex": "#BC854D",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -74,7 +74,7 @@
   {
     "id": "val-10",
     "name": "Dark Flesh",
-    "hex": "#D9A262",
+    "hex": "#D69E61",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -82,7 +82,7 @@
   {
     "id": "val-11",
     "name": "Salmon Rose",
-    "hex": "#F89D87",
+    "hex": "#F1AFA1",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -90,7 +90,7 @@
   {
     "id": "val-12",
     "name": "Old Rose",
-    "hex": "#D47B7D",
+    "hex": "#D77E78",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -98,7 +98,7 @@
   {
     "id": "val-13",
     "name": "Pink",
-    "hex": "#D37497",
+    "hex": "#C57BAC",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -106,7 +106,7 @@
   {
     "id": "val-14",
     "name": "Magenta",
-    "hex": "#A92A56",
+    "hex": "#BF1226",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -114,7 +114,7 @@
   {
     "id": "val-15",
     "name": "Purple",
-    "hex": "#834A6C",
+    "hex": "#70547C",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -122,7 +122,7 @@
   {
     "id": "val-16",
     "name": "Violet",
-    "hex": "#4B2F65",
+    "hex": "#484069",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -130,7 +130,7 @@
   {
     "id": "val-17",
     "name": "Blue Violet",
-    "hex": "#795C9A",
+    "hex": "#7168A7",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -138,7 +138,7 @@
   {
     "id": "val-18",
     "name": "Royal Purple",
-    "hex": "#4B2967",
+    "hex": "#543F5E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -146,7 +146,7 @@
   {
     "id": "val-19",
     "name": "Violet Red",
-    "hex": "#6B2946",
+    "hex": "#6E263E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -154,7 +154,7 @@
   {
     "id": "val-20",
     "name": "Lemon Yellow",
-    "hex": "#FEF10E",
+    "hex": "#FBEA20",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -162,7 +162,7 @@
   {
     "id": "val-21",
     "name": "Light Yellow",
-    "hex": "#F7EA62",
+    "hex": "#FDE857",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -170,7 +170,7 @@
   {
     "id": "val-22",
     "name": "Deep Yellow",
-    "hex": "#FFE30C",
+    "hex": "#FFE20E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -178,7 +178,7 @@
   {
     "id": "val-23",
     "name": "Flat Yellow",
-    "hex": "#FFCD25",
+    "hex": "#F8B735",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -186,7 +186,7 @@
   {
     "id": "val-24",
     "name": "Golden Yellow",
-    "hex": "#F7C65E",
+    "hex": "#F8B655",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -194,7 +194,7 @@
   {
     "id": "val-25",
     "name": "Ice Yellow",
-    "hex": "#FEEF87",
+    "hex": "#F7D897",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -202,7 +202,7 @@
   {
     "id": "val-26",
     "name": "Yellow Green",
-    "hex": "#D9E02A",
+    "hex": "#766D42",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -210,7 +210,7 @@
   {
     "id": "val-27",
     "name": "Yellow Ochre",
-    "hex": "#C19448",
+    "hex": "#C2924A",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -218,7 +218,7 @@
   {
     "id": "val-28",
     "name": "Sand Yellow",
-    "hex": "#D7BF75",
+    "hex": "#E4B86F",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -226,7 +226,7 @@
   {
     "id": "val-29",
     "name": "Dark Sand",
-    "hex": "#D6B779",
+    "hex": "#D1B283",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -234,7 +234,7 @@
   {
     "id": "val-30",
     "name": "Pale Sand",
-    "hex": "#D1C49C",
+    "hex": "#F5D8B6",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -242,7 +242,7 @@
   {
     "id": "val-31",
     "name": "Beige",
-    "hex": "#DBC58E",
+    "hex": "#DABA81",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -250,7 +250,7 @@
   {
     "id": "val-32",
     "name": "Buff",
-    "hex": "#D2CA9F",
+    "hex": "#CEB07E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -258,7 +258,7 @@
   {
     "id": "val-33",
     "name": "Desert Yellow",
-    "hex": "#B19151",
+    "hex": "#B58F62",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -266,7 +266,7 @@
   {
     "id": "val-34",
     "name": "Dark Yellow",
-    "hex": "#9D9059",
+    "hex": "#94854A",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -274,7 +274,7 @@
   {
     "id": "val-35",
     "name": "Tan Yellow",
-    "hex": "#B5915D",
+    "hex": "#C19B6E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -282,7 +282,7 @@
   {
     "id": "val-36",
     "name": "Green Ochre",
-    "hex": "#A98969",
+    "hex": "#A88658",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -290,7 +290,7 @@
   {
     "id": "val-37",
     "name": "Ochre Brown",
-    "hex": "#A77237",
+    "hex": "#AE7727",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -298,7 +298,7 @@
   {
     "id": "val-38",
     "name": "Gold Brown",
-    "hex": "#BA8636",
+    "hex": "#B68644",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -306,7 +306,7 @@
   {
     "id": "val-39",
     "name": "Clear Orange",
-    "hex": "#F1552C",
+    "hex": "#CA4C36",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -314,7 +314,7 @@
   {
     "id": "val-40",
     "name": "Light Orange",
-    "hex": "#F68627",
+    "hex": "#F1873D",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -322,7 +322,7 @@
   {
     "id": "val-41",
     "name": "Bright Orange",
-    "hex": "#F26833",
+    "hex": "#E9602C",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -330,7 +330,7 @@
   {
     "id": "val-42",
     "name": "German Orange",
-    "hex": "#F05426",
+    "hex": "#D08474",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -338,7 +338,7 @@
   {
     "id": "val-43",
     "name": "Orange Red",
-    "hex": "#E34C26",
+    "hex": "#DC4319",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -346,7 +346,7 @@
   {
     "id": "val-44",
     "name": "Orange Brown",
-    "hex": "#B86F44",
+    "hex": "#BA6C3B",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -354,7 +354,7 @@
   {
     "id": "val-45",
     "name": "Scarlet",
-    "hex": "#DA3630",
+    "hex": "#BC4040",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -362,7 +362,7 @@
   {
     "id": "val-46",
     "name": "Vermillion",
-    "hex": "#D22B2D",
+    "hex": "#CE1A23",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -370,7 +370,7 @@
   {
     "id": "val-47",
     "name": "Amaranth Red",
-    "hex": "#CC4338",
+    "hex": "#BD533B",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -378,7 +378,7 @@
   {
     "id": "val-48",
     "name": "Carmine Red",
-    "hex": "#B73035",
+    "hex": "#B41927",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -386,7 +386,7 @@
   {
     "id": "val-49",
     "name": "Flat Red",
-    "hex": "#AA3037",
+    "hex": "#A73B39",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -394,7 +394,7 @@
   {
     "id": "val-50",
     "name": "Red",
-    "hex": "#91323A",
+    "hex": "#93262C",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -402,7 +402,7 @@
   {
     "id": "val-51",
     "name": "Dark Red",
-    "hex": "#A24A46",
+    "hex": "#8D4352",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -418,7 +418,7 @@
   {
     "id": "val-53",
     "name": "Red Leather",
-    "hex": "#93453D",
+    "hex": "#8E5840",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -426,7 +426,7 @@
   {
     "id": "val-54",
     "name": "Cavalry Brown",
-    "hex": "#853F3D",
+    "hex": "#843530",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -434,7 +434,7 @@
   {
     "id": "val-55",
     "name": "Sunset Red",
-    "hex": "#C22C5F",
+    "hex": "#BE3964",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -442,7 +442,7 @@
   {
     "id": "val-56",
     "name": "Brown Rose",
-    "hex": "#CF8774",
+    "hex": "#B38585",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -450,7 +450,7 @@
   {
     "id": "val-57",
     "name": "Beige Red",
-    "hex": "#C79166",
+    "hex": "#BB886D",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -458,7 +458,7 @@
   {
     "id": "val-58",
     "name": "Cork Brown",
-    "hex": "#A57B63",
+    "hex": "#A7785A",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -466,7 +466,7 @@
   {
     "id": "val-59",
     "name": "Light Brown",
-    "hex": "#BF764E",
+    "hex": "#AC724A",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -474,7 +474,7 @@
   {
     "id": "val-60",
     "name": "Brown Sand",
-    "hex": "#B08064",
+    "hex": "#A0785F",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -482,7 +482,7 @@
   {
     "id": "val-61",
     "name": "Flat Earth",
-    "hex": "#87643C",
+    "hex": "#765742",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -490,7 +490,7 @@
   {
     "id": "val-62",
     "name": "Flat Brown",
-    "hex": "#764841",
+    "hex": "#5E483B",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -498,7 +498,7 @@
   {
     "id": "val-63",
     "name": "Mahogany Brown",
-    "hex": "#804B47",
+    "hex": "#74534A",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -506,7 +506,7 @@
   {
     "id": "val-64",
     "name": "Saddle Brown",
-    "hex": "#89584F",
+    "hex": "#75544B",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -514,7 +514,7 @@
   {
     "id": "val-65",
     "name": "Beige Brown",
-    "hex": "#78584A",
+    "hex": "#937962",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -522,7 +522,7 @@
   {
     "id": "val-66",
     "name": "Tan Earth",
-    "hex": "#9C7962",
+    "hex": "#92745A",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -530,7 +530,7 @@
   {
     "id": "val-67",
     "name": "US Field Drab",
-    "hex": "#705D43",
+    "hex": "#7B674E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -538,7 +538,7 @@
   {
     "id": "val-68",
     "name": "Chocolate Brown",
-    "hex": "#5F5047",
+    "hex": "#564C40",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -546,7 +546,7 @@
   {
     "id": "val-69",
     "name": "Burnt Umber",
-    "hex": "#665148",
+    "hex": "#5A5046",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -554,7 +554,7 @@
   {
     "id": "val-70",
     "name": "Leather Brown",
-    "hex": "#4A4639",
+    "hex": "#5C4F46",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -562,7 +562,7 @@
   {
     "id": "val-71",
     "name": "Hull Red",
-    "hex": "#522724",
+    "hex": "#502820",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -570,7 +570,7 @@
   {
     "id": "val-72",
     "name": "Black Red",
-    "hex": "#5F2E39",
+    "hex": "#513937",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -578,7 +578,7 @@
   {
     "id": "val-73",
     "name": "German Cam. Black Brown",
-    "hex": "#5B3528",
+    "hex": "#484242",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -594,7 +594,7 @@
   {
     "id": "val-75",
     "name": "German Cam. Pale Brown",
-    "hex": "#82685E",
+    "hex": "#7D6857",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -602,7 +602,7 @@
   {
     "id": "val-76",
     "name": "German Cam. Orange Ochre",
-    "hex": "#9D7E55",
+    "hex": "#A27E4A",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -618,7 +618,7 @@
   {
     "id": "val-78",
     "name": "Iraqi Sand",
-    "hex": "#B89972",
+    "hex": "#BEA07E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -626,7 +626,7 @@
   {
     "id": "val-79",
     "name": "Sky Blue",
-    "hex": "#86D6F7",
+    "hex": "#7ACAEB",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -634,7 +634,7 @@
   {
     "id": "val-80",
     "name": "Deep Sky Blue",
-    "hex": "#00A6DA",
+    "hex": "#42AFDA",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -642,7 +642,7 @@
   {
     "id": "val-81",
     "name": "Andrea Blue",
-    "hex": "#008DC9",
+    "hex": "#0C97C2",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -650,7 +650,7 @@
   {
     "id": "val-82",
     "name": "Light Turquoise",
-    "hex": "#0094A5",
+    "hex": "#0190A0",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -658,7 +658,7 @@
   {
     "id": "val-83",
     "name": "Turquoise",
-    "hex": "#008E9C",
+    "hex": "#2E6C7B",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -666,7 +666,7 @@
   {
     "id": "val-84",
     "name": "Blue Green",
-    "hex": "#1A9496",
+    "hex": "#009B9F",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -674,7 +674,7 @@
   {
     "id": "val-85",
     "name": "Ultramarine",
-    "hex": "#3B5DA7",
+    "hex": "#2D559D",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -682,7 +682,7 @@
   {
     "id": "val-86",
     "name": "Royal Blue",
-    "hex": "#41558D",
+    "hex": "#255D8E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -690,7 +690,7 @@
   {
     "id": "val-87",
     "name": "Azure",
-    "hex": "#717CAD",
+    "hex": "#6B8DBB",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -698,7 +698,7 @@
   {
     "id": "val-88",
     "name": "Flat Blue",
-    "hex": "#336991",
+    "hex": "#44689C",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -706,7 +706,7 @@
   {
     "id": "val-89",
     "name": "Medium Blue",
-    "hex": "#066588",
+    "hex": "#216083",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -714,7 +714,7 @@
   {
     "id": "val-90",
     "name": "Dark Blue",
-    "hex": "#0D5A86",
+    "hex": "#336195",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -722,7 +722,7 @@
   {
     "id": "val-91",
     "name": "Blue",
-    "hex": "#043667",
+    "hex": "#003362",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -730,7 +730,7 @@
   {
     "id": "val-92",
     "name": "Prussian Blue",
-    "hex": "#2A546E",
+    "hex": "#405B78",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -738,7 +738,7 @@
   {
     "id": "val-93",
     "name": "Dark Prussian Blue",
-    "hex": "#192C43",
+    "hex": "#0F2B39",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -746,7 +746,7 @@
   {
     "id": "val-94",
     "name": "Field Blue",
-    "hex": "#436872",
+    "hex": "#57656E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -754,7 +754,7 @@
   {
     "id": "val-95",
     "name": "Grey Blue",
-    "hex": "#45708D",
+    "hex": "#70849F",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -762,7 +762,7 @@
   {
     "id": "val-96",
     "name": "Pastel Blue",
-    "hex": "#67859B",
+    "hex": "#6A8795",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -770,7 +770,7 @@
   {
     "id": "val-97",
     "name": "Intermediate Blue",
-    "hex": "#607A80",
+    "hex": "#646D76",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -778,7 +778,7 @@
   {
     "id": "val-98",
     "name": "French Mirage Blue",
-    "hex": "#557880",
+    "hex": "#5F6772",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -786,7 +786,7 @@
   {
     "id": "val-99",
     "name": "Pale Blue",
-    "hex": "#83B5B2",
+    "hex": "#99A9A6",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -794,7 +794,7 @@
   {
     "id": "val-100",
     "name": "Pale Grey Blue",
-    "hex": "#BACDD0",
+    "hex": "#A5B4BB",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -802,7 +802,7 @@
   {
     "id": "val-101",
     "name": "Blue Grey Pale",
-    "hex": "#9EA7A5",
+    "hex": "#818A93",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -810,7 +810,7 @@
   {
     "id": "val-102",
     "name": "Dark Blue Grey",
-    "hex": "#5C7476",
+    "hex": "#48544A",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -818,7 +818,7 @@
   {
     "id": "val-103",
     "name": "Dark Sea Blue",
-    "hex": "#2A4048",
+    "hex": "#41464C",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -826,7 +826,7 @@
   {
     "id": "val-104",
     "name": "Oxford Blue",
-    "hex": "#3A465F",
+    "hex": "#4D4D6F",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -834,7 +834,7 @@
   {
     "id": "val-105",
     "name": "Luftwaffe Uniform WW2",
-    "hex": "#3D474F",
+    "hex": "#4F5668",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -842,7 +842,7 @@
   {
     "id": "val-106",
     "name": "London Grey",
-    "hex": "#4A555E",
+    "hex": "#626973",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -850,7 +850,7 @@
   {
     "id": "val-107",
     "name": "Light Green",
-    "hex": "#00A850",
+    "hex": "#007943",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -858,7 +858,7 @@
   {
     "id": "val-108",
     "name": "Emerald",
-    "hex": "#00906A",
+    "hex": "#00855A",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -866,7 +866,7 @@
   {
     "id": "val-109",
     "name": "Park Green Flat",
-    "hex": "#008C5D",
+    "hex": "#067958",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -874,7 +874,7 @@
   {
     "id": "val-110",
     "name": "Deep Green",
-    "hex": "#0A6B48",
+    "hex": "#32634D",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -882,7 +882,7 @@
   {
     "id": "val-111",
     "name": "Intermediate Green",
-    "hex": "#49944F",
+    "hex": "#448B3D",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -890,7 +890,7 @@
   {
     "id": "val-112",
     "name": "Lime Green",
-    "hex": "#6FAE4E",
+    "hex": "#8C9441",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -898,7 +898,7 @@
   {
     "id": "val-113",
     "name": "Green Sky",
-    "hex": "#59AD84",
+    "hex": "#8A9F80",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -906,7 +906,7 @@
   {
     "id": "val-114",
     "name": "Light Green Blue",
-    "hex": "#6D9A95",
+    "hex": "#779F94",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -914,7 +914,7 @@
   {
     "id": "val-115",
     "name": "Pastel Green",
-    "hex": "#A4BB99",
+    "hex": "#A4A792",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -922,7 +922,7 @@
   {
     "id": "val-116",
     "name": "Flat Green",
-    "hex": "#2A6531",
+    "hex": "#485C41",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -930,7 +930,7 @@
   {
     "id": "val-117",
     "name": "Olive Green",
-    "hex": "#6A8B3A",
+    "hex": "#5F6E45",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -938,7 +938,7 @@
   {
     "id": "val-118",
     "name": "Uniform Green",
-    "hex": "#577A38",
+    "hex": "#5A6A46",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -946,7 +946,7 @@
   {
     "id": "val-119",
     "name": "Golden Olive",
-    "hex": "#78923B",
+    "hex": "#808145",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -954,7 +954,7 @@
   {
     "id": "val-120",
     "name": "Medium Olive",
-    "hex": "#226B2E",
+    "hex": "#2B6C28",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -962,7 +962,7 @@
   {
     "id": "val-121",
     "name": "Yellow Olive",
-    "hex": "#26392E",
+    "hex": "#4E5146",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -970,7 +970,7 @@
   {
     "id": "val-122",
     "name": "Reflective Green",
-    "hex": "#496244",
+    "hex": "#555742",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -978,7 +978,7 @@
   {
     "id": "val-123",
     "name": "US Dark Green",
-    "hex": "#5B6955",
+    "hex": "#57574D",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -986,7 +986,7 @@
   {
     "id": "val-124",
     "name": "Cam. Olive Green",
-    "hex": "#3C5549",
+    "hex": "#5F6E45",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -994,7 +994,7 @@
   {
     "id": "val-125",
     "name": "Military Green",
-    "hex": "#3E5848",
+    "hex": "#46493E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1002,7 +1002,7 @@
   {
     "id": "val-126",
     "name": "German Uniform",
-    "hex": "#286254",
+    "hex": "#51625C",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1010,7 +1010,7 @@
   {
     "id": "val-127",
     "name": "German Cam. Bright Green",
-    "hex": "#528944",
+    "hex": "#5C704B",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1018,7 +1018,7 @@
   {
     "id": "val-128",
     "name": "German Cam. Dark Green",
-    "hex": "#2F4845",
+    "hex": "#4B4D4A",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1026,7 +1026,7 @@
   {
     "id": "val-129",
     "name": "German Cam. Extra Dark Green",
-    "hex": "#30504A",
+    "hex": "#494B48",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1034,7 +1034,7 @@
   {
     "id": "val-130",
     "name": "Gunship Green",
-    "hex": "#3D685E",
+    "hex": "#526257",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1042,7 +1042,7 @@
   {
     "id": "val-131",
     "name": "Bronce Green",
-    "hex": "#2A534F",
+    "hex": "#505251",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1050,7 +1050,7 @@
   {
     "id": "val-132",
     "name": "Black Green",
-    "hex": "#19423E",
+    "hex": "#3E4943",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1058,7 +1058,7 @@
   {
     "id": "val-133",
     "name": "Dark Sea Green",
-    "hex": "#2F4844",
+    "hex": "#535762",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1066,7 +1066,7 @@
   {
     "id": "val-134",
     "name": "USA Olive Drab",
-    "hex": "#3B4947",
+    "hex": "#66614E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1074,7 +1074,7 @@
   {
     "id": "val-135",
     "name": "Green Brown",
-    "hex": "#8D7B55",
+    "hex": "#846D43",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1082,7 +1082,7 @@
   {
     "id": "val-136",
     "name": "Yellow Green",
-    "hex": "#91864B",
+    "hex": "#766D42",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1090,7 +1090,7 @@
   {
     "id": "val-137",
     "name": "Khaki Grey",
-    "hex": "#8B7F5D",
+    "hex": "#856D49",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1098,7 +1098,7 @@
   {
     "id": "val-138",
     "name": "Middlestone",
-    "hex": "#9C9660",
+    "hex": "#937E4F",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1106,7 +1106,7 @@
   {
     "id": "val-139",
     "name": "Stone Grey",
-    "hex": "#959980",
+    "hex": "#A09883",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1114,7 +1114,7 @@
   {
     "id": "val-140",
     "name": "Green Grey",
-    "hex": "#827E61",
+    "hex": "#75756B",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1130,7 +1130,7 @@
   {
     "id": "val-142",
     "name": "Olive Grey",
-    "hex": "#39584F",
+    "hex": "#545547",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1138,7 +1138,7 @@
   {
     "id": "val-143",
     "name": "Grey Green",
-    "hex": "#565A60",
+    "hex": "#5A5B5D",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1146,7 +1146,7 @@
   {
     "id": "val-144",
     "name": "Basalt Grey",
-    "hex": "#576860",
+    "hex": "#64696F",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1154,7 +1154,7 @@
   {
     "id": "val-145",
     "name": "Dark Blue Grey",
-    "hex": "#4B5751",
+    "hex": "#48544A",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1162,7 +1162,7 @@
   {
     "id": "val-146",
     "name": "German Field Grey WW2",
-    "hex": "#595748",
+    "hex": "#5F5F55",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1170,7 +1170,7 @@
   {
     "id": "val-147",
     "name": "Russian Uniform WW2",
-    "hex": "#606D53",
+    "hex": "#67624E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1178,7 +1178,7 @@
   {
     "id": "val-148",
     "name": "Japan Uniform WW2",
-    "hex": "#998546",
+    "hex": "#9E7C3C",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1186,7 +1186,7 @@
   {
     "id": "val-149",
     "name": "English Uniform",
-    "hex": "#715833",
+    "hex": "#715E40",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1194,7 +1194,7 @@
   {
     "id": "val-150",
     "name": "Silver Grey",
-    "hex": "#D8DFD5",
+    "hex": "#CAC6BA",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1202,7 +1202,7 @@
   {
     "id": "val-151",
     "name": "Deck Tan",
-    "hex": "#BEC5B3",
+    "hex": "#B1B1A7",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1210,7 +1210,7 @@
   {
     "id": "val-152",
     "name": "Grey Grey",
-    "hex": "#AECBBB",
+    "hex": "#5A5B5D",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1218,7 +1218,7 @@
   {
     "id": "val-153",
     "name": "Light Sea Grey",
-    "hex": "#97B4B5",
+    "hex": "#A1B1B1",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1226,7 +1226,7 @@
   {
     "id": "val-154",
     "name": "Medium Sea Grey",
-    "hex": "#869393",
+    "hex": "#828385",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1234,7 +1234,7 @@
   {
     "id": "val-155",
     "name": "Sky Grey",
-    "hex": "#B3B6B2",
+    "hex": "#A5A6A8",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1242,7 +1242,7 @@
   {
     "id": "val-156",
     "name": "Light Grey",
-    "hex": "#949C9A",
+    "hex": "#8F939E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1250,7 +1250,7 @@
   {
     "id": "val-157",
     "name": "Medium Grey",
-    "hex": "#909B85",
+    "hex": "#989A84",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1258,7 +1258,7 @@
   {
     "id": "val-158",
     "name": "Dark Sea Grey",
-    "hex": "#787D7A",
+    "hex": "#7A7B7D",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1266,7 +1266,7 @@
   {
     "id": "val-159",
     "name": "Neutral Grey",
-    "hex": "#64767A",
+    "hex": "#69707A",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1274,7 +1274,7 @@
   {
     "id": "val-160",
     "name": "Khaki",
-    "hex": "#969163",
+    "hex": "#87775D",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1282,7 +1282,7 @@
   {
     "id": "val-161",
     "name": "Black Grey",
-    "hex": "#2D373A",
+    "hex": "#48494B",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1290,7 +1290,7 @@
   {
     "id": "val-162",
     "name": "Dark Grey",
-    "hex": "#233E3D",
+    "hex": "#4D5258",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1298,7 +1298,7 @@
   {
     "id": "val-163",
     "name": "German Grey",
-    "hex": "#192F30",
+    "hex": "#46464E",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1306,7 +1306,7 @@
   {
     "id": "val-164",
     "name": "Glossy Black",
-    "hex": "#010101",
+    "hex": "#151515",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1314,7 +1314,7 @@
   {
     "id": "val-165",
     "name": "Black",
-    "hex": "#252B31",
+    "hex": "#010101",
     "type": "Model Color",
     "description": "",
     "comparable": []
@@ -1335,7 +1335,7 @@
   {
     "id": "val-167",
     "name": "Pale Flesh",
-    "hex": "#F6BDB3",
+    "hex": "#ECBDA9",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1343,7 +1343,7 @@
   {
     "id": "val-168",
     "name": "Elf Skintone",
-    "hex": "#F8A070",
+    "hex": "#E0A374",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1351,7 +1351,7 @@
   {
     "id": "val-169",
     "name": "Moon Yellow",
-    "hex": "#FFF103",
+    "hex": "#FCE000",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1364,7 +1364,7 @@
   {
     "id": "val-170",
     "name": "Sun Yellow",
-    "hex": "#FFCF07",
+    "hex": "#FEE300",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1377,7 +1377,7 @@
   {
     "id": "val-171",
     "name": "Gold Yellow",
-    "hex": "#FDB318",
+    "hex": "#FDC500",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1385,7 +1385,7 @@
   {
     "id": "val-172",
     "name": "Orange Fire",
-    "hex": "#F1652E",
+    "hex": "#E9651A",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1398,7 +1398,7 @@
   {
     "id": "val-173",
     "name": "Hot Orange",
-    "hex": "#E43027",
+    "hex": "#E64C2A",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1411,7 +1411,7 @@
   {
     "id": "val-174",
     "name": "Bloody Red",
-    "hex": "#BF282E",
+    "hex": "#BF1134",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1424,7 +1424,7 @@
   {
     "id": "val-175",
     "name": "Gory Red",
-    "hex": "#810504",
+    "hex": "#850E34",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1437,7 +1437,7 @@
   {
     "id": "val-176",
     "name": "Scarlet Red",
-    "hex": "#741330",
+    "hex": "#9C122C",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1450,7 +1450,7 @@
   {
     "id": "val-177",
     "name": "Squid Pink",
-    "hex": "#DA7FB5",
+    "hex": "#D18AB6",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1463,7 +1463,7 @@
   {
     "id": "val-178",
     "name": "Warlord Purple",
-    "hex": "#7D1A44",
+    "hex": "#862246",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1476,7 +1476,7 @@
   {
     "id": "val-179",
     "name": "Hexed Lichen",
-    "hex": "#34274D",
+    "hex": "#512E7E",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1489,7 +1489,7 @@
   {
     "id": "val-180",
     "name": "Royal Purple",
-    "hex": "#23264F",
+    "hex": "#464362",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1497,7 +1497,7 @@
   {
     "id": "val-181",
     "name": "Dark Blue",
-    "hex": "#2B265D",
+    "hex": "#464775",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1513,7 +1513,7 @@
   {
     "id": "val-183",
     "name": "Night Blue",
-    "hex": "#19183F",
+    "hex": "#393945",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1534,7 +1534,7 @@
   {
     "id": "val-185",
     "name": "Magic Blue",
-    "hex": "#024381",
+    "hex": "#026EB6",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1547,7 +1547,7 @@
   {
     "id": "val-186",
     "name": "Ultramarine Blue",
-    "hex": "#373592",
+    "hex": "#1D548A",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1560,7 +1560,7 @@
   {
     "id": "val-187",
     "name": "Electric Blue",
-    "hex": "#008CBF",
+    "hex": "#3495B6",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1573,7 +1573,7 @@
   {
     "id": "val-188",
     "name": "Turquoise",
-    "hex": "#03676F",
+    "hex": "#007F8E",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1586,7 +1586,7 @@
   {
     "id": "val-189",
     "name": "Foul Green",
-    "hex": "#239378",
+    "hex": "#3F9E80",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1599,7 +1599,7 @@
   {
     "id": "val-190",
     "name": "Jade Green",
-    "hex": "#128379",
+    "hex": "#008266",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1607,7 +1607,7 @@
   {
     "id": "val-191",
     "name": "Scurvy Green",
-    "hex": "#09474E",
+    "hex": "#285653",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1620,7 +1620,7 @@
   {
     "id": "val-192",
     "name": "Dark Green",
-    "hex": "#083C2A",
+    "hex": "#38433D",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1633,7 +1633,7 @@
   {
     "id": "val-193",
     "name": "Sick Green",
-    "hex": "#096638",
+    "hex": "#4B6E4E",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1646,7 +1646,7 @@
   {
     "id": "val-194",
     "name": "Goblin Green",
-    "hex": "#23743C",
+    "hex": "#2B6C28",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1654,7 +1654,7 @@
   {
     "id": "val-195",
     "name": "Camouflage Green",
-    "hex": "#71753A",
+    "hex": "#8D7B3D",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1667,7 +1667,7 @@
   {
     "id": "val-196",
     "name": "Scorpion Green",
-    "hex": "#48B851",
+    "hex": "#77A64A",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1675,7 +1675,7 @@
   {
     "id": "val-197",
     "name": "Livery Green",
-    "hex": "#9ECE65",
+    "hex": "#9DC451",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1683,7 +1683,7 @@
   {
     "id": "val-198",
     "name": "Bone White",
-    "hex": "#E8BE86",
+    "hex": "#E4C596",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1696,7 +1696,7 @@
   {
     "id": "val-199",
     "name": "Dead Flesh",
-    "hex": "#BCB686",
+    "hex": "#D3C682",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1709,7 +1709,7 @@
   {
     "id": "val-200",
     "name": "Bronze Fleshtone",
-    "hex": "#DB945C",
+    "hex": "#F1A75E",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1717,7 +1717,7 @@
   {
     "id": "val-201",
     "name": "Filthy Brown",
-    "hex": "#F58D2B",
+    "hex": "#E99300",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1725,7 +1725,7 @@
   {
     "id": "val-202",
     "name": "Scrofulous Brown",
-    "hex": "#D68030",
+    "hex": "#BB772E",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1738,7 +1738,7 @@
   {
     "id": "val-203",
     "name": "Plague Brown",
-    "hex": "#CC9B34",
+    "hex": "#D18F05",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1751,7 +1751,7 @@
   {
     "id": "val-204",
     "name": "Leather Brown",
-    "hex": "#7B5D2A",
+    "hex": "#87643C",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1764,7 +1764,7 @@
   {
     "id": "val-205",
     "name": "Dwarf Skin",
-    "hex": "#CC7C67",
+    "hex": "#D99169",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1772,7 +1772,7 @@
   {
     "id": "val-206",
     "name": "Parasite Brown",
-    "hex": "#B1481F",
+    "hex": "#A15019",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1785,7 +1785,7 @@
   {
     "id": "val-207",
     "name": "Beasty Brown",
-    "hex": "#55432D",
+    "hex": "#76563D",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1793,7 +1793,7 @@
   {
     "id": "val-208",
     "name": "Dark Fleshtone",
-    "hex": "#4F2B26",
+    "hex": "#614037",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1801,7 +1801,7 @@
   {
     "id": "val-209",
     "name": "Charred Brown",
-    "hex": "#39343B",
+    "hex": "#4B403C",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1814,7 +1814,7 @@
   {
     "id": "val-210",
     "name": "Ghost Grey",
-    "hex": "#A7C5DB",
+    "hex": "#C2CBD4",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1822,7 +1822,7 @@
   {
     "id": "val-211",
     "name": "Wolf Grey",
-    "hex": "#90A2BC",
+    "hex": "#AFC1CB",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1835,7 +1835,7 @@
   {
     "id": "val-212",
     "name": "Sombre Grey",
-    "hex": "#4C5C7D",
+    "hex": "#606B7F",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1848,7 +1848,7 @@
   {
     "id": "val-213",
     "name": "Stonewall Grey",
-    "hex": "#828E95",
+    "hex": "#9F9F9F",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1861,7 +1861,7 @@
   {
     "id": "val-214",
     "name": "Cold Grey",
-    "hex": "#54646D",
+    "hex": "#7C7C7C",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1869,7 +1869,7 @@
   {
     "id": "val-215",
     "name": "Black",
-    "hex": "#000000",
+    "hex": "#010101",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1882,7 +1882,7 @@
   {
     "id": "val-216",
     "name": "Khaki",
-    "hex": "#8C806D",
+    "hex": "#AA9D73",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1895,7 +1895,7 @@
   {
     "id": "val-217",
     "name": "Earth",
-    "hex": "#6F563D",
+    "hex": "#7A6045",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1908,7 +1908,7 @@
   {
     "id": "val-218",
     "name": "Desert Yellow",
-    "hex": "#8E7845",
+    "hex": "#998843",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1921,7 +1921,7 @@
   {
     "id": "val-219",
     "name": "Yellow Olive",
-    "hex": "#063B2F",
+    "hex": "#1E4F39",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1929,7 +1929,7 @@
   {
     "id": "val-220",
     "name": "Terracotta",
-    "hex": "#6B1306",
+    "hex": "#693E38",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1937,7 +1937,7 @@
   {
     "id": "val-221",
     "name": "Tan",
-    "hex": "#9F4746",
+    "hex": "#A8594A",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1945,7 +1945,7 @@
   {
     "id": "val-222",
     "name": "Cayman Green",
-    "hex": "#285648",
+    "hex": "#00593D",
     "type": "Game Color",
     "description": "",
     "comparable": [
@@ -1958,7 +1958,7 @@
   {
     "id": "val-223",
     "name": "Smokey Ink",
-    "hex": "#2B2325",
+    "hex": "#493632",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1966,7 +1966,7 @@
   {
     "id": "val-224",
     "name": "Glacier Blue",
-    "hex": "#ACD0EE",
+    "hex": "#B4CEE9",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1974,7 +1974,7 @@
   {
     "id": "val-225",
     "name": "Verdigris",
-    "hex": "#B3CECA",
+    "hex": "#A9D7D4",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1982,7 +1982,7 @@
   {
     "id": "val-226",
     "name": "Pale Yellow",
-    "hex": "#D5C179",
+    "hex": "#EBCE7E",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1990,7 +1990,7 @@
   {
     "id": "val-227",
     "name": "Elfic Flesh",
-    "hex": "#CDC29C",
+    "hex": "#EAD7B7",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -1998,7 +1998,7 @@
   {
     "id": "val-228",
     "name": "Cadmium Skin",
-    "hex": "#FAB78A",
+    "hex": "#F8B185",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2006,7 +2006,7 @@
   {
     "id": "val-229",
     "name": "Rosy Flesh",
-    "hex": "#F89E84",
+    "hex": "#F3B5AA",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2014,7 +2014,7 @@
   {
     "id": "val-230",
     "name": "Off-White",
-    "hex": "#F5F4DA",
+    "hex": "#FDF3DA",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2022,7 +2022,7 @@
   {
     "id": "val-231",
     "name": "Steel Grey",
-    "hex": "#64889D",
+    "hex": "#728FA1",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2046,7 +2046,7 @@
   {
     "id": "val-234",
     "name": "Mutation Green",
-    "hex": "#296934",
+    "hex": "#4C7650",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2054,7 +2054,7 @@
   {
     "id": "val-235",
     "name": "Scarlet Blood",
-    "hex": "#B72A38",
+    "hex": "#E40059",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2062,7 +2062,7 @@
   {
     "id": "val-236",
     "name": "Heavy Skintone",
-    "hex": "#AA7B62",
+    "hex": "#AD8468",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2070,7 +2070,7 @@
   {
     "id": "val-237",
     "name": "Heavy Red",
-    "hex": "#943238",
+    "hex": "#8D363C",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2078,7 +2078,7 @@
   {
     "id": "val-238",
     "name": "Heavy Violet",
-    "hex": "#4C2E65",
+    "hex": "#484069",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2086,7 +2086,7 @@
   {
     "id": "val-239",
     "name": "Heavy Blue",
-    "hex": "#29556D",
+    "hex": "#405B78",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2094,7 +2094,7 @@
   {
     "id": "val-240",
     "name": "Heavy Blue Grey",
-    "hex": "#9CA7A7",
+    "hex": "#CBCAC8",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2102,7 +2102,7 @@
   {
     "id": "val-241",
     "name": "Heavy Grey",
-    "hex": "#626D54",
+    "hex": "#707354",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2110,7 +2110,7 @@
   {
     "id": "val-242",
     "name": "Heavy Green",
-    "hex": "#566840",
+    "hex": "#566637",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2118,7 +2118,7 @@
   {
     "id": "val-243",
     "name": "Heavy Black Green",
-    "hex": "#18433D",
+    "hex": "#3E4943",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2126,7 +2126,7 @@
   {
     "id": "val-244",
     "name": "Heavy Warm Grey",
-    "hex": "#939066",
+    "hex": "#AA9D73",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2134,7 +2134,7 @@
   {
     "id": "val-245",
     "name": "Heavy Khaki",
-    "hex": "#9D965D",
+    "hex": "#B49F50",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2142,7 +2142,7 @@
   {
     "id": "val-246",
     "name": "Heavy Ochre",
-    "hex": "#A87536",
+    "hex": "#AE7727",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2150,7 +2150,7 @@
   {
     "id": "val-247",
     "name": "Heavy Gold Brown",
-    "hex": "#BA8636",
+    "hex": "#B68644",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2158,7 +2158,7 @@
   {
     "id": "val-248",
     "name": "Heavy Orange",
-    "hex": "#EE5527",
+    "hex": "#EA5E0F",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2166,7 +2166,7 @@
   {
     "id": "val-249",
     "name": "Heavy Brown",
-    "hex": "#705D41",
+    "hex": "#7B674E",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2174,7 +2174,7 @@
   {
     "id": "val-250",
     "name": "Heavy Sienna",
-    "hex": "#744642",
+    "hex": "#5E483B",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2182,7 +2182,7 @@
   {
     "id": "val-251",
     "name": "Heavy Charcoal",
-    "hex": "#1C2E2E",
+    "hex": "#46464E",
     "type": "Game Color",
     "description": "",
     "comparable": []
@@ -2190,7 +2190,7 @@
   {
     "id": "val-252",
     "name": "Hammered Copper",
-    "hex": "#73372D",
+    "hex": "#644132",
     "type": "Game Color Metallic",
     "description": "",
     "comparable": []
@@ -2198,7 +2198,7 @@
   {
     "id": "val-253",
     "name": "Bright Bronze",
-    "hex": "#9C5221",
+    "hex": "#8D5222",
     "type": "Game Color Metallic",
     "description": "",
     "comparable": []
@@ -2206,7 +2206,7 @@
   {
     "id": "val-254",
     "name": "Tinny Tin",
-    "hex": "#393121",
+    "hex": "#432925",
     "type": "Game Color Metallic",
     "description": "",
     "comparable": []
@@ -2214,7 +2214,7 @@
   {
     "id": "val-255",
     "name": "Glorious Gold",
-    "hex": "#E7BD42",
+    "hex": "#C5863A",
     "type": "Game Color Metallic",
     "description": "",
     "comparable": []
@@ -2222,7 +2222,7 @@
   {
     "id": "val-256",
     "name": "Polished Gold",
-    "hex": "#CCCC33",
+    "hex": "#DBAE3C",
     "type": "Game Color Metallic",
     "description": "",
     "comparable": []
@@ -2230,7 +2230,7 @@
   {
     "id": "val-257",
     "name": "Chainmail Silver",
-    "hex": "#7B737B",
+    "hex": "#858D8F",
     "type": "Game Color Metallic",
     "description": "",
     "comparable": []
@@ -2238,7 +2238,7 @@
   {
     "id": "val-258",
     "name": "Silver",
-    "hex": "#B5B5BD",
+    "hex": "#CDD6D3",
     "type": "Game Color Metallic",
     "description": "",
     "comparable": []
@@ -2246,7 +2246,7 @@
   {
     "id": "val-259",
     "name": "Gunmetal",
-    "hex": "#393939",
+    "hex": "#636768",
     "type": "Game Color Metallic",
     "description": "",
     "comparable": []
@@ -2254,7 +2254,7 @@
   {
     "id": "val-260",
     "name": "Brassy Brass",
-    "hex": "#735A21",
+    "hex": "#9B6244",
     "type": "Game Color Metallic",
     "description": "",
     "comparable": []
@@ -2262,7 +2262,7 @@
   {
     "id": "val-261",
     "name": "Black Ink",
-    "hex": "#1A1A1A",
+    "hex": "#282722",
     "type": "Game Color Ink",
     "description": "",
     "comparable": []
@@ -2350,7 +2350,7 @@
   {
     "id": "val-272",
     "name": "Black Wash",
-    "hex": "#2B2B2B",
+    "hex": "#27282A",
     "type": "Game Color Wash",
     "description": "",
     "comparable": []
@@ -2366,7 +2366,7 @@
   {
     "id": "val-274",
     "name": "Sepia Wash",
-    "hex": "#843910",
+    "hex": "#755734",
     "type": "Game Color Wash",
     "description": "",
     "comparable": []
@@ -2374,7 +2374,7 @@
   {
     "id": "val-275",
     "name": "Pale Grey Wash",
-    "hex": "#B0B0B0",
+    "hex": "#B7BDBD",
     "type": "Game Color Wash",
     "description": "",
     "comparable": []
@@ -2382,7 +2382,7 @@
   {
     "id": "val-276",
     "name": "Flesh Wash",
-    "hex": "#CE8C42",
+    "hex": "#A1736D",
     "type": "Game Color Wash",
     "description": "",
     "comparable": []
@@ -2390,7 +2390,7 @@
   {
     "id": "val-277",
     "name": "Red Wash",
-    "hex": "#630808",
+    "hex": "#C35E7B",
     "type": "Game Color Wash",
     "description": "",
     "comparable": []
@@ -2398,7 +2398,7 @@
   {
     "id": "val-278",
     "name": "Green Wash",
-    "hex": "#336633",
+    "hex": "#69AC66",
     "type": "Game Color Wash",
     "description": "",
     "comparable": []
@@ -2406,7 +2406,7 @@
   {
     "id": "val-279",
     "name": "Blue Wash",
-    "hex": "#273E51",
+    "hex": "#285988",
     "type": "Game Color Wash",
     "description": "",
     "comparable": []
@@ -2414,7 +2414,7 @@
   {
     "id": "val-280",
     "name": "Imperial Yellow",
-    "hex": "#FFD700",
+    "hex": "#DE8332",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2427,7 +2427,7 @@
   {
     "id": "val-281",
     "name": "Phoenix Orange",
-    "hex": "#E8641B",
+    "hex": "#691A1D",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2440,7 +2440,7 @@
   {
     "id": "val-282",
     "name": "Xpress Medium",
-    "hex": "#F5F5F5",
+    "hex": "#FFFEFE",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2448,7 +2448,7 @@
   {
     "id": "val-283",
     "name": "Nuclear Yellow",
-    "hex": "#FFEF00",
+    "hex": "#BE5232",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2461,7 +2461,7 @@
   {
     "id": "val-284",
     "name": "Plague Green",
-    "hex": "#8DB600",
+    "hex": "#252C1E",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2474,7 +2474,7 @@
   {
     "id": "val-285",
     "name": "Orc Skin",
-    "hex": "#568203",
+    "hex": "#2F482C",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2487,7 +2487,7 @@
   {
     "id": "val-286",
     "name": "Lizard Green",
-    "hex": "#4CBB17",
+    "hex": "#0E1714",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2500,7 +2500,7 @@
   {
     "id": "val-287",
     "name": "Military Green",
-    "hex": "#4B5320",
+    "hex": "#46493E",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2516,7 +2516,7 @@
   {
     "id": "val-289",
     "name": "Heretic Turquoise",
-    "hex": "#00827F",
+    "hex": "#082222",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2524,7 +2524,7 @@
   {
     "id": "val-290",
     "name": "Space Grey",
-    "hex": "#4A5859",
+    "hex": "#294444",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2537,7 +2537,7 @@
   {
     "id": "val-291",
     "name": "Storm Blue",
-    "hex": "#4F6D7A",
+    "hex": "#2E2E4E",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2550,7 +2550,7 @@
   {
     "id": "val-292",
     "name": "Magic Blue",
-    "hex": "#1E4D8C",
+    "hex": "#026EB6",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2558,7 +2558,7 @@
   {
     "id": "val-293",
     "name": "Omega Blue",
-    "hex": "#00008B",
+    "hex": "#1A1624",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2571,7 +2571,7 @@
   {
     "id": "val-294",
     "name": "Mystic Blue",
-    "hex": "#4169E1",
+    "hex": "#1E1C39",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2584,7 +2584,7 @@
   {
     "id": "val-295",
     "name": "Gloomy Violet",
-    "hex": "#5B3256",
+    "hex": "#16111B",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2597,7 +2597,7 @@
   {
     "id": "val-296",
     "name": "Twilight Rose",
-    "hex": "#8B4B6E",
+    "hex": "#201723",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2610,7 +2610,7 @@
   {
     "id": "val-297",
     "name": "Velvet Red",
-    "hex": "#722F37",
+    "hex": "#2D1817",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2623,7 +2623,7 @@
   {
     "id": "val-298",
     "name": "Cardinal Purple",
-    "hex": "#6C3461",
+    "hex": "#902B34",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2644,7 +2644,7 @@
   {
     "id": "val-300",
     "name": "Copper Brown",
-    "hex": "#87553C",
+    "hex": "#221617",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2657,7 +2657,7 @@
   {
     "id": "val-301",
     "name": "Willow Bark",
-    "hex": "#5C3A21",
+    "hex": "#080808",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2670,7 +2670,7 @@
   {
     "id": "val-302",
     "name": "Dwarf Skin",
-    "hex": "#D49A6A",
+    "hex": "#2A1C1A",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2683,7 +2683,7 @@
   {
     "id": "val-303",
     "name": "Tanned Skin",
-    "hex": "#C68642",
+    "hex": "#2B181A",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2704,7 +2704,7 @@
   {
     "id": "val-305",
     "name": "Camouflage Green",
-    "hex": "#78866B",
+    "hex": "#191916",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2712,7 +2712,7 @@
   {
     "id": "val-306",
     "name": "Viking Grey",
-    "hex": "#7E8082",
+    "hex": "#112124",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2720,7 +2720,7 @@
   {
     "id": "val-307",
     "name": "Landser Grey",
-    "hex": "#6B7C85",
+    "hex": "#181919",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2736,7 +2736,7 @@
   {
     "id": "val-309",
     "name": "Desert Ochre",
-    "hex": "#C2A84E",
+    "hex": "#3E1F18",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2752,7 +2752,7 @@
   {
     "id": "val-311",
     "name": "Deep Purple",
-    "hex": "#36013F",
+    "hex": "#2E181F",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2765,7 +2765,7 @@
   {
     "id": "val-312",
     "name": "Zombie Flesh",
-    "hex": "#B5B77A",
+    "hex": "#3B322F",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2773,7 +2773,7 @@
   {
     "id": "val-313",
     "name": "Caribbean Turquoise",
-    "hex": "#00C5CD",
+    "hex": "#1E2D3B",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2794,7 +2794,7 @@
   {
     "id": "val-315",
     "name": "Martian Orange",
-    "hex": "#D4652F",
+    "hex": "#97352F",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2807,7 +2807,7 @@
   {
     "id": "val-316",
     "name": "Black Lotus",
-    "hex": "#1B1B1B",
+    "hex": "#010000",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2820,7 +2820,7 @@
   {
     "id": "val-317",
     "name": "Templar White",
-    "hex": "#F0EDE5",
+    "hex": "#5E7570",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2841,7 +2841,7 @@
   {
     "id": "val-319",
     "name": "Khaki Drill",
-    "hex": "#BEB7A4",
+    "hex": "#503B22",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2849,7 +2849,7 @@
   {
     "id": "val-320",
     "name": "Desert Bone",
-    "hex": "#D3C4A5",
+    "hex": "#AB8556",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2857,7 +2857,7 @@
   {
     "id": "val-321",
     "name": "Muddy Ground",
-    "hex": "#6B5B44",
+    "hex": "#0D0C09",
     "type": "Xpress Color",
     "description": "",
     "comparable": [
@@ -2878,7 +2878,7 @@
   {
     "id": "val-323",
     "name": "Blood Red",
-    "hex": "#880808",
+    "hex": "#BF1134",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2902,7 +2902,7 @@
   {
     "id": "val-326",
     "name": "Abyssal Turquoise",
-    "hex": "#005F69",
+    "hex": "#223B4C",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2966,7 +2966,7 @@
   {
     "id": "val-334",
     "name": "Demonic Skin",
-    "hex": "#C1440E",
+    "hex": "#431E25",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -2990,7 +2990,7 @@
   {
     "id": "val-337",
     "name": "Light Grey Wash",
-    "hex": "#B8B8B8",
+    "hex": "#C9C9C7",
     "type": "Model Wash",
     "description": "Grey/dark models, rain marks, pin washes",
     "comparable": []
@@ -3006,7 +3006,7 @@
   {
     "id": "val-339",
     "name": "Black Wash",
-    "hex": "#252525",
+    "hex": "#27282A",
     "type": "Model Wash",
     "description": "Ultra dark washes, pin washes in recessed areas",
     "comparable": []
@@ -3014,7 +3014,7 @@
   {
     "id": "val-340",
     "name": "Light Rust Wash",
-    "hex": "#C4763C",
+    "hex": "#EB7919",
     "type": "Model Wash",
     "description": "Rust effects, winter scenes, abandoned vehicles, metal parts",
     "comparable": []
@@ -3022,7 +3022,7 @@
   {
     "id": "val-341",
     "name": "Dark Rust Wash",
-    "hex": "#8B4513",
+    "hex": "#E05B10",
     "type": "Model Wash",
     "description": "Rust effects, winter scenes, abandoned vehicles, metal parts",
     "comparable": []
@@ -3038,7 +3038,7 @@
   {
     "id": "val-343",
     "name": "Oiled Earth Wash",
-    "hex": "#5C4033",
+    "hex": "#6E5C52",
     "type": "Model Wash",
     "description": "Oil/grease/fuel combined with dust effects",
     "comparable": []
@@ -3054,7 +3054,7 @@
   {
     "id": "val-345",
     "name": "European Dust Wash",
-    "hex": "#C4A882",
+    "hex": "#7F5B39",
     "type": "Model Wash",
     "description": "General vehicles, central/eastern European dust tones",
     "comparable": []
@@ -3062,7 +3062,7 @@
   {
     "id": "val-346",
     "name": "Dark Yellow Wash",
-    "hex": "#B8960E",
+    "hex": "#E0B600",
     "type": "Model Wash",
     "description": "Yellow models, light colors, camouflage, natural scenes",
     "comparable": []
@@ -3070,7 +3070,7 @@
   {
     "id": "val-347",
     "name": "Desert Dust Wash",
-    "hex": "#D2B48C",
+    "hex": "#D8BB81",
     "type": "Model Wash",
     "description": "Dust accumulation in dry/desert climates",
     "comparable": []
@@ -3078,7 +3078,7 @@
   {
     "id": "val-348",
     "name": "Dark Khaki Green Wash",
-    "hex": "#4A5D23",
+    "hex": "#83673F",
     "type": "Model Wash",
     "description": "Depth/shadow effects on khaki or light camo",
     "comparable": []
@@ -3110,7 +3110,7 @@
   {
     "id": "val-352",
     "name": "Silver",
-    "hex": "#C0C0C0",
+    "hex": "#CBD3D2",
     "type": "Liquid Metal",
     "description": "",
     "comparable": []
@@ -3118,7 +3118,7 @@
   {
     "id": "val-353",
     "name": "Gold",
-    "hex": "#D4AF37",
+    "hex": "#A0937D",
     "type": "Liquid Metal",
     "description": "",
     "comparable": []
@@ -3126,7 +3126,7 @@
   {
     "id": "val-354",
     "name": "Old Gold",
-    "hex": "#CFB53B",
+    "hex": "#B6AB3C",
     "type": "Liquid Metal",
     "description": "",
     "comparable": []
@@ -3134,7 +3134,7 @@
   {
     "id": "val-355",
     "name": "Rich Gold",
-    "hex": "#E6BE8A",
+    "hex": "#9A7B3A",
     "type": "Liquid Metal",
     "description": "",
     "comparable": []
@@ -3142,7 +3142,7 @@
   {
     "id": "val-356",
     "name": "Red Gold",
-    "hex": "#C5713D",
+    "hex": "#BC8733",
     "type": "Liquid Metal",
     "description": "",
     "comparable": []
@@ -3150,7 +3150,7 @@
   {
     "id": "val-357",
     "name": "Copper",
-    "hex": "#B87333",
+    "hex": "#87432E",
     "type": "Liquid Metal",
     "description": "",
     "comparable": []
@@ -3158,7 +3158,7 @@
   {
     "id": "val-358",
     "name": "White Gold",
-    "hex": "#E8E4C9",
+    "hex": "#D2D4D1",
     "type": "Liquid Metal",
     "description": "",
     "comparable": []
@@ -3166,7 +3166,7 @@
   {
     "id": "val-359",
     "name": "Steel",
-    "hex": "#8F8F8F",
+    "hex": "#898A82",
     "type": "Liquid Metal",
     "description": "",
     "comparable": []
@@ -3190,7 +3190,7 @@
   {
     "id": "val-362",
     "name": "Red",
-    "hex": "#C71F1C",
+    "hex": "#B22A34",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3254,7 +3254,7 @@
   {
     "id": "val-370",
     "name": "Dark Green",
-    "hex": "#4E4E44",
+    "hex": "#5D5F54",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3318,7 +3318,7 @@
   {
     "id": "val-378",
     "name": "Light Green",
-    "hex": "#4B4F3E",
+    "hex": "#007943",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3478,7 +3478,7 @@
   {
     "id": "val-398",
     "name": "Dark Brown",
-    "hex": "#484745",
+    "hex": "#B0876B",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3494,7 +3494,7 @@
   {
     "id": "val-400",
     "name": "Grey",
-    "hex": "#7A7C67",
+    "hex": "#555C66",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3574,7 +3574,7 @@
   {
     "id": "val-410",
     "name": "Black Grey",
-    "hex": "#505153",
+    "hex": "#48494B",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3598,7 +3598,7 @@
   {
     "id": "val-413",
     "name": "Aluminum",
-    "hex": "#ACACB4",
+    "hex": "#E8E8EA",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3606,7 +3606,7 @@
   {
     "id": "val-414",
     "name": "Silver",
-    "hex": "#ADADB9",
+    "hex": "#CDD6D3",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3614,7 +3614,7 @@
   {
     "id": "val-415",
     "name": "Chrome",
-    "hex": "#A8A8B0",
+    "hex": "#E9E7E8",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3622,7 +3622,7 @@
   {
     "id": "val-416",
     "name": "Steel",
-    "hex": "#BBBBC7",
+    "hex": "#898A82",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3630,7 +3630,7 @@
   {
     "id": "val-417",
     "name": "Gold",
-    "hex": "#9E8155",
+    "hex": "#CEAF52",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3646,7 +3646,7 @@
   {
     "id": "val-419",
     "name": "Copper",
-    "hex": "#8C5C48",
+    "hex": "#9A5B3A",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3654,7 +3654,7 @@
   {
     "id": "val-420",
     "name": "Rust",
-    "hex": "#755443",
+    "hex": "#75544B",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3678,7 +3678,7 @@
   {
     "id": "val-423",
     "name": "Gunmetal",
-    "hex": "#7A7B80",
+    "hex": "#636768",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3718,7 +3718,7 @@
   {
     "id": "val-428",
     "name": "Yellow",
-    "hex": "#E7A221",
+    "hex": "#FED346",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3870,7 +3870,7 @@
   {
     "id": "val-447",
     "name": "Light Blue",
-    "hex": "#809590",
+    "hex": "#C6C9BE",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3878,7 +3878,7 @@
   {
     "id": "val-448",
     "name": "Gray Blue",
-    "hex": "#A2A499",
+    "hex": "#424854",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3886,7 +3886,7 @@
   {
     "id": "val-449",
     "name": "Green",
-    "hex": "#595C47",
+    "hex": "#717469",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -3894,7 +3894,7 @@
   {
     "id": "val-450",
     "name": "Brown",
-    "hex": "#844138",
+    "hex": "#9A632A",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -4030,7 +4030,7 @@
   {
     "id": "val-467",
     "name": "Dark Gray",
-    "hex": "#515352",
+    "hex": "#535A64",
     "type": "Model Air",
     "description": "",
     "comparable": []
@@ -4814,7 +4814,7 @@
   {
     "id": "val-565",
     "name": "Pale Flesh",
-    "hex": "#F6BDB3",
+    "hex": "#FADACF",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4822,7 +4822,7 @@
   {
     "id": "val-566",
     "name": "Elf Skin Tone",
-    "hex": "#C87958",
+    "hex": "#E7AE81",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4830,7 +4830,7 @@
   {
     "id": "val-567",
     "name": "Moon Yellow",
-    "hex": "#FFF103",
+    "hex": "#FCBC02",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4838,7 +4838,7 @@
   {
     "id": "val-568",
     "name": "Sun Yellow",
-    "hex": "#FFCF07",
+    "hex": "#F6B422",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4846,7 +4846,7 @@
   {
     "id": "val-569",
     "name": "Gold Yellow",
-    "hex": "#FDB318",
+    "hex": "#F19A00",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4854,7 +4854,7 @@
   {
     "id": "val-570",
     "name": "Orange Fire",
-    "hex": "#F1652E",
+    "hex": "#EA632B",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4862,7 +4862,7 @@
   {
     "id": "val-571",
     "name": "Hot Orange",
-    "hex": "#E43027",
+    "hex": "#E64C2A",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4870,7 +4870,7 @@
   {
     "id": "val-572",
     "name": "Bloody Red",
-    "hex": "#BF282E",
+    "hex": "#CD3230",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4878,7 +4878,7 @@
   {
     "id": "val-573",
     "name": "Gory Red",
-    "hex": "#810504",
+    "hex": "#693B3D",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4886,7 +4886,7 @@
   {
     "id": "val-574",
     "name": "Scarlet Red",
-    "hex": "#DA3630",
+    "hex": "#9C122C",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4894,7 +4894,7 @@
   {
     "id": "val-575",
     "name": "Squid Pink",
-    "hex": "#D47A83",
+    "hex": "#DA88B8",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4902,7 +4902,7 @@
   {
     "id": "val-576",
     "name": "Warlord Purple",
-    "hex": "#7D1A44",
+    "hex": "#B0376D",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4910,7 +4910,7 @@
   {
     "id": "val-577",
     "name": "Hexed Lichen",
-    "hex": "#34274D",
+    "hex": "#39373A",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4918,7 +4918,7 @@
   {
     "id": "val-578",
     "name": "Imperial Blue",
-    "hex": "#23264F",
+    "hex": "#04316A",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4926,7 +4926,7 @@
   {
     "id": "val-579",
     "name": "Magic Blue",
-    "hex": "#024381",
+    "hex": "#026EB6",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4934,7 +4934,7 @@
   {
     "id": "val-580",
     "name": "Ultramarine Blue",
-    "hex": "#3B5DA7",
+    "hex": "#1D548A",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4942,7 +4942,7 @@
   {
     "id": "val-581",
     "name": "Electric Blue",
-    "hex": "#008CBF",
+    "hex": "#2E95B4",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4950,7 +4950,7 @@
   {
     "id": "val-582",
     "name": "Dark Green",
-    "hex": "#083C2A",
+    "hex": "#274E39",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4958,7 +4958,7 @@
   {
     "id": "val-583",
     "name": "Sick Green",
-    "hex": "#B5C45B",
+    "hex": "#246B49",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4966,7 +4966,7 @@
   {
     "id": "val-584",
     "name": "Goblin Green",
-    "hex": "#23743C",
+    "hex": "#6B7342",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4974,7 +4974,7 @@
   {
     "id": "val-585",
     "name": "Scorpy Green",
-    "hex": "#48B851",
+    "hex": "#80AF49",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4982,7 +4982,7 @@
   {
     "id": "val-586",
     "name": "Light Livery Green",
-    "hex": "#8CC277",
+    "hex": "#92BD16",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4990,7 +4990,7 @@
   {
     "id": "val-587",
     "name": "Bone White",
-    "hex": "#E8BE86",
+    "hex": "#C3B89C",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -4998,7 +4998,7 @@
   {
     "id": "val-588",
     "name": "Dead Flesh",
-    "hex": "#BCBC80",
+    "hex": "#C8BC8A",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5006,7 +5006,7 @@
   {
     "id": "val-589",
     "name": "Bronze Flesh Tone",
-    "hex": "#DB945C",
+    "hex": "#EF9849",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5014,7 +5014,7 @@
   {
     "id": "val-590",
     "name": "Cobra Leather",
-    "hex": "#7B5D2A",
+    "hex": "#855C26",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5022,7 +5022,7 @@
   {
     "id": "val-591",
     "name": "Dwarf Skin",
-    "hex": "#CC7C67",
+    "hex": "#D99169",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5030,7 +5030,7 @@
   {
     "id": "val-592",
     "name": "Beasty Brown",
-    "hex": "#55432D",
+    "hex": "#7A543D",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5038,7 +5038,7 @@
   {
     "id": "val-593",
     "name": "Dark Flesh Tone",
-    "hex": "#4F2B26",
+    "hex": "#5B4844",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5046,7 +5046,7 @@
   {
     "id": "val-594",
     "name": "Charred Brown",
-    "hex": "#39343B",
+    "hex": "#4D4542",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5054,7 +5054,7 @@
   {
     "id": "val-595",
     "name": "Wolf Grey",
-    "hex": "#90A2BC",
+    "hex": "#ACBDCD",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5062,7 +5062,7 @@
   {
     "id": "val-596",
     "name": "Sombre Grey",
-    "hex": "#4C5C7D",
+    "hex": "#576878",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5070,7 +5070,7 @@
   {
     "id": "val-597",
     "name": "Stone Wall Grey",
-    "hex": "#828E95",
+    "hex": "#A1A2A4",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5078,7 +5078,7 @@
   {
     "id": "val-598",
     "name": "Cold Grey",
-    "hex": "#54646D",
+    "hex": "#828385",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5086,7 +5086,7 @@
   {
     "id": "val-599",
     "name": "Black",
-    "hex": "#000000",
+    "hex": "#010101",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5094,7 +5094,7 @@
   {
     "id": "val-600",
     "name": "Silver",
-    "hex": "#CDD6D3",
+    "hex": "#A7ACB0",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5102,7 +5102,7 @@
   {
     "id": "val-601",
     "name": "Chain Mail Silver",
-    "hex": "#B0B0B8",
+    "hex": "#AEAEAE",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5110,7 +5110,7 @@
   {
     "id": "val-602",
     "name": "Gunmetal",
-    "hex": "#5A5A5A",
+    "hex": "#6E6F71",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5118,7 +5118,7 @@
   {
     "id": "val-603",
     "name": "Polished Gold",
-    "hex": "#CEAF52",
+    "hex": "#EBAE00",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5126,7 +5126,7 @@
   {
     "id": "val-604",
     "name": "Glorious Gold",
-    "hex": "#C8A830",
+    "hex": "#C4905E",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5134,7 +5134,7 @@
   {
     "id": "val-605",
     "name": "Bright Bronze",
-    "hex": "#A87030",
+    "hex": "#95664C",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5142,7 +5142,7 @@
   {
     "id": "val-606",
     "name": "Brassy Brass",
-    "hex": "#976F31",
+    "hex": "#A15323",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5150,7 +5150,7 @@
   {
     "id": "val-607",
     "name": "Khaki",
-    "hex": "#8C806D",
+    "hex": "#AA9D73",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5158,7 +5158,7 @@
   {
     "id": "val-608",
     "name": "Earth",
-    "hex": "#765742",
+    "hex": "#7B6848",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5166,7 +5166,7 @@
   {
     "id": "val-609",
     "name": "Desert Yellow",
-    "hex": "#B58F62",
+    "hex": "#A7844E",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5174,7 +5174,7 @@
   {
     "id": "val-610",
     "name": "Flesh",
-    "hex": "#E1A67A",
+    "hex": "#F6BD90",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5182,7 +5182,7 @@
   {
     "id": "val-611",
     "name": "Burned Flesh",
-    "hex": "#945830",
+    "hex": "#A26641",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5190,7 +5190,7 @@
   {
     "id": "val-612",
     "name": "Barbarian Flesh",
-    "hex": "#E89C6C",
+    "hex": "#A17C62",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5198,7 +5198,7 @@
   {
     "id": "val-613",
     "name": "Red Terracotta",
-    "hex": "#8E5840",
+    "hex": "#79423D",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5206,7 +5206,7 @@
   {
     "id": "val-614",
     "name": "Alien Purple",
-    "hex": "#50317B",
+    "hex": "#6D62A6",
     "type": "Game Air",
     "description": "",
     "comparable": []
@@ -5222,7 +5222,7 @@
   {
     "id": "val-616",
     "name": "White Grey",
-    "hex": "#EEF0EF",
+    "hex": "#F0ECE3",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5238,7 +5238,7 @@
   {
     "id": "val-618",
     "name": "Yellow",
-    "hex": "#FAB711",
+    "hex": "#E9A401",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5246,7 +5246,7 @@
   {
     "id": "val-619",
     "name": "Light Flesh",
-    "hex": "#F0BA9E",
+    "hex": "#F8D9C7",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5254,7 +5254,7 @@
   {
     "id": "val-620",
     "name": "Pink",
-    "hex": "#C57BAC",
+    "hex": "#D08474",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5270,7 +5270,7 @@
   {
     "id": "val-622",
     "name": "Red",
-    "hex": "#93262C",
+    "hex": "#BC4040",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5278,7 +5278,7 @@
   {
     "id": "val-623",
     "name": "SZ Red",
-    "hex": "#C01818",
+    "hex": "#B33737",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5294,7 +5294,7 @@
   {
     "id": "val-625",
     "name": "Dark Red",
-    "hex": "#8D4352",
+    "hex": "#93262C",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5302,7 +5302,7 @@
   {
     "id": "val-626",
     "name": "Purple",
-    "hex": "#70547C",
+    "hex": "#AD8DBC",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5310,7 +5310,7 @@
   {
     "id": "val-627",
     "name": "Titan Blue",
-    "hex": "#1A4060",
+    "hex": "#4D4D6F",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5318,7 +5318,7 @@
   {
     "id": "val-628",
     "name": "Grey Green",
-    "hex": "#5A5B5D",
+    "hex": "#6D8589",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5326,7 +5326,7 @@
   {
     "id": "val-629",
     "name": "Blue Grey",
-    "hex": "#70849F",
+    "hex": "#6A8795",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5334,7 +5334,7 @@
   {
     "id": "val-630",
     "name": "Light Blue",
-    "hex": "#6A8795",
+    "hex": "#6B8DBB",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5350,7 +5350,7 @@
   {
     "id": "val-632",
     "name": "Deep Blue",
-    "hex": "#003362",
+    "hex": "#0C97C2",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5358,7 +5358,7 @@
   {
     "id": "val-633",
     "name": "Blue",
-    "hex": "#043667",
+    "hex": "#44689C",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5366,7 +5366,7 @@
   {
     "id": "val-634",
     "name": "Electric Blue",
-    "hex": "#008CBF",
+    "hex": "#0370B1",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5374,7 +5374,7 @@
   {
     "id": "val-635",
     "name": "Dark Blue",
-    "hex": "#336195",
+    "hex": "#405B78",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5382,7 +5382,7 @@
   {
     "id": "val-636",
     "name": "Titan Dark Blue",
-    "hex": "#0F2B39",
+    "hex": "#41464C",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5390,7 +5390,7 @@
   {
     "id": "val-637",
     "name": "Turquoise",
-    "hex": "#2E6C7B",
+    "hex": "#009B9F",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5398,7 +5398,7 @@
   {
     "id": "val-638",
     "name": "Stone Grey",
-    "hex": "#A09883",
+    "hex": "#A1B1B1",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5406,7 +5406,7 @@
   {
     "id": "val-639",
     "name": "Light Green",
-    "hex": "#007943",
+    "hex": "#C6C9BE",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5414,7 +5414,7 @@
   {
     "id": "val-640",
     "name": "Green",
-    "hex": "#2A6531",
+    "hex": "#A4A792",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5422,7 +5422,7 @@
   {
     "id": "val-641",
     "name": "Green Blue",
-    "hex": "#009B9F",
+    "hex": "#8A9F80",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5438,7 +5438,7 @@
   {
     "id": "val-643",
     "name": "Deep Green",
-    "hex": "#32634D",
+    "hex": "#70793A",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5446,7 +5446,7 @@
   {
     "id": "val-644",
     "name": "Dark Green",
-    "hex": "#485C41",
+    "hex": "#525345",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5454,7 +5454,7 @@
   {
     "id": "val-645",
     "name": "Grey Sand",
-    "hex": "#989A84",
+    "hex": "#BA9F72",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5462,7 +5462,7 @@
   {
     "id": "val-646",
     "name": "Yellow Ochre",
-    "hex": "#C2924A",
+    "hex": "#EAA432",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5478,7 +5478,7 @@
   {
     "id": "val-648",
     "name": "Brown",
-    "hex": "#5E483B",
+    "hex": "#7B674E",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5486,7 +5486,7 @@
   {
     "id": "val-649",
     "name": "Chipping Brown",
-    "hex": "#765742",
+    "hex": "#484242",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5494,7 +5494,7 @@
   {
     "id": "val-650",
     "name": "Light Grey",
-    "hex": "#8F939E",
+    "hex": "#969DA3",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5502,7 +5502,7 @@
   {
     "id": "val-651",
     "name": "Grey",
-    "hex": "#69707A",
+    "hex": "#8A97A0",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5510,7 +5510,7 @@
   {
     "id": "val-652",
     "name": "Medium Grey",
-    "hex": "#7A7B7D",
+    "hex": "#828385",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5518,7 +5518,7 @@
   {
     "id": "val-653",
     "name": "Grey Z",
-    "hex": "#64696F",
+    "hex": "#7A7B7D",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5534,7 +5534,7 @@
   {
     "id": "val-655",
     "name": "Dark Grey Green",
-    "hex": "#48544A",
+    "hex": "#505251",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5590,7 +5590,7 @@
   {
     "id": "val-662",
     "name": "Gold",
-    "hex": "#CEAF52",
+    "hex": "#AC8424",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5630,7 +5630,7 @@
   {
     "id": "val-667",
     "name": "Light Steel",
-    "hex": "#A3A29D",
+    "hex": "#CDD6D3",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5638,7 +5638,7 @@
   {
     "id": "val-668",
     "name": "Dark Steel",
-    "hex": "#4A4A48",
+    "hex": "#737476",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5646,7 +5646,7 @@
   {
     "id": "val-669",
     "name": "Metallic Red",
-    "hex": "#C43531",
+    "hex": "#CB5970",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5654,7 +5654,7 @@
   {
     "id": "val-670",
     "name": "Metallic Blue",
-    "hex": "#294C86",
+    "hex": "#373C4F",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5662,7 +5662,7 @@
   {
     "id": "val-671",
     "name": "Metallic Green",
-    "hex": "#018675",
+    "hex": "#1B927F",
     "type": "Mecha Color",
     "description": "",
     "comparable": []
@@ -5670,7 +5670,7 @@
   {
     "id": "val-672",
     "name": "Aluminum",
-    "hex": "#C0C0C0",
+    "hex": "#E8E8EA",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5678,7 +5678,7 @@
   {
     "id": "val-673",
     "name": "Duraluminum",
-    "hex": "#B0B0B0",
+    "hex": "#E4E2E5",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5686,7 +5686,7 @@
   {
     "id": "val-674",
     "name": "Dark Aluminum",
-    "hex": "#808080",
+    "hex": "#DEDCDD",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5694,7 +5694,7 @@
   {
     "id": "val-675",
     "name": "Pale Burnt Metal",
-    "hex": "#8A7A68",
+    "hex": "#E7E6E7",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5702,7 +5702,7 @@
   {
     "id": "val-676",
     "name": "White Aluminum",
-    "hex": "#D0D0D0",
+    "hex": "#ECECEE",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5710,7 +5710,7 @@
   {
     "id": "val-677",
     "name": "Chrome",
-    "hex": "#E0E0E0",
+    "hex": "#E9E7E8",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5718,7 +5718,7 @@
   {
     "id": "val-678",
     "name": "Copper",
-    "hex": "#B06030",
+    "hex": "#E4DCD7",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5726,7 +5726,7 @@
   {
     "id": "val-679",
     "name": "Magnesium",
-    "hex": "#A8A8A8",
+    "hex": "#D9D7D8",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5734,7 +5734,7 @@
   {
     "id": "val-680",
     "name": "Steel",
-    "hex": "#A0A0A0",
+    "hex": "#D2D0D0",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5742,7 +5742,7 @@
   {
     "id": "val-681",
     "name": "Jet Exhaust",
-    "hex": "#4A4A48",
+    "hex": "#D5D4D2",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5750,7 +5750,7 @@
   {
     "id": "val-682",
     "name": "Semi Matt Aluminum",
-    "hex": "#B0B0B0",
+    "hex": "#EEEEF0",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5758,7 +5758,7 @@
   {
     "id": "val-683",
     "name": "Dull Aluminum",
-    "hex": "#909090",
+    "hex": "#EDEDEF",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5766,7 +5766,7 @@
   {
     "id": "val-684",
     "name": "Gunmetal Grey",
-    "hex": "#5A5A5A",
+    "hex": "#D0CECE",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5774,7 +5774,7 @@
   {
     "id": "val-685",
     "name": "Burnt Iron",
-    "hex": "#4A3A30",
+    "hex": "#D6D5D4",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5782,7 +5782,7 @@
   {
     "id": "val-686",
     "name": "Exhaust Manifold",
-    "hex": "#3A3A38",
+    "hex": "#D7D5D3",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5790,7 +5790,7 @@
   {
     "id": "val-687",
     "name": "Silver",
-    "hex": "#C8C8C8",
+    "hex": "#E4E2E5",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5798,7 +5798,7 @@
   {
     "id": "val-688",
     "name": "Gold",
-    "hex": "#D0B050",
+    "hex": "#EAE3D8",
     "type": "Metal Color",
     "description": "",
     "comparable": []
@@ -5806,7 +5806,7 @@
   {
     "id": "val-689",
     "name": "Light Rust",
-    "hex": "#915E43",
+    "hex": "#87431E",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5814,7 +5814,7 @@
   {
     "id": "val-690",
     "name": "Dark Rust",
-    "hex": "#5A3A20",
+    "hex": "#4F4442",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5822,7 +5822,7 @@
   {
     "id": "val-691",
     "name": "Yellowish Rust",
-    "hex": "#B08A40",
+    "hex": "#BE8B5C",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5830,7 +5830,7 @@
   {
     "id": "val-692",
     "name": "Track Primer",
-    "hex": "#4A3A30",
+    "hex": "#5B5652",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5838,7 +5838,7 @@
   {
     "id": "val-693",
     "name": "Light Rubber",
-    "hex": "#5A5050",
+    "hex": "#838381",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5846,7 +5846,7 @@
   {
     "id": "val-694",
     "name": "Dark Rubber",
-    "hex": "#3A3030",
+    "hex": "#505153",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5854,7 +5854,7 @@
   {
     "id": "val-695",
     "name": "German Red Tail Light",
-    "hex": "#8A2020",
+    "hex": "#4E3227",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5862,7 +5862,7 @@
   {
     "id": "val-696",
     "name": "German Green Tail Light",
-    "hex": "#2A5030",
+    "hex": "#395046",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5870,7 +5870,7 @@
   {
     "id": "val-697",
     "name": "Periscopes",
-    "hex": "#3A4040",
+    "hex": "#3B4D5B",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5878,7 +5878,7 @@
   {
     "id": "val-698",
     "name": "Old Wood",
-    "hex": "#7A6040",
+    "hex": "#AD9C70",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5886,7 +5886,7 @@
   {
     "id": "val-699",
     "name": "New Wood",
-    "hex": "#B09060",
+    "hex": "#896545",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5894,7 +5894,7 @@
   {
     "id": "val-700",
     "name": "Leather Belt",
-    "hex": "#6A4A30",
+    "hex": "#665249",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5902,7 +5902,7 @@
   {
     "id": "val-701",
     "name": "Stencil",
-    "hex": "#4A4A40",
+    "hex": "#E0E0D8",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5910,7 +5910,7 @@
   {
     "id": "val-702",
     "name": "Canvas",
-    "hex": "#B0A080",
+    "hex": "#6E6554",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5918,7 +5918,7 @@
   {
     "id": "val-703",
     "name": "Light Mud",
-    "hex": "#9A8A60",
+    "hex": "#ACA378",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5926,7 +5926,7 @@
   {
     "id": "val-704",
     "name": "Dark Mud",
-    "hex": "#5A4A30",
+    "hex": "#685F4E",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5934,7 +5934,7 @@
   {
     "id": "val-705",
     "name": "British Tank Crew",
-    "hex": "#6A5A40",
+    "hex": "#756E54",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5942,7 +5942,7 @@
   {
     "id": "val-706",
     "name": "US Army Tank Crew",
-    "hex": "#5A5040",
+    "hex": "#79684E",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5950,7 +5950,7 @@
   {
     "id": "val-707",
     "name": "USMC Tank Crew",
-    "hex": "#6A6A50",
+    "hex": "#1D573E",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5958,7 +5958,7 @@
   {
     "id": "val-708",
     "name": "French Tank Crew",
-    "hex": "#5A5A6A",
+    "hex": "#756E54",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5966,7 +5966,7 @@
   {
     "id": "val-709",
     "name": "Flesh Base",
-    "hex": "#D0A080",
+    "hex": "#A4531E",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5974,7 +5974,7 @@
   {
     "id": "val-710",
     "name": "Flesh Highlights",
-    "hex": "#E0C0A0",
+    "hex": "#FAD3AA",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5982,7 +5982,7 @@
   {
     "id": "val-711",
     "name": "Flesh Shadows",
-    "hex": "#A07050",
+    "hex": "#571715",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5990,7 +5990,7 @@
   {
     "id": "val-712",
     "name": "German Tank Crew",
-    "hex": "#5A5A50",
+    "hex": "#404646",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -5998,7 +5998,7 @@
   {
     "id": "val-713",
     "name": "Afrikakorps Tank Crew",
-    "hex": "#8A7A50",
+    "hex": "#6E705B",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -6006,7 +6006,7 @@
   {
     "id": "val-714",
     "name": "Splinter Camouflage Base",
-    "hex": "#7A7A50",
+    "hex": "#9D9E98",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -6014,7 +6014,7 @@
   {
     "id": "val-715",
     "name": "Splinter Blotches I",
-    "hex": "#5A5030",
+    "hex": "#01613B",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -6022,7 +6022,7 @@
   {
     "id": "val-716",
     "name": "Splinter Blotches II",
-    "hex": "#3A4030",
+    "hex": "#3F2C28",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -6030,7 +6030,7 @@
   {
     "id": "val-717",
     "name": "Splinter Strips",
-    "hex": "#4A5040",
+    "hex": "#4F684B",
     "type": "Panzer Aces",
     "description": "",
     "comparable": []
@@ -6046,7 +6046,7 @@
   {
     "id": "val-719",
     "name": "Grey",
-    "hex": "#808080",
+    "hex": "#C6C6C8",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6054,7 +6054,7 @@
   {
     "id": "val-720",
     "name": "Black",
-    "hex": "#1A1A1A",
+    "hex": "#010101",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6062,7 +6062,7 @@
   {
     "id": "val-721",
     "name": "German Panzer Grey",
-    "hex": "#464646",
+    "hex": "#454547",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6070,7 +6070,7 @@
   {
     "id": "val-722",
     "name": "German Dark Yellow",
-    "hex": "#94854A",
+    "hex": "#957B64",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6078,7 +6078,7 @@
   {
     "id": "val-723",
     "name": "German Red Brown",
-    "hex": "#6A4030",
+    "hex": "#67423A",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6086,7 +6086,7 @@
   {
     "id": "val-724",
     "name": "German Green Brown",
-    "hex": "#5A5A40",
+    "hex": "#886C47",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6094,7 +6094,7 @@
   {
     "id": "val-725",
     "name": "UK Bronze Green",
-    "hex": "#4A5A40",
+    "hex": "#3E403F",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6102,7 +6102,7 @@
   {
     "id": "val-726",
     "name": "USA Olive Drab",
-    "hex": "#5F5A47",
+    "hex": "#66614E",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6110,7 +6110,7 @@
   {
     "id": "val-727",
     "name": "Russian Green 4bo",
-    "hex": "#52543F",
+    "hex": "#4D4F44",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6118,7 +6118,7 @@
   {
     "id": "val-728",
     "name": "NATO Green",
-    "hex": "#525A4D",
+    "hex": "#4B5645",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6126,7 +6126,7 @@
   {
     "id": "val-729",
     "name": "Desert Tan",
-    "hex": "#B09A70",
+    "hex": "#DAC397",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6134,7 +6134,7 @@
   {
     "id": "val-730",
     "name": "IDF Israeli Sand Grey",
-    "hex": "#AA9F83",
+    "hex": "#887C70",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6142,7 +6142,7 @@
   {
     "id": "val-731",
     "name": "USN Light Ghost Grey",
-    "hex": "#C3C5C2",
+    "hex": "#9BA2AC",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6150,7 +6150,7 @@
   {
     "id": "val-732",
     "name": "Pure Red",
-    "hex": "#A73B39",
+    "hex": "#C3322D",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6158,7 +6158,7 @@
   {
     "id": "val-733",
     "name": "Ultramarine",
-    "hex": "#3B5DA7",
+    "hex": "#55649F",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6166,7 +6166,7 @@
   {
     "id": "val-734",
     "name": "Leather Brown",
-    "hex": "#764823",
+    "hex": "#7C6052",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6174,7 +6174,7 @@
   {
     "id": "val-735",
     "name": "Skeleton Bone",
-    "hex": "#D3C89D",
+    "hex": "#BAA789",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6182,7 +6182,7 @@
   {
     "id": "val-736",
     "name": "Plate Mail Metal",
-    "hex": "#888888",
+    "hex": "#98999E",
     "type": "Surface Primer",
     "description": "",
     "comparable": []
@@ -6190,7 +6190,7 @@
   {
     "id": "val-737",
     "name": "Plasma Red",
-    "hex": "#C02020",
+    "hex": "#692825",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6198,7 +6198,7 @@
   {
     "id": "val-738",
     "name": "Troll Green",
-    "hex": "#3A8A40",
+    "hex": "#123926",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6206,7 +6206,7 @@
   {
     "id": "val-739",
     "name": "Snake Green",
-    "hex": "#208A30",
+    "hex": "#132E28",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6214,7 +6214,7 @@
   {
     "id": "val-740",
     "name": "Wasteland Brown",
-    "hex": "#8A6040",
+    "hex": "#1C1613",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6222,7 +6222,7 @@
   {
     "id": "val-741",
     "name": "Mummy White",
-    "hex": "#E0D8C0",
+    "hex": "#574836",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6230,7 +6230,7 @@
   {
     "id": "val-742",
     "name": "Bag of Bones",
-    "hex": "#C0B890",
+    "hex": "#5D442C",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6238,7 +6238,7 @@
   {
     "id": "val-743",
     "name": "Rotten Flesh",
-    "hex": "#A0A060",
+    "hex": "#33301E",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6246,7 +6246,7 @@
   {
     "id": "val-744",
     "name": "Military Yellow",
-    "hex": "#B0A030",
+    "hex": "#38261B",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6254,7 +6254,7 @@
   {
     "id": "val-745",
     "name": "Chameleon Orange",
-    "hex": "#E08030",
+    "hex": "#872D29",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6262,7 +6262,7 @@
   {
     "id": "val-746",
     "name": "Wicked Purple",
-    "hex": "#5A2060",
+    "hex": "#2F2B2E",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6270,7 +6270,7 @@
   {
     "id": "val-747",
     "name": "Fairy Skin",
-    "hex": "#F0C0B0",
+    "hex": "#834C47",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6278,7 +6278,7 @@
   {
     "id": "val-748",
     "name": "Fluid Pink",
-    "hex": "#E080A0",
+    "hex": "#5E1851",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6286,7 +6286,7 @@
   {
     "id": "val-749",
     "name": "Vampiric Purple",
-    "hex": "#6A2040",
+    "hex": "#221C35",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6294,7 +6294,7 @@
   {
     "id": "val-750",
     "name": "Starship Steel",
-    "hex": "#808890",
+    "hex": "#1D3A3C",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6302,7 +6302,7 @@
   {
     "id": "val-751",
     "name": "Iceberg Grey",
-    "hex": "#A0B0B0",
+    "hex": "#242C33",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6310,7 +6310,7 @@
   {
     "id": "val-752",
     "name": "Wagram Blue",
-    "hex": "#2050A0",
+    "hex": "#101F29",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6318,7 +6318,7 @@
   {
     "id": "val-753",
     "name": "Forest Green",
-    "hex": "#2A5A2A",
+    "hex": "#06271A",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6326,7 +6326,7 @@
   {
     "id": "val-754",
     "name": "Armor Green",
-    "hex": "#3A5A30",
+    "hex": "#001516",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6334,7 +6334,7 @@
   {
     "id": "val-755",
     "name": "Commando Green",
-    "hex": "#4A5A30",
+    "hex": "#011217",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6342,7 +6342,7 @@
   {
     "id": "val-756",
     "name": "Mahogany",
-    "hex": "#5A3020",
+    "hex": "#1C1817",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6350,7 +6350,7 @@
   {
     "id": "val-757",
     "name": "Battledress Brown",
-    "hex": "#6A5A30",
+    "hex": "#1A1918",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6358,7 +6358,7 @@
   {
     "id": "val-758",
     "name": "Greasy Black",
-    "hex": "#2A2A20",
+    "hex": "#100F0F",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6366,7 +6366,7 @@
   {
     "id": "val-759",
     "name": "Dreadnought Yellow",
-    "hex": "#D0A020",
+    "hex": "#A1502B",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6374,7 +6374,7 @@
   {
     "id": "val-760",
     "name": "Seraph Red",
-    "hex": "#B02020",
+    "hex": "#2E1917",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6382,7 +6382,7 @@
   {
     "id": "val-761",
     "name": "Legacy Blue",
-    "hex": "#3050A0",
+    "hex": "#0A081E",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6390,7 +6390,7 @@
   {
     "id": "val-762",
     "name": "Monastic Green",
-    "hex": "#2A6A30",
+    "hex": "#001517",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
@@ -6398,7 +6398,7 @@
   {
     "id": "val-763",
     "name": "Hospitallier Black",
-    "hex": "#2A2A28",
+    "hex": "#030204",
     "type": "Xpress Color",
     "description": "",
     "comparable": []
