@@ -64,158 +64,35 @@ Composite primary key on `(user_id, role_id)`.
 
 ## Key Files
 
-| Action | File                                                    | Description                                         |
-| ------ | ------------------------------------------------------- | --------------------------------------------------- |
-| Create | `supabase/migrations/20260412000000_create_roles.sql`   | Migration for tables, RLS, helper function, trigger |
-| Create | `src/modules/user/types/role.ts`                        | `Role` type definition                              |
-| Create | `src/modules/user/utils/roles.ts`                       | Server-side `getUserRoles` and `hasRole` utilities  |
-| Move   | `src/modules/profile/` → `src/modules/user/`            | Consolidate profile code into user module           |
-| Move   | `src/modules/auth/components/user-menu.tsx` → `src/modules/user/components/` | User display belongs in user module |
-| Modify | `src/middleware.ts`                                     | Add admin route protection                          |
+| Action | File                                                                         | Description                                         | Status |
+| ------ | ---------------------------------------------------------------------------- | --------------------------------------------------- | ------ |
+| Create | `supabase/migrations/20260412000000_create_roles.sql`                        | Migration for tables, RLS, helper function, trigger | Done   |
+| Create | `src/modules/user/types/role.ts`                                             | `Role` type definition                              | Done   |
+| Create | `src/modules/user/utils/roles.ts`                                            | Server-side `getUserRoles` and `hasRole` utilities  | Done   |
+| Move   | `src/modules/profile/` → `src/modules/user/`                                 | Consolidate profile code into user module           | Done   |
+| Move   | `src/modules/auth/components/user-menu.tsx` → `src/modules/user/components/` | User display belongs in user module                 | Done   |
+| Modify | `src/middleware.ts`                                                           | Add admin route protection                          | Done   |
+| Create | `src/app/admin/page.tsx`                                                     | Admin landing — redirect to `/admin/users`          | Todo   |
+| Create | `src/app/admin/users/page.tsx`                                               | User management page with role controls             | Todo   |
+| Create | `src/modules/user/types/user-with-roles.ts`                                  | Type for profile joined with role names             | Todo   |
+| Create | `src/modules/user/actions/toggle-admin-role.ts`                              | Server action — grant or revoke `admin` role        | Todo   |
+| Create | `src/modules/user/components/admin-users-table.tsx`                          | Client component — user table with role toggles     | Todo   |
 
 ## Implementation
 
-### Step 0: Refactor — Create `user` module and consolidate user-related code
+### Completed Steps
 
-The existing `src/modules/profile/` module and the `user-menu.tsx` component in `auth/` both deal with the user entity rather than authentication flows. Consolidate them into a single `src/modules/user/` module before adding roles code.
+The following steps have already been implemented and committed:
 
-**Rationale for module boundaries:**
-- **`auth/`** stays focused on identity verification: sign-in, sign-up, sign-out, OAuth flows, auth state types, `get-site-url` utility. These are about _getting authenticated_.
-- **`user/`** owns the user entity: profile setup, profile display, roles, validation. These are about _who the user is_ after authentication.
-- **`community/`** (future) will handle social features when that epic begins. No code exists yet.
+- **Step 0: Module consolidation** — `src/modules/profile/` merged into `src/modules/user/`; `user-menu.tsx` moved from `auth/components/` to `user/components/`; all imports updated; `src/modules/profile/` deleted.
+- **Step 1: Database migration** — `supabase/migrations/20260412000000_create_roles.sql` creates `roles` and `user_roles` tables with RLS, the `get_user_roles()` SQL function, auto-assignment trigger on profile creation, backfill for existing profiles, and a delete-prevention trigger for the `user` role.
+- **Step 2: TypeScript types** — `src/modules/user/types/role.ts` exports `type Role = 'user' | 'admin'`.
+- **Step 3: Server-side utilities** — `src/modules/user/utils/roles.ts` exports `getUserRoles()` and `hasRole()`, querying `user_roles` joined with `roles` via the Supabase server client.
+- **Step 4: Middleware integration** — `src/middleware.ts` defines an `ADMIN_ROUTES` array (`['/admin']`), fetches roles via `get_user_roles` RPC only for admin route requests, and redirects non-admins to `/`.
 
-**Move operations:**
+### Step 5: Seed the first admin
 
-| Source | Destination |
-|--------|------------|
-| `src/modules/profile/actions/setup-profile.ts` | `src/modules/user/actions/setup-profile.ts` |
-| `src/modules/profile/components/profile-form.tsx` | `src/modules/user/components/profile-form.tsx` |
-| `src/modules/profile/types/profile-form-state.ts` | `src/modules/user/types/profile-form-state.ts` |
-| `src/modules/profile/types/profile-form-values.ts` | `src/modules/user/types/profile-form-values.ts` |
-| `src/modules/profile/validation.ts` | `src/modules/user/validation.ts` |
-| `src/modules/auth/components/user-menu.tsx` | `src/modules/user/components/user-menu.tsx` |
-
-**Import updates required:**
-
-| File | Old import path | New import path |
-|------|----------------|-----------------|
-| `src/components/navbar.tsx` | `@/modules/auth/components/user-menu` | `@/modules/user/components/user-menu` |
-| `src/app/profile/setup/page.tsx` | `@/modules/profile/components/profile-form` | `@/modules/user/components/profile-form` |
-| `src/modules/user/actions/setup-profile.ts` | `@/modules/profile/types/profile-form-state` | `@/modules/user/types/profile-form-state` |
-| `src/modules/user/actions/setup-profile.ts` | `@/modules/profile/validation` | `@/modules/user/validation` |
-| `src/modules/user/components/profile-form.tsx` | `@/modules/profile/actions/setup-profile` | `@/modules/user/actions/setup-profile` |
-| `src/modules/user/components/profile-form.tsx` | `@/modules/profile/types/profile-form-state` | `@/modules/user/types/profile-form-state` |
-| `src/modules/user/components/profile-form.tsx` | `@/modules/profile/types/profile-form-values` | `@/modules/user/types/profile-form-values` |
-| `src/modules/user/components/profile-form.tsx` | `@/modules/profile/validation` | `@/modules/user/validation` |
-
-After moves and import updates, delete `src/modules/profile/` entirely.
-
-**Resulting structure:**
-```
-src/modules/auth/              # Authentication flows only
-├── actions/
-│   ├── sign-in.ts
-│   ├── sign-up.ts
-│   ├── sign-out.ts
-│   ├── sign-in-with-google.ts
-│   └── sign-in-with-discord.ts
-├── components/
-│   ├── sign-in-form.tsx
-│   ├── sign-up-form.tsx
-│   └── oauth-buttons.tsx
-├── types/
-│   └── auth-state.ts
-└── utils/
-    └── get-site-url.ts
-
-src/modules/user/              # User entity: profile, display, roles
-├── actions/
-│   └── setup-profile.ts
-├── components/
-│   ├── profile-form.tsx
-│   └── user-menu.tsx
-├── types/
-│   ├── profile-form-state.ts
-│   ├── profile-form-values.ts
-│   └── role.ts               # (new — Step 2)
-├── utils/
-│   └── roles.ts              # (new — Step 3)
-└── validation.ts
-```
-
-Commit: `refactor(user): consolidate profile and user-menu into user module`
-
-### Step 1: Database migration
-
-Create `supabase/migrations/20260412000000_create_roles.sql`:
-
-1. **Create `roles` table** with `id` (serial PK) and `name` (text, unique, not null). Seed `user` and `admin` rows.
-2. **Create `user_roles` table** with `user_id` (uuid FK → `profiles.id` on delete cascade), `role_id` (int FK → `roles.id`), `assigned_at` (timestamptz, default `now()`). Composite PK on `(user_id, role_id)`.
-3. **Enable RLS** on both tables:
-   - `roles`: SELECT for authenticated, no user-facing mutations
-   - `user_roles`: SELECT for authenticated; INSERT/UPDATE/DELETE restricted to admins via `get_user_roles(auth.uid())` check, with self-modification prevention (`auth.uid() != user_id`)
-4. **Create `public.get_user_roles(user_uuid uuid)`** — SQL function returning `text[]` of role names for a given user. Used by RLS policies and application code.
-5. **Create trigger** on `profiles` AFTER INSERT that auto-inserts `(NEW.id, <user_role_id>)` into `user_roles`.
-6. **Backfill** existing profiles — insert the `user` role for all profiles that don't already have it.
-7. **Create delete-prevention trigger** on `user_roles` BEFORE DELETE that raises an exception if the role being removed is `user`.
-
-Commit: `feat(user): add roles and user_roles tables with RLS`
-
-### Step 2: TypeScript types
-
-Create `src/modules/user/types/role.ts`:
-
-```ts
-/** Valid role names in the system. */
-type Role = 'user' | 'admin'
-```
-
-Export the type for use in utilities and middleware.
-
-Commit: include with Step 3.
-
-### Step 3: Server-side role utilities
-
-Create `src/modules/user/utils/roles.ts`:
-
-```ts
-/**
- * Fetches all roles assigned to a user.
- * @param userId - The user's UUID
- * @returns Array of role name strings
- */
-async function getUserRoles(userId: string): Promise<Role[]>
-
-/**
- * Checks whether a user holds a specific role.
- * @param userId - The user's UUID
- * @param role - The role to check for
- * @returns true if the user has the role
- */
-async function hasRole(userId: string, role: Role): Promise<boolean>
-```
-
-Both functions use the Supabase server client to query `user_roles` joined with `roles`. Results are not cached — each call hits the database to ensure freshness.
-
-Commit: `feat(user): add role type and server-side role utilities`
-
-### Step 4: Middleware integration
-
-Update `src/middleware.ts`:
-
-1. Add `/admin` prefix to a new `ADMIN_ROUTES` array.
-2. After the existing profile-setup check, if the user's path starts with an admin route, query roles via `get_user_roles` RPC (or a direct join query) and redirect non-admins to `/` (or a 403 page).
-3. Keep the middleware query efficient — only fetch roles when the path requires it (admin routes), not on every request.
-
-Commit: `feat(user): add admin route protection to middleware`
-
-### Step 5: Build and verify
-
-Run `npm run build` and `npm run lint` to confirm no regressions. Regenerate Supabase types if the project uses `supabase gen types`.
-
-### Step 6: Seed the first admin
-
-The first admin is assigned manually after the migration:
+The first admin must be assigned manually since no admin interface exists yet. Run the following SQL against the local Supabase database (via `npx supabase db execute` or the SQL editor):
 
 ```sql
 INSERT INTO user_roles (user_id, role_id)
@@ -224,7 +101,136 @@ FROM profiles p, roles r
 WHERE p.display_name = '<your-display-name>' AND r.name = 'admin';
 ```
 
-This is documented but not automated — no admin UI exists yet. The acceptance criterion "Admins can grant or revoke the admin role via an admin interface" will require a follow-up feature for admin pages (out of scope for this doc unless added to the criteria).
+Replace `<your-display-name>` with the target user's display name. This is a prerequisite for testing the admin interface in subsequent steps.
+
+Commit: none (manual database operation)
+
+### Step 6: Admin interface — user management
+
+Build the admin UI for granting and revoking the `admin` role. The middleware already protects `/admin` routes — only users with the `admin` role can access them.
+
+#### 6a. Create `src/modules/user/types/user-with-roles.ts`
+
+Define a type representing a profile row joined with its role names:
+
+```ts
+import type { Role } from '@/modules/user/types/role'
+
+/** A user profile with their assigned role names. */
+export type UserWithRoles = {
+  id: string
+  display_name: string | null
+  avatar_url: string | null
+  roles: Role[]
+}
+```
+
+#### 6b. Create `src/modules/user/actions/toggle-admin-role.ts`
+
+Server action that grants or revokes the `admin` role for a target user:
+
+```ts
+'use server'
+
+/**
+ * Grants or revokes the admin role for the specified user.
+ *
+ * RLS enforces that only admins can call this and self-modification is blocked.
+ * Revalidates `/admin/users` on success.
+ *
+ * @param userId - UUID of the target user.
+ * @param action - Whether to 'grant' or 'revoke' the admin role.
+ * @returns Object with optional error message.
+ */
+export async function toggleAdminRole(
+  userId: string,
+  action: 'grant' | 'revoke'
+): Promise<{ error?: string }>
+```
+
+Implementation details:
+1. Create a Supabase server client.
+2. Look up the `admin` role ID: `select('id').eq('name', 'admin').single()` from `roles`.
+3. If `action === 'grant'`: insert `(userId, adminRoleId)` into `user_roles`. Handle unique constraint violations gracefully (user already has role).
+4. If `action === 'revoke'`: delete from `user_roles` where `user_id = userId` and `role_id = adminRoleId`.
+5. RLS enforces authorization — the policies on `user_roles` require `'admin' = ANY(get_user_roles(auth.uid()))` and `auth.uid() != user_id`. No additional checks needed in application code.
+6. Call `revalidatePath('/admin/users')` on success.
+7. Return `{ error: errorMessage }` on failure, or `{}` on success.
+
+#### 6c. Create `src/modules/user/components/admin-users-table.tsx`
+
+Client component that renders all users with their roles and provides role management controls.
+
+**Props:**
+- `users: UserWithRoles[]` — all user profiles with their role names
+- `currentUserId: string` — the authenticated admin's UUID (for disabling self-modification)
+
+**Behavior:**
+- Renders a table with columns: Avatar, Display Name, Roles, Actions.
+- **Roles column**: Render a badge for each role the user holds (e.g., `user`, `admin`). Use the project's existing daisyUI-style badge classes.
+- **Actions column**: For each user that is _not_ the current admin:
+  - If the user has the `admin` role → render a "Revoke Admin" button (destructive style, e.g., `btn btn-error btn-sm btn-outline`).
+  - If the user does not have the `admin` role → render a "Grant Admin" button (e.g., `btn btn-primary btn-sm btn-outline`).
+- **Current user's row**: Show roles but render no action button (or a disabled state with a tooltip explaining self-modification is not allowed).
+- Use `useTransition` for pending state on role toggles — disable the button and show a loading indicator while the server action executes.
+- Call `toggleAdminRole(userId, 'grant' | 'revoke')` on button click.
+- Display returned errors in a toast or inline message.
+
+#### 6d. Create `src/app/admin/page.tsx`
+
+Minimal admin landing page that redirects to the users management page:
+
+```ts
+import { redirect } from 'next/navigation'
+
+export default function AdminPage() {
+  redirect('/admin/users')
+}
+```
+
+This keeps the URL clean and allows adding more admin sub-pages later without changing the entry point.
+
+#### 6e. Create `src/app/admin/users/page.tsx`
+
+Server component that fetches all users with their roles and renders the management UI.
+
+Implementation:
+1. Create a Supabase server client.
+2. Get the authenticated user's ID via `supabase.auth.getUser()` (middleware guarantees they are an admin).
+3. Fetch all profiles with their roles in a single query using Supabase's nested select:
+   ```ts
+   const { data } = await supabase
+     .from('profiles')
+     .select('id, display_name, avatar_url, user_roles(roles(name))')
+     .order('display_name')
+   ```
+4. Map the response into `UserWithRoles[]`, extracting role names from the nested join.
+5. Render page layout:
+   ```tsx
+   <div className="mx-auto w-full max-w-4xl px-4 py-12">
+     <div className="mb-8">
+       <h1 className="text-3xl font-bold">User Management</h1>
+       <p className="text-sm text-muted-foreground">
+         Manage user roles. Grant or revoke admin access.
+       </p>
+     </div>
+     <AdminUsersTable users={users} currentUserId={currentUserId} />
+   </div>
+   ```
+
+Commit: `feat(user): add admin interface for role management`
+
+### Step 7: Build and verify
+
+1. Run `npm run build` and `npm run lint` to confirm no regressions.
+2. Regenerate Supabase types: `npm run db:types`.
+3. Start the dev server and test the following scenarios:
+   - Non-admin user navigating to `/admin` is redirected to `/`.
+   - Admin user sees the user list at `/admin/users`.
+   - Admin can grant the `admin` role to another user — role badge updates.
+   - Admin can revoke the `admin` role from another user — role badge updates.
+   - Admin's own row shows no action button (self-modification prevented).
+   - Attempting to manipulate the action directly (e.g., via DevTools) fails due to RLS.
 
 ## Key Design Decisions
 
