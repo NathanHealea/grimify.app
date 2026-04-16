@@ -1,10 +1,13 @@
 import { createServerClient } from '@supabase/ssr'
 import { type NextRequest, NextResponse } from 'next/server'
 
-/** Route prefixes that bypass authentication and profile-setup checks. */
-const PUBLIC_ROUTES = ['/sign-in', '/sign-up', '/auth/callback', '/auth/confirm', '/forgot-password', '/reset-password', '/brands', '/paints', '/hues']
+/** Routes that bypass ALL middleware checks (auth flow pages). */
+const AUTH_ROUTES = ['/sign-in', '/sign-up', '/auth/callback', '/auth/confirm', '/forgot-password', '/reset-password']
 
-/** Exact routes that bypass authentication (cannot use prefix matching because `/` would match everything). */
+/** Route prefixes accessible without authentication but subject to profile-setup checks for authenticated users. */
+const PUBLIC_ROUTES = ['/brands', '/paints', '/hues']
+
+/** Exact routes accessible without authentication but subject to profile-setup checks for authenticated users. */
 const PUBLIC_EXACT_ROUTES = ['/']
 
 /** Route prefixes that require the `admin` role. */
@@ -14,13 +17,27 @@ const ADMIN_ROUTES = ['/admin']
  * Next.js middleware that handles Supabase session refresh, authentication
  * enforcement, profile-setup enforcement, and admin route protection.
  *
- * - Redirects unauthenticated users to `/sign-in` with a `next` query param.
- * - Redirects to `/profile/setup` if `has_setup_profile` is `false`.
- * - Redirects away from `/profile/setup` if setup is already complete.
- * - Blocks access to admin routes for non-admin users (redirects to `/`).
+ * @remarks
+ * Route handling order:
+ * 1. Auth routes — return immediately (no checks at all).
+ * 2. Get user via `supabase.auth.getUser()`.
+ * 3. No user + public route — allow (unauthenticated browsing).
+ * 4. No user + protected route — redirect to `/sign-in?next={pathname}`.
+ * 5. User exists — check `has_setup_profile`:
+ *    - If `false` and not on `/profile/setup` — redirect to `/profile/setup`.
+ *    - If `true` and on `/profile/setup` — redirect to `/`.
+ * 6. Admin route — check roles via `get_user_roles` RPC.
+ * 7. Return response.
  */
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
   let supabaseResponse = NextResponse.next({ request })
+
+  // Auth flow routes are fully exempt — no session refresh or checks needed
+  if (AUTH_ROUTES.some((route) => pathname.startsWith(route))) {
+    return supabaseResponse
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -43,17 +60,16 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const { pathname } = request.nextUrl
-
-  // Skip all checks for public routes
-  if (
+  const isPublicRoute =
     PUBLIC_ROUTES.some((route) => pathname.startsWith(route)) ||
     PUBLIC_EXACT_ROUTES.some((route) => pathname === route)
-  ) {
+
+  // Unauthenticated user on a public route — allow without profile checks
+  if (!user && isPublicRoute) {
     return supabaseResponse
   }
 
-  // No authenticated user — redirect to sign-in with a `next` param for post-login redirect
+  // Unauthenticated user on a protected route — redirect to sign-in
   if (!user) {
     const url = request.nextUrl.clone()
     url.pathname = '/sign-in'
@@ -61,7 +77,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Check if the authenticated user has completed profile setup
+  // Authenticated user — check profile setup status
   const { data: profile } = await supabase.from('profiles').select('has_setup_profile').eq('id', user.id).single()
 
   const isProfileComplete = profile?.has_setup_profile === true
