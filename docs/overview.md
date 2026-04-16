@@ -48,6 +48,7 @@ Core functionality:
 6. Collection Tracking — Personalizes the experience; requires paint data and user accounts
 7. Community & Social — Highest complexity; depends on collections, recipes, and user accounts
 8. User Management — Admin tools for managing roles, users, and profiles; requires authentication and roles
+9. Color Management — Admin CRUD for brands, hues, and paints with hue association management and constraint enforcement
 
 ## MVP Features (Epics)
 
@@ -150,3 +151,14 @@ Core functionality:
 - [ ] [User account management](./08-user-management/user-account-management.md)
 - [ ] [Admin profile editing](./08-user-management/admin-profile-editing.md)
 - [ ] [Profile and account merging](./08-user-management/profile-merging.md)
+
+### Epic: Color Management
+
+**Goal:** Provide administrators with tools to manage brands, hues, and paints — including CRUD operations, hue-paint association management, and constraint enforcement for hue hierarchies.
+
+**High-Level Scope:**
+
+- [ ] [Admin layout and navigation](./09-color-management/admin-layout-navigation.md)
+- [ ] [Brand management](./09-color-management/brand-management.md)
+- [ ] [Hue management](./09-color-management/hue-management.md)
+- [ ] [Paint management](./09-color-management/paint-management.md)
