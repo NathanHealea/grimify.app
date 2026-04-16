@@ -42,7 +42,7 @@
   {
     "id": "ak-6",
     "name": "Silver Grey",
-    "hex": "#E3D8B8",
+    "hex": "#E2D7B7",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -90,7 +90,7 @@
   {
     "id": "ak-12",
     "name": "Sky Grey",
-    "hex": "#BBBAB6",
+    "hex": "#BAB9B5",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -138,7 +138,7 @@
   {
     "id": "ak-18",
     "name": "Neutral Grey",
-    "hex": "#696E68",
+    "hex": "#878787",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -266,7 +266,7 @@
   {
     "id": "ak-34",
     "name": "Medium Sand",
-    "hex": "#CC9B35",
+    "hex": "#CB9A34",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -298,7 +298,7 @@
   {
     "id": "ak-38",
     "name": "Pale Yellow",
-    "hex": "#FDDC57",
+    "hex": "#FEDD58",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -394,7 +394,7 @@
   {
     "id": "ak-50",
     "name": "Light Flesh",
-    "hex": "#FEDEB5",
+    "hex": "#FFDFB6",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -442,7 +442,7 @@
   {
     "id": "ak-56",
     "name": "Dark Flesh",
-    "hex": "#EBA43A",
+    "hex": "#EAA339",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -578,7 +578,7 @@
   {
     "id": "ak-73",
     "name": "Violet",
-    "hex": "#6B4F6A",
+    "hex": "#543A7B",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -802,7 +802,7 @@
   {
     "id": "ak-101",
     "name": "Orange Brown",
-    "hex": "#B2571E",
+    "hex": "#B1581E",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -874,7 +874,7 @@
   {
     "id": "ak-110",
     "name": "Leather Brown",
-    "hex": "#45301D",
+    "hex": "#46311E",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -906,7 +906,7 @@
   {
     "id": "ak-114",
     "name": "Deck Tan",
-    "hex": "#CCC4AF",
+    "hex": "#CDC5B0",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -938,7 +938,7 @@
   {
     "id": "ak-118",
     "name": "Ochre",
-    "hex": "#C8942E",
+    "hex": "#C7932D",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -1002,7 +1002,7 @@
   {
     "id": "ak-126",
     "name": "Green-Brown",
-    "hex": "#6F5822",
+    "hex": "#705923",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -1066,7 +1066,7 @@
   {
     "id": "ak-134",
     "name": "Green Sky",
-    "hex": "#8BB283",
+    "hex": "#8AB182",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -1082,7 +1082,7 @@
   {
     "id": "ak-136",
     "name": "Frog Green",
-    "hex": "#97B821",
+    "hex": "#97B81F",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -1154,7 +1154,7 @@
   {
     "id": "ak-145",
     "name": "Lizard Green",
-    "hex": "#175A31",
+    "hex": "#165930",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -1218,7 +1218,7 @@
   {
     "id": "ak-153",
     "name": "Extra Dark Green",
-    "hex": "#233027",
+    "hex": "#243128",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -1306,7 +1306,7 @@
   {
     "id": "ak-164",
     "name": "Dark Blue-Grey",
-    "hex": "#4A5E53",
+    "hex": "#495D52",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -1330,7 +1330,7 @@
   {
     "id": "ak-167",
     "name": "Anthracite Grey",
-    "hex": "#1B292A",
+    "hex": "#1C2A2B",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -1474,7 +1474,7 @@
   {
     "id": "ak-185",
     "name": "Star Blue",
-    "hex": "#014760",
+    "hex": "#00465F",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -1490,7 +1490,7 @@
   {
     "id": "ak-187",
     "name": "Strong Dark Blue",
-    "hex": "#03141E",
+    "hex": "#04151F",
     "type": "3rd Gen Acrylics",
     "description": "",
     "comparable": []
@@ -1522,7 +1522,7 @@
   {
     "id": "ak-191",
     "name": "Gold",
-    "hex": "#9C6602",
+    "hex": "#AF8118",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1530,7 +1530,7 @@
   {
     "id": "ak-192",
     "name": "Old Gold",
-    "hex": "#BE9A06",
+    "hex": "#C2A10A",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1538,7 +1538,7 @@
   {
     "id": "ak-193",
     "name": "Rusty Gold",
-    "hex": "#785207",
+    "hex": "#7B5A0C",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1546,7 +1546,7 @@
   {
     "id": "ak-194",
     "name": "Brass",
-    "hex": "#A25A06",
+    "hex": "#B27118",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1554,7 +1554,7 @@
   {
     "id": "ak-195",
     "name": "Rusty Brass",
-    "hex": "#9F4C0A",
+    "hex": "#AA5C16",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1562,7 +1562,7 @@
   {
     "id": "ak-196",
     "name": "Bronze",
-    "hex": "#835A0A",
+    "hex": "#896110",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1570,7 +1570,7 @@
   {
     "id": "ak-197",
     "name": "Copper",
-    "hex": "#BD5109",
+    "hex": "#C65C13",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1578,7 +1578,7 @@
   {
     "id": "ak-198",
     "name": "Burnt Tin",
-    "hex": "#3A1B07",
+    "hex": "#3E1F0A",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1586,7 +1586,7 @@
   {
     "id": "ak-199",
     "name": "Metallic Blue",
-    "hex": "#819B98",
+    "hex": "#4F9098",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1594,7 +1594,7 @@
   {
     "id": "ak-200",
     "name": "Astral Beryllium",
-    "hex": "#7C9E8E",
+    "hex": "#4C7874",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1602,7 +1602,7 @@
   {
     "id": "ak-201",
     "name": "Cobalt Blue",
-    "hex": "#002236",
+    "hex": "#00101A",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1610,7 +1610,7 @@
   {
     "id": "ak-202",
     "name": "Anodized Violet",
-    "hex": "#9E8797",
+    "hex": "#C4B1B7",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1618,7 +1618,7 @@
   {
     "id": "ak-203",
     "name": "Foundry Red",
-    "hex": "#C43531",
+    "hex": "#C41A1D",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1626,7 +1626,7 @@
   {
     "id": "ak-204",
     "name": "Emerald Metallic Green",
-    "hex": "#20753A",
+    "hex": "#329358",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1642,7 +1642,7 @@
   {
     "id": "ak-206",
     "name": "Pearl",
-    "hex": "#F6F0D6",
+    "hex": "#C2B883",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1650,7 +1650,7 @@
   {
     "id": "ak-207",
     "name": "Aluminium",
-    "hex": "#B1B1B1",
+    "hex": "#F7F7F7",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1658,7 +1658,7 @@
   {
     "id": "ak-208",
     "name": "Dark Aluminium",
-    "hex": "#7A7A7A",
+    "hex": "#C3C3C3",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1666,7 +1666,7 @@
   {
     "id": "ak-209",
     "name": "Silver",
-    "hex": "#96A1A3",
+    "hex": "#DDE5E7",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1674,7 +1674,7 @@
   {
     "id": "ak-210",
     "name": "Natural Steel",
-    "hex": "#A3A29D",
+    "hex": "#DEDDDB",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1682,7 +1682,7 @@
   {
     "id": "ak-211",
     "name": "Oily Steel",
-    "hex": "#A3A08D",
+    "hex": "#DED7C7",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1690,7 +1690,7 @@
   {
     "id": "ak-212",
     "name": "Gun Metal",
-    "hex": "#4A4A48",
+    "hex": "#807D77",
     "type": "3rd Gen Metallic",
     "description": "",
     "comparable": []
@@ -1706,7 +1706,7 @@
   {
     "id": "ak-214",
     "name": "Clear Blue",
-    "hex": "#0D265E",
+    "hex": "#0D265C",
     "type": "3rd Gen Intense",
     "description": "",
     "comparable": []
@@ -1722,7 +1722,7 @@
   {
     "id": "ak-216",
     "name": "Clear Green",
-    "hex": "#019736",
+    "hex": "#029837",
     "type": "3rd Gen Intense",
     "description": "",
     "comparable": []
@@ -4977,7 +4977,7 @@
   },
   {
     "name": "Faded White",
-    "hex": "#FFFFFA",
+    "hex": "#E7E4DD",
     "type": "Abteilung 502",
     "id": "ak-623",
     "description": "",
@@ -5033,7 +5033,7 @@
   },
   {
     "name": "Intense Blue",
-    "hex": "#1C67AB",
+    "hex": "#19628F",
     "type": "Abteilung 502",
     "id": "ak-630",
     "description": "",
@@ -5089,7 +5089,7 @@
   },
   {
     "name": "Midnight Blue",
-    "hex": "#25446F",
+    "hex": "#0B1C26",
     "type": "Abteilung 502",
     "id": "ak-637",
     "description": "",
@@ -5137,7 +5137,7 @@
   },
   {
     "name": "Sepia",
-    "hex": "#463B2F",
+    "hex": "#230D00",
     "type": "Abteilung 502",
     "id": "ak-643",
     "description": "",
