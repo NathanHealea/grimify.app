@@ -269,7 +269,7 @@ export async function createClient() {
 
 **File:** `src/middleware.ts`
 
-Session-refresh-only middleware. Does **not** handle route protection or profile checks — those are separate features ([protected-routes.md](./protected-routes.md)).
+Session-refresh-only middleware. Does **not** handle route protection or profile checks — those are separate features ([protected-routes.md](./02-protected-routes.md)).
 
 - Creates an inline `createServerClient` using request/response cookie accessors
 - Calls `supabase.auth.getUser()` to refresh expired tokens into response cookies
@@ -378,4 +378,4 @@ Shared type: `AuthState = { error?: string; success?: string } | null`.
 - This feature uses `NEXT_PUBLIC_SUPABASE_ANON_KEY` (standard Supabase naming) rather than the grimdark project's `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`.
 - UI uses shadcn/ui Card, Input, Label, and Button components with daisyUI-style utility classes for additional styling.
 - Server actions are preferred over client-side API calls — form pages invoke them via `useActionState`.
-- The middleware in this feature only refreshes sessions. Route protection and profile checks will be added by the [protected routes](./protected-routes.md) and [user profile creation](./user-profile-creation-on-first-login.md) features.
+- The middleware in this feature only refreshes sessions. Route protection and profile checks will be added by the [protected routes](./02-protected-routes.md) and [user profile creation](./01-user-profile-creation-on-first-login.md) features.

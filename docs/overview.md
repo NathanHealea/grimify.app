@@ -58,11 +58,11 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [x] [Color scheme and theme](./00-marketing-and-branding/color-scheme-and-theme.md)
-- [ ] [Metadata and OpenGraph](./00-marketing-and-branding/metadata-and-opengraph.md)
-- [ ] [Branding images](./00-marketing-and-branding/branding-images.md)
-- [ ] [Terms of Use](./00-marketing-and-branding/terms-of-use.md)
-- [ ] [Code of Conduct](./00-marketing-and-branding/code-of-conduct.md)
+- [x] [Color scheme and theme](./00-marketing-and-branding/00-color-scheme-and-theme.md)
+- [ ] [Metadata and OpenGraph](./00-marketing-and-branding/01-metadata-and-opengraph.md)
+- [ ] [Branding images](./00-marketing-and-branding/02-branding-images.md)
+- [ ] [Terms of Use](./00-marketing-and-branding/03-terms-of-use.md)
+- [ ] [Code of Conduct](./00-marketing-and-branding/04-code-of-conduct.md)
 
 ### Epic: Authentication & User Accounts
 
@@ -70,12 +70,12 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [x] [Sign up / sign in via Supabase Auth](./01-authentication-and-user-accounts/sign-up-sign-in.md)
-- [x] [User profile creation on first login](./01-authentication-and-user-accounts/user-profile-creation-on-first-login.md)
-- [x] [Protected routes for authenticated features](./01-authentication-and-user-accounts/protected-routes.md)
-- [ ] [User roles (user, admin)](./01-authentication-and-user-accounts/user-roles.md)
-- [x] [Social media login (Google, Discord)](./01-authentication-and-user-accounts/social-media-login.md)
-- [x] [User password reset and change](./01-authentication-and-user-accounts/user-reset-password.md)
+- [x] [Sign up / sign in via Supabase Auth](./01-authentication-and-user-accounts/00-sign-up-sign-in.md)
+- [x] [User profile creation on first login](./01-authentication-and-user-accounts/01-user-profile-creation-on-first-login.md)
+- [x] [Protected routes for authenticated features](./01-authentication-and-user-accounts/02-protected-routes.md)
+- [ ] [User roles (user, admin)](./01-authentication-and-user-accounts/03-user-roles.md)
+- [x] [Social media login (Google, Discord)](./01-authentication-and-user-accounts/04-social-media-login.md)
+- [x] [User password reset and change](./01-authentication-and-user-accounts/05-user-reset-password.md)
 
 ### Epic: Paint Data & Search
 
@@ -83,12 +83,12 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [x] [Paint data model and seed data](./02-paint-data-search/paint-data-model.md)
-- [x] [Itten hue self-referencing refactor](./02-paint-data-search/itten-hue-self-referencing-refactor.md)
-- [x] [Paint search by name, hex, and brand](./02-paint-data-search/paint-search.md)
-- [x] [Brand and product line browsing](./02-paint-data-search/brand-browsing.md)
-- [x] [Munsell hue system refactor](./02-paint-data-search/munsell-hue-refactor.md)
-- [x] [Paint database data improvement](./02-paint-data-search/paint-database-data-improvement.md)
+- [x] [Paint data model and seed data](./02-paint-data-search/00-paint-data-model.md)
+- [x] [Itten hue self-referencing refactor](./02-paint-data-search/01-itten-hue-self-referencing-refactor.md)
+- [x] [Paint search by name, hex, and brand](./02-paint-data-search/02-paint-search.md)
+- [x] [Brand and product line browsing](./02-paint-data-search/03-brand-browsing.md)
+- [x] [Munsell hue system refactor](./02-paint-data-search/04-munsell-hue-refactor.md)
+- [x] [Paint database data improvement](./02-paint-data-search/05-paint-database-data-improvement.md)
 
 ### Epic: Interactive Color Wheel
 
@@ -96,9 +96,9 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Color wheel rendering and paint mapping](./03-interactive-color-wheel/color-wheel-rendering.md)
-- [ ] [Zoom, pan, and paint detail interaction](./03-interactive-color-wheel/wheel-interaction.md)
-- [ ] [Filter wheel by brand, collection, or owned paints](./03-interactive-color-wheel/wheel-filters.md)
+- [ ] [Color wheel rendering and paint mapping](./03-interactive-color-wheel/00-color-wheel-rendering.md)
+- [ ] [Zoom, pan, and paint detail interaction](./03-interactive-color-wheel/01-wheel-interaction.md)
+- [ ] [Filter wheel by brand, collection, or owned paints](./03-interactive-color-wheel/02-wheel-filters.md)
 
 ### Epic: Cross-Brand Comparison
 
@@ -106,9 +106,9 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Color distance algorithm and matching engine](./04-cross-brand-comparison/color-matching-engine.md)
-- [ ] [Side-by-side paint comparison UI](./04-cross-brand-comparison/comparison-ui.md)
-- [ ] [Substitute suggestions for discontinued paints](./04-cross-brand-comparison/substitute-suggestions.md)
+- [ ] [Color distance algorithm and matching engine](./04-cross-brand-comparison/00-color-matching-engine.md)
+- [ ] [Side-by-side paint comparison UI](./04-cross-brand-comparison/01-comparison-ui.md)
+- [ ] [Substitute suggestions for discontinued paints](./04-cross-brand-comparison/02-substitute-suggestions.md)
 
 ### Epic: Color Scheme Explorer
 
@@ -116,9 +116,9 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Color scheme generation (complementary, split-comp, analogous, triadic)](./05-color-scheme-explorer/scheme-generation.md)
-- [ ] [Scheme visualization on the color wheel](./05-color-scheme-explorer/scheme-visualization.md)
-- [ ] [Map schemes to available paints](./05-color-scheme-explorer/scheme-to-paints.md)
+- [ ] [Color scheme generation (complementary, split-comp, analogous, triadic)](./05-color-scheme-explorer/00-scheme-generation.md)
+- [ ] [Scheme visualization on the color wheel](./05-color-scheme-explorer/01-scheme-visualization.md)
+- [ ] [Map schemes to available paints](./05-color-scheme-explorer/02-scheme-to-paints.md)
 
 ### Epic: Collection Tracking
 
@@ -126,8 +126,8 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Add/remove paints to personal collection](./06-collection-tracking/manage-collection.md)
-- [ ] [Collection overview and statistics](./06-collection-tracking/collection-overview.md)
+- [ ] [Add/remove paints to personal collection](./06-collection-tracking/00-manage-collection.md)
+- [ ] [Collection overview and statistics](./06-collection-tracking/01-collection-overview.md)
 
 ### Epic: Community & Social
 
@@ -135,10 +135,10 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Painting recipes (step-by-step color layering guides)](./07-community-social/painting-recipes.md)
-- [ ] [Curated palette sharing](./07-community-social/palette-sharing.md)
-- [ ] [Community feed and discovery](./07-community-social/community-feed.md)
-- [ ] [User profiles and shared collections](./07-community-social/user-profiles.md)
+- [ ] [Painting recipes (step-by-step color layering guides)](./07-community-social/00-painting-recipes.md)
+- [ ] [Curated palette sharing](./07-community-social/01-palette-sharing.md)
+- [ ] [Community feed and discovery](./07-community-social/02-community-feed.md)
+- [ ] [User profiles and shared collections](./07-community-social/03-user-profiles.md)
 
 ### Epic: User Management
 
@@ -146,11 +146,11 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Admin dashboard and navigation](./08-user-management/admin-dashboard.md)
-- [ ] [Role management (CRUD and assignment)](./08-user-management/role-management.md)
-- [ ] [User account management](./08-user-management/user-account-management.md)
-- [ ] [Admin profile editing](./08-user-management/admin-profile-editing.md)
-- [ ] [Profile and account merging](./08-user-management/profile-merging.md)
+- [ ] [Admin dashboard and navigation](./08-user-management/00-admin-dashboard.md)
+- [ ] [Role management (CRUD and assignment)](./08-user-management/01-role-management.md)
+- [ ] [User account management](./08-user-management/02-user-account-management.md)
+- [ ] [Admin profile editing](./08-user-management/03-admin-profile-editing.md)
+- [ ] [Profile and account merging](./08-user-management/04-profile-merging.md)
 
 ### Epic: Color Management
 
@@ -158,7 +158,7 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Admin layout and navigation](./09-color-management/admin-layout-navigation.md)
-- [ ] [Brand management](./09-color-management/brand-management.md)
-- [ ] [Hue management](./09-color-management/hue-management.md)
-- [ ] [Paint management](./09-color-management/paint-management.md)
+- [ ] [Admin layout and navigation](./09-color-management/00-admin-layout-navigation.md)
+- [ ] [Brand management](./09-color-management/01-brand-management.md)
+- [ ] [Hue management](./09-color-management/02-hue-management.md)
+- [ ] [Paint management](./09-color-management/03-paint-management.md)

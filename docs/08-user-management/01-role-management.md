@@ -8,7 +8,7 @@
 
 ## Summary
 
-Admin interface for managing roles and role assignments. Admins can create new roles (beyond the default `user` and `admin`), rename roles, delete unused custom roles, and assign or revoke roles from users. The `user` role is protected and cannot be deleted or removed from any account. This feature fulfills the remaining acceptance criteria from the [User Roles](../01-authentication-and-user-accounts/user-roles.md) feature doc.
+Admin interface for managing roles and role assignments. Admins can create new roles (beyond the default `user` and `admin`), rename roles, delete unused custom roles, and assign or revoke roles from users. The `user` role is protected and cannot be deleted or removed from any account. This feature fulfills the remaining acceptance criteria from the [User Roles](../01-authentication-and-user-accounts/03-user-roles.md) feature doc.
 
 ## Acceptance Criteria
 
