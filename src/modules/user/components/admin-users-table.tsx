@@ -1,16 +1,15 @@
 'use client'
 
-import { useTransition } from 'react'
 import Image from 'next/image'
-import { toggleAdminRole } from '@/modules/user/actions/toggle-admin-role'
+import { AdminUserActionsMenu } from '@/modules/user/components/admin-user-actions-menu'
 import type { UserWithRoles } from '@/modules/user/types/user-with-roles'
 
 /**
- * Client component that renders a table of all users with role management controls.
+ * Client component that renders a table of all users with per-row action controls.
  *
- * Displays each user's avatar, display name, and role badges. Admins can grant
- * or revoke the `admin` role for other users. Self-modification is prevented
- * in the UI (the current admin's row shows no action button).
+ * Displays each user's avatar, display name, and role badges. Each row has an
+ * actions dropdown (View / Edit / Delete) except the current admin's own row,
+ * which shows no menu to prevent self-modification.
  *
  * @param props.users - All user profiles with their assigned role names.
  * @param props.currentUserId - The authenticated admin's UUID, used to disable self-modification.
@@ -47,22 +46,6 @@ export function AdminUsersTable({
 }
 
 function UserRow({ user, isSelf }: { user: UserWithRoles; isSelf: boolean }) {
-  const [isPending, startTransition] = useTransition()
-  const hasAdmin = user.roles.includes('admin')
-
-  function handleToggle() {
-    startTransition(async () => {
-      const result = await toggleAdminRole(
-        user.id,
-        hasAdmin ? 'revoke' : 'grant'
-      )
-      if (result.error) {
-        // Display error inline — could be enhanced with a toast
-        console.error(result.error)
-      }
-    })
-  }
-
   const initials = (user.display_name ?? '?')
     .split(/\s+/)
     .map((w) => w[0])
@@ -113,24 +96,14 @@ function UserRow({ user, isSelf }: { user: UserWithRoles; isSelf: boolean }) {
       </td>
       <td className="px-4 py-3 text-right">
         {isSelf ? (
-          <span className="text-xs text-muted-foreground">Cannot modify own roles</span>
+          <span className="text-xs text-muted-foreground">
+            Cannot modify own account
+          </span>
         ) : (
-          <button
-            type="button"
-            onClick={handleToggle}
-            disabled={isPending}
-            className={
-              hasAdmin
-                ? 'btn btn-sm btn-outline btn-destructive'
-                : 'btn btn-sm btn-outline btn-primary'
-            }
-          >
-            {isPending
-              ? 'Updating...'
-              : hasAdmin
-                ? 'Revoke Admin'
-                : 'Grant Admin'}
-          </button>
+          <AdminUserActionsMenu
+            userId={user.id}
+            displayName={user.display_name ?? 'this user'}
+          />
         )}
       </td>
     </tr>
