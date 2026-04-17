@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 import { createClient } from '@/lib/supabase/server'
 import { UserMenu } from '@/modules/user/components/user-menu'
+import { getUserRoles } from '@/modules/user/utils/roles'
 
 /**
  * Top-level navigation bar (server component).
@@ -17,6 +18,7 @@ export async function Navbar() {
 
   let displayName: string | null = null
   let avatarUrl: string | null = null
+  let isAdmin = false
 
   if (user) {
     const { data: profile } = await supabase
@@ -27,6 +29,9 @@ export async function Navbar() {
 
     displayName = profile?.display_name ?? null
     avatarUrl = profile?.avatar_url ?? null
+
+    const roles = await getUserRoles(user.id)
+    isAdmin = roles.includes('admin')
   }
 
   return (
@@ -45,6 +50,11 @@ export async function Navbar() {
         </Link>
       </div>
       <div className="navbar-end">
+        {isAdmin && (
+          <Link href="/admin" className="btn btn-ghost btn-sm">
+            Admin
+          </Link>
+        )}
         {user && displayName ? (
           <UserMenu displayName={displayName} avatarUrl={avatarUrl} />
         ) : (

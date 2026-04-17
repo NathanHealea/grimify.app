@@ -147,7 +147,7 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Admin dashboard and navigation](./08-user-management/00-admin-dashboard.md)
+- [x] [Admin dashboard and navigation](./08-user-management/00-admin-dashboard.md)
 - [ ] [Role management (CRUD and assignment)](./08-user-management/01-role-management.md)
 - [ ] [User account management](./08-user-management/02-user-account-management.md)
 - [ ] [Admin profile editing](./08-user-management/03-admin-profile-editing.md)
