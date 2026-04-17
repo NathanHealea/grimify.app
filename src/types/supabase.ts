@@ -286,14 +286,17 @@ export type Database = {
       }
       roles: {
         Row: {
+          builtin: boolean
           id: string
           name: string
         }
         Insert: {
+          builtin?: boolean
           id?: string
           name: string
         }
         Update: {
+          builtin?: boolean
           id?: string
           name?: string
         }
