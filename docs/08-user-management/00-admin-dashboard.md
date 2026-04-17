@@ -2,7 +2,7 @@
 
 **Epic:** User Management
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/admin-dashboard`
 **Merge into:** `v1/main`
 
@@ -12,13 +12,13 @@ Create the admin area foundation: a shared layout with sidebar navigation, a das
 
 ## Acceptance Criteria
 
-- [ ] An `/admin` route exists and displays a dashboard overview
-- [ ] The admin layout includes a sidebar with navigation links to all admin sections
-- [ ] The dashboard shows summary statistics: total users, users by role, recent sign-ups
-- [ ] Non-admin users are redirected away from `/admin` routes (existing middleware)
-- [ ] The main navbar shows an "Admin" link for users with the `admin` role
-- [ ] The admin layout is responsive (sidebar collapses on mobile)
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] An `/admin` route exists and displays a dashboard overview
+- [x] The admin layout includes a sidebar with navigation links to all admin sections
+- [x] The dashboard shows summary statistics: total users, users by role, recent sign-ups
+- [x] Non-admin users are redirected away from `/admin` routes (existing middleware)
+- [x] The main navbar shows an "Admin" link for users with the `admin` role
+- [x] The admin layout is responsive (sidebar collapses on mobile)
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
