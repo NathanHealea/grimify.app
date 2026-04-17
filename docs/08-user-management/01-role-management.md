@@ -2,7 +2,7 @@
 
 **Epic:** User Management
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/role-management`
 **Merge into:** `v1/main`
 
@@ -12,16 +12,16 @@ Admin interface for managing roles and role assignments. Admins can create new r
 
 ## Acceptance Criteria
 
-- [ ] Admins can view a list of all roles with the number of assigned users
-- [ ] Admins can create a new role with a unique name
-- [ ] Admins can rename an existing role (except built-in `user` and `admin`)
-- [ ] Admins can delete a custom role that has no assigned users
-- [ ] Admins can assign a role to a user from the role detail page
-- [ ] Admins can revoke a role from a user (except the `user` role)
-- [ ] Built-in roles (`user`, `admin`) cannot be deleted
-- [ ] Role names are validated: lowercase, alphanumeric with hyphens, 2-30 characters
-- [ ] At least one admin is seeded or manually assigned in the database
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Admins can view a list of all roles with the number of assigned users
+- [x] Admins can create a new role with a unique name
+- [x] Admins can rename an existing role (except built-in `user` and `admin`)
+- [x] Admins can delete a custom role that has no assigned users
+- [x] Admins can assign a role to a user from the role detail page
+- [x] Admins can revoke a role from a user (except the `user` role)
+- [x] Built-in roles (`user`, `admin`) cannot be deleted
+- [x] Role names are validated: lowercase, alphanumeric with hyphens, 2-30 characters
+- [x] At least one admin is seeded or manually assigned in the database
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
