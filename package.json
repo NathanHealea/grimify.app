@@ -1,6 +1,6 @@
 {
   "name": "grimify.app",
-  "version": "1.13.0",
+  "version": "1.13.1",
   "description": "Interactive color research and collection management app for miniature painters",
   "author": "Nathan Healea <nhealea@uoregon.edu>",
   "private": true,
