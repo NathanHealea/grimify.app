@@ -1,6 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
 import { AdminUsersTable } from '@/modules/user/components/admin-users-table'
-import type { Role } from '@/modules/user/types/role'
 import type { UserWithRoles } from '@/modules/user/types/user-with-roles'
 
 export default async function AdminUsersPage() {
@@ -28,7 +27,7 @@ export default async function AdminUsersPage() {
       (profile.user_roles as unknown as { roles: { name: string } }[]) ?? []
     )
       .map((ur) => ur.roles?.name)
-      .filter((name): name is Role => name === 'user' || name === 'admin'),
+      .filter((name): name is string => typeof name === 'string'),
   }))
 
   return (

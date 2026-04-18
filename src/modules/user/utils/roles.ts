@@ -24,7 +24,7 @@ export async function getUserRoles(userId: string): Promise<Role[]> {
 
   return data
     .map((row) => (row.roles as unknown as { name: string })?.name)
-    .filter((name): name is Role => name === 'user' || name === 'admin')
+    .filter((name): name is string => typeof name === 'string')
 }
 
 /**
