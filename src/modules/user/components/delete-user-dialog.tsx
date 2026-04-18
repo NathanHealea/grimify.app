@@ -45,13 +45,12 @@ export function DeleteUserDialog({
     }
   }, [open])
 
-  // Reset the confirmation input whenever the dialog opens
-  useEffect(() => {
-    if (open) {
-      setConfirmValue('')
-      setError(null)
-    }
-  }, [open])
+  // Reset state on close so the dialog is clean the next time it opens
+  function handleClose() {
+    setConfirmValue('')
+    setError(null)
+    onClose()
+  }
 
   function handleConfirm() {
     setError(null)
@@ -61,7 +60,7 @@ export function DeleteUserDialog({
         setError(result.error)
         return
       }
-      onClose()
+      handleClose()
     })
   }
 
@@ -70,8 +69,8 @@ export function DeleteUserDialog({
   return (
     <dialog
       ref={dialogRef}
-      onClose={onClose}
-      onCancel={onClose}
+      onClose={handleClose}
+      onCancel={handleClose}
       className="rounded-lg border border-border bg-popover p-0 text-popover-foreground shadow-lg backdrop:bg-black/40"
     >
       <div className="flex w-96 max-w-full flex-col gap-4 p-6">
@@ -109,7 +108,7 @@ export function DeleteUserDialog({
         <div className="flex justify-end gap-2">
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             disabled={isPending}
             className="btn btn-sm btn-ghost"
           >
