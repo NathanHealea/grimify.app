@@ -149,7 +149,7 @@ Core functionality:
 
 - [x] [Admin dashboard and navigation](./08-user-management/00-admin-dashboard.md)
 - [x] [Role management (CRUD and assignment)](./08-user-management/01-role-management.md)
-- [ ] [User account management](./08-user-management/02-user-account-management.md)
+- [x] [User account management](./08-user-management/02-user-account-management.md)
 - [ ] [Admin profile editing](./08-user-management/03-admin-profile-editing.md)
 - [ ] [Profile and account merging](./08-user-management/04-profile-merging.md)
 - [ ] [User profile deletion (self-service)](./08-user-management/05-user-profile-deletion.md)
