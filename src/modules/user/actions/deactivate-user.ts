@@ -2,8 +2,9 @@
 
 import { revalidatePath } from 'next/cache'
 
-import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
+import { setBanStatus } from '@/modules/user/services/auth-user-service'
+import { getUserRoles } from '@/modules/user/services/user-roles-service'
 
 /**
  * Bans or unbans a user account via the Supabase Admin API.
@@ -38,31 +39,14 @@ export async function deactivateUser(
     return { error: 'You cannot deactivate your own account.' }
   }
 
-  // Block modification of owner accounts
-  const { data: targetRoles } = await supabase
-    .from('user_roles')
-    .select('roles(name)')
-    .eq('user_id', userId)
+  const roles = await getUserRoles(userId)
 
-  const targetRoleNames = (
-    (targetRoles ?? []) as unknown as { roles: { name: string } | null }[]
-  )
-    .map((r) => r.roles?.name)
-    .filter((n): n is string => typeof n === 'string')
-
-  if (targetRoleNames.includes('owner')) {
+  if (roles.some((r) => r.name === 'owner')) {
     return { error: 'The owner account cannot be deactivated.' }
   }
 
-  const adminClient = createAdminClient()
-
-  const { error } = await adminClient.auth.admin.updateUserById(userId, {
-    ban_duration: ban ? '876000h' : 'none',
-  })
-
-  if (error) {
-    return { error: error.message }
-  }
+  const result = await setBanStatus(userId, ban)
+  if (result.error) return result
 
   revalidatePath('/admin/users')
   revalidatePath(`/admin/users/${userId}`)

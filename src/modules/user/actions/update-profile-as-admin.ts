@@ -1,9 +1,11 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
-import { validateDisplayName } from '@/modules/user/validation'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+
+import { createClient } from '@/lib/supabase/server'
+import { getUserRoles } from '@/modules/user/services/user-roles-service'
+import { validateDisplayName } from '@/modules/user/validation'
 
 /**
  * Server action state for the admin profile edit form.
@@ -33,21 +35,9 @@ export async function updateProfileAsAdmin(
   _prev: AdminEditProfileState,
   formData: FormData,
 ): Promise<AdminEditProfileState> {
-  const supabase = await createClient()
+  const roles = await getUserRoles(userId)
 
-  // Block editing the owner account
-  const { data: targetRoles } = await supabase
-    .from('user_roles')
-    .select('roles(name)')
-    .eq('user_id', userId)
-
-  const targetRoleNames = (
-    (targetRoles ?? []) as unknown as { roles: { name: string } | null }[]
-  )
-    .map((r) => r.roles?.name)
-    .filter((n): n is string => typeof n === 'string')
-
-  if (targetRoleNames.includes('owner')) {
+  if (roles.some((r) => r.name === 'owner')) {
     return { error: 'The owner account cannot be edited.' }
   }
 
@@ -62,6 +52,8 @@ export async function updateProfileAsAdmin(
   if (bio.length > 500) {
     return { errors: { bio: 'Bio must be 500 characters or fewer.' } }
   }
+
+  const supabase = await createClient()
 
   const { error } = await supabase
     .from('profiles')

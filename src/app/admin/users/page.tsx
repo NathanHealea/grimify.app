@@ -4,7 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import { AdminUsersTable } from '@/modules/user/components/admin-users-table'
 import { UserSearch } from '@/modules/user/components/user-search'
 import { UserRoleFilter } from '@/modules/user/components/user-role-filter'
-import type { UserWithRoles } from '@/modules/user/types/user-with-roles'
+import { listRoles } from '@/modules/admin/services/role-service'
+import { listProfiles } from '@/modules/user/services/profile-service'
 
 /** Number of users shown per page. */
 const PAGE_SIZE = 20
@@ -30,53 +31,15 @@ export default async function AdminUsersPage({
   const currentPage = Math.max(1, parseInt(page ?? '1', 10))
   const offset = (currentPage - 1) * PAGE_SIZE
 
-  // Fetch all roles for the filter dropdown
-  const { data: roles } = await supabase
-    .from('roles')
-    .select('id, name')
-    .order('name')
+  // Fetch roles for the filter dropdown
+  const roles = await listRoles()
 
   // Resolve role filter: find role ID from name
-  let roleId: string | null = null
-  if (role && roles) {
-    const matched = roles.find((r) => r.name === role)
-    roleId = matched?.id ?? null
-  }
+  const roleId = role ? (roles.find((r) => r.name === role)?.id ?? null) : null
 
-  // Build profile query with optional search, role filter, and pagination
-  let query = supabase
-    .from('profiles')
-    .select(
-      'id, display_name, avatar_url, email, created_at, user_roles!left(role_id, roles(name))',
-      { count: 'exact' }
-    )
-    .order('created_at', { ascending: false })
-    .range(offset, offset + PAGE_SIZE - 1)
+  const { users, count } = await listProfiles({ q, roleId, offset, limit: PAGE_SIZE })
 
-  if (q) {
-    query = query.ilike('display_name', `%${q}%`)
-  }
-
-  if (roleId) {
-    query = query.eq('user_roles.role_id', roleId)
-  }
-
-  const { data, count } = await query
-
-  const totalPages = Math.ceil((count ?? 0) / PAGE_SIZE)
-
-  const users: UserWithRoles[] = (data ?? []).map((profile) => ({
-    id: profile.id,
-    display_name: profile.display_name,
-    avatar_url: profile.avatar_url,
-    email: (profile.email as string | null) ?? null,
-    created_at: profile.created_at,
-    roles: (
-      (profile.user_roles as unknown as { roles: { name: string } | null }[]) ?? []
-    )
-      .map((ur) => ur.roles?.name)
-      .filter((name): name is string => typeof name === 'string'),
-  }))
+  const totalPages = Math.ceil(count / PAGE_SIZE)
 
   // Build pagination URL helper
   function pageUrl(p: number) {
@@ -101,7 +64,7 @@ export default async function AdminUsersPage({
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <UserSearch initialValue={q ?? ''} />
 
-        <UserRoleFilter roles={roles ?? []} initialValue={role ?? ''} />
+        <UserRoleFilter roles={roles} initialValue={role ?? ''} />
 
         {(q || role) && (
           <Link href="/admin/users" className="btn btn-ghost btn-sm">
@@ -110,7 +73,7 @@ export default async function AdminUsersPage({
         )}
 
         <span className="ml-auto text-xs text-muted-foreground">
-          {count ?? 0} user{count !== 1 ? 's' : ''}
+          {count} user{count !== 1 ? 's' : ''}
         </span>
       </div>
 

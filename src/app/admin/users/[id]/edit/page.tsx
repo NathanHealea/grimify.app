@@ -9,9 +9,12 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
+import { listRoles } from '@/modules/admin/services/role-service'
 import { AdminDeleteUserSection } from '@/modules/user/components/admin-delete-user-section'
 import { AdminEditProfileForm } from '@/modules/user/components/admin-edit-profile-form'
 import { AdminUserRolesEditor } from '@/modules/user/components/admin-user-roles-editor'
+import { getProfileById } from '@/modules/user/services/profile-service'
+import { getUserRoles } from '@/modules/user/services/user-roles-service'
 
 export default async function AdminEditUserPage({
   params,
@@ -30,30 +33,15 @@ export default async function AdminEditUserPage({
   }
 
   // Fetch profile, user's assigned roles, and all available roles in parallel
-  const [profileResult, assignedRolesResult, allRolesResult] = await Promise.all([
-    supabase.from('profiles').select('id, display_name, bio').eq('id', id).single(),
-    supabase
-      .from('user_roles')
-      .select('roles(id, name)')
-      .eq('user_id', id),
-    supabase.from('roles').select('id, name').order('name'),
+  const [profile, assignedRoles, allRoles] = await Promise.all([
+    getProfileById(id),
+    getUserRoles(id),
+    listRoles(),
   ])
 
-  if (profileResult.error || !profileResult.data) {
+  if (!profile) {
     notFound()
   }
-
-  const profile = profileResult.data
-
-  const assignedRoles = (
-    (assignedRolesResult.data ?? []) as unknown as {
-      roles: { id: string; name: string } | null
-    }[]
-  )
-    .map((r) => r.roles)
-    .filter((r): r is { id: string; name: string } => r !== null)
-
-  const allRoles = allRolesResult.data ?? []
 
   // Protect the owner account from edits
   const isOwner = assignedRoles.some((r) => r.name === 'owner')

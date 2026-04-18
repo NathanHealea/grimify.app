@@ -1,9 +1,11 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { UserDetail } from '@/modules/user/components/user-detail'
+import { getAuthUser } from '@/modules/user/services/auth-user-service'
+import { getProfileById } from '@/modules/user/services/profile-service'
+import { getUserRoles } from '@/modules/user/services/user-roles-service'
 
 export default async function AdminUserDetailPage({
   params,
@@ -12,7 +14,6 @@ export default async function AdminUserDetailPage({
 }) {
   const { id } = await params
   const supabase = await createClient()
-  const adminClient = createAdminClient()
 
   const {
     data: { user: currentUser },
@@ -22,31 +23,16 @@ export default async function AdminUserDetailPage({
     return null
   }
 
-  // Fetch profile and roles in parallel with auth user info
-  const [profileResult, rolesResult, authResult] = await Promise.all([
-    supabase.from('profiles').select('*').eq('id', id).single(),
-    supabase
-      .from('user_roles')
-      .select('role_id, roles(id, name)')
-      .eq('user_id', id),
-    adminClient.auth.admin.getUserById(id),
+  // Fetch profile, roles, and auth metadata in parallel
+  const [profile, roles, authUser] = await Promise.all([
+    getProfileById(id),
+    getUserRoles(id),
+    getAuthUser(id),
   ])
 
-  if (profileResult.error || !profileResult.data) {
+  if (!profile) {
     notFound()
   }
-
-  const profile = profileResult.data
-  const roles = (
-    (rolesResult.data ?? []) as unknown as {
-      role_id: string
-      roles: { id: string; name: string } | null
-    }[]
-  )
-    .map((r) => r.roles)
-    .filter((r): r is { id: string; name: string } => r !== null)
-
-  const authUser = authResult.data?.user ?? null
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
