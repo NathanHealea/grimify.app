@@ -16,18 +16,22 @@ import { deleteUser } from '@/modules/user/actions/delete-user'
  * @param props.userId - UUID of the account to delete.
  * @param props.displayName - Name shown in the confirmation prompt and required for type-to-confirm.
  * @param props.open - Whether the dialog is visible.
- * @param props.onClose - Called when the dialog should close (cancel or success).
+ * @param props.onClose - Called when the dialog closes via cancel or native dismiss.
+ * @param props.onDeleted - Optional callback called after a successful deletion (before `onClose`).
+ *   Use this to navigate away from the deleted user's page.
  */
 export function DeleteUserDialog({
   userId,
   displayName,
   open,
   onClose,
+  onDeleted,
 }: {
   userId: string
   displayName: string
   open: boolean
   onClose: () => void
+  onDeleted?: () => void
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [isPending, startTransition] = useTransition()
@@ -60,6 +64,7 @@ export function DeleteUserDialog({
         setError(result.error)
         return
       }
+      onDeleted?.()
       handleClose()
     })
   }
