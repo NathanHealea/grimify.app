@@ -43,7 +43,7 @@ export function AdminUserActionsMenu({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem asChild>
-            <Link href={`/users/${userId}`}>
+            <Link href={`/admin/users/${userId}`}>
               <Eye className="size-4" />
               View
             </Link>

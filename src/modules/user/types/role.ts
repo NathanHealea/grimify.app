@@ -2,7 +2,7 @@
 export type Role = string
 
 /** Built-in role names that cannot be modified or deleted. */
-export const BUILTIN_ROLES = ['user', 'admin'] as const
+export const BUILTIN_ROLES = ['user', 'admin', 'owner'] as const
 
 /**
  * Type guard for checking if a role name is built-in.

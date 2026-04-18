@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 
 import { createClient } from '@/lib/supabase/server'
+import { getRoleById } from '@/modules/admin/services/role-service'
 
 /**
  * Revokes a role from a user.
@@ -21,21 +22,17 @@ export async function revokeRole(
   userId: string,
   roleId: string
 ): Promise<{ error?: string }> {
-  const supabase = await createClient()
+  const role = await getRoleById(roleId)
 
-  const { data: role, error: fetchError } = await supabase
-    .from('roles')
-    .select('name')
-    .eq('id', roleId)
-    .single()
-
-  if (fetchError || !role) {
+  if (!role) {
     return { error: 'Role not found.' }
   }
 
   if (role.name === 'user') {
     return { error: 'The "user" role cannot be revoked from any account.' }
   }
+
+  const supabase = await createClient()
 
   const {
     data: { user },
