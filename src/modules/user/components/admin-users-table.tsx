@@ -63,6 +63,8 @@ export function AdminUsersTable({
 }
 
 function UserRow({ user, isSelf }: { user: UserWithRoles; isSelf: boolean }) {
+  const isOwner = user.roles.includes('owner')
+
   const initials = (user.display_name ?? '?')
     .split(/\s+/)
     .map((w) => w[0])
@@ -112,9 +114,11 @@ function UserRow({ user, isSelf }: { user: UserWithRoles; isSelf: boolean }) {
             <span
               key={role}
               className={
-                role === 'admin'
-                  ? 'badge badge-primary'
-                  : 'badge badge-soft'
+                role === 'owner'
+                  ? 'badge badge-accent'
+                  : role === 'admin'
+                    ? 'badge badge-primary'
+                    : 'badge badge-soft'
               }
             >
               {role}
@@ -127,9 +131,9 @@ function UserRow({ user, isSelf }: { user: UserWithRoles; isSelf: boolean }) {
       </td>
       <td className="px-4 py-3 text-right">
         {isSelf ? (
-          <span className="text-xs text-muted-foreground">
-            Cannot modify own account
-          </span>
+          <span className="text-xs text-muted-foreground">Cannot modify own account</span>
+        ) : isOwner ? (
+          <span className="text-xs text-muted-foreground">Protected</span>
         ) : (
           <AdminUserActionsMenu
             userId={user.id}

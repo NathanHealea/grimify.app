@@ -12,9 +12,9 @@ import { createClient } from '@/lib/supabase/server'
  * or `ban_duration: 'none'` to remove the ban. Does not delete any data.
  *
  * @remarks
- * Prevents admins from deactivating their own account. Authentication is
- * checked via the anon client; the ban itself is applied via the service-role
- * admin client which bypasses RLS.
+ * Prevents admins from deactivating their own account or the owner account.
+ * Authentication is checked via the anon client; the ban itself is applied
+ * via the service-role admin client which bypasses RLS.
  *
  * @param userId - UUID of the account to ban or unban.
  * @param ban - `true` to deactivate (ban), `false` to reactivate (unban).
@@ -36,6 +36,22 @@ export async function deactivateUser(
 
   if (user.id === userId) {
     return { error: 'You cannot deactivate your own account.' }
+  }
+
+  // Block modification of owner accounts
+  const { data: targetRoles } = await supabase
+    .from('user_roles')
+    .select('roles(name)')
+    .eq('user_id', userId)
+
+  const targetRoleNames = (
+    (targetRoles ?? []) as unknown as { roles: { name: string } | null }[]
+  )
+    .map((r) => r.roles?.name)
+    .filter((n): n is string => typeof n === 'string')
+
+  if (targetRoleNames.includes('owner')) {
+    return { error: 'The owner account cannot be deactivated.' }
   }
 
   const adminClient = createAdminClient()

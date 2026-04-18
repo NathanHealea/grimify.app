@@ -35,6 +35,22 @@ export async function updateProfileAsAdmin(
 ): Promise<AdminEditProfileState> {
   const supabase = await createClient()
 
+  // Block editing the owner account
+  const { data: targetRoles } = await supabase
+    .from('user_roles')
+    .select('roles(name)')
+    .eq('user_id', userId)
+
+  const targetRoleNames = (
+    (targetRoles ?? []) as unknown as { roles: { name: string } | null }[]
+  )
+    .map((r) => r.roles?.name)
+    .filter((n): n is string => typeof n === 'string')
+
+  if (targetRoleNames.includes('owner')) {
+    return { error: 'The owner account cannot be edited.' }
+  }
+
   const displayName = (formData.get('display_name') as string) ?? ''
   const bio = ((formData.get('bio') as string) ?? '').trim()
 

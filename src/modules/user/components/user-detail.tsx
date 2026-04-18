@@ -29,7 +29,7 @@ type Role = {
  *
  * Renders four sections: Profile info, assigned roles, auth provider details,
  * and destructive account actions (deactivate / delete). Hides destructive
- * actions if the current admin is viewing their own account.
+ * actions if the current admin is viewing their own account or the owner account.
  *
  * @param props.profile - The target user's profile row.
  * @param props.roles - Roles assigned to this user.
@@ -49,6 +49,7 @@ export function UserDetail({
 }) {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const isSelf = profile.id === currentUserId
+  const isOwner = roles.some((r) => r.name === 'owner')
 
   const isBanned =
     authUser?.banned_until != null &&
@@ -88,6 +89,9 @@ export function UserDetail({
             </h1>
             {isSelf && (
               <span className="badge badge-soft text-xs">you</span>
+            )}
+            {isOwner && (
+              <span className="badge badge-accent text-xs">owner</span>
             )}
             {isBanned && (
               <span className="badge badge-destructive text-xs">Banned</span>
@@ -143,9 +147,11 @@ export function UserDetail({
                   key={role.id}
                   href={`/admin/roles/${role.id}`}
                   className={
-                    role.name === 'admin'
-                      ? 'badge badge-primary'
-                      : 'badge badge-soft'
+                    role.name === 'owner'
+                      ? 'badge badge-accent'
+                      : role.name === 'admin'
+                        ? 'badge badge-primary'
+                        : 'badge badge-soft'
                   }
                 >
                   {role.name}
@@ -194,8 +200,8 @@ export function UserDetail({
         </div>
       </div>
 
-      {/* Actions section — hidden when viewing own account */}
-      {!isSelf && (
+      {/* Actions section — hidden for own account or owner account */}
+      {!isSelf && !isOwner && (
         <div className="card border-destructive/20">
           <div className="card-header">
             <h2 className="text-base font-semibold">Account Actions</h2>
