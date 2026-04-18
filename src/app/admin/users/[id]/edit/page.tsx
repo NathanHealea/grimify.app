@@ -59,7 +59,7 @@ export default async function AdminEditUserPage({
   const isOwner = assignedRoles.some((r) => r.name === 'owner')
   const isSelf = id === currentUser.id
 
-  if (isOwner || isSelf) {
+  if (isOwner) {
     notFound()
   }
 
@@ -99,39 +99,43 @@ export default async function AdminEditUserPage({
           </CardContent>
         </Card>
 
-        {/* Roles */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Roles</CardTitle>
-            <CardDescription>
-              Role changes take effect immediately — no need to save the profile.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <AdminUserRolesEditor
-              userId={profile.id}
-              initialAssigned={assignedRoles}
-              allRoles={allRoles}
-            />
-          </CardContent>
-        </Card>
+        {/* Roles — hidden when editing own account */}
+        {!isSelf && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Roles</CardTitle>
+              <CardDescription>
+                Role changes take effect immediately — no need to save the profile.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AdminUserRolesEditor
+                userId={profile.id}
+                initialAssigned={assignedRoles}
+                allRoles={allRoles}
+              />
+            </CardContent>
+          </Card>
+        )}
 
-        {/* Danger zone */}
-        <Card className="border-destructive/20">
-          <CardHeader>
-            <CardTitle>Danger Zone</CardTitle>
-            <CardDescription>
-              Permanently deletes the account, profile, and all associated data.
-              This cannot be undone.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <AdminDeleteUserSection
-              userId={profile.id}
-              displayName={profile.display_name ?? 'this user'}
-            />
-          </CardContent>
-        </Card>
+        {/* Danger zone — hidden when editing own account */}
+        {!isSelf && (
+          <Card className="border-destructive/20">
+            <CardHeader>
+              <CardTitle>Danger Zone</CardTitle>
+              <CardDescription>
+                Permanently deletes the account, profile, and all associated data.
+                This cannot be undone.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AdminDeleteUserSection
+                userId={profile.id}
+                displayName={profile.display_name ?? 'this user'}
+              />
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   )
