@@ -2,7 +2,7 @@
 
 **Epic:** User Management
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/user-account-management`
 **Merge into:** `v1/main`
 
@@ -12,15 +12,15 @@ Admin interface for viewing, searching, and managing user accounts. Admins can b
 
 ## Acceptance Criteria
 
-- [ ] Admins can view a paginated list of all users with display name, email, roles, and sign-up date
-- [ ] Admins can search users by display name (partial, case-insensitive)
-- [ ] Admins can filter users by role
-- [ ] Admins can view a user detail page with profile info, assigned roles, and auth method
-- [ ] Admins can deactivate a user account (ban from signing in without deleting data)
-- [ ] Admins can delete a user account with a confirmation dialog
-- [ ] Deleting a user cascades through auth.users → profiles → user_roles
-- [ ] Admins cannot delete their own account from the admin interface
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Admins can view a paginated list of all users with display name, email, roles, and sign-up date
+- [x] Admins can search users by display name (partial, case-insensitive)
+- [x] Admins can filter users by role
+- [x] Admins can view a user detail page with profile info, assigned roles, and auth method
+- [x] Admins can deactivate a user account (ban from signing in without deleting data)
+- [x] Admins can delete a user account with a confirmation dialog
+- [x] Deleting a user cascades through auth.users → profiles → user_roles
+- [x] Admins cannot delete their own account from the admin interface
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
