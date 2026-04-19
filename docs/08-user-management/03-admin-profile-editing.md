@@ -2,7 +2,7 @@
 
 **Epic:** User Management
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 **Branch:** `feature/admin-profile-editing`
 **Merge into:** `v1/main`
 
@@ -12,14 +12,14 @@ Allow administrators to edit any user's profile fields (display name, bio, avata
 
 ## Acceptance Criteria
 
-- [ ] Admins can edit a user's display name from the admin user detail page
-- [ ] Admins can edit a user's bio from the admin user detail page
+- [x] Admins can edit a user's display name from the admin user detail page
+- [x] Admins can edit a user's bio from the admin user detail page
 - [ ] Admins can edit a user's avatar URL from the admin user detail page
-- [ ] Display name validation enforces the same rules as user self-edit (3-20 chars, alphanumeric + hyphen/underscore, unique)
-- [ ] Changes are saved to the `profiles` table
-- [ ] The admin edit form pre-fills with the user's current profile data
-- [ ] Non-admin users cannot access admin profile editing
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Display name validation enforces the same rules as user self-edit (3-20 chars, alphanumeric + hyphen/underscore, unique)
+- [x] Changes are saved to the `profiles` table
+- [x] The admin edit form pre-fills with the user's current profile data
+- [x] Non-admin users cannot access admin profile editing
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
