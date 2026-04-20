@@ -1,5 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
+import type { PaintWithBrand } from '@/modules/paints/services/paint-service'
+
 /**
  * Creates a collection service bound to the given Supabase client.
  *
@@ -90,6 +92,51 @@ export function createCollectionService(supabase: SupabaseClient) {
 
       if (error) return { error: error.message }
       return {}
+    },
+
+    /**
+     * Returns a paginated list of paints in the user's collection, ordered by
+     * most recently added first.
+     *
+     * Returns {@link PaintWithBrand} rows compatible with {@link PaginatedPaintGrid}.
+     *
+     * @param userId - The authenticated user's UUID.
+     * @param options.limit - Max rows to return (default 50).
+     * @param options.offset - Row offset for pagination (default 0).
+     * @returns Array of paints with product line and brand data.
+     */
+    async getCollectionPaints(
+      userId: string,
+      options?: { limit?: number; offset?: number },
+    ): Promise<PaintWithBrand[]> {
+      const limit = options?.limit ?? 50
+      const offset = options?.offset ?? 0
+
+      const { data } = await supabase
+        .from('user_paints')
+        .select('paints(*, product_lines(*, brands(*)))')
+        .eq('user_id', userId)
+        .order('added_at', { ascending: false })
+        .range(offset, offset + limit - 1)
+
+      return ((data ?? []) as unknown as Array<{ paints: PaintWithBrand | null }>)
+        .map((row) => row.paints)
+        .filter((p): p is PaintWithBrand => p !== null)
+    },
+
+    /**
+     * Returns the total number of paints in the user's collection.
+     *
+     * @param userId - The authenticated user's UUID.
+     * @returns Total count of paints in the collection.
+     */
+    async getCollectionPaintCount(userId: string): Promise<number> {
+      const { count } = await supabase
+        .from('user_paints')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+
+      return count ?? 0
     },
 
     /**
