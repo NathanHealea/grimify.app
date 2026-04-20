@@ -28,23 +28,33 @@ Feature docs created by `/plan` must include these metadata fields at the top:
 - **Branch** — The git branch for this feature. Can be explicitly set in the `/plan` input; if not provided, derived from the doc file name (e.g., `paint-search.md` → `feature/paint-search`).
 - **Merge into** — The target branch for the PR created by `/stage`. Can be explicitly set; defaults to `main` if not provided.
 
-## Project Structure
+## Project Structure — Domain Module Approach
 
-Feature code uses a modular structure under `src/modules/<module>/`. Route pages in `src/app/` should be thin — they import logic from modules.
+Feature code uses a **Domain Module** architecture under `src/modules/<module>/`. Each module owns a single domain (e.g., `auth`, `paints`, `brands`, `hues`, `user`, `admin`) and encapsulates every layer of that domain. Route pages in `src/app/` must be thin — they compose layout and delegate all logic to modules.
 
 ```
 src/modules/<module>/
 ├── actions/           # Server actions — one file per action (e.g., setup-profile.ts)
 ├── components/        # React components owned by this module
+├── services/          # Data access and domain logic (DB queries, business rules)
 ├── types/             # TypeScript types — one file per type (e.g., profile-form-state.ts)
+├── utils/             # Module-internal helpers (one file per helper)
 └── validation.ts      # Validation logic (or validation/ directory if multiple)
 ```
 
 - **actions/**: Each server action gets its own file named after the action (e.g., `actions/setup-profile.ts` exports `setupProfile`)
-- **types/**: Each type gets its own file named after the type (e.g., `types/profile-form-state.ts` exports `ProfileFormState`)
 - **components/**: Module-specific React components (e.g., `components/profile-form.tsx`)
-- **Route pages** (`src/app/**/page.tsx`) only handle layout and data fetching — they import components and actions from the module
+- **services/**: Functions that read/write data or enforce domain rules; actions call services, not DB clients directly
+- **types/**: Each type gets its own file named after the type (e.g., `types/profile-form-state.ts` exports `ProfileFormState`)
+- **utils/**: Pure helpers scoped to the module — one file per helper
+- **Route pages** (`src/app/**/page.tsx`) only handle layout and data fetching — they import components, actions, and services from the module
 - Do not create barrel/index re-export files — import directly from the specific file
+- Cross-module imports are allowed, but a module should not reach into another module's internals when a server action or service exists for the same purpose
+
+### Applies to `/plan` and `/implement`
+
+- **`/plan`** must architect every feature around a specific domain module. The implementation plan must identify the target module (new or existing), and break work down by the directory it belongs in (`actions/`, `components/`, `services/`, `types/`, `utils/`, `validation.ts`). If a feature spans multiple domains, the plan must list each module touched and what lives where.
+- **`/implement`** must place new code in the correct module directory following the file-per-export rule. Do not add domain logic, types, or components directly inside `src/app/`. If the plan calls for a new module, scaffold `src/modules/<module>/` with the subdirectories actually needed — do not create empty placeholder folders.
 
 ## React & TypeScript Best Practices
 
