@@ -99,17 +99,17 @@ const MUNSELL_HUES: {
   hex: string
   sortOrder: number
 }[] = [
-  { id: '10000000-0000-0000-0000-000000000001', name: 'Red', slug: 'red', hex: '#FF0000', sortOrder: 1 },
-  { id: '10000000-0000-0000-0000-000000000002', name: 'Yellow-Red', slug: 'yellow-red', hex: '#FF8C00', sortOrder: 2 },
-  { id: '10000000-0000-0000-0000-000000000003', name: 'Yellow', slug: 'yellow', hex: '#FFFF00', sortOrder: 3 },
-  { id: '10000000-0000-0000-0000-000000000004', name: 'Green-Yellow', slug: 'green-yellow', hex: '#9ACD32', sortOrder: 4 },
-  { id: '10000000-0000-0000-0000-000000000005', name: 'Green', slug: 'green', hex: '#008000', sortOrder: 5 },
-  { id: '10000000-0000-0000-0000-000000000006', name: 'Blue-Green', slug: 'blue-green', hex: '#008080', sortOrder: 6 },
-  { id: '10000000-0000-0000-0000-000000000007', name: 'Blue', slug: 'blue', hex: '#0000FF', sortOrder: 7 },
-  { id: '10000000-0000-0000-0000-000000000008', name: 'Purple-Blue', slug: 'purple-blue', hex: '#4B0082', sortOrder: 8 },
-  { id: '10000000-0000-0000-0000-000000000009', name: 'Purple', slug: 'purple', hex: '#800080', sortOrder: 9 },
-  { id: '10000000-0000-0000-0000-00000000000a', name: 'Red-Purple', slug: 'red-purple', hex: '#FF00FF', sortOrder: 10 },
-  { id: '10000000-0000-0000-0000-00000000000b', name: 'Neutral', slug: 'neutral', hex: '#808080', sortOrder: 11 },
+  { id: 'c77d1779-90c7-4011-89ac-178c9bbbf697', name: 'Red', slug: 'red', hex: '#FF0000', sortOrder: 1 },
+  { id: '6724a2fe-600e-44d2-8d13-6483622c162e', name: 'Yellow-Red', slug: 'yellow-red', hex: '#FF8C00', sortOrder: 2 },
+  { id: '459269d1-bbe4-42af-b021-f031193ac558', name: 'Yellow', slug: 'yellow', hex: '#FFFF00', sortOrder: 3 },
+  { id: '541969d8-4dc1-406d-90f4-035376c3eadc', name: 'Green-Yellow', slug: 'green-yellow', hex: '#9ACD32', sortOrder: 4 },
+  { id: 'f08b9676-84eb-4497-b137-a412dc1d384b', name: 'Green', slug: 'green', hex: '#008000', sortOrder: 5 },
+  { id: '50f50da8-f6f2-495c-a4fb-ff3fa4ed29b8', name: 'Blue-Green', slug: 'blue-green', hex: '#008080', sortOrder: 6 },
+  { id: '7b915eb5-64a3-46f6-9f31-09d78090b8b1', name: 'Blue', slug: 'blue', hex: '#0000FF', sortOrder: 7 },
+  { id: 'cdc7e05d-2f37-4d49-8fba-79cbadf032dd', name: 'Purple-Blue', slug: 'purple-blue', hex: '#4B0082', sortOrder: 8 },
+  { id: 'a9b6dc8b-c8c4-4e39-b685-3084ab1a6564', name: 'Purple', slug: 'purple', hex: '#800080', sortOrder: 9 },
+  { id: '9394e72f-2744-4258-8158-a2673b331f33', name: 'Red-Purple', slug: 'red-purple', hex: '#FF00FF', sortOrder: 10 },
+  { id: 'a73fca87-fb09-4924-90a2-4564c0310657', name: 'Neutral', slug: 'neutral', hex: '#808080', sortOrder: 11 },
 ]
 
 /** Number of ISCC-NBS sub-hues per principal hue. */
@@ -485,7 +485,7 @@ function main(): void {
     const websiteUrl = BRAND_WEBSITES[brand.id] ?? null
     const websiteSql = websiteUrl ? `'${esc(websiteUrl)}'` : 'NULL'
     lines.push(
-      `INSERT INTO public.brands (name, slug, website_url) VALUES ('${esc(brand.name)}', '${esc(brand.id)}', ${websiteSql});`
+      `INSERT INTO public.brands (name, slug, website_url) VALUES ('${esc(brand.name)}', '${esc(brand.id)}', ${websiteSql}) ON CONFLICT (slug) DO NOTHING;`
     )
   }
   lines.push('')
@@ -498,10 +498,10 @@ function main(): void {
   lines.push('-- ----------------------------------------------------------')
   lines.push('')
 
-  // Principal hues (ON CONFLICT safe when migration already seeded them)
+  // Principal hues (conflict on slug since IDs are stable but slug is the logical key)
   for (const hue of MUNSELL_HUES) {
     lines.push(
-      `INSERT INTO public.hues (id, name, slug, hex_code, sort_order) VALUES ('${hue.id}', '${esc(hue.name)}', '${esc(hue.slug)}', '${hue.hex}', ${hue.sortOrder}) ON CONFLICT (id) DO NOTHING;`
+      `INSERT INTO public.hues (id, name, slug, hex_code, sort_order) VALUES ('${hue.id}', '${esc(hue.name)}', '${esc(hue.slug)}', '${hue.hex}', ${hue.sortOrder}) ON CONFLICT (slug) WHERE parent_id IS NULL DO NOTHING;`
     )
   }
   lines.push('')
@@ -544,7 +544,7 @@ function main(): void {
         typesSeen.add(paint.type)
         const typeSlug = slugify(paint.type)
         lines.push(
-          `INSERT INTO public.product_lines (brand_id, name, slug) VALUES ((SELECT id FROM public.brands WHERE slug = '${esc(brand.id)}'), '${esc(paint.type)}', '${esc(typeSlug)}');`
+          `INSERT INTO public.product_lines (brand_id, name, slug) VALUES ((SELECT id FROM public.brands WHERE slug = '${esc(brand.id)}'), '${esc(paint.type)}', '${esc(typeSlug)}') ON CONFLICT (brand_id, slug) DO NOTHING;`
         )
       }
     }
@@ -628,7 +628,7 @@ function main(): void {
       })
 
       lines.push(
-        `INSERT INTO public.paints (id, brand_paint_id, product_line_id, name, slug, hex, r, g, b, hue, saturation, lightness, hue_id, is_metallic, is_discontinued, paint_type) VALUES ('${uuid}', '${esc(paint.id)}', (SELECT pl.id FROM public.product_lines pl JOIN public.brands br ON br.id = pl.brand_id WHERE br.slug = '${esc(brand.id)}' AND pl.slug = '${esc(typeSlug)}'), '${esc(paint.name)}', '${esc(paintSlug)}', '${esc(paint.hex)}', ${r}, ${g}, ${b}, ${round2(h)}, ${round2(s)}, ${round2(l)}, (SELECT id FROM public.hues WHERE slug = '${esc(closestColorSlug)}' AND parent_id IS NOT NULL LIMIT 1), ${isMetallic}, false, '${esc(paintType)}');`
+        `INSERT INTO public.paints (id, brand_paint_id, product_line_id, name, slug, hex, r, g, b, hue, saturation, lightness, hue_id, is_metallic, is_discontinued, paint_type) VALUES ('${uuid}', '${esc(paint.id)}', (SELECT pl.id FROM public.product_lines pl JOIN public.brands br ON br.id = pl.brand_id WHERE br.slug = '${esc(brand.id)}' AND pl.slug = '${esc(typeSlug)}'), '${esc(paint.name)}', '${esc(paintSlug)}', '${esc(paint.hex)}', ${r}, ${g}, ${b}, ${round2(h)}, ${round2(s)}, ${round2(l)}, (SELECT id FROM public.hues WHERE slug = '${esc(closestColorSlug)}' AND parent_id IS NOT NULL LIMIT 1), ${isMetallic}, false, '${esc(paintType)}') ON CONFLICT (product_line_id, slug) DO NOTHING;`
       )
 
       // Collect references
@@ -667,7 +667,7 @@ function main(): void {
     }
 
     lines.push(
-      `INSERT INTO public.paint_references (paint_id, related_paint_id, relationship, similarity_score) VALUES ('${source.uuid}', '${target.uuid}', 'alternative', NULL);`
+      `INSERT INTO public.paint_references (paint_id, related_paint_id, relationship, similarity_score) VALUES ('${source.uuid}', '${target.uuid}', 'alternative', NULL) ON CONFLICT (paint_id, related_paint_id, relationship) DO NOTHING;`
     )
     refCount++
   }

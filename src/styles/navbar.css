@@ -28,7 +28,7 @@
  * Layout sections
  * ----------------------------------------------------------------------- */
 .navbar-start {
-  @apply flex flex-1 items-center;
+  @apply flex items-center;
 }
 
 .navbar-center {
@@ -36,7 +36,7 @@
 }
 
 .navbar-end {
-  @apply flex items-center gap-2;
+  @apply flex items-center;
 }
 
 /* -------------------------------------------------------------------------

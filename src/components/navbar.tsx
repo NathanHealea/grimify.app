@@ -35,13 +35,13 @@ export async function Navbar() {
   }
 
   return (
-    <nav className="navbar">
+    <nav className="navbar gap-2">
       <div className="navbar-start">
         <Link href="/" className="navbar-brand">
           Grimify
         </Link>
       </div>
-      <div className="navbar-center">
+      <div className="navbar-center justify-center align-center">
         <Link href="/paints" className="btn btn-ghost btn-sm">
           Paints
         </Link>
