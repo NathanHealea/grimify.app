@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
 
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { createClient } from '@/lib/supabase/server';
+import { getCollectionService } from '@/modules/collection/services/collection-service.server';
 import { ChildHueCard } from '@/modules/hues/components/child-hue-card';
 import { getHueService } from '@/modules/hues/services/hue-service.server';
 import { HueGroupPaintGrid } from '@/modules/paints/components/hue-group-paint-grid';
@@ -23,6 +25,9 @@ export default async function HuePage({
   const currentPage = Math.max(1, parseInt(page ?? '1', 10) || 1)
   const offset = (currentPage - 1) * pageSize
 
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   const [hueService, paintService] = await Promise.all([
     getHueService(),
     getPaintService(),
@@ -32,6 +37,12 @@ export default async function HuePage({
   if (!hue) notFound()
 
   const isTopLevel = hue.parent_id === null
+
+  let userPaintIds: Set<string> | undefined
+  if (user) {
+    const collectionService = await getCollectionService()
+    userPaintIds = await collectionService.getUserPaintIds(user.id)
+  }
 
   if (isTopLevel) {
     const [paints, totalCount, childHues] = await Promise.all([
@@ -77,6 +88,8 @@ export default async function HuePage({
           hueId={id}
           initialPaints={paints}
           totalCount={totalCount}
+          userPaintIds={userPaintIds}
+          isAuthenticated={user !== null}
         />
       </div>
     )
@@ -120,6 +133,8 @@ export default async function HuePage({
         hueId={id}
         initialPaints={paints}
         totalCount={totalCount}
+        userPaintIds={userPaintIds}
+        isAuthenticated={user !== null}
       />
     </div>
   )

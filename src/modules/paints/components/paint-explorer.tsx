@@ -22,17 +22,23 @@ import type { Hue } from '@/types/color'
  * @param props.initialTotalCount - Total paint count for the initial unfiltered view.
  * @param props.hues - All top-level Munsell hues (server-fetched to avoid client round-trip).
  * @param props.huePaintCounts - Paint count per top-level hue group (server-fetched).
+ * @param props.userPaintIds - Set of paint IDs in the current user's collection.
+ * @param props.isAuthenticated - Whether the current user is signed in.
  */
 export function PaintExplorer({
   initialPaints,
   initialTotalCount,
   hues,
   huePaintCounts,
+  userPaintIds,
+  isAuthenticated = false,
 }: {
   initialPaints: PaintWithBrand[]
   initialTotalCount: number
   hues: Hue[]
   huePaintCounts: Record<string, number>
+  userPaintIds?: Set<string>
+  isAuthenticated?: boolean
 }) {
   const searchParams = useSearchParams()
 
@@ -406,6 +412,8 @@ export function PaintExplorer({
           totalCount={gridTotalCount}
           basePath="/paints"
           fetchPaints={fetchPaintsWithFilters}
+          userPaintIds={userPaintIds}
+          isAuthenticated={isAuthenticated}
         />
       </div>
     </div>

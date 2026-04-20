@@ -1,3 +1,5 @@
+import { createClient } from '@/lib/supabase/server'
+import { getCollectionService } from '@/modules/collection/services/collection-service.server'
 import { getHueService } from '@/modules/hues/services/hue-service.server'
 import { PaintExplorer } from '@/modules/paints/components/paint-explorer'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
@@ -19,6 +21,9 @@ export default async function PaintsPage({
   const [parentHueName, childHueName] = (hue ?? '')
     .split(',')
     .map((s) => s.trim().toLowerCase())
+
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
 
   const paintService = await getPaintService()
   const hueService = await getHueService()
@@ -79,6 +84,13 @@ export default async function PaintsPage({
     initialCount = totalPaints
   }
 
+  // Fetch user collection state
+  let userPaintIds: Set<string> | undefined
+  if (user) {
+    const collectionService = await getCollectionService()
+    userPaintIds = await collectionService.getUserPaintIds(user.id)
+  }
+
   // Fetch paint counts per hue group in parallel
   const hueCountEntries = await Promise.all(
     topLevelHues.map(async (h) => {
@@ -102,6 +114,8 @@ export default async function PaintsPage({
         initialTotalCount={initialCount}
         hues={topLevelHues}
         huePaintCounts={huePaintCounts}
+        userPaintIds={userPaintIds}
+        isAuthenticated={user !== null}
       />
     </div>
   )

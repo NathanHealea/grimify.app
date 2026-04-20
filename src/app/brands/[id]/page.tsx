@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation'
 
 import { Breadcrumbs } from '@/components/breadcrumbs'
+import { createClient } from '@/lib/supabase/server'
+import { getCollectionService } from '@/modules/collection/services/collection-service.server'
 import { BrandPaintList } from '@/modules/brands/components/brand-paint-list'
 import { getBrandService } from '@/modules/brands/services/brand-service.server'
 
@@ -11,6 +13,9 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ id
   if (isNaN(numericId)) {
     notFound()
   }
+
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
 
   const brandService = await getBrandService()
   const brand = await brandService.getBrandById(numericId)
@@ -23,6 +28,12 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ id
     brandService.getBrandProductLines(numericId),
     brandService.getBrandPaints(numericId),
   ])
+
+  let userPaintIds: Set<string> | undefined
+  if (user) {
+    const collectionService = await getCollectionService()
+    userPaintIds = await collectionService.getUserPaintIds(user.id)
+  }
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-12">
@@ -41,7 +52,13 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ id
         )}
       </div>
 
-      <BrandPaintList brandName={brand.name} productLines={productLines} paints={paints} />
+      <BrandPaintList
+        brandName={brand.name}
+        productLines={productLines}
+        paints={paints}
+        userPaintIds={userPaintIds}
+        isAuthenticated={user !== null}
+      />
     </div>
   )
 }
