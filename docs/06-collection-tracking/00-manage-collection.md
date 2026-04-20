@@ -2,7 +2,7 @@
 
 **Epic:** Collection Tracking
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/manage-collection`
 **Merge into:** `v1/main`
 
@@ -12,16 +12,16 @@ Allow authenticated users to add and remove paints from their personal collectio
 
 ## Acceptance Criteria
 
-- [ ] Authenticated users can add a paint to their collection from any paint detail view
-- [ ] Authenticated users can remove a paint from their collection from any paint detail view
-- [ ] Authenticated users can add a paint to their collection from any paint card
-- [ ] Authenticated users can remove a paint from their collection from any paint card
-- [ ] A server action exists that can remove multiple paints from the user's collection in a single call (UI for bulk-remove is owned by `01-collection-overview.md`)
-- [ ] A visual indicator shows whether a paint is already in the user's collection
-- [ ] The add/remove action provides immediate feedback (optimistic UI)
-- [ ] Unauthenticated users clicking the toggle are redirected to `/sign-in?next={current path}`
-- [ ] Collection state is persisted in the database
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Authenticated users can add a paint to their collection from any paint detail view
+- [x] Authenticated users can remove a paint from their collection from any paint detail view
+- [x] Authenticated users can add a paint to their collection from any paint card
+- [x] Authenticated users can remove a paint from their collection from any paint card
+- [x] A server action exists that can remove multiple paints from the user's collection in a single call (UI for bulk-remove is owned by `01-collection-overview.md`)
+- [x] A visual indicator shows whether a paint is already in the user's collection
+- [x] The add/remove action provides immediate feedback (optimistic UI)
+- [x] Unauthenticated users clicking the toggle are redirected to `/sign-in?next={current path}`
+- [x] Collection state is persisted in the database
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Database
 
