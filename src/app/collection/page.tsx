@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import { createClient } from '@/lib/supabase/server'
 import { CollectionPaintGrid } from '@/modules/collection/components/collection-paint-grid'
 import { getCollectionService } from '@/modules/collection/services/collection-service.server'
@@ -42,7 +44,7 @@ export default async function CollectionPage({
 
       {totalCount === 0 ? (
         <p className="text-sm text-muted-foreground">
-          Browse the <a href="/paints" className="underline underline-offset-4">paint library</a> and click the bookmark icon to add paints.
+          Browse the <Link href="/paints" className="underline underline-offset-4">paint library</Link> and click the bookmark icon to add paints.
         </p>
       ) : (
         <CollectionPaintGrid

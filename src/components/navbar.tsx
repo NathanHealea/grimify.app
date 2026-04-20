@@ -48,6 +48,11 @@ export async function Navbar() {
         <Link href="/brands" className="btn btn-ghost btn-sm">
           Brands
         </Link>
+        {user && (
+          <Link href="/collection" className="btn btn-ghost btn-sm">
+            Collection
+          </Link>
+        )}
       </div>
       <div className="navbar-end">
         {isAdmin && (
