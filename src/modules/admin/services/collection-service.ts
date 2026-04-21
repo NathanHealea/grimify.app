@@ -62,19 +62,18 @@ export async function getUserCollection(
 /**
  * Searches a user's collection by paint name, hex, brand, or paint type.
  *
+ * Returns all matching results — callers are responsible for pagination.
  * Filtering is done in JS after fetching all collection rows so that brand
  * name (nested two levels deep) can be matched. Mirrors the approach used
  * in `CollectionService.searchCollection`.
  *
  * @param userId - UUID of the target user.
  * @param query - Search string. Prefix with `#` to match hex codes.
- * @param limit - Max results to return (default 24).
- * @returns Matching {@link CollectionPaint} rows, or `[]` on error.
+ * @returns All matching {@link CollectionPaint} rows, or `[]` on error.
  */
 export async function searchUserCollection(
   userId: string,
   query: string,
-  limit = 24
 ): Promise<CollectionPaint[]> {
   const supabase = await createClient()
 
@@ -104,7 +103,6 @@ export async function searchUserCollection(
         paint.product_lines.brands.name.toLowerCase().includes(term)
 
     if (matches) results.push({ ...paint, added_at: row.added_at })
-    if (results.length >= limit) break
   }
 
   return results

@@ -7,13 +7,17 @@ import { searchUserCollectionAction } from '@/modules/admin/actions/search-user-
 import { AdminCollectionPaintCard } from '@/modules/admin/components/admin-collection-paint-card'
 import type { CollectionPaint } from '@/modules/collection/types/collection-paint'
 
+const PAGE_SIZE = 20
+
 /**
  * Debounced search over a target user's collection, displayed as a paint-card grid.
  *
  * When the query is empty, displays all paints passed in via `initialPaints`.
  * When the user types, calls {@link searchUserCollectionAction} 250ms after
- * they stop and replaces the grid with results. Mirrors the behavior of
- * `CollectionSearch` in `src/modules/collection/components/collection-search.tsx`.
+ * they stop and replaces the grid with results. If more than 20 results are
+ * returned, additional pages are loaded as the user scrolls to the bottom
+ * (IntersectionObserver sentinel). Mirrors the behavior of `CollectionSearch`
+ * in `src/modules/collection/components/collection-search.tsx`.
  *
  * @param props.userId - UUID of the target user whose collection is being managed.
  * @param props.initialPaints - All paints in the user's collection, server-fetched.
@@ -26,9 +30,11 @@ export function AdminUserCollectionSearch({
   initialPaints: CollectionPaint[]
 }) {
   const [query, setQuery] = useState('')
-  const [results, setResults] = useState<CollectionPaint[]>([])
+  const [allResults, setAllResults] = useState<CollectionPaint[]>([])
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [isLoading, setIsLoading] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const sentinelRef = useRef<HTMLDivElement>(null)
 
   const isSearching = query.trim().length > 0
 
@@ -40,13 +46,15 @@ export function AdminUserCollectionSearch({
 
     debounceRef.current = setTimeout(async () => {
       if (!trimmed) {
-        setResults([])
+        setAllResults([])
+        setVisibleCount(PAGE_SIZE)
         setIsLoading(false)
         return
       }
       setIsLoading(true)
       const result = await searchUserCollectionAction(userId, trimmed)
-      setResults('paints' in result ? result.paints : [])
+      setAllResults('paints' in result ? result.paints : [])
+      setVisibleCount(PAGE_SIZE)
       setIsLoading(false)
     }, delay)
 
@@ -55,7 +63,25 @@ export function AdminUserCollectionSearch({
     }
   }, [query, userId])
 
-  const displayPaints = isSearching ? results : initialPaints
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    if (!sentinel) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => Math.min(prev + PAGE_SIZE, allResults.length))
+        }
+      },
+      { threshold: 0.1 },
+    )
+
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [allResults.length])
+
+  const displayPaints = isSearching ? allResults.slice(0, visibleCount) : initialPaints
+  const hasMore = isSearching && visibleCount < allResults.length
 
   return (
     <div className="space-y-4">
@@ -65,7 +91,7 @@ export function AdminUserCollectionSearch({
         onChange={(e) => setQuery(e.target.value)}
       />
 
-      {isSearching && !isLoading && results.length === 0 && (
+      {isSearching && !isLoading && allResults.length === 0 && (
         <p className="text-sm text-muted-foreground">No paints found.</p>
       )}
 
@@ -88,6 +114,8 @@ export function AdminUserCollectionSearch({
           ))}
         </div>
       )}
+
+      {hasMore && <div ref={sentinelRef} className="h-4" />}
     </div>
   )
 }
