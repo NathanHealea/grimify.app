@@ -13,13 +13,16 @@ export default async function CollectionPage() {
   if (!user) redirect('/sign-in')
 
   const service = createCollectionService(supabase)
-  const stats = await service.getStats(user.id)
+  const [stats, recentPaints] = await Promise.all([
+    service.getStats(user.id),
+    service.getCollectionPaints(user.id, { limit: 10 }),
+  ])
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-10 px-4 py-12">
       <h1 className="text-3xl font-bold">My Collection</h1>
       <CollectionStats stats={stats} />
-      <CollectionSearch />
+      <CollectionSearch initialPaints={recentPaints} />
       <RecentPalettesPlaceholder />
     </div>
   )
