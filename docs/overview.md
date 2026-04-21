@@ -49,6 +49,7 @@ Core functionality:
 7. Community & Social — Highest complexity; depends on collections, recipes, and user accounts
 8. User Management — Admin tools for managing roles, users, and profiles; requires authentication and roles
 9. Color Management — Admin CRUD for brands, hues, and paints with hue association management and constraint enforcement
+10. Purchase List — Let users bookmark paints they want to buy, with a dedicated dashboard and admin management interface
 
 ## MVP Features (Epics)
 
@@ -167,3 +168,14 @@ Core functionality:
 - [ ] [Brand management](./09-color-management/01-brand-management.md)
 - [ ] [Hue management](./09-color-management/02-hue-management.md)
 - [ ] [Paint management](./09-color-management/03-paint-management.md)
+
+### Epic: Purchase List
+
+**Goal:** Let authenticated users bookmark paints they want to buy, manage their purchase list from a dedicated dashboard, and give admins tools to manage any user's purchase list.
+
+**High-Level Scope:**
+
+- [ ] [Purchase list database schema](./10-purchase-list/00-purchase-list-schema.md)
+- [ ] [Purchase list toggle on paint cards](./10-purchase-list/01-purchase-list-toggle.md)
+- [ ] [Purchase list dashboard](./10-purchase-list/02-purchase-list-dashboard.md)
+- [ ] [Admin purchase list management](./10-purchase-list/03-admin-purchase-list-management.md)
