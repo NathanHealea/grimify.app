@@ -1,6 +1,6 @@
 'use client'
 
-import { EllipsisVertical, Eye, Pencil, Trash2 } from 'lucide-react'
+import { BookMarked, EllipsisVertical, Eye, Pencil, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -17,8 +17,8 @@ import { DeleteUserDialog } from '@/modules/user/components/delete-user-dialog'
  * Per-row actions menu for the admin users table.
  *
  * Renders a vertical-ellipsis trigger that opens a dropdown with
- * View, Edit, and Delete actions. Delete opens a confirmation dialog
- * before running the server action.
+ * View, Edit, Collection, and Delete actions. Delete opens a confirmation
+ * dialog before running the server action.
  *
  * @param props.userId - UUID of the user the actions apply to.
  * @param props.displayName - Name shown in the delete confirmation.
@@ -52,6 +52,12 @@ export function AdminUserActionsMenu({
             <Link href={`/admin/users/${userId}/edit`}>
               <Pencil className="size-4" />
               Edit
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={`/admin/users/${userId}/collection`}>
+              <BookMarked className="size-4" />
+              Collection
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

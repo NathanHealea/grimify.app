@@ -2,55 +2,43 @@
 
 **Epic:** User Management
 **Type:** Feature
-**Status:** Todo
-**Branch:** `feature/collection-management`
+**Status:** Completed
+**Branch:** `feature/admin-user-collection-crud`
 **Merge into:** `v1/main`
 
 ## Summary
 
-Admin interface for performing CRUD operations on every user's paint collection. Admins can browse all user collections in a paginated list, drill into an individual user's collection, add or remove paints on their behalf, edit per-paint notes, and clear an entire collection. UI and interaction patterns mirror `/admin/users` and `/admin/roles` — the same search + paginated table, detail page, confirmation dialogs, and admin-sidebar placement — so the admin section stays visually and behaviourally consistent.
+Admin interface for performing CRUD operations on a specific user's paint collection. Admins navigate to a user's collection from the existing user detail page (`/admin/users/[id]`) and land on `/admin/users/[id]/collection`, which shows a searchable paint-card grid. Each card has an ellipsis dropdown with a "Remove from collection" action. Admins can also add paints via an inline search-and-pick form. The search bar uses the same debounced server-action pattern as the user-facing collection search.
 
 ## Acceptance Criteria
 
-- [ ] Admins can view a paginated list of all users with their collection size (paint count) and last-updated timestamp
-- [ ] Admins can search the list by display name or email (case-insensitive partial match), with URL-synced `?q=` state
-- [ ] Admins can filter the list to show only users with at least one paint, only users with empty collections, or all users
-- [ ] Admins can open a user's collection detail page showing every paint in that collection with brand, paint type, hex swatch, added date, and notes
-- [ ] Admins can add a paint to any user's collection via a searchable paint picker
-- [ ] Admins can remove a single paint from a user's collection with an inline confirmation
-- [ ] Admins can edit the per-paint `notes` field inline
-- [ ] Admins can clear an entire user's collection with a type-to-confirm dialog (typing the user's display name)
-- [ ] Admin sidebar shows a "Collections" nav item alongside Dashboard / Users / Roles, with active-state highlighting
-- [ ] Admins cannot mutate their own collection through the admin UI (prevents accidental self-modification; admins use the standard `/collection` page for their own collection)
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] A "Collection" navigation link is visible on the user detail page (`/admin/users/[id]`) and links to `/admin/users/[id]/collection`
+- [x] `/admin/users/[id]/collection` renders the target user's paints in a responsive grid (matching the layout of `/collection/paints`)
+- [x] Page header shows the user's display name, avatar, and total paint count
+- [x] A debounced search bar (250ms, no URL sync) filters the displayed paint cards by calling a server action, mirroring the behavior of `CollectionSearch` in `src/modules/collection/components/collection-search.tsx`
+- [x] When the search is empty the full collection grid is shown; when a query is active, only matching paints are shown
+- [x] Each paint card has an ellipsis (⋯) dropdown menu with a "Remove from collection" option
+- [x] "Remove from collection" removes the paint from the user's collection; the grid updates on revalidation
+- [x] Admins can add a paint to the user's collection via a searchable paint-picker form on the page
+- [x] Admin RLS policies on `user_paints` allow admins to read and write any user's rows while non-admin users continue to be scoped to their own rows
+- [x] Admins cannot mutate their own collection through the admin UI — the add and remove controls are hidden and the server actions reject self-modification
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
-| Route                               | Description                                               |
-| ----------------------------------- | --------------------------------------------------------- |
-| `/admin/collections`                | Paginated user list with collection size, search, filter  |
-| `/admin/collections/[userId]`       | Collection detail: user's paints with CRUD controls       |
+| Route | Description |
+|-------|-------------|
+| `/admin/users/[id]/collection` | User's collection: search, paint grid, add/remove controls |
 
 ## Database
 
 ### Dependency
 
-This feature depends on the `user_paints` table defined in [`00-manage-collection.md`](../06-collection-tracking/00-manage-collection.md). That migration must land first. The schema expected here:
+Requires the `user_paints` table from [`00-manage-collection.md`](../06-collection-tracking/00-manage-collection.md). Verify the table exists before starting.
 
-| Column     | Type          | Notes                                             |
-| ---------- | ------------- | ------------------------------------------------- |
-| `user_id`  | `uuid`        | FK → `profiles.id`, part of composite PK          |
-| `paint_id` | `uuid`        | FK → `paints.id`, part of composite PK            |
-| `added_at` | `timestamptz` | Default `now()`                                   |
-| `notes`    | `text`        | Nullable                                          |
+### Migration — admin RLS policies
 
-### New migration — admin RLS policies and updated-at tracking
-
-Create `supabase/migrations/XXXXXX_admin_collection_policies.sql`:
-
-#### 1. Admin RLS policies on `user_paints`
-
-The base policies scope reads/writes to `auth.uid() = user_id`. Add admin-only policies so the admin UI can operate on any user's rows through the regular anon client:
+Create `supabase/migrations/XXXXXX_admin_user_paints_policies.sql`:
 
 ```sql
 CREATE POLICY "Admins can read all user_paints"
@@ -61,239 +49,165 @@ CREATE POLICY "Admins can insert into any user_paints"
   ON public.user_paints FOR INSERT TO authenticated
   WITH CHECK ('admin' = ANY(public.get_user_roles(auth.uid())));
 
-CREATE POLICY "Admins can update any user_paints"
-  ON public.user_paints FOR UPDATE TO authenticated
-  USING ('admin' = ANY(public.get_user_roles(auth.uid())))
-  WITH CHECK ('admin' = ANY(public.get_user_roles(auth.uid())));
-
 CREATE POLICY "Admins can delete any user_paints"
   ON public.user_paints FOR DELETE TO authenticated
   USING ('admin' = ANY(public.get_user_roles(auth.uid())));
 ```
 
-Policies are additive — the existing `auth.uid() = user_id` policies continue to protect non-admin users.
-
-#### 2. `updated_at` column
-
-The list view shows "last activity" per user. Add:
-
-```sql
-ALTER TABLE public.user_paints
-  ADD COLUMN updated_at timestamptz NOT NULL DEFAULT now();
-
-CREATE OR REPLACE FUNCTION public.set_user_paints_updated_at()
-RETURNS trigger LANGUAGE plpgsql AS $$
-BEGIN
-  NEW.updated_at = now();
-  RETURN NEW;
-END;
-$$;
-
-CREATE TRIGGER on_user_paints_updated
-  BEFORE UPDATE ON public.user_paints
-  FOR EACH ROW EXECUTE FUNCTION public.set_user_paints_updated_at();
-```
-
-If `00-manage-collection.md` already adds `updated_at`, skip this block.
+Policies are additive — existing `auth.uid() = user_id` policies remain in place.
 
 ## Key Files
 
-| Action | File                                                                       | Description                                                     |
-| ------ | -------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Create | `supabase/migrations/XXXXXX_admin_collection_policies.sql`                 | Admin RLS policies on `user_paints` + `updated_at` column       |
-| Create | `src/modules/admin/services/collection-service.ts`                         | `listUserCollections`, `getUserCollection`, `countUserPaints`   |
-| Create | `src/modules/admin/actions/add-paint-to-collection.ts`                     | Server action: admin adds a paint to a user's collection        |
-| Create | `src/modules/admin/actions/remove-paint-from-collection.ts`                | Server action: admin removes a single paint                     |
-| Create | `src/modules/admin/actions/update-collection-note.ts`                      | Server action: update the `notes` field on a `user_paints` row  |
-| Create | `src/modules/admin/actions/clear-user-collection.ts`                       | Server action: delete all `user_paints` for a given user        |
-| Create | `src/app/admin/collections/page.tsx`                                       | Admin collections list page (search, filter, pagination)        |
-| Create | `src/app/admin/collections/[userId]/page.tsx`                              | Admin collection detail page for a specific user                |
-| Create | `src/modules/admin/components/collections-list-table.tsx`                  | Client table: users with collection size + view link            |
-| Create | `src/modules/admin/components/collection-size-filter.tsx`                  | URL-synced filter: all / non-empty / empty                      |
-| Create | `src/modules/admin/components/user-collection-table.tsx`                   | Client table: a user's paints with inline remove + notes edit   |
-| Create | `src/modules/admin/components/add-paint-to-collection-form.tsx`            | Client paint-picker form that submits the add action            |
-| Create | `src/modules/admin/components/clear-collection-dialog.tsx`                 | Type-to-confirm dialog for wiping a user's collection           |
-| Modify | `src/modules/admin/components/admin-sidebar.tsx`                           | Add "Collections" nav item                                      |
+| Action | File | Description |
+|--------|------|-------------|
+| Create | `supabase/migrations/XXXXXX_admin_user_paints_policies.sql` | Admin RLS policies on `user_paints` |
+| Create | `src/modules/admin/services/collection-service.ts` | `getUserCollection`, `searchUserCollection`, `countUserPaints` |
+| Create | `src/modules/admin/actions/add-paint-to-collection.ts` | Server action: admin adds a paint to a user's collection |
+| Create | `src/modules/admin/actions/remove-paint-from-collection.ts` | Server action: admin removes a single paint |
+| Create | `src/modules/admin/actions/search-user-collection.ts` | Server action: admin searches a user's collection |
+| Create | `src/modules/admin/components/admin-user-collection-search.tsx` | Debounced search + results grid (mirrors `CollectionSearch`) |
+| Create | `src/modules/admin/components/admin-collection-paint-card.tsx` | Paint card with ellipsis dropdown for remove action |
+| Create | `src/modules/admin/components/admin-add-paint-form.tsx` | Inline paint-picker form to add a paint to the collection |
+| Create | `src/app/admin/users/[id]/collection/page.tsx` | Collection page server component |
+| Modify | `src/app/admin/users/[id]/page.tsx` | Add "Collection" link to the user detail navigation |
 
 ### Existing files (pattern references — no changes)
 
-| File                                                         | Why it's a reference                                   |
-| ------------------------------------------------------------ | ------------------------------------------------------ |
-| `src/app/admin/users/page.tsx`                               | Paginated list w/ search, filter, URL params           |
-| `src/app/admin/users/[id]/page.tsx`                          | Admin detail page shape                                |
-| `src/app/admin/roles/[id]/page.tsx`                          | Detail page with assignment form + table               |
-| `src/modules/user/services/profile-service.ts`               | Service module shape with `listX` + `getById`          |
-| `src/modules/admin/actions/delete-role.ts`                   | Server action pattern: fetch → validate → mutate → revalidate |
-| `src/modules/user/components/admin-users-table.tsx`          | Client table with `useTransition` and per-row actions  |
-| `src/modules/user/components/delete-user-dialog.tsx`         | Type-to-confirm dialog pattern                         |
-| `src/modules/user/components/user-search.tsx`                | Debounced URL-synced search input                      |
-| `src/modules/admin/components/assign-role-form.tsx`          | Picker component that drives an assignment action      |
+| File | Why it's a reference |
+|------|---------------------|
+| `src/modules/collection/components/collection-search.tsx` | Debounced search + grid pattern to mirror |
+| `src/modules/collection/actions/search-collection.ts` | Server action shape to mirror |
+| `src/modules/paints/components/paint-card.tsx` | Paint card to wrap with ellipsis dropdown |
+| `src/app/admin/users/[id]/page.tsx` | User detail page to add Collection link to |
+| `src/modules/admin/actions/delete-role.ts` | Server action pattern: auth check → self-protection → mutate → revalidate |
 
-## Implementation
+## Implementation Plan
 
-### Step 1: Migration — admin policies and `updated_at`
+### Step 1: Migration — admin RLS policies
 
-Create `supabase/migrations/XXXXXX_admin_collection_policies.sql` with the policies and column/trigger shown above. Regenerate Supabase types after applying: `npm run db:types`.
+Create `supabase/migrations/XXXXXX_admin_user_paints_policies.sql` with the three policies above. Apply with `npx supabase db push` (local) and regenerate types with `npm run db:types`.
 
-Commit: `feat(collections): add admin RLS policies and updated_at on user_paints`
+Commit: `feat(admin): add admin RLS policies for user_paints`
 
-### Step 2: Collection service
+### Step 2: Admin collection service
 
-Create `src/modules/admin/services/collection-service.ts` — mirrors the shape of `profile-service.ts` and `role-service.ts`:
+Create `src/modules/admin/services/collection-service.ts`:
 
-- `listUserCollections({ q, sizeFilter, offset, limit })` — returns `{ users, count }`:
-  - Base query: `profiles` with `email, display_name, avatar_url, created_at` plus `user_paints(count)` aggregated and `MAX(user_paints.updated_at)` as `last_activity` (implement the max via a separate per-user query or a SQL view; simplest: fetch `user_paints.updated_at` alongside and reduce in JS).
-  - `q` → `ilike` against `display_name` and `email` (OR via two parallel queries then dedupe, matching the pattern already used in `paint-service.ts`).
-  - `sizeFilter === 'non-empty'` → inner join on `user_paints`.
-  - `sizeFilter === 'empty'` → left join + filter `user_paints IS NULL`.
-  - Pagination via `.range(offset, offset + limit - 1)` with `{ count: 'exact' }`.
-- `getUserCollection(userId)` — returns the user's profile (`display_name`, `email`, `avatar_url`) plus an array of collection entries joined to paints:
-  ```ts
-  supabase
-    .from('user_paints')
-    .select('paint_id, added_at, updated_at, notes, paints(id, name, hex, paint_type, product_lines(brands(name)))')
-    .eq('user_id', userId)
-    .order('added_at', { ascending: false })
-  ```
-- `countUserPaints(userId)` — helper that returns just the count (used after a mutation to update UI counts).
+```ts
+// getUserCollection(userId): fetches the user's profile + all paints in their collection
+//   query: user_paints → paints → product_lines → brands
+//   returns { profile: { display_name, email, avatar_url }, paints: CollectionPaint[], count: number }
+//
+// searchUserCollection(userId, query): same join but filtered by name/brand/type/hex
+//   mirrors the JS-filter approach in CollectionService.searchCollection
+//   returns CollectionPaint[]
+//
+// countUserPaints(userId): returns the count of rows for a user (used after mutations)
+```
 
-All methods use `createClient()` (anon key, admin RLS grants access). No service-role client needed.
+Use `createClient()` (server, anon key) — admin RLS policies grant access. No service-role client.
 
-Commit: `feat(collections): add admin collection service`
+Commit: `feat(admin): add admin collection service`
 
 ### Step 3: Server actions
 
-Create four server actions in `src/modules/admin/actions/`. Follow the existing pattern: `'use server'`, validate caller, perform mutation, revalidate, return `{ error?: string }`.
+Create three server actions in `src/modules/admin/actions/`. Each follows the pattern: `'use server'`, get current user, reject if unauthenticated, reject if `userId === currentUser.id`, perform mutation, revalidate, return `{ error?: string }`.
+
+**`search-user-collection.ts`** — `searchUserCollection(userId: string, query: string)`
+- Calls `adminCollectionService.searchUserCollection(userId, query)`
+- Returns `{ paints: CollectionPaint[] } | { error: string }`
+- No revalidation needed (read-only)
 
 **`add-paint-to-collection.ts`** — `addPaintToCollection(userId: string, paintId: string)`
-1. Get current user via `supabase.auth.getUser()`. Reject if not authenticated.
-2. Self-protection: reject if `userId === currentUser.id` with message "Use your own collection page to modify your paints".
-3. Insert into `user_paints`. Handle unique-violation (`23505` → "Paint already in this user's collection").
-4. `revalidatePath('/admin/collections')` and `revalidatePath(\`/admin/collections/${userId}\`)`.
+- Inserts into `user_paints`. Handle unique-violation gracefully.
+- `revalidatePath('/admin/users/${userId}/collection')`
 
 **`remove-paint-from-collection.ts`** — `removePaintFromCollection(userId: string, paintId: string)`
-1. Self-protection as above.
-2. `supabase.from('user_paints').delete().eq('user_id', userId).eq('paint_id', paintId)`.
-3. Revalidate both paths.
+- Deletes from `user_paints` by `user_id + paint_id`.
+- `revalidatePath('/admin/users/${userId}/collection')`
 
-**`update-collection-note.ts`** — `updateCollectionNote(userId: string, paintId: string, notes: string | null)`
-1. Self-protection as above.
-2. Trim `notes`; treat empty string as `null`.
-3. Cap at 500 characters (validation; reject otherwise).
-4. `supabase.from('user_paints').update({ notes }).eq('user_id', userId).eq('paint_id', paintId)`.
-5. Revalidate detail path only.
+Commit: `feat(admin): add admin collection server actions`
 
-**`clear-user-collection.ts`** — `clearUserCollection(userId: string)`
-1. Self-protection as above.
-2. `supabase.from('user_paints').delete().eq('user_id', userId)`.
-3. Revalidate both paths.
+### Step 4: Components
 
-Commit: `feat(collections): add admin CRUD server actions for collections`
+**`admin-collection-paint-card.tsx`** — wraps `PaintCard` in a `relative` container:
+- Renders `PaintCard` with the existing props (`id`, `name`, `hex`, `brand`, `paintType`)
+- Absolutely positions an ellipsis (`⋯`) button at the top-right (matching `paint-card-with-toggle.tsx` positioning pattern)
+- Clicking the ellipsis opens a dropdown with a single item: "Remove from collection"
+- "Remove from collection" calls `removePaintFromCollection(userId, paintId)` via `useTransition`
+- Disabled while transition is pending
+- Use shadcn `DropdownMenu` for the ellipsis menu
 
-### Step 4: Collections list page
+**`admin-user-collection-search.tsx`** — mirrors `CollectionSearch`:
+- Accepts `userId: string` and `initialPaints: CollectionPaint[]`
+- `SearchInput` captures query; 250ms debounce
+- On query change calls `searchUserCollection(userId, query)` server action
+- Shows `initialPaints` grid when query is empty (label: "All paints")
+- Shows search results grid when query is active
+- Renders each paint via `AdminCollectionPaintCard`
 
-Create `src/app/admin/collections/page.tsx` (server component, mirrors `src/app/admin/users/page.tsx`):
+**`admin-add-paint-form.tsx`** — inline paint picker:
+- Text input that calls a paint search (reuse `searchPaints` from `paint-service.ts` via a thin server action, or use an existing exposed search action if one exists)
+- Renders up to 10 suggestions with brand + hex swatch
+- Clicking a suggestion calls `addPaintToCollection(userId, paint.id)` via `useTransition`
+- Clears input on success
+- Show "Already in collection" message on unique-violation error
 
-1. Accepts `searchParams: { q?: string; filter?: 'empty' | 'non-empty'; page?: string }`.
-2. Resolves current page, `PAGE_SIZE = 20`.
-3. Calls `listUserCollections({ q, sizeFilter, offset, limit: PAGE_SIZE })`.
-4. Renders page header, search input (reuse `UserSearch` with a custom `basePath="/admin/collections"` prop — see Step 8 note), `<CollectionSizeFilter />`, `<CollectionsListTable />`, and pagination identical to users page.
+Commit: `feat(admin): add admin collection components`
 
-Create `src/modules/admin/components/collection-size-filter.tsx` — client component with a `<select>` dropdown ("All", "With paints", "Empty"), URL-synced via `useRouter().replace()`, resets `?page=1` on change.
+### Step 5: Collection page
 
-Create `src/modules/admin/components/collections-list-table.tsx` — client component:
-- **Columns:** Avatar + display name, Email, Paints (count), Last activity, Actions.
-- **Actions:** "View" link to `/admin/collections/[userId]`.
-- **Row click:** whole row is a link to the detail page (match `admin-users-table.tsx` affordance).
-- Empty state: "No users match the current filters".
-
-Commit: `feat(collections): add admin collections list page`
-
-### Step 5: Collection detail page
-
-Create `src/app/admin/collections/[userId]/page.tsx`:
+Create `src/app/admin/users/[id]/collection/page.tsx` (server component):
 
 1. Await `params`, call `getUserCollection(userId)`. Return `notFound()` if profile missing.
-2. Also fetch the current admin user via `auth.getUser()` to pass `isSelf` flag to child components.
+2. Get current admin user via `supabase.auth.getUser()` to compute `isSelf = currentUser.id === userId`.
 3. Render:
-   - Header: avatar, display name, email, paint count, last activity timestamp
-   - `<AddPaintToCollectionForm userId={userId} />` (hidden when `isSelf`)
-   - `<UserCollectionTable userId={userId} entries={entries} isSelf={isSelf} />`
-   - `<ClearCollectionDialog userId={userId} displayName={profile.display_name} paintCount={entries.length} isSelf={isSelf} />` (hidden when `isSelf` or count is 0)
+   - Back link: `← Back to user` → `/admin/users/[id]`
+   - Header: avatar, display name, email, paint count badge
+   - `<AdminAddPaintForm userId={userId} />` (hidden when `isSelf`)
+   - `<AdminUserCollectionSearch userId={userId} initialPaints={collection.paints} />`
 
-Create `src/modules/admin/components/user-collection-table.tsx` — client component:
-- **Columns:** Hex swatch, Paint name + brand (link to `/paints/[id]`), Paint type, Added, Notes (inline-editable), Actions.
-- **Notes editing:** click-to-edit text input; `useTransition` calls `updateCollectionNote`.
-- **Remove action:** inline button with a small inline-confirm pattern (one-click arms, second click confirms — same as `role-list-table.tsx` delete flow). Disabled when `isSelf`.
-- Empty state: "This user has no paints in their collection".
+Commit: `feat(admin): add admin user collection page`
 
-Create `src/modules/admin/components/add-paint-to-collection-form.tsx` — client component:
-- Search input that queries paints via `paintService.searchPaints({ query, limit: 10 })` through a lightweight server action (`/src/modules/admin/actions/search-paints-for-picker.ts` — or reuse an existing paint search if one is exposed). Renders up to 10 suggestions with brand + swatch.
-- Clicking a suggestion calls `addPaintToCollection(userId, paint.id)` via `useTransition`.
-- Success: clears input, toasts (or inline success text), relies on `revalidatePath` to re-render the table.
+### Step 6: User detail link
 
-Create `src/modules/admin/components/clear-collection-dialog.tsx` — client component:
-- Mirrors `delete-user-dialog.tsx` exactly: native `<dialog>`, trigger button labelled "Clear collection", warning copy, type-to-confirm input (must match user's display name), disabled "Clear" button until match.
-- On confirm, calls `clearUserCollection(userId)` via `useTransition`.
+Modify `src/app/admin/users/[id]/page.tsx` — add a "Collection" link below the existing back-to-users link, or within a secondary nav row on the page:
 
-Commit: `feat(collections): add admin collection detail page and components`
-
-### Step 6: Admin sidebar
-
-Modify `src/modules/admin/components/admin-sidebar.tsx` — add to `NAV_ITEMS`:
-
-```ts
-const NAV_ITEMS = [
-  { href: '/admin', label: 'Dashboard', exact: true },
-  { href: '/admin/users', label: 'Users' },
-  { href: '/admin/roles', label: 'Roles' },
-  { href: '/admin/collections', label: 'Collections' },
-]
+```tsx
+<Link href={`/admin/users/${id}/collection`} className="...">
+  View collection →
+</Link>
 ```
 
-Commit: `feat(collections): add collections link to admin sidebar`
+Match the existing link style on the page.
+
+Commit: `feat(admin): add collection link to user detail page`
 
 ### Step 7: Build and verify
 
 1. `npm run build` and `npm run lint` pass.
-2. Regenerate Supabase types if the migration added/changed columns.
-3. Manual test scenarios:
-   - Non-admin visiting `/admin/collections` is redirected to `/` (middleware).
-   - Admin sees every user's collection in the list, including empty ones.
-   - Search filters by display name and email.
-   - Size filter returns only empty / non-empty / all users.
-   - Detail page renders the correct user's paints with correct counts.
-   - Admin can add a paint to another user's collection; count updates on revalidation.
-   - Admin can remove a paint; count decrements.
-   - Admin can edit and save notes; value persists.
-   - Admin can clear a user's collection after typing the display name; count becomes 0.
-   - Admin cannot mutate their own collection from `/admin/collections/[selfId]` (controls hidden).
-   - Adding a paint already in a user's collection shows the "already in collection" error.
-
-### Step 8: Shared primitives (optional polish)
-
-`UserSearch` currently hardcodes its route. To avoid duplicating the component, add a `basePath` prop defaulting to `/admin/users`. If that change would affect an unrelated feature, instead create a thin `CollectionsSearch` wrapper. Prefer generalising `UserSearch` when the change is mechanical.
+2. Manual test scenarios:
+   - Admin visits `/admin/users/[id]` → "View collection" link is visible.
+   - Admin visits `/admin/users/[id]/collection` → paint grid renders.
+   - Search filters the grid correctly (name, brand, hex).
+   - Ellipsis dropdown appears on each card; "Remove" removes the paint.
+   - Add-paint form finds paints and adds them; grid updates.
+   - Admin cannot see add/remove controls on their own collection page.
+   - Server actions reject self-modification even if called directly.
+   - Non-admin visiting `/admin/users/[id]/collection` is redirected (middleware).
 
 ## Key Design Decisions
 
-1. **Additive admin RLS policies, no service-role client.** The base `user_paints` policies scope reads/writes to the owning user. Adding admin-scoped `USING ('admin' = ANY(get_user_roles(auth.uid())))` policies lets the admin UI use the same anon Supabase client as the rest of the app — no `SUPABASE_SECRET_KEY` leakage risk, and middleware's role check already gates the routes.
-2. **Self-protection at the action layer, not just the UI.** Every mutation action refuses when `userId === currentUser.id`. The UI also hides these controls, but defense-in-depth keeps a rogue client-side call from modifying the admin's own data through the admin path (they already have `/collection` for their own).
-3. **Type-to-confirm only for the destructive "clear all" action.** Single-paint removes use an inline one-click-arms pattern (matches role deletion). A typed confirmation is reserved for wiping an entire collection, matching the `delete-user-dialog` standard for irreversible bulk operations.
-4. **Pagination and search state lives in URL params.** Matches `/admin/users` — the list is linkable, supports browser navigation, and needs no client state library.
-5. **"Last activity" uses `updated_at`, not `added_at`.** A trigger keeps `updated_at` current on any row mutation (notes edits count as activity). This gives admins a meaningful signal for churn triage.
-6. **Detail page uses the admin client only if RLS is insufficient.** In this design, admin RLS on `user_paints` is sufficient for every admin read and write. The service-role client is not required and should not be introduced here — doing so would bypass RLS unnecessarily and widen the attack surface.
+1. **Route under `/admin/users/[id]/collection`, not `/admin/collections/[userId]`.** The collection is a property of the user. Placing it under the user's URL segment keeps the admin hierarchy consistent and lets the user detail page serve as the natural entry point.
+2. **Debounced client-side search, not URL-synced.** Mirrors the user-facing collection search — fast, no page reload, and the collection page is not a shareable filtered view. URL-sync would add complexity without benefit here.
+3. **Paint card grid, not a table.** Matches the visual language of `/collection/paints`. Admins get the same browsable, color-rich view as users.
+4. **Ellipsis dropdown per card, not a separate remove button.** Scales cleanly to future actions (e.g., view paint detail, add to another user's collection) without cluttering the card surface.
+5. **Additive admin RLS policies, no service-role client.** Existing user-scoped policies remain; admin-scoped policies are added on top. No `SUPABASE_SECRET_KEY` leakage risk.
+6. **Self-protection at the action layer.** Every mutation action rejects when `userId === currentUser.id`. The UI also hides controls, but the action check is authoritative.
 
 ## Risks & Considerations
 
-- **Hard dependency on `user_paints`.** If `00-manage-collection.md` has not landed, this feature cannot be implemented. Verify at the start of `/implement` — if the table is missing, pause and implement `00-manage-collection.md` first.
-- **RLS subtlety.** Adding admin policies to `user_paints` means any bug in `get_user_roles` instantly affects data access. Test the migration by: (a) admin can read/write any row, (b) non-admin user cannot read/write another user's row, (c) non-admin user can still read/write their own rows.
-- **Paint-picker performance.** A naive `paints` `ilike` search per keystroke is fine for the current paint count but revisit if the table grows past ~10k. Reuse `paintService.searchPaints()` which already handles brand+name search.
-- **Pagination cost for `updated_at` aggregation.** Computing `MAX(user_paints.updated_at)` per user across a paginated profiles query can require a join or subquery. If the simplest Supabase select-with-aggregate is awkward, fall back to a SQL view (`v_user_collection_summary`) or defer the "Last activity" column to v2. Do not block the feature on this.
-- **Empty-collection filter semantics.** Decide whether users with deleted profiles but leftover `user_paints` rows (shouldn't happen thanks to `ON DELETE CASCADE`, but worth confirming) are surfaced or hidden. Rely on the cascade and don't add dead-row cleanup here.
-- **Consistency with future "named collections".** If the product later introduces named collections (multiple per user), this admin UI will need to be extended to pick a collection within a user. For now, a user has exactly one implicit collection = their `user_paints` rows, which matches the current data model.
-
-## Notes
-
-- Middleware already protects `/admin/*` for non-admin users — no additional route guard required, but keep the defensive `if (!user)` narrowing in each page.
-- Do not introduce a new Supabase admin client for this feature. All operations can go through the standard server client with admin RLS policies.
-- Follow the existing JSDoc and module-structure conventions from `CLAUDE.md` when creating service, action, component, and type files.
+- **Hard dependency on `user_paints` table.** If `00-manage-collection.md` has not landed, pause and implement that first.
+- **RLS subtlety.** Admin policies depend on `get_user_roles`. Test that: (a) admin can read/write any row, (b) non-admin cannot read another user's row, (c) non-admin can still read/write their own.
+- **Paint-picker performance.** Reuse `paintService.searchPaints()` which already handles name+brand search. Fine at current paint volume.
+- **JS-based search filtering.** `searchUserCollection` fetches all of a user's collection then filters in JS (same trade-off as `CollectionService.searchCollection` — nested brand name prevents efficient Supabase `.ilike` on brand). Acceptable for typical collection sizes; revisit if collections grow past ~1k paints.
