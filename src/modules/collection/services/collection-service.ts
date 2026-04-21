@@ -1,6 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 import type { PaintWithBrand } from '@/modules/paints/services/paint-service'
+import type { CollectionPaint } from '@/modules/collection/types/collection-paint'
+import type { CollectionStats } from '@/modules/collection/types/collection-stats'
 
 /**
  * Creates a collection service bound to the given Supabase client.
@@ -160,6 +162,102 @@ export function createCollectionService(supabase: SupabaseClient) {
 
       if (error) return { error: error.message, removedCount: 0 }
       return { removedCount: count ?? 0 }
+    },
+
+    /**
+     * Returns aggregated statistics for the user's collection.
+     *
+     * Aggregation (total, top-5 brands, all paint types) is done in JS because
+     * brand name is nested two levels deep and a SQL GROUP BY would require a
+     * database function. Acceptable for v1 collections (typically <500 paints).
+     *
+     * @param userId - The authenticated user's UUID.
+     * @returns {@link CollectionStats} — degrades to zero-state on error.
+     */
+    async getStats(userId: string): Promise<CollectionStats> {
+      const { data, error } = await supabase
+        .from('user_paints')
+        .select('paints(paint_type, product_lines(brands(name)))')
+        .eq('user_id', userId)
+
+      if (error || !data) return { total: 0, byBrand: [], byType: [] }
+
+      type StatRow = {
+        paints: { paint_type: string | null; product_lines: { brands: { name: string } } } | null
+      }
+
+      const rows = (data as unknown as StatRow[]).map((r) => r.paints).filter(Boolean) as NonNullable<StatRow['paints']>[]
+
+      const brandCounts = new Map<string, number>()
+      const typeCounts = new Map<string, number>()
+
+      for (const paint of rows) {
+        const brand = paint.product_lines.brands.name
+        brandCounts.set(brand, (brandCounts.get(brand) ?? 0) + 1)
+
+        const type = paint.paint_type ?? 'Unknown'
+        typeCounts.set(type, (typeCounts.get(type) ?? 0) + 1)
+      }
+
+      const byBrand = Array.from(brandCounts.entries())
+        .map(([brand, count]) => ({ brand, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5)
+
+      const byType = Array.from(typeCounts.entries())
+        .map(([type, count]) => ({ type, count }))
+        .sort((a, b) => b.count - a.count)
+
+      return { total: rows.length, byBrand, byType }
+    },
+
+    /**
+     * Searches the user's collection by paint name, hex, brand, or paint type.
+     *
+     * Filtering is done in JS after fetching all collection rows so that brand
+     * name (nested two levels deep) can be matched without a custom DB function.
+     * The 250ms debounce on the client limits call frequency.
+     *
+     * @param userId - The authenticated user's UUID.
+     * @param options.query - Search string. Prefix with `#` to match hex codes.
+     * @param options.limit - Max results to return (default 24).
+     * @returns Matching {@link CollectionPaint} rows, or `[]` on error.
+     */
+    async searchCollection(
+      userId: string,
+      { query, limit = 24 }: { query: string; limit?: number },
+    ): Promise<CollectionPaint[]> {
+      const { data, error } = await supabase
+        .from('user_paints')
+        .select('added_at, paints(*, product_lines(*, brands(*)))')
+        .eq('user_id', userId)
+        .order('added_at', { ascending: false })
+
+      if (error || !data) return []
+
+      type RawRow = { added_at: string; paints: PaintWithBrand | null }
+      const rows = data as unknown as RawRow[]
+
+      const term = query.toLowerCase()
+      const isHex = query.startsWith('#')
+
+      const results: CollectionPaint[] = []
+
+      for (const row of rows) {
+        if (!row.paints) continue
+
+        const paint = row.paints
+        const matches = isHex
+          ? paint.hex.toLowerCase().includes(term.slice(1))
+          : paint.name.toLowerCase().includes(term) ||
+            (paint.paint_type?.toLowerCase().includes(term) ?? false) ||
+            paint.product_lines.brands.name.toLowerCase().includes(term)
+
+        if (matches) results.push({ ...paint, added_at: row.added_at })
+        if (results.length >= limit) break
+      }
+
+      return results
     },
   }
 }
