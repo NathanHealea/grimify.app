@@ -129,7 +129,7 @@ Core functionality:
 
 - [ ] [Add/remove paints to personal collection](./06-collection-tracking/00-manage-collection.md)
 - [ ] [Collection overview and statistics](./06-collection-tracking/01-collection-overview.md)
-- [ ] [Collection dashboard](./06-collection-tracking/02-collection-dashboard.md)
+- [x] [Collection dashboard](./06-collection-tracking/02-collection-dashboard.md)
 
 ### Epic: Community & Social
 
