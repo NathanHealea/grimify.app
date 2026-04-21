@@ -42,7 +42,7 @@ export function PaintCardWithToggle({
   className?: string
 }) {
   return (
-    <div className="relative">
+    <div className="relative flex">
       <PaintCard
         id={id}
         name={name}

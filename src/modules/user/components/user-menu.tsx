@@ -1,11 +1,12 @@
 'use client'
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
+  DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -15,15 +16,19 @@ import { signOut } from '@/modules/auth/actions/sign-out';
  * User avatar dropdown menu for the navbar.
  *
  * Displays the user's profile picture (or initials fallback) as a trigger
- * button. Opens a Radix dropdown with the user's name and a sign-out action.
+ * button. Opens a Radix dropdown with the user's name (linking to their profile
+ * details page) and a sign-out action.
  *
+ * @param props.userId - The user's ID, used to construct the profile details link.
  * @param props.displayName - The user's display name.
  * @param props.avatarUrl - URL to the user's profile picture, or `null` for the initials fallback.
  */
 export function UserMenu({
+  userId,
   displayName,
   avatarUrl,
 }: {
+  userId: string
   displayName: string
   avatarUrl: string | null
 }) {
@@ -52,7 +57,9 @@ export function UserMenu({
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>{displayName}</DropdownMenuLabel>
+        <DropdownMenuItem asChild>
+          <Link href={`/users/${userId}`}>{displayName}</Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <form action={signOut}>
           <button
