@@ -50,12 +50,18 @@ export default async function AdminUserDetailPage({
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-12">
-      <div className="mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <Link
           href="/admin/users"
           className="text-sm text-muted-foreground hover:text-foreground"
         >
           ← Back to users
+        </Link>
+        <Link
+          href={`/admin/users/${id}/collection`}
+          className="text-sm text-muted-foreground hover:text-foreground"
+        >
+          View collection →
         </Link>
       </div>
 
