@@ -2,7 +2,7 @@
 
 **Epic:** User Management
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/admin-user-collection-crud`
 **Merge into:** `v1/main`
 
@@ -12,17 +12,17 @@ Admin interface for performing CRUD operations on a specific user's paint collec
 
 ## Acceptance Criteria
 
-- [ ] A "Collection" navigation link is visible on the user detail page (`/admin/users/[id]`) and links to `/admin/users/[id]/collection`
-- [ ] `/admin/users/[id]/collection` renders the target user's paints in a responsive grid (matching the layout of `/collection/paints`)
-- [ ] Page header shows the user's display name, avatar, and total paint count
-- [ ] A debounced search bar (250ms, no URL sync) filters the displayed paint cards by calling a server action, mirroring the behavior of `CollectionSearch` in `src/modules/collection/components/collection-search.tsx`
-- [ ] When the search is empty the full collection grid is shown; when a query is active, only matching paints are shown
-- [ ] Each paint card has an ellipsis (⋯) dropdown menu with a "Remove from collection" option
-- [ ] "Remove from collection" removes the paint from the user's collection; the grid updates on revalidation
-- [ ] Admins can add a paint to the user's collection via a searchable paint-picker form on the page
-- [ ] Admin RLS policies on `user_paints` allow admins to read and write any user's rows while non-admin users continue to be scoped to their own rows
-- [ ] Admins cannot mutate their own collection through the admin UI — the add and remove controls are hidden and the server actions reject self-modification
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] A "Collection" navigation link is visible on the user detail page (`/admin/users/[id]`) and links to `/admin/users/[id]/collection`
+- [x] `/admin/users/[id]/collection` renders the target user's paints in a responsive grid (matching the layout of `/collection/paints`)
+- [x] Page header shows the user's display name, avatar, and total paint count
+- [x] A debounced search bar (250ms, no URL sync) filters the displayed paint cards by calling a server action, mirroring the behavior of `CollectionSearch` in `src/modules/collection/components/collection-search.tsx`
+- [x] When the search is empty the full collection grid is shown; when a query is active, only matching paints are shown
+- [x] Each paint card has an ellipsis (⋯) dropdown menu with a "Remove from collection" option
+- [x] "Remove from collection" removes the paint from the user's collection; the grid updates on revalidation
+- [x] Admins can add a paint to the user's collection via a searchable paint-picker form on the page
+- [x] Admin RLS policies on `user_paints` allow admins to read and write any user's rows while non-admin users continue to be scoped to their own rows
+- [x] Admins cannot mutate their own collection through the admin UI — the add and remove controls are hidden and the server actions reject self-modification
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
