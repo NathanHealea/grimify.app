@@ -36,12 +36,12 @@ export async function Navbar() {
 
   return (
     <nav className="navbar gap-2">
-      <div className="navbar-start">
+      <div className="navbar-start gap-2">
         <Link href="/" className="navbar-brand">
           Grimify
         </Link>
       </div>
-      <div className="navbar-center justify-center align-center">
+      <div className="navbar-center grow justify-center align-center gap-2">
         <Link href="/paints" className="btn btn-ghost btn-sm">
           Paints
         </Link>
@@ -54,14 +54,14 @@ export async function Navbar() {
           </Link>
         )}
       </div>
-      <div className="navbar-end">
+      <div className="navbar-end gap-2">
         {isAdmin && (
           <Link href="/admin" className="btn btn-ghost btn-sm">
             Admin
           </Link>
         )}
         {user && displayName ? (
-          <UserMenu displayName={displayName} avatarUrl={avatarUrl} />
+          <UserMenu userId={user.id} displayName={displayName} avatarUrl={avatarUrl} />
         ) : (
           <>
             <Link href="/sign-in" className="btn btn-ghost btn-sm">

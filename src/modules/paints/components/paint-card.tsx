@@ -34,7 +34,7 @@ export function PaintCard({
     <Link
       href={`/paints/${id}`}
       className={cn(
-        'group flex flex-col items-center gap-2 rounded-lg border border-border p-3 transition-shadow hover:shadow-md',
+        'group flex grow flex-col items-center gap-2 rounded-lg border border-border p-3 transition-shadow hover:shadow-md',
         className,
       )}
     >
