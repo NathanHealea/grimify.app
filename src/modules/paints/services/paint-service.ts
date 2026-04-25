@@ -443,9 +443,11 @@ export function createPaintService(supabase: SupabaseClient) {
         }
       }
 
-      // Search mode — find matching paint IDs, then apply scope + hue filters
+      // Search mode — apply filters directly to avoid large .in(id) lists that
+      // overflow PostgREST URL length limits when hundreds of IDs match.
       const pattern = `%${query}%`
 
+      // Brand-name matches produce a small list of product_line IDs (one per line).
       const { data: matchingLines } = await supabase
         .from('product_lines')
         .select('id, brands!inner(name)')
@@ -453,38 +455,30 @@ export function createPaintService(supabase: SupabaseClient) {
 
       const lineIds = matchingLines?.map((l) => l.id) ?? []
 
-      const idQueries = [
-        supabase.from('paints').select('id').ilike('name', pattern),
-        supabase.from('paints').select('id').ilike('paint_type', pattern),
-      ]
+      // Build a single OR filter: name match, type match, or brand-via-product-line.
+      const orParts = [`name.ilike.${pattern}`, `paint_type.ilike.${pattern}`]
       if (lineIds.length > 0) {
-        idQueries.push(supabase.from('paints').select('id').in('product_line_id', lineIds))
+        orParts.push(`product_line_id.in.(${lineIds.join(',')})`)
       }
-
-      const idResults = await Promise.all(idQueries)
-      let matchingIds = [
-        ...new Set(idResults.flatMap((r) => r.data?.map((p) => p.id) ?? [])),
-      ]
-
-      // Intersect with scope paint IDs when scoped to a user collection
-      if (scopePaintIds) {
-        const scopeSet = new Set(scopePaintIds)
-        matchingIds = matchingIds.filter((id) => scopeSet.has(id))
-      }
-
-      if (matchingIds.length === 0) return { paints: [], count: 0 }
+      const orFilter = orParts.join(',')
 
       let countQuery = supabase
         .from('paints')
         .select('*', { count: 'exact', head: true })
-        .in('id', matchingIds)
+        .or(orFilter)
 
       let dataQuery = supabase
         .from('paints')
         .select('*, product_lines(brands(name))')
-        .in('id', matchingIds)
+        .or(orFilter)
         .order('name')
         .range(offset, offset + limit - 1)
+
+      // Scope to user collection if needed
+      if (scopePaintIds) {
+        countQuery = countQuery.in('id', scopePaintIds)
+        dataQuery = dataQuery.in('id', scopePaintIds)
+      }
 
       if (hueIds && hueIds.length === 1) {
         countQuery = countQuery.eq('hue_id', hueIds[0])
