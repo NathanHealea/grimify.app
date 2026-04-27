@@ -2,11 +2,13 @@
 
 **Epic:** Paint Data & Search
 **Type:** Feature
-**Status:** Ready for /plan
+**Status:** In Progress — Phases 1–8 in progress (manual verification)
 **Branch:** `refactor/paint-search`
 **Merge into:** `v1/main`
 
-> **Status: Ready for `/plan`.** All design questions are resolved (see Resolved questions + Amendment log). This doc is the input to `/plan`.
+> **Status: In Progress.** Phases 1–7 shipped on `refactor/paint-search`. Phase 8 manual verification underway. `PaintCardWithToggle` renamed to `CollectionPaintCard` (`collection-paint-card.tsx`). Public `/paints` explorer now renders `CollectionPaintCard` for authenticated users.
+>
+> **Lint note:** 4 pre-existing lint errors remain in the Phase 2–4 hooks (`use-admin-paint-search`, `use-hue-filter`, `use-paint-search`, `use-search-url-state`) — `react-hooks/set-state-in-effect` and a ref-during-render warning. No new errors were introduced in Phases 5–7.
 
 ---
 
@@ -320,26 +322,26 @@ Record any regressions as follow-up tasks; fix before PR.
 
 ### Affected files
 
-| File | Change |
-|------|--------|
-| `src/modules/paints/services/paint-service.ts` | Add `searchPaintsUnified`; remove legacy `searchPaints` in Phase 7. |
-| `src/modules/paints/hooks/use-debounced-query.ts` | New. |
-| `src/modules/paints/hooks/use-paint-search.ts` | New. |
-| `src/modules/paints/hooks/use-search-url-state.ts` | New. |
-| `src/modules/paints/hooks/use-hue-filter.ts` | New. |
-| `src/modules/paints/components/paint-grid.tsx` | New presentational grid. |
-| `src/modules/paints/components/pagination-controls.tsx` | New presentational pager. |
-| `src/modules/paints/components/hue-filter-bar.tsx` | New presentational filter row. |
-| `src/modules/paints/components/paint-explorer.tsx` | New smart container (replaces archived). |
-| `src/app/paints/page.tsx` | Replace stub with SSR prefetch + `<PaintExplorer>`. |
-| `src/modules/admin/components/admin-add-paint-form.tsx` | New smart picker (replaces archived). |
-| `src/modules/admin/components/admin-user-collection-search.tsx` | New smart container (replaces archived). |
-| `src/modules/admin/components/admin-collection-paint-card.tsx` | Restore from archive. |
-| `src/modules/admin/actions/add-paint-to-collection.ts` | Port from archive. |
-| `src/modules/admin/actions/remove-paint-from-collection.ts` | Port from archive. |
-| `src/modules/admin/actions/search-user-collection.ts` | New — calls `searchPaintsUnified` with `scope: userCollection`. |
-| `src/modules/admin/services/collection-service.ts` | New — minimal, admin-only reads (e.g., profile + count). |
-| `src/app/admin/users/[id]/collection/page.tsx` | Replace stub; compose admin components. |
+| # | File | Change | Status |
+|---|------|--------|--------|
+| 1 | `src/modules/paints/services/paint-service.ts` | Add `searchPaintsUnified`; remove legacy `searchPaints` in Phase 7. | ✅ Done |
+| 2 | `src/modules/paints/hooks/use-debounced-query.ts` | New. | ✅ Done |
+| 3 | `src/modules/paints/hooks/use-paint-search.ts` | New. | ✅ Done |
+| 4 | `src/modules/paints/hooks/use-search-url-state.ts` | New. | ✅ Done |
+| 5 | `src/modules/paints/hooks/use-hue-filter.ts` | New. | ✅ Done |
+| 6 | `src/modules/paints/components/paint-grid.tsx` | New presentational grid. | ✅ Done |
+| 7 | `src/modules/paints/components/pagination-controls.tsx` | New presentational pager. | ✅ Done |
+| 8 | `src/modules/paints/components/hue-filter-bar.tsx` | New presentational filter row. | ✅ Done |
+| 9 | `src/modules/paints/components/paint-explorer.tsx` | New smart container (replaces archived). | ✅ Done |
+| 10 | `src/app/paints/page.tsx` | Replace stub with SSR prefetch + `<PaintExplorer>`. | ✅ Done |
+| 11 | `src/modules/admin/components/admin-add-paint-form.tsx` | New smart picker (replaces archived). | ✅ Done |
+| 12 | `src/modules/admin/components/admin-user-collection-search.tsx` | New smart container (replaces archived). | ✅ Done |
+| 13 | `src/modules/admin/components/admin-collection-paint-card.tsx` | Restore from archive. | ✅ Done |
+| 14 | `src/modules/admin/actions/add-paint-to-collection.ts` | Port from archive. | ✅ Done |
+| 15 | `src/modules/admin/actions/remove-paint-from-collection.ts` | Port from archive. | ✅ Done |
+| 16 | `src/modules/admin/actions/search-user-collection.ts` | New — calls `searchPaintsUnified` with `scope: userCollection`. | ✅ Done |
+| 17 | `src/modules/admin/services/collection-service.ts` | New — minimal, admin-only reads (e.g., profile + count). | ✅ Done |
+| 18 | `src/app/admin/users/[id]/collection/page.tsx` | Replace stub; compose admin components. | ✅ Done |
 
 ### Risks & considerations
 
