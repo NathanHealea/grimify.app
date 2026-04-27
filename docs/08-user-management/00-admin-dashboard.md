@@ -2,7 +2,7 @@
 
 **Epic:** User Management
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/admin-dashboard`
 **Merge into:** `v1/main`
 

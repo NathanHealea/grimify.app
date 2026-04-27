@@ -2,7 +2,7 @@
 
 **Epic:** User Management
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/role-management`
 **Merge into:** `v1/main`
 

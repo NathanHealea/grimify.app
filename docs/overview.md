@@ -91,7 +91,7 @@ Core functionality:
 - [x] [Paint search by name, hex, and brand](./02-paint-data-search/02-paint-search.md)
 - [x] [Brand and product line browsing](./02-paint-data-search/03-brand-browsing.md)
 - [x] [Munsell hue system refactor](./02-paint-data-search/04-munsell-hue-refactor.md)
-- [x] [Paint database data improvement](./02-paint-data-search/05-paint-database-data-improvement.md)
+- [ ] [Paint database data improvement](./02-paint-data-search/05-paint-database-data-improvement.md)
 
 ### Epic: Interactive Color Wheel
 
@@ -129,7 +129,7 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Add/remove paints to personal collection](./06-collection-tracking/00-manage-collection.md)
+- [x] [Add/remove paints to personal collection](./06-collection-tracking/00-manage-collection.md)
 - [ ] [Collection overview and statistics](./06-collection-tracking/01-collection-overview.md)
 - [x] [Collection dashboard](./06-collection-tracking/02-collection-dashboard.md)
 

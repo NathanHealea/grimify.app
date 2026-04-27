@@ -2,7 +2,7 @@
 
 **Epic:** Collection Tracking
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/collection-dashboard`
 **Merge into:** `v1/main`
 

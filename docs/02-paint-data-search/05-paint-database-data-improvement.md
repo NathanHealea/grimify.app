@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Enhancement
-**Status:** Completed
+**Status:** In Progress
 **Branch:** `enhancement/paint-database-data-improvement`
 **Merge into:** `v1/main`
 
