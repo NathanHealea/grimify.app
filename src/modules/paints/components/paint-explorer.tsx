@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import SearchInput from '@/components/search'
+import { CollectionPaintCard } from '@/modules/collection/components/collection-paint-card'
 import { HueFilterBar } from '@/modules/paints/components/hue-filter-bar'
 import { PaintCard } from '@/modules/paints/components/paint-card'
 import { PaintGrid } from '@/modules/paints/components/paint-grid'
@@ -65,6 +66,8 @@ function serialize(state: ExplorerUrlState): URLSearchParams {
  * @param props.initialHue - Server-parsed `hue` search param.
  * @param props.initialPage - Server-parsed `page` search param.
  * @param props.initialSize - Server-parsed `size` search param.
+ * @param props.isAuthenticated - Whether the current user is signed in; shows collection toggles when true.
+ * @param props.userPaintIds - Set of paint IDs already in the user's collection (used to set initial toggle state).
  */
 export function PaintExplorer({
   initialPaints,
@@ -75,6 +78,8 @@ export function PaintExplorer({
   initialHue = '',
   initialPage = 1,
   initialSize = 50,
+  isAuthenticated = false,
+  userPaintIds,
 }: {
   initialPaints: PaintWithBrand[]
   initialTotalCount: number
@@ -84,6 +89,8 @@ export function PaintExplorer({
   initialHue?: string
   initialPage?: number
   initialSize?: number
+  isAuthenticated?: boolean
+  userPaintIds?: Set<string>
 }) {
   const { state, update } = useSearchUrlState<ExplorerUrlState>({
     keys: { q: 'replace', hue: 'push', page: 'push', size: 'push' },
@@ -225,15 +232,28 @@ export function PaintExplorer({
       <div className={isLoading ? 'opacity-50 transition-opacity' : ''}>
         <PaintGrid
           paints={paints}
-          renderCard={(paint) => (
-            <PaintCard
-              id={paint.id}
-              name={paint.name}
-              hex={paint.hex}
-              brand={paint.product_lines?.brands?.name}
-              paintType={paint.paint_type}
-            />
-          )}
+          renderCard={(paint) =>
+            isAuthenticated ? (
+              <CollectionPaintCard
+                id={paint.id}
+                name={paint.name}
+                hex={paint.hex}
+                brand={paint.product_lines?.brands?.name}
+                paintType={paint.paint_type}
+                isInCollection={userPaintIds?.has(paint.id) ?? false}
+                isAuthenticated
+                revalidatePath="/paints"
+              />
+            ) : (
+              <PaintCard
+                id={paint.id}
+                name={paint.name}
+                hex={paint.hex}
+                brand={paint.product_lines?.brands?.name}
+                paintType={paint.paint_type}
+              />
+            )
+          }
         />
       </div>
 

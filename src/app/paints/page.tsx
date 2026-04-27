@@ -1,3 +1,4 @@
+import { createClient } from '@/lib/supabase/server'
 import { getHueService } from '@/modules/hues/services/hue-service.server'
 import { PaintExplorer } from '@/modules/paints/components/paint-explorer'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
@@ -18,6 +19,11 @@ export default async function PaintsPage({
   const [parentHueName, childHueName] = (hue ?? '')
     .split(',')
     .map((s) => s.trim().toLowerCase())
+
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   const paintService = await getPaintService()
   const hueService = await getHueService()
@@ -52,6 +58,16 @@ export default async function PaintsPage({
       offset,
     })
 
+  // Fetch user's collection paint IDs for toggle state (authenticated users only)
+  let userPaintIds: Set<string> | undefined
+  if (user) {
+    const { data: userPaints } = await supabase
+      .from('user_paints')
+      .select('paint_id')
+      .eq('user_id', user.id)
+    userPaintIds = new Set(userPaints?.map((r) => r.paint_id) ?? [])
+  }
+
   // Fetch paint counts per hue group for the filter bar
   const hueCountEntries = await Promise.all(
     topLevelHues.map(async (h) => {
@@ -79,6 +95,8 @@ export default async function PaintsPage({
         initialHue={hue ?? ''}
         initialPage={currentPage}
         initialSize={pageSize}
+        isAuthenticated={!!user}
+        userPaintIds={userPaintIds}
       />
     </div>
   )
