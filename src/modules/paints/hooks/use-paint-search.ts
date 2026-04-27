@@ -45,6 +45,7 @@ export function usePaintSearch(params: {
     const controller = new AbortController()
     const { signal } = controller
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoading(true)
     setError(null)
 

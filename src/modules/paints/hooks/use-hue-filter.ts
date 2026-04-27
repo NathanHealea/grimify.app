@@ -67,6 +67,7 @@ export function useHueFilter(options: {
   // Fetch child hues + paint counts when parent changes
   useEffect(() => {
     if (!selectedParent) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setChildHues([])
       setChildHuePaintCounts({})
       return

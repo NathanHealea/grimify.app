@@ -60,6 +60,7 @@ export function useSearchUrlState<T extends Record<string, unknown>>(
 
   // Always reflects latest committed state without closing over a stale value.
   const stateRef = useRef(state)
+  // eslint-disable-next-line react-hooks/refs
   stateRef.current = state
 
   // Re-hydrate when the user navigates Back / Forward
