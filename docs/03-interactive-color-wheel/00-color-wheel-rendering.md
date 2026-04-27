@@ -150,7 +150,17 @@ Create `src/modules/color-wheel/components/color-wheel.tsx` as a `'use client'` 
 - `handleHover(paint, event)`: converts `clientX/Y` to container-relative coords via `getBoundingClientRect`
 - Tooltip: absolutely positioned `card`-styled div showing paint name, brand, product line; clamped to stay within container bounds
 
-### Step 7 — Pages
+### Step 7 — Loading UI
+
+Create `src/app/loading.tsx` and `src/app/wheel/loading.tsx`:
+
+- Next.js App Router automatically wraps each `page.tsx` in a Suspense boundary when a co-located `loading.tsx` exists, so the loading UI shows while `getColorWheelPaints()` and `getColorWheelHues()` resolve.
+- Both files are identical and render a full-viewport centered skeleton:
+  - A circular `div` matching the wheel's `max-w-2xl aspect-square` dimensions
+  - Animated pulse via Tailwind's `animate-pulse` class
+  - The circle uses a `bg-muted rounded-full` style so it reads as a placeholder for the color wheel shape
+
+### Step 8 — Pages
 
 Update `src/app/page.tsx` (route `/`) and create `src/app/wheel/page.tsx` (route `/wheel`):
 
@@ -171,6 +181,8 @@ Update `src/app/page.tsx` (route `/`) and create `src/app/wheel/page.tsx` (route
 | Create | `src/modules/color-wheel/components/color-wheel.tsx`    | Main wheel client component               |
 | Modify | `src/modules/paints/services/paint-service.ts`          | Add `getColorWheelPaints()`               |
 | Modify | `src/modules/hues/services/hue-service.ts`              | Add `getColorWheelHues()`                 |
+| Create | `src/app/loading.tsx`                                   | Pulsing circle skeleton for `/`           |
+| Create | `src/app/wheel/loading.tsx`                             | Pulsing circle skeleton for `/wheel`      |
 | Modify | `src/app/page.tsx`                                      | Fetch data and render `ColorWheel`        |
 | Create | `src/app/wheel/page.tsx`                                | Identical server component at `/wheel`    |
 
