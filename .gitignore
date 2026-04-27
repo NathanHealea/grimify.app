@@ -54,9 +54,13 @@ next-env.d.ts
 # ide files
 .vscode/
 
+# archived code (pre-refactor snapshots, local-only)
+/archive/
+
 # supabase
 supabase/.branches/
 supabase/.temp/
 supabase/.env.keys
 supabase/.env.local
 supabase/.env.*.local
+supabase/snippets/

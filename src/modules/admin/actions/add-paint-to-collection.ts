@@ -36,7 +36,7 @@ export async function addPaintToCollection(
     .insert({ user_id: userId, paint_id: paintId })
 
   if (error) {
-    if (error.code === '23505') return { error: 'Paint is already in this user\'s collection.' }
+    if (error.code === '23505') return { error: "Paint is already in this user's collection." }
     return { error: error.message }
   }
 

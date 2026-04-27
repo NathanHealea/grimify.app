@@ -20,7 +20,7 @@ import { CollectionToggle } from '@/modules/collection/components/collection-tog
  * @param props.revalidatePath - Optional page path to revalidate after toggle.
  * @param props.className - Optional additional CSS classes for the card wrapper.
  */
-export function PaintCardWithToggle({
+export function CollectionPaintCard({
   id,
   name,
   hex,

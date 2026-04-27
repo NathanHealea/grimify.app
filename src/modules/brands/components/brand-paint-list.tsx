@@ -1,4 +1,4 @@
-import { PaintCardWithToggle } from '@/modules/collection/components/paint-card-with-toggle'
+import { CollectionPaintCard } from '@/modules/collection/components/collection-paint-card'
 import { PaintCard } from '@/modules/paints/components/paint-card'
 import type { Paint, ProductLine } from '@/types/paint'
 
@@ -7,7 +7,7 @@ import type { Paint, ProductLine } from '@/types/paint'
  *
  * Each product line is rendered as a section heading followed by a
  * responsive grid of paint cards. When `isAuthenticated` is true and
- * `userPaintIds` is provided, renders {@link PaintCardWithToggle} so
+ * `userPaintIds` is provided, renders {@link CollectionPaintCard} so
  * users can manage their collection inline.
  *
  * @param props.brandName - The brand's display name.
@@ -54,7 +54,7 @@ export function BrandPaintList({
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                 {linePaints.map((paint) =>
                   isAuthenticated ? (
-                    <PaintCardWithToggle
+                    <CollectionPaintCard
                       key={paint.id}
                       id={paint.id}
                       name={paint.name}

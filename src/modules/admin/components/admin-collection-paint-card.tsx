@@ -18,7 +18,7 @@ import { PaintCard } from '@/modules/paints/components/paint-card'
  *
  * Wraps {@link PaintCard} in a `relative` container and absolutely positions
  * an ellipsis trigger button at the top-right — matching the positioning
- * pattern used in `PaintCardWithToggle`.
+ * pattern used in {@link CollectionPaintCard}.
  *
  * @param props.userId - UUID of the target user (collection owner).
  * @param props.id - The paint's database UUID.

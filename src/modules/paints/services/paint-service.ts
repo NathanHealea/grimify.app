@@ -278,87 +278,6 @@ export function createPaintService(supabase: SupabaseClient) {
     },
 
     /**
-     * Searches paints by name or hex value with optional filters.
-     *
-     * Name matching uses case-insensitive partial match (`ilike`).
-     * If the query starts with `#`, it matches against the `hex` column instead.
-     * An optional `hueId` filter combines search with hue group filtering.
-     *
-     * @param options.query - The search string (name or hex starting with `#`).
-     * @param options.hueId - Optional child hue UUID to filter by.
-     * @param options.limit - Maximum number of paints to return (default 50).
-     * @param options.offset - Number of paints to skip (default 0).
-     * @returns An object with matching paints and total count.
-     */
-    async searchPaints(options: {
-      query: string
-      hueId?: string
-      hueIds?: string[]
-      limit?: number
-      offset?: number
-    }): Promise<{ paints: PaintWithBrand[]; count: number }> {
-      const { query, hueId, hueIds, limit = 50, offset = 0 } = options
-      const pattern = `%${query}%`
-
-      // Step 1: Find product_line IDs whose brand name matches
-      const { data: matchingLines } = await supabase
-        .from('product_lines')
-        .select('id, brands!inner(name)')
-        .ilike('brands.name', pattern)
-
-      const lineIds = matchingLines?.map((l) => l.id) ?? []
-
-      // Step 2: Collect all paint IDs matching name, type, or brand
-      // Using three parallel queries to avoid PostgREST .or() string issues
-      const idQueries = [
-        supabase.from('paints').select('id').ilike('name', pattern),
-        supabase.from('paints').select('id').ilike('paint_type', pattern),
-      ]
-      if (lineIds.length > 0) {
-        idQueries.push(
-          supabase.from('paints').select('id').in('product_line_id', lineIds)
-        )
-      }
-
-      const idResults = await Promise.all(idQueries)
-      const matchingIds = [
-        ...new Set(idResults.flatMap((r) => r.data?.map((p) => p.id) ?? [])),
-      ]
-
-      if (matchingIds.length === 0) {
-        return { paints: [], count: 0 }
-      }
-
-      // Step 3: Fetch matching paints with hue scoping
-      let countQuery = supabase
-        .from('paints')
-        .select('*', { count: 'exact', head: true })
-        .in('id', matchingIds)
-
-      let dataQuery = supabase
-        .from('paints')
-        .select('*, product_lines(brands(name))')
-        .in('id', matchingIds)
-        .order('name')
-        .range(offset, offset + limit - 1)
-
-      if (hueId) {
-        countQuery = countQuery.eq('hue_id', hueId)
-        dataQuery = dataQuery.eq('hue_id', hueId)
-      } else if (hueIds && hueIds.length > 0) {
-        countQuery = countQuery.in('hue_id', hueIds)
-        dataQuery = dataQuery.in('hue_id', hueIds)
-      }
-
-      const [{ count }, { data }] = await Promise.all([countQuery, dataQuery])
-
-      return {
-        paints: (data as PaintWithBrand[] | null) ?? [],
-        count: count ?? 0,
-      }
-    },
-
-    /**
      * Returns the total count of paints for a specific child hue.
      *
      * @param hueId - The child hue UUID.
@@ -371,6 +290,132 @@ export function createPaintService(supabase: SupabaseClient) {
         .eq('hue_id', hueId)
 
       return count ?? 0
+    },
+
+    /**
+     * Unified search entrypoint for all three paint search surfaces.
+     *
+     * Handles text search, hue filtering, and optional collection scoping in a
+     * single call. When `query` is empty the method still honours hue and scope
+     * filters, so callers can unify "filtered browse" and "search" into one call.
+     *
+     * Cancellation: pass an `AbortSignal` to abort in-flight network requests when
+     * a newer search supersedes this one (prevents stale results overwriting fresh ones).
+     *
+     * @param options.query - Search string matched against name, paint type, and brand name via ilike.
+     * @param options.hueIds - Hue UUIDs to filter by. Pass a single ID for a child hue, multiple for a parent group.
+     * @param options.scope - `'all'` (default) searches all paints; `{ type: 'userCollection', userId }` scopes to one user's collection.
+     * @param options.limit - Maximum number of results (default 50).
+     * @param options.offset - Number of results to skip (default 0).
+     * @param options.signal - AbortSignal for request cancellation.
+     * @returns `{ paints, count }` where `count` is the total matching rows (for pagination).
+     */
+    async searchPaintsUnified(options: {
+      query?: string
+      hueIds?: string[]
+      scope?: 'all' | { type: 'userCollection'; userId: string }
+      limit?: number
+      offset?: number
+      signal?: AbortSignal
+    }): Promise<{ paints: PaintWithBrand[]; count: number }> {
+      const { query, hueIds, scope, limit = 50, offset = 0, signal } = options
+
+      // Resolve the base paint ID set for userCollection scope
+      let scopePaintIds: string[] | null = null
+      if (scope && typeof scope !== 'string' && scope.type === 'userCollection') {
+        let q = supabase.from('user_paints').select('paint_id').eq('user_id', scope.userId)
+        if (signal) q = q.abortSignal(signal)
+        const { data } = await q
+        scopePaintIds = data?.map((r) => r.paint_id) ?? []
+        if (scopePaintIds.length === 0) return { paints: [], count: 0 }
+      }
+
+      if (!query) {
+        // Browse mode — no text search, just scope + hue filters
+        let countQuery = supabase.from('paints').select('*', { count: 'exact', head: true })
+        let dataQuery = supabase
+          .from('paints')
+          .select('*, product_lines(brands(name))')
+          .order('name')
+          .range(offset, offset + limit - 1)
+
+        if (scopePaintIds) {
+          countQuery = countQuery.in('id', scopePaintIds)
+          dataQuery = dataQuery.in('id', scopePaintIds)
+        }
+        if (hueIds && hueIds.length === 1) {
+          countQuery = countQuery.eq('hue_id', hueIds[0])
+          dataQuery = dataQuery.eq('hue_id', hueIds[0])
+        } else if (hueIds && hueIds.length > 1) {
+          countQuery = countQuery.in('hue_id', hueIds)
+          dataQuery = dataQuery.in('hue_id', hueIds)
+        }
+        if (signal) {
+          countQuery = countQuery.abortSignal(signal)
+          dataQuery = dataQuery.abortSignal(signal)
+        }
+
+        const [{ count }, { data }] = await Promise.all([countQuery, dataQuery])
+        return {
+          paints: (data as PaintWithBrand[] | null) ?? [],
+          count: count ?? 0,
+        }
+      }
+
+      // Search mode — apply filters directly to avoid large .in(id) lists that
+      // overflow PostgREST URL length limits when hundreds of IDs match.
+      const pattern = `%${query}%`
+
+      // Brand-name matches produce a small list of product_line IDs (one per line).
+      const { data: matchingLines } = await supabase
+        .from('product_lines')
+        .select('id, brands!inner(name)')
+        .ilike('brands.name', pattern)
+
+      const lineIds = matchingLines?.map((l) => l.id) ?? []
+
+      // Build a single OR filter: name match, type match, or brand-via-product-line.
+      const orParts = [`name.ilike.${pattern}`, `paint_type.ilike.${pattern}`]
+      if (lineIds.length > 0) {
+        orParts.push(`product_line_id.in.(${lineIds.join(',')})`)
+      }
+      const orFilter = orParts.join(',')
+
+      let countQuery = supabase
+        .from('paints')
+        .select('*', { count: 'exact', head: true })
+        .or(orFilter)
+
+      let dataQuery = supabase
+        .from('paints')
+        .select('*, product_lines(brands(name))')
+        .or(orFilter)
+        .order('name')
+        .range(offset, offset + limit - 1)
+
+      // Scope to user collection if needed
+      if (scopePaintIds) {
+        countQuery = countQuery.in('id', scopePaintIds)
+        dataQuery = dataQuery.in('id', scopePaintIds)
+      }
+
+      if (hueIds && hueIds.length === 1) {
+        countQuery = countQuery.eq('hue_id', hueIds[0])
+        dataQuery = dataQuery.eq('hue_id', hueIds[0])
+      } else if (hueIds && hueIds.length > 1) {
+        countQuery = countQuery.in('hue_id', hueIds)
+        dataQuery = dataQuery.in('hue_id', hueIds)
+      }
+      if (signal) {
+        countQuery = countQuery.abortSignal(signal)
+        dataQuery = dataQuery.abortSignal(signal)
+      }
+
+      const [{ count }, { data }] = await Promise.all([countQuery, dataQuery])
+      return {
+        paints: (data as PaintWithBrand[] | null) ?? [],
+        count: count ?? 0,
+      }
     },
 
     /**

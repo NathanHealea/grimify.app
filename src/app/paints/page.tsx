@@ -1,9 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
-import { getCollectionService } from '@/modules/collection/services/collection-service.server'
 import { getHueService } from '@/modules/hues/services/hue-service.server'
 import { PaintExplorer } from '@/modules/paints/components/paint-explorer'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
-import type { PaintWithBrand } from '@/modules/paints/services/paint-service'
 
 /** Valid page sizes that the paginated grid supports. */
 const VALID_SIZES = [25, 50, 100, 200]
@@ -23,75 +21,54 @@ export default async function PaintsPage({
     .map((s) => s.trim().toLowerCase())
 
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   const paintService = await getPaintService()
   const hueService = await getHueService()
 
-  const [totalPaints, topLevelHues] = await Promise.all([
-    paintService.getTotalPaintCount(),
-    hueService.getHues(),
-  ])
+  const [topLevelHues] = await Promise.all([hueService.getHues()])
 
-  // Resolve hue names from URL to IDs
+  // Resolve hue names from URL to IDs for the SSR prefetch
   const parentHue = parentHueName
     ? topLevelHues.find((h) => h.name.toLowerCase() === parentHueName)
     : undefined
 
-  let childHueId: string | undefined
-  let childHueIds: string[] | undefined
+  let hueIds: string[] | undefined
 
   if (parentHue) {
     const children = await hueService.getChildHues(parentHue.id)
     if (childHueName) {
-      childHueId = children.find((h) => h.name.toLowerCase() === childHueName)?.id
+      const child = children.find((h) => h.name.toLowerCase() === childHueName)
+      if (child) hueIds = [child.id]
     }
-    if (!childHueId) {
-      childHueIds = children.map((c) => c.id)
+    if (!hueIds) {
+      hueIds = children.map((c) => c.id)
     }
   }
 
-  // Fetch initial paints based on URL filters
-  let initialPaints: PaintWithBrand[]
-  let initialCount: number
-
-  if (query) {
-    const result = await paintService.searchPaints({
-      query,
-      hueId: childHueId,
-      hueIds: childHueIds,
+  // Single unified call for SSR prefetch — same logic the client hook uses
+  const { paints: initialPaints, count: initialTotalCount } =
+    await paintService.searchPaintsUnified({
+      query: query || undefined,
+      hueIds,
+      scope: 'all',
       limit: pageSize,
       offset,
     })
-    initialPaints = result.paints
-    initialCount = result.count
-  } else if (childHueId) {
-    const [paints, count] = await Promise.all([
-      paintService.getPaintsByHueId(childHueId, { limit: pageSize, offset }),
-      paintService.getPaintCountByHueId(childHueId),
-    ])
-    initialPaints = paints
-    initialCount = count
-  } else if (parentHue) {
-    const [paints, count] = await Promise.all([
-      paintService.getPaintsByHueGroup(parentHue.id, { limit: pageSize, offset }),
-      paintService.getPaintCountByHueGroup(parentHue.id),
-    ])
-    initialPaints = paints
-    initialCount = count
-  } else {
-    initialPaints = await paintService.getAllPaints({ limit: pageSize, offset })
-    initialCount = totalPaints
-  }
 
-  // Fetch user collection state
+  // Fetch user's collection paint IDs for toggle state (authenticated users only)
   let userPaintIds: Set<string> | undefined
   if (user) {
-    const collectionService = await getCollectionService()
-    userPaintIds = await collectionService.getUserPaintIds(user.id)
+    const { data: userPaints } = await supabase
+      .from('user_paints')
+      .select('paint_id')
+      .eq('user_id', user.id)
+    userPaintIds = new Set(userPaints?.map((r) => r.paint_id) ?? [])
   }
 
-  // Fetch paint counts per hue group in parallel
+  // Fetch paint counts per hue group for the filter bar
   const hueCountEntries = await Promise.all(
     topLevelHues.map(async (h) => {
       const count = await paintService.getPaintCountByHueGroup(h.id)
@@ -105,17 +82,21 @@ export default async function PaintsPage({
       <div className="mb-8 flex flex-col gap-4">
         <h1 className="text-3xl font-bold">Paints</h1>
         <p className="text-sm text-muted-foreground">
-          Browse {totalPaints.toLocaleString()} paints.
+          Browse {initialTotalCount.toLocaleString()} paints.
         </p>
       </div>
 
       <PaintExplorer
         initialPaints={initialPaints}
-        initialTotalCount={initialCount}
+        initialTotalCount={initialTotalCount}
         hues={topLevelHues}
         huePaintCounts={huePaintCounts}
+        initialQuery={query}
+        initialHue={hue ?? ''}
+        initialPage={currentPage}
+        initialSize={pageSize}
+        isAuthenticated={!!user}
         userPaintIds={userPaintIds}
-        isAuthenticated={user !== null}
       />
     </div>
   )

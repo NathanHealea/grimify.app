@@ -1,374 +1,215 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { ChildHueCard } from '@/modules/hues/components/child-hue-card'
-import { HueCard } from '@/modules/hues/components/hue-card'
-import { getHueService } from '@/modules/hues/services/hue-service.client'
-import { PaginatedPaintGrid } from '@/modules/paints/components/paginated-paint-grid'
-import { getPaintService } from '@/modules/paints/services/paint-service.client'
+import SearchInput from '@/components/search'
+import { CollectionPaintCard } from '@/modules/collection/components/collection-paint-card'
+import { HueFilterBar } from '@/modules/paints/components/hue-filter-bar'
+import { PaintCard } from '@/modules/paints/components/paint-card'
+import { PaintGrid } from '@/modules/paints/components/paint-grid'
+import { PaginationControls } from '@/modules/paints/components/pagination-controls'
+import { useDebouncedQuery } from '@/modules/paints/hooks/use-debounced-query'
+import { useHueFilter } from '@/modules/paints/hooks/use-hue-filter'
+import { usePaintSearch } from '@/modules/paints/hooks/use-paint-search'
+import { useSearchUrlState } from '@/modules/paints/hooks/use-search-url-state'
 import type { PaintWithBrand } from '@/modules/paints/services/paint-service'
 import type { Hue } from '@/types/color'
 
+/** Available page size options for the paint explorer. */
+const PAGE_SIZE_OPTIONS = [25, 50, 100, 200] as const
+
+/** URL-synced state shape for the paint explorer. */
+type ExplorerUrlState = {
+  q: string
+  hue: string
+  page: number
+  size: number
+}
+
+function hydrate(sp: URLSearchParams): ExplorerUrlState {
+  const sizeParam = Number(sp.get('size'))
+  const size = (PAGE_SIZE_OPTIONS as readonly number[]).includes(sizeParam) ? sizeParam : 50
+  return {
+    q: sp.get('q') ?? '',
+    hue: sp.get('hue') ?? '',
+    page: Math.max(1, Number(sp.get('page') || 1)),
+    size,
+  }
+}
+
+function serialize(state: ExplorerUrlState): URLSearchParams {
+  const sp = new URLSearchParams()
+  if (state.q) sp.set('q', state.q)
+  if (state.hue) sp.set('hue', state.hue)
+  if (state.page > 1) sp.set('page', String(state.page))
+  if (state.size !== 50) sp.set('size', String(state.size))
+  return sp
+}
+
 /**
- * Interactive paint explorer component with search, hue filtering, and pagination.
+ * Smart container for the public paint explorer on `/paints`.
  *
- * Owns all interactive state on `/paints` and orchestrates search, hue filtering,
- * and pagination without page navigation. State syncs to URL search params for
- * shareable, bookmarkable views.
+ * Composes {@link useDebouncedQuery}, {@link useHueFilter}, {@link usePaintSearch},
+ * and {@link useSearchUrlState} to manage all search, filter, and pagination state.
+ * Renders {@link SearchInput}, {@link HueFilterBar}, {@link PaintGrid}, and
+ * {@link PaginationControls}.
  *
- * @param props.initialPaints - First page of paints (server-rendered for hydration).
- * @param props.initialTotalCount - Total paint count for the initial unfiltered view.
- * @param props.hues - All top-level Munsell hues (server-fetched to avoid client round-trip).
- * @param props.huePaintCounts - Paint count per top-level hue group (server-fetched).
- * @param props.userPaintIds - Set of paint IDs in the current user's collection.
- * @param props.isAuthenticated - Whether the current user is signed in.
+ * URL history strategy: debounced query ticks use `replaceState` (no history
+ * entry); hue, page, and size changes use `pushState` so Back retraces
+ * committed filter states.
+ *
+ * @param props.initialPaints - SSR-prefetched first page of paints.
+ * @param props.initialTotalCount - SSR-prefetched total paint count.
+ * @param props.hues - All top-level hues (server-fetched).
+ * @param props.huePaintCounts - Paint count per top-level hue name (lowercased key).
+ * @param props.initialQuery - Server-parsed `q` search param (prevents hydration mismatch).
+ * @param props.initialHue - Server-parsed `hue` search param.
+ * @param props.initialPage - Server-parsed `page` search param.
+ * @param props.initialSize - Server-parsed `size` search param.
+ * @param props.isAuthenticated - Whether the current user is signed in; shows collection toggles when true.
+ * @param props.userPaintIds - Set of paint IDs already in the user's collection (used to set initial toggle state).
  */
 export function PaintExplorer({
   initialPaints,
   initialTotalCount,
   hues,
   huePaintCounts,
-  userPaintIds,
+  initialQuery = '',
+  initialHue = '',
+  initialPage = 1,
+  initialSize = 50,
   isAuthenticated = false,
+  userPaintIds,
 }: {
   initialPaints: PaintWithBrand[]
   initialTotalCount: number
   hues: Hue[]
   huePaintCounts: Record<string, number>
-  userPaintIds?: Set<string>
+  initialQuery?: string
+  initialHue?: string
+  initialPage?: number
+  initialSize?: number
   isAuthenticated?: boolean
+  userPaintIds?: Set<string>
 }) {
-  const searchParams = useSearchParams()
+  const { state, update } = useSearchUrlState<ExplorerUrlState>({
+    keys: { q: 'replace', hue: 'push', page: 'push', size: 'push' },
+    hydrate,
+    serialize,
+    basePath: '/paints',
+    initialState: { q: initialQuery, hue: initialHue, page: initialPage, size: initialSize },
+  })
 
-  // Parse URL params for initial state
-  const initialQuery = searchParams.get('q') ?? ''
-  const hueParam = searchParams.get('hue') ?? ''
-  const [initialParentHueName, initialChildHueName] = hueParam
-    .split(',')
-    .map((s) => s.trim().toLowerCase())
+  // rawQuery tracks the live input value independently from the debounced URL state
+  const [rawQuery, setRawQuery] = useState(state.q)
 
-  // --- Internal state ---
-  const [searchQuery, setSearchQuery] = useState(initialQuery)
-  const [debouncedQuery, setDebouncedQuery] = useState(initialQuery)
-  const [selectedHueName, setSelectedHueName] = useState<string | null>(
-    initialParentHueName || null
-  )
-  const [selectedChildHueName, setSelectedChildHueName] = useState<string | null>(
-    initialChildHueName || null
-  )
-  const [childHues, setChildHues] = useState<Hue[]>([])
-  const [childHuePaintCounts, setChildHuePaintCounts] = useState<Record<string, number>>({})
-  const [gridPaints, setGridPaints] = useState<PaintWithBrand[]>(initialPaints)
-  const [gridTotalCount, setGridTotalCount] = useState(initialTotalCount)
-  const [isFiltering, setIsFiltering] = useState(false)
+  // Increment key forces SearchInput to remount with the restored value on Back/Forward
+  const [popstateKey, setPopstateKey] = useState(0)
 
-  // --- Hue name → ID resolution ---
-  const resolveParentHueId = useCallback(
-    (name: string | null): string | null => {
-      if (!name) return null
-      const hue = hues.find((h) => h.name.toLowerCase() === name.toLowerCase())
-      return hue?.id ?? null
-    },
-    [hues]
-  )
-
-  const resolveChildHueId = useCallback(
-    (name: string | null): string | null => {
-      if (!name) return null
-      const hue = childHues.find((h) => h.name.toLowerCase() === name.toLowerCase())
-      return hue?.id ?? null
-    },
-    [childHues]
-  )
-
-  // --- URL sync ---
-  // Uses replaceState instead of router.replace to avoid triggering a server
-  // component re-render, which would pass new prop references and cause an
-  // infinite effect loop.
-  const updateUrl = useCallback(
-    (params: { q?: string; hue?: string; resetPage?: boolean }) => {
-      const next = new URLSearchParams(window.location.search)
-
-      if (params.q !== undefined) {
-        if (params.q) {
-          next.set('q', params.q)
-        } else {
-          next.delete('q')
-        }
-      }
-
-      if (params.hue !== undefined) {
-        if (params.hue) {
-          next.set('hue', params.hue)
-        } else {
-          next.delete('hue')
-        }
-      }
-
-      if (params.resetPage) {
-        next.delete('page')
-      }
-
-      const qs = next.toString()
-      window.history.replaceState(null, '', qs ? `/paints?${qs}` : '/paints')
-    },
-    []
-  )
-
-  // --- Debounce ---
   useEffect(() => {
-    if (searchQuery.length > 0 && searchQuery.length < 3) return
-    const timer = setTimeout(() => setDebouncedQuery(searchQuery), 300)
-    return () => clearTimeout(timer)
-  }, [searchQuery])
-
-  // --- Fetch child hues when parent hue changes ---
-  useEffect(() => {
-    const parentHueId = resolveParentHueId(selectedHueName)
-    if (!parentHueId) {
-      setChildHues([])
-      setChildHuePaintCounts({})
-      return
+    function onPop() {
+      const sp = new URLSearchParams(window.location.search)
+      setRawQuery(sp.get('q') ?? '')
+      setPopstateKey((k) => k + 1)
     }
-
-    let cancelled = false
-
-    async function fetchChildren() {
-      const hueService = getHueService()
-      const paintService = getPaintService()
-      const children = await hueService.getChildHues(parentHueId!)
-
-      if (cancelled) return
-
-      setChildHues(children)
-
-      // Fetch paint counts for each child hue in parallel
-      const entries = await Promise.all(
-        children.map(async (child) => {
-          const count = await paintService.getPaintCountByHueId(child.id)
-          return [child.name.toLowerCase(), count] as const
-        })
-      )
-
-      if (cancelled) return
-
-      setChildHuePaintCounts(Object.fromEntries(entries))
-    }
-
-    fetchChildren()
-    return () => {
-      cancelled = true
-    }
-  }, [selectedHueName, resolveParentHueId])
-
-  // --- Fetch paints when filters change ---
-  // Skips the initial mount because the server already pre-fetched the correct
-  // data for the current URL params (including page offset).
-  // Does NOT depend on childHues — the server handles child-hue URL restoration,
-  // and for user interactions child hues are already loaded before a child can
-  // be selected.
-  const isInitialMount = useRef(true)
-  useEffect(() => {
-    // On initial mount the server already provided correct data for the URL params.
-    if (isInitialMount.current) {
-      isInitialMount.current = false
-      return
-    }
-
-    const parentHueId = resolveParentHueId(selectedHueName)
-    const childHueId = resolveChildHueId(selectedChildHueName)
-
-    // Build hue param string for URL
-    let hueParam = ''
-    if (selectedHueName) {
-      hueParam = selectedHueName
-      if (selectedChildHueName) {
-        hueParam += `,${selectedChildHueName}`
-      }
-    }
-
-    updateUrl({ q: debouncedQuery, hue: hueParam, resetPage: true })
-
-    let cancelled = false
-    setIsFiltering(true)
-
-    async function fetchFiltered() {
-      const paintService = getPaintService()
-
-      let paints: PaintWithBrand[] = []
-      let count = 0
-
-      if (debouncedQuery) {
-        // Search with optional hue scoping
-        let hueIds: string[] | undefined
-        let hueId: string | undefined
-
-        if (childHueId) {
-          hueId = childHueId
-        } else if (parentHueId) {
-          // Get all child IDs for the parent hue group
-          const hueService = getHueService()
-          const children = await hueService.getChildHues(parentHueId)
-          hueIds = children.map((c) => c.id)
-        }
-
-        const result = await paintService.searchPaints({
-          query: debouncedQuery,
-          hueId,
-          hueIds,
-          limit: 50,
-          offset: 0,
-        })
-        paints = result.paints
-        count = result.count
-      } else if (childHueId) {
-        // Child hue filter only
-        const [data, total] = await Promise.all([
-          paintService.getPaintsByHueId(childHueId, { limit: 50, offset: 0 }),
-          paintService.getPaintCountByHueId(childHueId),
-        ])
-        paints = data
-        count = total
-      } else if (parentHueId) {
-        // Parent hue group filter only
-        const [data, total] = await Promise.all([
-          paintService.getPaintsByHueGroup(parentHueId, { limit: 50, offset: 0 }),
-          paintService.getPaintCountByHueGroup(parentHueId),
-        ])
-        paints = data
-        count = total
-      } else {
-        // No filters — fetch all paints
-        const [data, total] = await Promise.all([
-          paintService.getAllPaints({ limit: 50, offset: 0 }),
-          paintService.getTotalPaintCount(),
-        ])
-        paints = data
-        count = total
-      }
-
-      if (cancelled) return
-
-      setGridPaints(paints)
-      setGridTotalCount(count)
-      setIsFiltering(false)
-    }
-
-    fetchFiltered()
-    return () => {
-      cancelled = true
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery, selectedHueName, selectedChildHueName])
-
-  // --- fetchPaints callback for PaginatedPaintGrid pagination ---
-  const fetchPaintsWithFilters = useCallback(
-    async (options: { limit: number; offset: number }): Promise<PaintWithBrand[]> => {
-      const paintService = getPaintService()
-      const parentHueId = resolveParentHueId(selectedHueName)
-      const childHueId = resolveChildHueId(selectedChildHueName)
-
-      if (debouncedQuery) {
-        let hueIds: string[] | undefined
-        let hueId: string | undefined
-
-        if (childHueId) {
-          hueId = childHueId
-        } else if (parentHueId) {
-          const hueService = getHueService()
-          const children = await hueService.getChildHues(parentHueId)
-          hueIds = children.map((c) => c.id)
-        }
-
-        const result = await paintService.searchPaints({
-          query: debouncedQuery,
-          hueId,
-          hueIds,
-          limit: options.limit,
-          offset: options.offset,
-        })
-        return result.paints
-      } else if (childHueId) {
-        return paintService.getPaintsByHueId(childHueId, options)
-      } else if (parentHueId) {
-        return paintService.getPaintsByHueGroup(parentHueId, options)
-      }
-
-      return paintService.getAllPaints(options)
-    },
-    [debouncedQuery, selectedHueName, selectedChildHueName, resolveParentHueId, resolveChildHueId]
-  )
-
-  // --- Hue selection handlers ---
-  const handleSelectParentHue = useCallback(
-    (hueName: string) => {
-      if (selectedHueName === hueName) {
-        // Deselect
-        setSelectedHueName(null)
-        setSelectedChildHueName(null)
-        setChildHues([])
-        setChildHuePaintCounts({})
-      } else {
-        // Select new parent
-        setSelectedHueName(hueName)
-        setSelectedChildHueName(null)
-      }
-    },
-    [selectedHueName]
-  )
-
-  const handleSelectChildHue = useCallback(
-    (hueName: string) => {
-      if (selectedChildHueName === hueName) {
-        // Deselect child only
-        setSelectedChildHueName(null)
-      } else {
-        setSelectedChildHueName(hueName)
-      }
-    },
-    [selectedChildHueName]
-  )
-
-  // --- Clear All ---
-  // Resets filter state and URL. The fetch paints effect handles reloading all paints.
-  const handleClearAll = useCallback(() => {
-    setSearchQuery('')
-    setDebouncedQuery('')
-    setSelectedHueName(null)
-    setSelectedChildHueName(null)
-    setChildHues([])
-    setChildHuePaintCounts({})
-
-    window.history.replaceState(null, '', '/paints')
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
   }, [])
 
-  const hasActiveFilters = !!searchQuery || !!selectedHueName
+  const debouncedQuery = useDebouncedQuery(rawQuery, { delay: 300, minChars: 3 })
+
+  // Push settled debounced query to URL — always replaceState (no history entry)
+  useEffect(() => {
+    update({ q: debouncedQuery, page: 1 }, { commit: false })
+    // update is stable; only re-run when debouncedQuery settles
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery])
+
+  // Parse hue param ("parent" or "parent,child") for useHueFilter initialization.
+  // Memoized without state.hue dependency: hue filter owns its own state after mount.
+  const [initialParentName, initialChildName] = useMemo(() => {
+    const parts = state.hue.split(',').map((s) => s.trim().toLowerCase())
+    return [parts[0] || null, parts[1] || null]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const hueFilter = useHueFilter({ hues, initialParentName, initialChildName })
+
+  // Derive hueIds for usePaintSearch.
+  // Child selected → [childId]. Parent selected (with children loaded) → all child IDs.
+  // While children are still loading, falls back to undefined to avoid a wrong full-set fetch.
+  const hueIds = useMemo((): string[] | undefined => {
+    if (hueFilter.selectedChildId) return [hueFilter.selectedChildId]
+    if (hueFilter.selectedParentId && hueFilter.childHues.length > 0) {
+      return hueFilter.childHues.map((h) => h.id)
+    }
+    return undefined
+  }, [hueFilter.selectedChildId, hueFilter.selectedParentId, hueFilter.childHues])
+
+  const { paints, totalCount, isLoading } = usePaintSearch({
+    query: state.q,
+    hueIds,
+    scope: 'all',
+    pageSize: state.size,
+    page: state.page,
+    initialPaints,
+    initialTotalCount,
+  })
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / state.size))
+
+  const handleQueryChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setRawQuery(e.target.value)
+  }, [])
+
+  const handleSelectParent = useCallback(
+    (name: string) => {
+      const isDeselecting = hueFilter.selectedParent?.name.toLowerCase() === name
+      hueFilter.selectParent(name)
+      update({ hue: isDeselecting ? '' : name, page: 1 }, { commit: true })
+    },
+    [hueFilter, update]
+  )
+
+  const handleSelectChild = useCallback(
+    (name: string) => {
+      const isDeselecting = hueFilter.selectedChild?.name.toLowerCase() === name
+      hueFilter.selectChild(name)
+      const parentName = hueFilter.selectedParent?.name.toLowerCase() ?? ''
+      const newHue = isDeselecting ? parentName : `${parentName},${name}`
+      update({ hue: newHue, page: 1 }, { commit: true })
+    },
+    [hueFilter, update]
+  )
+
+  const handleClearAll = useCallback(() => {
+    setRawQuery('')
+    setPopstateKey((k) => k + 1)
+    hueFilter.clear()
+    update({ q: '', hue: '', page: 1 }, { commit: true })
+  }, [hueFilter, update])
+
+  const handlePageChange = useCallback(
+    (page: number) => update({ page }, { commit: true }),
+    [update]
+  )
+
+  const handleSizeChange = useCallback(
+    (size: number) => update({ size, page: 1 }, { commit: true }),
+    [update]
+  )
+
+  const hasActiveFilters = !!rawQuery || !!hueFilter.selectedParent
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Search + Clear All row */}
       <div className="flex items-center gap-3">
-        <div className="relative flex-1">
-          <input
-            type="text"
-            placeholder="Search paints by name, brand, or type..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="input w-full pr-9"
+        <div className="flex-1">
+          <SearchInput
+            key={popstateKey}
+            defaultValue={rawQuery}
+            onChange={handleQueryChange}
           />
-          {searchQuery.length >= 3 && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute inset-y-0 right-0 flex w-9 items-center justify-center text-muted-foreground hover:text-foreground"
-              aria-label="Clear search"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-4">
-                <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
-              </svg>
-            </button>
-          )}
         </div>
         {hasActiveFilters && (
           <button onClick={handleClearAll} className="btn btn-ghost shrink-0">
@@ -377,45 +218,55 @@ export function PaintExplorer({
         )}
       </div>
 
-      {/* Top-level hue pills */}
-      <div className="flex flex-wrap gap-2">
-        {hues.map((hue) => (
-          <HueCard
-            key={hue.id}
-            hue={hue}
-            paintCount={huePaintCounts[hue.name.toLowerCase()] ?? 0}
-            isSelected={selectedHueName === hue.name.toLowerCase()}
-            onSelect={() => handleSelectParentHue(hue.name.toLowerCase())}
-          />
-        ))}
-      </div>
+      <HueFilterBar
+        hues={hues}
+        huePaintCounts={huePaintCounts}
+        childHues={hueFilter.childHues}
+        childHuePaintCounts={hueFilter.childHuePaintCounts}
+        selectedParentName={hueFilter.selectedParent?.name.toLowerCase() ?? null}
+        selectedChildName={hueFilter.selectedChild?.name.toLowerCase() ?? null}
+        onSelectParent={handleSelectParent}
+        onSelectChild={handleSelectChild}
+      />
 
-      {/* Child hue pills (conditional) */}
-      {childHues.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {childHues.map((hue) => (
-            <ChildHueCard
-              key={hue.id}
-              hue={hue}
-              paintCount={childHuePaintCounts[hue.name.toLowerCase()] ?? 0}
-              isSelected={selectedChildHueName === hue.name.toLowerCase()}
-              onSelect={() => handleSelectChildHue(hue.name.toLowerCase())}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Paint grid with loading state */}
-      <div className={isFiltering ? 'opacity-50 transition-opacity' : ''}>
-        <PaginatedPaintGrid
-          initialPaints={gridPaints}
-          totalCount={gridTotalCount}
-          basePath="/paints"
-          fetchPaints={fetchPaintsWithFilters}
-          userPaintIds={userPaintIds}
-          isAuthenticated={isAuthenticated}
+      <div className={isLoading ? 'opacity-50 transition-opacity' : ''}>
+        <PaintGrid
+          paints={paints}
+          renderCard={(paint) =>
+            isAuthenticated ? (
+              <CollectionPaintCard
+                id={paint.id}
+                name={paint.name}
+                hex={paint.hex}
+                brand={paint.product_lines?.brands?.name}
+                paintType={paint.paint_type}
+                isInCollection={userPaintIds?.has(paint.id) ?? false}
+                isAuthenticated
+                revalidatePath="/paints"
+              />
+            ) : (
+              <PaintCard
+                id={paint.id}
+                name={paint.name}
+                hex={paint.hex}
+                brand={paint.product_lines?.brands?.name}
+                paintType={paint.paint_type}
+              />
+            )
+          }
         />
       </div>
+
+      <PaginationControls
+        currentPage={state.page}
+        totalPages={totalPages}
+        pageSize={state.size}
+        pageSizeOptions={PAGE_SIZE_OPTIONS}
+        totalCount={totalCount}
+        isPending={isLoading}
+        onPageChange={handlePageChange}
+        onSizeChange={handleSizeChange}
+      />
     </div>
   )
 }

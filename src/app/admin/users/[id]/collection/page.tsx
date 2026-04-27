@@ -1,33 +1,40 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase/server'
-import { AdminAddPaintForm } from '@/modules/admin/components/admin-add-paint-form'
-import { AdminUserCollectionSearch } from '@/modules/admin/components/admin-user-collection-search'
-import { getUserCollection } from '@/modules/admin/services/collection-service'
+import { AdminCollectionClient } from '@/modules/admin/components/admin-collection-client'
+import { getAdminCollectionPageData } from '@/modules/admin/services/collection-service'
+
+const DEFAULT_PAGE_SIZE = 25
 
 export default async function AdminUserCollectionPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
-  const { id } = await params
-  const supabase = await createClient()
+  const [{ id }, sp] = await Promise.all([params, searchParams])
 
+  const supabase = await createClient()
   const {
     data: { user: currentUser },
   } = await supabase.auth.getUser()
 
   if (!currentUser) return null
 
-  const collection = await getUserCollection(id)
+  const q = typeof sp.q === 'string' ? sp.q : ''
+  const page = Math.max(1, Number(sp.page ?? '1'))
+  const size = [25, 50, 100, 200].includes(Number(sp.size)) ? Number(sp.size) : DEFAULT_PAGE_SIZE
 
-  if (!collection) notFound()
+  const { profile, initialPaints, totalCount } = await getAdminCollectionPageData(id, {
+    limit: size,
+    offset: (page - 1) * size,
+  })
 
-  const { profile, paints, count } = collection
+  if (!profile) notFound()
+
   const isSelf = currentUser.id === id
-  const displayName = profile.display_name ?? profile.email ?? 'Unknown user'
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-12">
@@ -40,46 +47,24 @@ export default async function AdminUserCollectionPage({
         </Link>
       </div>
 
-      <div className="mb-8 flex items-center gap-4">
-        {profile.avatar_url ? (
-          <Image
-            src={profile.avatar_url}
-            alt={displayName}
-            width={48}
-            height={48}
-            className="size-12 rounded-full object-cover"
-          />
-        ) : (
-          <div className="flex size-12 items-center justify-center rounded-full bg-muted text-lg font-semibold uppercase text-muted-foreground">
-            {displayName.charAt(0)}
-          </div>
-        )}
-        <div>
-          <h1 className="text-2xl font-bold">{displayName}</h1>
-          {profile.email && profile.display_name && (
-            <p className="text-sm text-muted-foreground">{profile.email}</p>
-          )}
-        </div>
-        <span className="ml-auto rounded-full bg-muted px-3 py-1 text-sm font-medium">
-          {count} {count === 1 ? 'paint' : 'paints'}
-        </span>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold">
+          {profile.display_name ?? profile.email ?? 'Unknown user'}
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {totalCount} {totalCount === 1 ? 'paint' : 'paints'} in collection
+        </p>
       </div>
 
-      {isSelf ? (
-        <p className="mb-6 rounded-md border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
-          This is your own collection. Use{' '}
-          <Link href="/collection" className="underline hover:text-foreground">
-            your collection page
-          </Link>{' '}
-          to manage it.
-        </p>
-      ) : (
-        <div className="mb-8">
-          <AdminAddPaintForm userId={id} />
-        </div>
-      )}
-
-      <AdminUserCollectionSearch userId={id} initialPaints={paints} />
+      <AdminCollectionClient
+        userId={id}
+        isSelf={isSelf}
+        initialPaints={initialPaints}
+        initialTotalCount={totalCount}
+        initialQuery={q}
+        initialPage={page}
+        initialSize={size}
+      />
     </div>
   )
 }

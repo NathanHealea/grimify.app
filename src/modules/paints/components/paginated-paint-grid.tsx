@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState, useTransition } from 'react'
 import { useSearchParams } from 'next/navigation'
 
-import { PaintCardWithToggle } from '@/modules/collection/components/paint-card-with-toggle'
+import { CollectionPaintCard } from '@/modules/collection/components/collection-paint-card'
 import { PaintCard } from '@/modules/paints/components/paint-card'
 import { getPaintService } from '@/modules/paints/services/paint-service.client'
 import type { PaintWithBrand } from '@/modules/paints/services/paint-service'
@@ -25,7 +25,7 @@ const MAX_VISIBLE_PAGES = 7
  * Supabase client without a full page reload.
  *
  * When `isAuthenticated` is true and `userPaintIds` is provided, renders
- * {@link PaintCardWithToggle} with the initial collection state. Newly-fetched
+ * {@link CollectionPaintCard} with the initial collection state. Newly-fetched
  * pages default to `isInCollection=false` — clicking the toggle still works
  * correctly via server actions.
  *
@@ -181,7 +181,7 @@ export function PaginatedPaintGrid({
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {paints.map((paint) =>
               isAuthenticated ? (
-                <PaintCardWithToggle
+                <CollectionPaintCard
                   key={paint.id}
                   id={paint.id}
                   name={paint.name}
