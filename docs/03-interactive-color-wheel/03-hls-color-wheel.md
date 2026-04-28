@@ -8,28 +8,30 @@
 
 ## Summary
 
-Render a second color wheel variant that places paints using raw HSL coordinates — no Munsell sectors, no ISCC-NBS bands. The background is a continuous HSL spectrum disc (conic hue ring with white lightness gradient overlay) so painters get an accurate, perceptually continuous view of where their paints fall in the CSS color space.
+Add an HSL color wheel variant alongside the existing Munsell wheel. A toggle button on the `/wheel` page switches between the two views client-side — no navigation, no data reload. The HSL wheel places every paint by raw `hslToPosition()` coordinates against a continuous conic-gradient background, giving painters a perceptually accurate CSS color space view.
 
 ## Acceptance Criteria
 
-- [ ] An HSL color wheel is rendered at `/wheel/hls`
-- [ ] The wheel background shows the full hue spectrum (0–360°) as a continuous conic gradient ring
-- [ ] A white radial gradient overlay fades to transparent from center outward to represent the lightness dimension
-- [ ] Every paint is positioned using raw `hslToPosition(paint.hue, paint.lightness, OUTER_RADIUS)` — no ISCC-NBS cell logic
+- [ ] A toggle button on `/wheel` switches between the Munsell and HSL wheel views
+- [ ] Switching views does not reload paint data — state is managed client-side
+- [ ] The HSL wheel background shows the full hue spectrum (0–360°) as a continuous conic gradient disc
+- [ ] A white radial gradient overlay fades from center outward to represent the lightness dimension
+- [ ] Every paint on the HSL wheel is positioned using raw `hslToPosition(paint.hue, paint.lightness, OUTER_RADIUS)` — no ISCC-NBS cell logic
 - [ ] Standard paint markers render as circles; metallic paints render as diamonds (reuses `PaintMarker`)
-- [ ] Hovering a paint shows a tooltip with paint name, brand, and product line (same pattern as `MunsellColorWheel`)
-- [ ] A loading skeleton renders while paint data fetches
+- [ ] Hovering a paint shows a tooltip with paint name, brand, and product line
 - [ ] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
-| Route        | Description             |
-| ------------ | ----------------------- |
-| `/wheel/hls` | HSL color wheel variant |
+| Route    | Description                                            |
+| -------- | ------------------------------------------------------ |
+| `/wheel` | Color wheel page — hosts both Munsell and HSL variants |
 
 ## Implementation Plan
 
-All new code lives in the existing `src/modules/color-wheel/` module. No new module is needed. The new component reuses `PaintMarker`, `hslToPosition`, and `ColorWheelPaint` from the existing module. No hue data or ISCC-NBS logic is needed.
+All new code lives in the existing `src/modules/color-wheel/` module. The `/wheel/page.tsx` server component already fetches `paints` and `hues`; those props are passed straight through to the new `ColorWheelContainer` client component which owns the view toggle state.
+
+No separate `/wheel/hls` route is created — the switch is purely client-side.
 
 ### Step 1 — HslColorWheel component
 
@@ -37,14 +39,13 @@ Create `src/modules/color-wheel/components/hsl-color-wheel.tsx` as a `'use clien
 
 - **Props:** `paints: ColorWheelPaint[]`
 - State: `hoveredPaint: ColorWheelPaint | null`, `tooltipPos: { x: number; y: number }`
-- `containerRef` attached to the outer `<div>` for tooltip bounding
-- SVG uses `viewBox="-500 -500 1000 1000" width="100%" height="100%"`
+- `containerRef` on the outer `<div>` for tooltip bounding
+- SVG `viewBox="-500 -500 1000 1000" width="100%" height="100%"`
 - Layer order (bottom to top):
-  1. **HSL spectrum ring** — a CSS `conic-gradient` background `<div>` behind the SVG, masked to a circle via `rounded-full`. The gradient covers the full 0–360° hue range: `conic-gradient(hsl(0,80%,55%), hsl(30,80%,55%), hsl(60,80%,55%), hsl(90,80%,55%), hsl(120,80%,55%), hsl(150,80%,55%), hsl(180,80%,55%), hsl(210,80%,55%), hsl(240,80%,55%), hsl(270,80%,55%), hsl(300,80%,55%), hsl(330,80%,55%), hsl(360,80%,55%))`
-  2. **Lightness overlay** — SVG `<radialGradient id="lightnessOverlay">` from white at 0% (opacity 0.9) to transparent at 70% radius, applied as `<circle r={450} fill="url(#lightnessOverlay)" />`
-  3. **Paint markers** — one `<PaintMarker>` per paint; position computed with `hslToPosition(paint.hue, paint.lightness, 450)` for every paint unconditionally
-- Hover handler: converts `clientX/Y` to container-relative coords via `containerRef.current.getBoundingClientRect()`; clamps tooltip position to stay within container bounds
-- Tooltip: absolutely-positioned `card`-styled div showing `paint.name`, `paint.brand_name`, `paint.product_line_name`; same structure as in `MunsellColorWheel`
+  1. **HSL spectrum disc** — an absolutely-positioned `<div>` behind the SVG with `rounded-full` and a CSS `conic-gradient` covering 0–360°: `conic-gradient(hsl(0,80%,55%), hsl(30,80%,55%), hsl(60,80%,55%), hsl(90,80%,55%), hsl(120,80%,55%), hsl(150,80%,55%), hsl(180,80%,55%), hsl(210,80%,55%), hsl(240,80%,55%), hsl(270,80%,55%), hsl(300,80%,55%), hsl(330,80%,55%), hsl(360,80%,55%))`
+  2. **Lightness overlay** — SVG `<radialGradient id="lightnessOverlay-hsl">` white (opacity 0.9) at 0% → transparent at 70%, applied as `<circle r={450} fill="url(#lightnessOverlay-hsl)" />`
+  3. **Paint markers** — `<PaintMarker>` per paint; all positioned via `hslToPosition(paint.hue, paint.lightness, 450)`
+- Hover and tooltip logic mirrors `MunsellColorWheel` exactly
 
 Container layout:
 ```tsx
@@ -52,12 +53,12 @@ Container layout:
   <div className="absolute inset-0 rounded-full" style={{ background: 'conic-gradient(...)' }} />
   <svg viewBox="-500 -500 1000 1000" width="100%" height="100%" className="relative">
     <defs>
-      <radialGradient id="lightnessOverlay" ...>
+      <radialGradient id="lightnessOverlay-hsl" cx="50%" cy="50%" r="50%">
         <stop offset="0%" stopColor="white" stopOpacity={0.9} />
         <stop offset="70%" stopColor="white" stopOpacity={0} />
       </radialGradient>
     </defs>
-    <circle r={450} fill="url(#lightnessOverlay)" />
+    <circle r={450} fill="url(#lightnessOverlay-hsl)" />
     {paints.map(paint => {
       const { x, y } = hslToPosition(paint.hue, paint.lightness, 450)
       return <PaintMarker key={paint.id} paint={paint} cx={x} cy={y} onHover={handleHover} />
@@ -67,31 +68,39 @@ Container layout:
 </div>
 ```
 
-### Step 2 — Loading skeleton
+### Step 2 — ColorWheelContainer component
 
-Create `src/app/wheel/hls/loading.tsx`:
+Create `src/modules/color-wheel/components/color-wheel-container.tsx` as a `'use client'` component:
 
-- Identical to `src/app/wheel/loading.tsx`
-- Renders a full-viewport centered pulsing circle: `<div className="mx-auto aspect-square w-full max-w-2xl animate-pulse rounded-full bg-muted" />`
+- **Props:** `paints: ColorWheelPaint[]`, `hues: ColorWheelHue[]`
+- State: `view: 'munsell' | 'hsl'`, initialized to `'munsell'`
+- Renders a two-button toggle above the wheel:
+  - "Munsell" button — active when `view === 'munsell'`, calls `setView('munsell')`
+  - "HSL" button — active when `view === 'hsl'`, calls `setView('hsl')`
+  - Style: use the project's `.btn` / `.btn-primary` classes; active button gets a filled/active style, inactive gets ghost or outline
+- Renders `<MunsellColorWheel paints={paints} hues={hues} />` when `view === 'munsell'`
+- Renders `<HslColorWheel paints={paints} />` when `view === 'hsl'`
+- Wrap in a `<div className="flex flex-col gap-4 w-full max-w-2xl mx-auto">`
 
-### Step 3 — Page
+### Step 3 — Update `/wheel/page.tsx`
 
-Create `src/app/wheel/hls/page.tsx` as a server component:
+Modify `src/app/wheel/page.tsx`:
 
-- Fetches `paintService.getColorWheelPaints()` only (no hue service needed)
-- Renders `<HslColorWheel paints={paints} />` inside `<main className="flex min-h-screen items-center justify-center p-4">`
+- Replace the direct `<MunsellColorWheel paints={paints} hues={hues} />` render with `<ColorWheelContainer paints={paints} hues={hues} />`
+- No change to data fetching — paint and hue data are still fetched once on the server and passed as props
 
 ### Affected Files
 
-| Action | File                                                             | Description                              |
-| ------ | ---------------------------------------------------------------- | ---------------------------------------- |
-| Create | `src/modules/color-wheel/components/hsl-color-wheel.tsx`        | HSL color wheel client component         |
-| Create | `src/app/wheel/hls/loading.tsx`                                  | Pulsing circle skeleton for `/wheel/hls` |
-| Create | `src/app/wheel/hls/page.tsx`                                     | Server component for `/wheel/hls` route  |
+| Action | File                                                               | Description                                      |
+| ------ | ------------------------------------------------------------------ | ------------------------------------------------ |
+| Create | `src/modules/color-wheel/components/hsl-color-wheel.tsx`          | HSL wheel client component                       |
+| Create | `src/modules/color-wheel/components/color-wheel-container.tsx`    | Toggle wrapper — owns `view` state, renders both |
+| Modify | `src/app/wheel/page.tsx`                                           | Swap `MunsellColorWheel` for `ColorWheelContainer` |
 
 ### Risks & Considerations
 
-- **Conic gradient browser support**: `conic-gradient` is supported in all modern browsers (Chrome 69+, Firefox 83+, Safari 12.1+). No polyfill needed for the target audience.
-- **Marker density at center**: Very light paints (lightness ≈ 90–100%) cluster near the center. The 90% radius cap in `hslToPosition` (`maxRadius * 0.9`) already gives a white gutter; the lightness overlay reinforces this visually.
-- **`radialGradient` id collision**: If both `MunsellColorWheel` and `HslColorWheel` ever appear on the same page, their SVG `<defs>` `id` values could collide. Use a unique id (`lightnessOverlay-hsl`) to avoid cross-contamination.
-- **No ISCC-NBS jitter**: Without cell-based placement, paints with identical or near-identical HSL values will overlap. This is acceptable for the HSL view — it reflects true color space density. Future work could add a small random jitter seeded on paint ID.
+- **Conic gradient browser support**: `conic-gradient` is supported in all modern browsers (Chrome 69+, Firefox 83+, Safari 12.1+). No polyfill needed.
+- **`radialGradient` id collision**: `MunsellColorWheel` may define a gradient with the same id. Use `lightnessOverlay-hsl` in `HslColorWheel` to avoid cross-contamination if both SVGs ever exist in the DOM simultaneously.
+- **Marker density at center**: Very light paints cluster near the center. The `maxRadius * 0.9` cap in `hslToPosition` and the lightness overlay handle this visually.
+- **No ISCC-NBS jitter**: Paints with identical HSL values will overlap. This is intentional — it reflects true color space density.
+- **Both wheels mount together**: When `ColorWheelContainer` renders, only one wheel is visible at a time; the other is not mounted (conditional render), so there's no hidden SVG overhead.
