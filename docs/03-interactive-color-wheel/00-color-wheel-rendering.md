@@ -71,91 +71,112 @@ Server component fetches all paints (or paginated subset) with their HSL values 
 
 ## Implementation Plan
 
-All color wheel code lives in a new domain module: `src/modules/color-wheel/`. Components belong there, not in `src/components/color-wheel/` as originally noted in Key Files.
+All color wheel code lives in a new domain module: `src/modules/color-wheel/`. Components belong there, not in `src/components/color-wheel/` as noted in Key Files above.
 
-The wheel uses a CSS `conic-gradient` + `radial-gradient` background (no canvas library needed) with an SVG overlay for interactive paint markers. An SVG `viewBox="-500 -500 1000 1000"` with `width="100%" height="100%"` handles responsiveness without JavaScript resize tracking.
+The wheel is a fully SVG-based visualization: 11 Munsell hue sectors (pie slices colored with each hue's `hex_code` from the database) with thin ISCC-NBS sub-hue divider lines, a radial gradient overlay for the lightness dimension, and interactive paint marker dots on top. `viewBox="-500 -500 1000 1000"` with `width="100%" height="100%"` handles responsiveness. Both the `/` and `/wheel` routes render the same component.
 
-### Step 1 — Color wheel type
+### Step 1 — Types
 
 Create `src/modules/color-wheel/types/color-wheel-paint.ts`:
 
-- `ColorWheelPaint` — lightweight projection of paint data needed by the wheel: `id`, `name`, `hex`, `hue`, `saturation`, `lightness`, `is_metallic`, `brand_name`, `product_line_name`
-- Used by the service method, SVG component, and tooltip
+- `ColorWheelPaint` — lightweight paint projection: `id`, `name`, `hex`, `hue`, `saturation`, `lightness`, `is_metallic`, `brand_name`, `product_line_name`
 
-### Step 2 — Color math utility
+Create `src/modules/color-wheel/types/color-wheel-hue.ts`:
+
+- `ColorWheelHue` — hue data for sector rendering: `id`, `name`, `hex_code`, `sort_order`, `children: ColorWheelHue[]`
+- Populated by flattening the parent + child hue queries into a tree
+
+### Step 2 — Color math utilities
 
 Create `src/modules/color-wheel/utils/hsl-to-position.ts`:
 
 - `hslToPosition(hue, lightness, maxRadius)` → `{ x: number; y: number }`
-- Hue maps to angle: `theta = (hue - 90) * (Math.PI / 180)` (−90° puts hue 0° at the top)
-- Lightness maps to radius: `r = (1 - lightness / 100) * maxRadius` (100% lightness = center, 0% = outer edge)
-- Returns `{ x: r * Math.cos(theta), y: r * Math.sin(theta) }` in SVG coordinate space
+  - Angle: `theta = (hue - 90) * (Math.PI / 180)` (−90° puts hue 0° at the top)
+  - Radius: `r = (1 - lightness / 100) * maxRadius` (100% lightness = center, 0% = outer edge)
+  - Returns `{ x: r * Math.cos(theta), y: r * Math.sin(theta) }`
+
+Create `src/modules/color-wheel/utils/sector-path.ts`:
+
+- `sectorPath(startAngleDeg, endAngleDeg, outerRadius)` → SVG path `d` string for a pie slice
+  - Used to draw each Munsell hue sector
+- `sortOrderToStartAngle(sortOrder, totalHues)` → start angle in degrees, where `sortOrder` is 0-indexed
 
 ### Step 3 — Paint service method
 
 Add `getColorWheelPaints(): Promise<ColorWheelPaint[]>` to `src/modules/paints/services/paint-service.ts`:
 
 - Selects `id, name, hex, hue, saturation, lightness, is_metallic` plus `product_lines!inner(name, brands!inner(name))`
-- Filters `is_discontinued = false`
-- Orders by `hue` ascending
-- Maps to `ColorWheelPaint[]` (flattens brand_name and product_line_name from nested join)
-- Must also import `ColorWheelPaint` from the color-wheel types file
+- Filters `is_discontinued = false`, orders by `hue` ascending
+- Maps to `ColorWheelPaint[]` (flattens `brand_name` and `product_line_name` from nested join)
 
-### Step 4 — PaintMarker component
+### Step 4 — Hue service method
+
+Add `getColorWheelHues(): Promise<ColorWheelHue[]>` to `src/modules/hues/services/hue-service.ts`:
+
+- Fetches all top-level Munsell hues ordered by `sort_order` (11 hues)
+- For each, fetches its ISCC-NBS child hues ordered by `sort_order`
+- Returns `ColorWheelHue[]` each with a populated `children` array
+- Used by the wheel to draw sectors and sub-dividers
+
+### Step 5 — PaintMarker component
 
 Create `src/modules/color-wheel/components/paint-marker.tsx`:
 
-- **Props:** `paint: ColorWheelPaint`, `cx: number`, `cy: number` (pre-computed SVG position), `onHover: (paint: ColorWheelPaint | null, event: MouseEvent) => void`
-- Renders an SVG `<circle>` at `(cx, cy)` with `r={5}`, `fill={paint.hex}`, stroke for contrast
-- Metallic paints: render an SVG `<polygon>` (diamond shape) instead of a circle, same fill
-- Calls `onHover(paint, event)` on `onMouseEnter`, `onHover(null, event)` on `onMouseLeave`
-- No tooltip logic here — marker is a pure presentation element
+- **Props:** `paint: ColorWheelPaint`, `cx: number`, `cy: number`, `onHover: (paint: ColorWheelPaint | null, event: MouseEvent) => void`
+- Standard paints: SVG `<circle>` at `(cx, cy)` with `r={5}`, `fill={paint.hex}`, thin white stroke
+- Metallic paints: SVG `<polygon>` (diamond shape) centered at `(cx, cy)`, same fill and stroke
+- Calls `onHover` on `onMouseEnter` / `onMouseLeave`
 
-### Step 5 — ColorWheel component
+### Step 6 — ColorWheel component
 
 Create `src/modules/color-wheel/components/color-wheel.tsx` as a `'use client'` component:
 
-- **Props:** `paints: ColorWheelPaint[]`
+- **Props:** `paints: ColorWheelPaint[]`, `hues: ColorWheelHue[]`
 - State: `hoveredPaint: ColorWheelPaint | null`, `tooltipPos: { x: number; y: number }`
-- Container structure:
+- SVG layer order (bottom to top):
+  1. **Munsell sectors** — one `<path>` per top-level hue, filled with `hue.hex_code`, computed via `sectorPath()`; each sector spans `360 / 11` degrees based on `sort_order`
+  2. **ISCC-NBS sub-dividers** — thin `<line>` elements at each child hue boundary within each Munsell sector (10 lines per sector × 11 sectors = 110 lines); low-opacity white stroke so they read as subtle structure
+  3. **Lightness overlay** — SVG `<radialGradient>` from white (opacity 0.85 at center) to transparent (at 70% radius); applied as a `<circle r={450}>` fill
+  4. **Paint markers** — `<PaintMarker>` per paint, positioned via `hslToPosition(paint.hue, paint.lightness, 450)`
+- Container:
   ```
-  <div className="relative aspect-square w-full max-w-2xl mx-auto">
-    <div className="absolute inset-0 rounded-full [wheel background gradient]" />
-    <svg viewBox="-500 -500 1000 1000" width="100%" height="100%" className="absolute inset-0">
-      {paints.map(paint => <PaintMarker ... />)}
+  <div className="relative aspect-square w-full max-w-2xl mx-auto" ref={containerRef}>
+    <svg viewBox="-500 -500 1000 1000" width="100%" height="100%">
+      {/* Munsell sectors, sub-dividers, lightness overlay, paint markers */}
     </svg>
-    {hoveredPaint && <TooltipPopover paint={hoveredPaint} pos={tooltipPos} />}
+    {hoveredPaint && <Tooltip paint={hoveredPaint} pos={tooltipPos} />}
   </div>
   ```
-- Wheel background uses two layered CSS gradients (via Tailwind `[background:...]` escape or inline style):
-  1. `radial-gradient(circle, rgba(255,255,255,0.85) 0%, transparent 65%)` — lightness zone (white center)
-  2. `conic-gradient(hsl(0deg,70%,50%), hsl(60deg,70%,50%), hsl(120deg,70%,50%), hsl(180deg,70%,50%), hsl(240deg,70%,50%), hsl(300deg,70%,50%), hsl(360deg,70%,50%))` — hue spectrum
-- Computes each paint's SVG position by calling `hslToPosition(paint.hue, paint.lightness, 450)` during render
-- Tooltip renders as an absolutely positioned div (top/left from `tooltipPos`) showing paint name, brand name, and product line name; uses existing `card` styles
-- `handleHover(paint, event)`: converts the mouse event's `clientX/Y` to container-relative coords via `getBoundingClientRect`, stores in `tooltipPos`
+- `handleHover(paint, event)`: converts `clientX/Y` to container-relative coords via `getBoundingClientRect`
+- Tooltip: absolutely positioned `card`-styled div showing paint name, brand, product line; clamped to stay within container bounds
 
-### Step 6 — Home page
+### Step 7 — Pages
 
-Update `src/app/page.tsx` to a server component that:
+Update `src/app/page.tsx` (route `/`) and create `src/app/wheel/page.tsx` (route `/wheel`):
 
-1. Imports `createServerClient` from `@/lib/supabase/server` and `createPaintService` from the paint service server wrapper
-2. Calls `paintService.getColorWheelPaints()` to fetch all non-discontinued paints
-3. Passes the result to `<ColorWheel paints={paints} />`
-4. Wraps in a `<main>` with full-viewport height and centered layout
+- Both are identical server components:
+  1. Fetch `paintService.getColorWheelPaints()` via `src/modules/paints/services/paint-service.server.ts`
+  2. Fetch `hueService.getColorWheelHues()` via `src/modules/hues/services/hue-service.server.ts`
+  3. Render `<ColorWheel paints={paints} hues={hues} />` in a full-viewport `<main>`
 
 ### Affected Files
 
-| Action | File | Description |
-|--------|------|-------------|
-| Create | `src/modules/color-wheel/types/color-wheel-paint.ts` | `ColorWheelPaint` type |
-| Create | `src/modules/color-wheel/utils/hsl-to-position.ts` | HSL → SVG position math |
-| Create | `src/modules/color-wheel/components/paint-marker.tsx` | Individual paint dot (SVG circle/diamond) |
-| Create | `src/modules/color-wheel/components/color-wheel.tsx` | Main wheel client component |
-| Modify | `src/modules/paints/services/paint-service.ts` | Add `getColorWheelPaints()` method |
-| Modify | `src/app/page.tsx` | Fetch paints and render `ColorWheel` |
+| Action | File                                                    | Description                               |
+| ------ | ------------------------------------------------------- | ----------------------------------------- |
+| Create | `src/modules/color-wheel/types/color-wheel-paint.ts`    | `ColorWheelPaint` type                    |
+| Create | `src/modules/color-wheel/types/color-wheel-hue.ts`      | `ColorWheelHue` type                      |
+| Create | `src/modules/color-wheel/utils/hsl-to-position.ts`      | HSL → SVG position math                   |
+| Create | `src/modules/color-wheel/utils/sector-path.ts`          | SVG pie sector path + angle utilities     |
+| Create | `src/modules/color-wheel/components/paint-marker.tsx`   | Individual paint dot (SVG circle/diamond) |
+| Create | `src/modules/color-wheel/components/color-wheel.tsx`    | Main wheel client component               |
+| Modify | `src/modules/paints/services/paint-service.ts`          | Add `getColorWheelPaints()`               |
+| Modify | `src/modules/hues/services/hue-service.ts`              | Add `getColorWheelHues()`                 |
+| Modify | `src/app/page.tsx`                                      | Fetch data and render `ColorWheel`        |
+| Create | `src/app/wheel/page.tsx`                                | Identical server component at `/wheel`    |
 
 ### Risks & Considerations
 
+<<<<<<< HEAD
 - **Performance**: With thousands of paints, SVG can degrade. If the paint count exceeds ~2,000, consider clustering nearby markers by hue band or adding a paint-count threshold that switches to a density heatmap.
 - **Lightness mapping**: Pure whites (lightness ≈ 95-100%) and pure blacks (lightness ≈ 0-5%) cluster at center and outer edge respectively. These zones may look sparse — consider capping radius to 90% of max to leave a white gutter.
 - **Tooltip positioning**: The tooltip must not overflow the viewport. Add bounds-clamping when computing tooltip top/left from mouse coords.
@@ -280,6 +301,8 @@ Update `src/app/page.tsx` (route `/`) and create `src/app/wheel/page.tsx` (route
 
 ### Risks & Considerations
 
+=======
+>>>>>>> aafb845 (docs(color-wheel-rendering): update implementation plan for Munsell sectors and dual routes)
 - **Munsell sector angles**: The 11 hues must be sorted by `sort_order` before computing angles; each spans exactly `360 / 11 ≈ 32.7°`. Normalize by array index, not raw `sort_order` value, to handle gaps.
 - **ISCC-NBS dividers**: Each Munsell sector has 11 child hues = 10 internal dividers. Divider angle = `sectorStart + (childIndex / childCount) * sectorWidth`. Use low-opacity white stroke so dividers read as subtle guides, not hard borders.
 - **Performance**: SVG with ~2,000 markers + 110 divider lines is fine. Above 3,000 paints, consider grouping nearby markers into a single enlarged dot.
