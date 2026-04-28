@@ -53,6 +53,7 @@ next-env.d.ts
 
 # ide files
 .vscode/
+*.code-workspace
 
 # archived code (pre-refactor snapshots, local-only)
 /archive/
