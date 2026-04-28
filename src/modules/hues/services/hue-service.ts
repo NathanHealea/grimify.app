@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
+import type { ColorWheelHue } from '@/modules/color-wheel/types/color-wheel-hue'
 import type { Hue } from '@/types/color'
 
 /**
@@ -61,6 +62,44 @@ export function createHueService(supabase: SupabaseClient) {
         .order('name')
 
       return data ?? []
+    },
+    /**
+     * Fetches all top-level Munsell hues with their ISCC-NBS child hues nested,
+     * for use in color wheel sector and sub-divider rendering.
+     *
+     * @returns Array of {@link ColorWheelHue} sorted by sort_order, each with a
+     *   populated `children` array of ISCC-NBS sub-hues sorted by name.
+     */
+    async getColorWheelHues(): Promise<ColorWheelHue[]> {
+      const { data: parents } = await supabase
+        .from('hues')
+        .select('id, name, hex_code, sort_order')
+        .is('parent_id', null)
+        .order('sort_order', { ascending: true })
+
+      if (!parents) return []
+
+      const parentIds = parents.map((h) => h.id)
+      const { data: children } = await supabase
+        .from('hues')
+        .select('id, name, hex_code, sort_order, parent_id')
+        .in('parent_id', parentIds)
+        .order('name', { ascending: true })
+
+      const childMap = new Map<string, ColorWheelHue[]>()
+      for (const child of children ?? []) {
+        const siblings = childMap.get(child.parent_id) ?? []
+        siblings.push({ id: child.id, name: child.name, hex_code: child.hex_code, sort_order: child.sort_order, children: [] })
+        childMap.set(child.parent_id, siblings)
+      }
+
+      return parents.map((parent) => ({
+        id: parent.id,
+        name: parent.name,
+        hex_code: parent.hex_code,
+        sort_order: parent.sort_order,
+        children: childMap.get(parent.id) ?? [],
+      }))
     },
   }
 }

@@ -1,6 +1,10 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
+import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import type { Brand, Paint, PaintReference, ProductLine } from '@/types/paint'
+
+/** Page size for paginating the full color-wheel paint fetch. PostgREST caps a single response at 1000 rows by default. */
+const COLOR_WHEEL_PAGE_SIZE = 1000
 
 /** Paint row joined with its product line and brand. */
 export type PaintWithRelations = Paint & {
@@ -416,6 +420,55 @@ export function createPaintService(supabase: SupabaseClient) {
         paints: (data as PaintWithBrand[] | null) ?? [],
         count: count ?? 0,
       }
+    },
+
+    /**
+     * Fetches all non-discontinued paints with the fields needed to render the
+     * color wheel: position data (hue, saturation, lightness), display data
+     * (hex, is_metallic), and tooltip data (brand name, product line name).
+     *
+     * Paginates through results in batches of {@link COLOR_WHEEL_PAGE_SIZE} to
+     * bypass PostgREST's default 1000-row response cap, which would otherwise
+     * silently truncate the wheel when the catalog grows past that threshold.
+     *
+     * @returns Array of {@link ColorWheelPaint} ordered by hue ascending.
+     */
+    async getColorWheelPaints(): Promise<ColorWheelPaint[]> {
+      const all: ColorWheelPaint[] = []
+      let offset = 0
+
+      while (true) {
+        const { data } = await supabase
+          .from('paints')
+          .select('id, name, hex, hue, saturation, lightness, hue_id, is_metallic, product_lines!inner(name, brands!inner(name))')
+          .eq('is_discontinued', false)
+          .order('hue', { ascending: true })
+          .order('id', { ascending: true })
+          .range(offset, offset + COLOR_WHEEL_PAGE_SIZE - 1)
+
+        if (!data || data.length === 0) break
+
+        for (const row of data) {
+          const line = row.product_lines as unknown as { name: string; brands: { name: string } }
+          all.push({
+            id: row.id,
+            name: row.name,
+            hex: row.hex,
+            hue: row.hue,
+            saturation: row.saturation,
+            lightness: row.lightness,
+            hue_id: row.hue_id,
+            is_metallic: row.is_metallic,
+            brand_name: line.brands.name,
+            product_line_name: line.name,
+          })
+        }
+
+        if (data.length < COLOR_WHEEL_PAGE_SIZE) break
+        offset += COLOR_WHEEL_PAGE_SIZE
+      }
+
+      return all
     },
 
     /**
