@@ -1,5 +1,5 @@
+import { ColorWheelContainer } from '@/modules/color-wheel/components/color-wheel-container'
 import { getHueService } from '@/modules/hues/services/hue-service.server'
-import { MunsellColorWheel } from '@/modules/color-wheel/components/munsell-color-wheel'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
 
 export default async function Home() {
@@ -11,7 +11,7 @@ export default async function Home() {
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
-      <MunsellColorWheel paints={paints} hues={hues} />
+      <ColorWheelContainer paints={paints} hues={hues} />
     </main>
   )
 }
