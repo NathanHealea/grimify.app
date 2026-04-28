@@ -2,7 +2,7 @@
 
 **Epic:** Interactive Color Wheel
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/hls-color-wheel`
 **Merge into:** `v1/main`
 
@@ -12,14 +12,14 @@ Add an HSL color wheel variant alongside the existing Munsell wheel. A toggle bu
 
 ## Acceptance Criteria
 
-- [ ] A toggle button on `/wheel` switches between the Munsell and HSL wheel views
-- [ ] Switching views does not reload paint data — state is managed client-side
-- [ ] The HSL wheel background shows the full hue spectrum (0–360°) as a continuous conic gradient disc
-- [ ] A white radial gradient overlay fades from center outward to represent the lightness dimension
-- [ ] Every paint on the HSL wheel is positioned using raw `hslToPosition(paint.hue, paint.lightness, OUTER_RADIUS)` — no ISCC-NBS cell logic
-- [ ] Standard paint markers render as circles; metallic paints render as diamonds (reuses `PaintMarker`)
-- [ ] Hovering a paint shows a tooltip with paint name, brand, and product line
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] A toggle button on `/wheel` switches between the Munsell and HSL wheel views
+- [x] Switching views does not reload paint data — state is managed client-side
+- [x] The HSL wheel background shows the full hue spectrum (0–360°) as a continuous conic gradient disc
+- [x] A white radial gradient overlay fades from center outward to represent the lightness dimension
+- [x] Every paint on the HSL wheel is positioned using raw `hslToPosition(paint.hue, paint.lightness, OUTER_RADIUS)` — no ISCC-NBS cell logic
+- [x] Standard paint markers render as circles; metallic paints render as diamonds (reuses `PaintMarker`)
+- [x] Hovering a paint shows a tooltip with paint name, brand, and product line
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
@@ -29,78 +29,145 @@ Add an HSL color wheel variant alongside the existing Munsell wheel. A toggle bu
 
 ## Implementation Plan
 
-All new code lives in the existing `src/modules/color-wheel/` module. The `/wheel/page.tsx` server component already fetches `paints` and `hues`; those props are passed straight through to the new `ColorWheelContainer` client component which owns the view toggle state.
+All new code lives in the existing `src/modules/color-wheel/` module. The `/wheel/page.tsx` server component already fetches `paints` and `hues`; those props are passed straight through to the `ColorWheelContainer` client component which owns the view toggle state.
 
 No separate `/wheel/hls` route is created — the switch is purely client-side.
 
-### Step 1 — HslColorWheel component
+### Step 1 — Color utility functions
 
-Create `src/modules/color-wheel/components/hsl-color-wheel.tsx` as a `'use client'` component:
+Create the following utilities under `src/modules/color-wheel/utils/`. One export per file per project conventions.
 
-- **Props:** `paints: ColorWheelPaint[]`
-- State: `hoveredPaint: ColorWheelPaint | null`, `tooltipPos: { x: number; y: number }`
-- `containerRef` on the outer `<div>` for tooltip bounding
-- SVG `viewBox="-500 -500 1000 1000" width="100%" height="100%"`
-- Layer order (bottom to top):
-  1. **HSL spectrum disc** — an absolutely-positioned `<div>` behind the SVG with `rounded-full` and a CSS `conic-gradient` covering 0–360°: `conic-gradient(hsl(0,80%,55%), hsl(30,80%,55%), hsl(60,80%,55%), hsl(90,80%,55%), hsl(120,80%,55%), hsl(150,80%,55%), hsl(180,80%,55%), hsl(210,80%,55%), hsl(240,80%,55%), hsl(270,80%,55%), hsl(300,80%,55%), hsl(330,80%,55%), hsl(360,80%,55%))`
-  2. **Lightness overlay** — SVG `<radialGradient id="lightnessOverlay-hsl">` white (opacity 0.9) at 0% → transparent at 70%, applied as `<circle r={450} fill="url(#lightnessOverlay-hsl)" />`
-  3. **Paint markers** — `<PaintMarker>` per paint; all positioned via `hslToPosition(paint.hue, paint.lightness, 450)`
-- Hover and tooltip logic mirrors `MunsellColorWheel` exactly
+#### `hex-to-hsl.ts`
 
-Container layout:
-```tsx
-<div className="relative aspect-square w-full max-w-2xl mx-auto" ref={containerRef}>
-  <div className="absolute inset-0 rounded-full" style={{ background: 'conic-gradient(...)' }} />
-  <svg viewBox="-500 -500 1000 1000" width="100%" height="100%" className="relative">
-    <defs>
-      <radialGradient id="lightnessOverlay-hsl" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stopColor="white" stopOpacity={0.9} />
-        <stop offset="70%" stopColor="white" stopOpacity={0} />
-      </radialGradient>
-    </defs>
-    <circle r={450} fill="url(#lightnessOverlay-hsl)" />
-    {paints.map(paint => {
-      const { x, y } = hslToPosition(paint.hue, paint.lightness, 450)
-      return <PaintMarker key={paint.id} paint={paint} cx={x} cy={y} onHover={handleHover} />
-    })}
-  </svg>
-  {hoveredPaint && <Tooltip ... />}
-</div>
+```ts
+export function hexToHsl(hex: string): { h: number; s: number; l: number }
 ```
 
-### Step 2 — ColorWheelContainer component
+Converts a 6-digit hex string (e.g. `"#ff4400"`) to HSL. Returns `h` in degrees (0–360), `s` and `l` as fractions (0–1).
+
+#### `hsl-to-hex.ts`
+
+```ts
+export function hslToHex(h: number, s: number, l: number): string
+```
+
+Converts HSL (h in degrees 0–360, s/l as fractions 0–1) to a 6-digit hex string. Used to compute hue ring arc fill colors.
+
+#### `paint-to-wheel-position.ts`
+
+```ts
+export function paintToWheelPosition(
+  h: number,
+  l: number,
+  wheelRadius: number,
+): { x: number; y: number }
+```
+
+Maps a paint's hue and lightness fraction to SVG coordinates.
+
+- **Angle convention:** `h=0` (red) = right (+x axis), rotation **counter-clockwise** (standard CSS hue direction). In SVG: `x = r * cos(h_rad)`, `y = -r * sin(h_rad)`.
+- **Radius formula:** `r = wheelRadius * (1 - l)`. `l=1` (white) → center; `l=0` (black) → outer edge. No 0.9 cap.
+
+#### `color-segments.ts`
+
+```ts
+export interface ColorSegment {
+  name: string
+  hueStart: number  // degrees
+  hueEnd: number    // degrees
+  midAngle: number  // degrees — center of segment
+}
+
+export const COLOR_SEGMENTS: ColorSegment[]
+export const SEGMENT_BOUNDARIES: number[]  // 12 boundary angles in degrees
+```
+
+Defines the 12 Itten color wheel segments. Each spans 30°. `SEGMENT_BOUNDARIES` is the sorted list of all 12 boundary angles.
+
+**Itten segment definitions:**
+
+| Segment       | Hue Start | Hue End | Mid Angle |
+| ------------- | --------- | ------- | --------- |
+| Red           | 345°      | 15°     | 0°        |
+| Red-Orange    | 15°       | 45°     | 30°       |
+| Orange        | 45°       | 75°     | 60°       |
+| Yellow-Orange | 75°       | 105°    | 90°       |
+| Yellow        | 105°      | 135°    | 120°      |
+| Yellow-Green  | 135°      | 165°    | 150°      |
+| Green         | 165°      | 195°    | 180°      |
+| Blue-Green    | 195°      | 225°    | 210°      |
+| Blue          | 225°      | 255°    | 240°      |
+| Blue-Violet   | 255°      | 285°    | 270°      |
+| Violet        | 285°      | 315°    | 300°      |
+| Red-Violet    | 315°      | 345°    | 330°      |
+
+`SEGMENT_BOUNDARIES = [15, 45, 75, 105, 135, 165, 195, 225, 255, 285, 315, 345]`
+
+### Step 2 — HslColorWheel component
+
+Create `src/modules/color-wheel/components/hsl-color-wheel.tsx` as a `'use client'` component.
+
+- **Props:** `paints: ColorWheelPaint[]`
+- **Constants:** `WHEEL_RADIUS = 450`, `RING_WIDTH = 70`
+- **State:** `hoveredPaint: ColorWheelPaint | null`, `tooltipPos: { x: number; y: number }`
+- `containerRef` on the outer `<div>` for tooltip bounding
+- **SVG:** `viewBox="-600 -600 1200 1200" width="100%" height="100%"`
+
+**SVG layer order (bottom to top):**
+
+1. **Segment background wedges** — 12 Itten sectors, each with three concentric lightness bands drawn using `sectorPath` / `annularSectorPath` from `sector-path.ts`:
+   - Light inner band: 0 → `WHEEL_RADIUS/3`, fill `hsl(midAngle, 80%, 75%)`, `fillOpacity={0.25}`
+   - Medium band: `WHEEL_RADIUS/3` → `2*WHEEL_RADIUS/3`, fill `hsl(midAngle, 80%, 50%)`, `fillOpacity={0.25}`
+   - Dark outer band: `2*WHEEL_RADIUS/3` → `WHEEL_RADIUS`, fill `hsl(midAngle, 80%, 25%)`, `fillOpacity={0.25}`
+
+   > `sector-path.ts` uses **0° = top, clockwise**. `COLOR_SEGMENTS` angles are in CSS hue space (**0° = right, counter-clockwise**). Convert before passing: the `midAngle` value maps to `sector-path.ts` angle via the same shift used in `hslToPosition` — pass `midAngle - 15` as `startAngleDeg` and `midAngle + 15` as `endAngleDeg` (this works because the Itten sectors are centered on hue values that align with `hslToPosition`'s convention).
+
+2. **Hue ring** — 360 thin arc paths (1° each) for a smooth continuous gradient. Arc at degree `d` filled with `hslToHex(d, 1, 0.5)`. Ring spans `WHEEL_RADIUS` → `WHEEL_RADIUS + RING_WIDTH`. Use `annularSectorPath(d, d + 1.5, WHEEL_RADIUS, WHEEL_RADIUS + RING_WIDTH)`.
+
+3. **Segment divider lines** — 12 lines from `(0, 0)` to the hue ring outer edge at each `SEGMENT_BOUNDARIES` angle. `stroke="rgba(255,255,255,0.3)"`, `strokeWidth={1}`.
+
+4. **Segment labels** — 12 text labels at `r = WHEEL_RADIUS + RING_WIDTH + 26` at each segment's `midAngle`. Tinted: `fill={hslToHex(midAngle, 0.8, 0.55)}`, `fillOpacity={0.7}`, `fontSize={14}`, `fontWeight={600}`.
+
+5. **Scheme wedge overlays** *(optional)* — rendered when `selectedHue?: number` and `colorScheme?: ColorScheme` props are provided. One full-radius wedge per harmony point, `fillOpacity={0.15}`. Supported schemes: `'complementary' | 'analogous' | 'triadic' | 'split-complementary' | 'tetradic'`. Handle 0°/360° wrap-around by splitting into two paths.
+
+6. **Paint markers** — one `<PaintMarker>` per paint, direct `<svg>` children (not wrapped in `<g>`). Position via `paintToWheelPosition(paint.hue / 360, paint.lightness / 100, WHEEL_RADIUS)`.
+
+**Hover / tooltip:** `containerRef.getBoundingClientRect()` for position, absolute `<div>` showing paint name, brand, product line.
+
+### Step 3 — ColorWheelContainer component
 
 Create `src/modules/color-wheel/components/color-wheel-container.tsx` as a `'use client'` component:
 
 - **Props:** `paints: ColorWheelPaint[]`, `hues: ColorWheelHue[]`
 - State: `view: 'munsell' | 'hsl'`, initialized to `'munsell'`
-- Renders a two-button toggle above the wheel:
-  - "Munsell" button — active when `view === 'munsell'`, calls `setView('munsell')`
-  - "HSL" button — active when `view === 'hsl'`, calls `setView('hsl')`
-  - Style: use the project's `.btn` / `.btn-primary` classes; active button gets a filled/active style, inactive gets ghost or outline
+- Two-button toggle using `.btn` / `.btn-primary` / `.btn-ghost` classes
 - Renders `<MunsellColorWheel paints={paints} hues={hues} />` when `view === 'munsell'`
 - Renders `<HslColorWheel paints={paints} />` when `view === 'hsl'`
-- Wrap in a `<div className="flex flex-col gap-4 w-full max-w-2xl mx-auto">`
+- Wrap in `<div className="flex w-full max-w-2xl flex-col items-center gap-4">`
 
-### Step 3 — Update `/wheel/page.tsx`
+### Step 4 — Update `/wheel/page.tsx`
 
 Modify `src/app/wheel/page.tsx`:
 
-- Replace the direct `<MunsellColorWheel paints={paints} hues={hues} />` render with `<ColorWheelContainer paints={paints} hues={hues} />`
-- No change to data fetching — paint and hue data are still fetched once on the server and passed as props
+- Replace `<MunsellColorWheel paints={paints} hues={hues} />` with `<ColorWheelContainer paints={paints} hues={hues} />`
+- No change to data fetching
 
 ### Affected Files
 
-| Action | File                                                               | Description                                      |
-| ------ | ------------------------------------------------------------------ | ------------------------------------------------ |
-| Create | `src/modules/color-wheel/components/hsl-color-wheel.tsx`          | HSL wheel client component                       |
-| Create | `src/modules/color-wheel/components/color-wheel-container.tsx`    | Toggle wrapper — owns `view` state, renders both |
-| Modify | `src/app/wheel/page.tsx`                                           | Swap `MunsellColorWheel` for `ColorWheelContainer` |
+| Action | File                                                                | Description                                        |
+| ------ | ------------------------------------------------------------------- | -------------------------------------------------- |
+| Create | `src/modules/color-wheel/utils/hex-to-hsl.ts`                      | hexToHsl conversion utility                        |
+| Create | `src/modules/color-wheel/utils/hsl-to-hex.ts`                      | hslToHex conversion utility                        |
+| Create | `src/modules/color-wheel/utils/paint-to-wheel-position.ts`         | paintToWheelPosition coordinate mapping            |
+| Create | `src/modules/color-wheel/utils/color-segments.ts`                  | Itten 12-segment constants and boundary angles     |
+| Create | `src/modules/color-wheel/components/hsl-color-wheel.tsx`           | HSL wheel client component                         |
+| Create | `src/modules/color-wheel/components/color-wheel-container.tsx`     | Toggle wrapper — owns `view` state, renders both   |
+| Modify | `src/app/wheel/page.tsx`                                            | Swap `MunsellColorWheel` for `ColorWheelContainer` |
 
 ### Risks & Considerations
 
-- **Conic gradient browser support**: `conic-gradient` is supported in all modern browsers (Chrome 69+, Firefox 83+, Safari 12.1+). No polyfill needed.
-- **`radialGradient` id collision**: `MunsellColorWheel` may define a gradient with the same id. Use `lightnessOverlay-hsl` in `HslColorWheel` to avoid cross-contamination if both SVGs ever exist in the DOM simultaneously.
-- **Marker density at center**: Very light paints cluster near the center. The `maxRadius * 0.9` cap in `hslToPosition` and the lightness overlay handle this visually.
-- **No ISCC-NBS jitter**: Paints with identical HSL values will overlap. This is intentional — it reflects true color space density.
-- **Both wheels mount together**: When `ColorWheelContainer` renders, only one wheel is visible at a time; the other is not mounted (conditional render), so there's no hidden SVG overhead.
+- **Angle convention mismatch:** `paintToWheelPosition` uses 0°=right/counter-clockwise (CSS hue space). `sector-path.ts` uses 0°=top/clockwise. Always align segment angles to the `sector-path.ts` convention before calling `sectorPath` / `annularSectorPath`.
+- **Red segment wrap-around:** Red spans 345°→15°, crossing 0°. Passing `startAngle=-15, endAngle=15` to `sectorPath` handles this correctly since the arc math works with negative angles.
+- **Paint radius at full edge:** With `r = WHEEL_RADIUS * (1 - l)`, a black paint (`l=0`) lands exactly at the hue ring boundary. Very dark paints visually border the ring — intentional.
+- **No ISCC-NBS jitter:** Paints with identical HSL values will overlap. This reflects true color space density.
+- **Both wheels mount conditionally:** Only one wheel is in the DOM at a time — no hidden SVG overhead.
