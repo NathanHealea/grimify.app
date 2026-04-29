@@ -47,12 +47,14 @@ next-env.d.ts
 .claude/
 .mcp.json
 .context.*
+!.context.*.md
 
 # git worktrees
 .worktrees/
 
 # ide files
 .vscode/
+*.code-workspace
 
 # archived code (pre-refactor snapshots, local-only)
 /archive/

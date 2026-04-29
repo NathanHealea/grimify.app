@@ -16,17 +16,20 @@ const DIAMOND_HALF = RADIUS * 1.4
  * @param cx - Pre-computed SVG x coordinate (center of the marker).
  * @param cy - Pre-computed SVG y coordinate (center of the marker).
  * @param onHover - Called with the paint on mouseenter and null on mouseleave.
+ * @param onClick - Optional callback fired when the marker is clicked; receives the paint.
  */
 export function PaintMarker({
   paint,
   cx,
   cy,
   onHover,
+  onClick,
 }: {
   paint: ColorWheelPaint
   cx: number
   cy: number
   onHover: (paint: ColorWheelPaint | null, event: MouseEvent<SVGElement>) => void
+  onClick?: (paint: ColorWheelPaint) => void
 }) {
   const shared = {
     fill: paint.hex,
@@ -35,6 +38,7 @@ export function PaintMarker({
     cursor: 'pointer' as const,
     onMouseEnter: (e: MouseEvent<SVGElement>) => onHover(paint, e),
     onMouseLeave: (e: MouseEvent<SVGElement>) => onHover(null, e),
+    onClick: onClick ? () => onClick(paint) : undefined,
   }
 
   if (paint.is_metallic) {

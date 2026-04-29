@@ -30,7 +30,7 @@ export function ColorWheelContainer({
   const [view, setView] = useState<WheelView>('munsell')
 
   return (
-    <div className="flex w-full max-w-2xl flex-col items-center gap-4">
+    <div className="flex h-full w-full flex-col items-center gap-4 p-4">
       <div className="flex gap-1 rounded-lg border border-border p-1">
         <button
           type="button"

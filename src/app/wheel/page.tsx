@@ -10,7 +10,7 @@ export default async function WheelPage() {
   ])
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
+    <main className="flex min-h-0 flex-1 items-center justify-center overflow-hidden">
       <ColorWheelContainer paints={paints} hues={hues} />
     </main>
   )

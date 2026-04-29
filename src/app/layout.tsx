@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn('font-sans', geist.variable)}>
-      <body>
+      <body className="flex h-dvh flex-col">
         <Navbar />
         {children}
       </body>

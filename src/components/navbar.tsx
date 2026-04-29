@@ -35,7 +35,7 @@ export async function Navbar() {
   }
 
   return (
-    <nav className="navbar gap-2">
+    <nav className="navbar sticky top-0 z-50 gap-2 bg-background">
       <div className="navbar-start gap-2">
         <Link href="/" className="navbar-brand">
           Grimify

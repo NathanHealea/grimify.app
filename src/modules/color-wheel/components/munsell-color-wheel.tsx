@@ -1,7 +1,6 @@
 'use client'
 
-import type { MouseEvent } from 'react'
-import { useRef, useState } from 'react'
+import { useEffect } from 'react'
 
 import type { ColorWheelHue } from '@/modules/color-wheel/types/color-wheel-hue'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
@@ -9,9 +8,14 @@ import { hslToPosition } from '@/modules/color-wheel/utils/hsl-to-position'
 import type { HueCell } from '@/modules/color-wheel/utils/hue-cell-position'
 import { hueCellPosition } from '@/modules/color-wheel/utils/hue-cell-position'
 import { annularSectorPath, indexToStartAngle, sectorPath } from '@/modules/color-wheel/utils/sector-path'
+import { useWheelHover } from '@/modules/color-wheel/hooks/use-wheel-hover'
+import { useWheelPaintSelection } from '@/modules/color-wheel/hooks/use-wheel-paint-selection'
+import { useWheelTransform } from '@/modules/color-wheel/hooks/use-wheel-transform'
+import { PaintDetailPanel } from './paint-detail-panel'
 import { PaintMarker } from './paint-marker'
 
 const OUTER_RADIUS = 450
+const VIEW_BOX: [number, number, number, number] = [-500, -500, 1000, 1000]
 
 /** Fixed ISCC-NBS modifier ordering: index 0 = outermost (darkest), last = innermost (lightest). */
 const ISCC_NBS_ORDER = [
@@ -59,14 +63,25 @@ function sortChildrenByLightness(children: ColorWheelHue[]): ColorWheelHue[] {
  * spread out within the cell. Paints with an unrecognized `hue_id` fall back
  * to raw HSL hue/lightness positioning.
  *
+ * Supports zoom/pan via scroll wheel and pointer drag, click-to-detail via
+ * {@link PaintDetailPanel}, and hover tooltips — all driven by shared hooks.
+ *
  * @param paints - All paints to plot on the wheel.
  * @param hues - Top-level Munsell hues with nested ISCC-NBS children, used to
  *   draw sector fills and concentric lightness bands.
  */
 export function MunsellColorWheel({ paints, hues }: { paints: ColorWheelPaint[]; hues: ColorWheelHue[] }) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [hoveredPaint, setHoveredPaint] = useState<ColorWheelPaint | null>(null)
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 })
+  const { containerRef, hoveredPaint, tooltipPos, handleHover } = useWheelHover()
+  const { viewBox, onWheel, onPointerDown, onPointerMove, onPointerUp, onPointerLeave, onTouchStart, onTouchMove, onTouchEnd } = useWheelTransform(VIEW_BOX)
+  const { selectedPaint, handlePaintClick, clearSelection } = useWheelPaintSelection()
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const prevent = (e: Event) => e.preventDefault()
+    el.addEventListener('wheel', prevent, { passive: false })
+    return () => el.removeEventListener('wheel', prevent)
+  }, [containerRef])
 
   const hueIdToCell = new Map<string, HueCell>()
   for (let i = 0; i < hues.length; i++) {
@@ -81,25 +96,27 @@ export function MunsellColorWheel({ paints, hues }: { paints: ColorWheelPaint[];
     }
   }
 
-  function handleHover(paint: ColorWheelPaint | null, event: MouseEvent<SVGElement>) {
-    setHoveredPaint(paint)
-    if (paint && containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect()
-      const x = Math.min(event.clientX - rect.left + 12, rect.width - 180)
-      const y = Math.min(event.clientY - rect.top + 12, rect.height - 80)
-      setTooltipPos({ x: Math.max(0, x), y: Math.max(0, y) })
-    }
-  }
-
   return (
-    <div ref={containerRef} className="relative mx-auto aspect-square w-full max-w-2xl">
-      <svg viewBox="-500 -500 1000 1000" width="100%" height="100%" aria-label="Color wheel showing paint collection">
+    <div
+      ref={containerRef}
+      className="relative min-h-0 flex-1 w-full"
+      onWheel={onWheel}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerLeave={onPointerLeave}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      style={{ touchAction: 'none' }}
+    >
+      <svg viewBox={viewBox} width="100%" height="100%" aria-label="Color wheel showing paint collection">
         <defs>
-          <radialGradient id="lightness-overlay" cx="50%" cy="50%" r="50%">
+          <radialGradient id="munsell-lightness-overlay" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="white" stopOpacity={0.85} />
             <stop offset="70%" stopColor="white" stopOpacity={0} />
           </radialGradient>
-          <clipPath id="wheel-clip">
+          <clipPath id="munsell-wheel-clip">
             <circle cx="0" cy="0" r={OUTER_RADIUS} />
           </clipPath>
         </defs>
@@ -123,7 +140,7 @@ export function MunsellColorWheel({ paints, hues }: { paints: ColorWheelPaint[];
         })}
 
         {/* Lightness overlay — white center fading outward */}
-        <circle cx="0" cy="0" r={OUTER_RADIUS} fill="url(#lightness-overlay)" />
+        <circle cx="0" cy="0" r={OUTER_RADIUS} fill="url(#munsell-lightness-overlay)" />
 
         {/* Paint markers — placed inside their assigned ISCC-NBS cell when hue_id is set */}
         {paints.map((paint) => {
@@ -131,19 +148,32 @@ export function MunsellColorWheel({ paints, hues }: { paints: ColorWheelPaint[];
           const { x, y } = cell
             ? hueCellPosition(cell, paint.id, OUTER_RADIUS)
             : hslToPosition(paint.hue, paint.lightness, OUTER_RADIUS)
-          return <PaintMarker key={paint.id} paint={paint} cx={x} cy={y} onHover={handleHover} />
+          return (
+            <PaintMarker
+              key={paint.id}
+              paint={paint}
+              cx={x}
+              cy={y}
+              onHover={handleHover}
+              onClick={handlePaintClick}
+            />
+          )
         })}
       </svg>
 
-      {hoveredPaint && (
+      {hoveredPaint && !selectedPaint && (
         <div
-          className="card absolute z-10 max-w-[176px] border border-border bg-background px-3 py-2 text-sm shadow-md"
+          className="card pointer-events-none absolute z-10 max-w-[176px] border border-border bg-background px-3 py-2 text-sm shadow-md"
           style={{ left: tooltipPos.x, top: tooltipPos.y }}
         >
           <p className="font-medium leading-tight">{hoveredPaint.name}</p>
           <p className="text-muted-foreground">{hoveredPaint.brand_name}</p>
           <p className="text-muted-foreground">{hoveredPaint.product_line_name}</p>
         </div>
+      )}
+
+      {selectedPaint && (
+        <PaintDetailPanel paint={selectedPaint} onClose={clearSelection} />
       )}
     </div>
   )
