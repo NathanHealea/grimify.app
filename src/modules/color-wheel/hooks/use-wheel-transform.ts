@@ -15,6 +15,8 @@ export interface WheelTransformState {
    * content with a `<g>`.
    */
   viewBox: string
+  /** Current zoom level (1–10). Use to scale marker geometry inversely so markers stay a constant apparent screen size. */
+  zoom: number
   /** Resets zoom to 1 and pan to `{0, 0}`. */
   resetTransform: () => void
   /** Attach to the wheel container div's `onWheel` prop. */
@@ -244,6 +246,7 @@ export function useWheelTransform(baseViewBox: [number, number, number, number])
 
   return {
     viewBox: viewBoxStr,
+    zoom,
     resetTransform,
     onWheel,
     onPointerDown,
