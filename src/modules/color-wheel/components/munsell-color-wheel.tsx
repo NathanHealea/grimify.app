@@ -72,7 +72,7 @@ function sortChildrenByLightness(children: ColorWheelHue[]): ColorWheelHue[] {
  */
 export function MunsellColorWheel({ paints, hues }: { paints: ColorWheelPaint[]; hues: ColorWheelHue[] }) {
   const { containerRef, hoveredPaint, tooltipPos, handleHover } = useWheelHover()
-  const { viewBox, onWheel, onPointerDown, onPointerMove, onPointerUp, onPointerLeave, onTouchStart, onTouchMove, onTouchEnd } = useWheelTransform(VIEW_BOX)
+  const { viewBox, zoom, onWheel, onPointerDown, onPointerMove, onPointerUp, onPointerLeave, onTouchStart, onTouchMove, onTouchEnd } = useWheelTransform(VIEW_BOX)
   const { selectedPaint, handlePaintClick, clearSelection } = useWheelPaintSelection()
 
   useEffect(() => {
@@ -154,6 +154,7 @@ export function MunsellColorWheel({ paints, hues }: { paints: ColorWheelPaint[];
               paint={paint}
               cx={x}
               cy={y}
+              zoom={zoom}
               onHover={handleHover}
               onClick={handlePaintClick}
             />
