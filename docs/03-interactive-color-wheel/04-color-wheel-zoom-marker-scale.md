@@ -2,7 +2,7 @@
 
 **Epic:** Interactive Color Wheel
 **Type:** Refactor
-**Status:** Todo
+**Status:** Completed
 **Branch:** `refactor/color-wheel-zoom-marker-scale`
 **Merge into:** `v1/main`
 
@@ -14,12 +14,12 @@ This refactor scales marker size inversely with zoom level so markers maintain a
 
 ## Acceptance Criteria
 
-- [ ] Paint markers on both the Munsell and HSL color wheels scale down proportionally as zoom increases
-- [ ] At zoom level 1, markers are the same size as before (no visual regression)
-- [ ] At zoom level 10 (max), markers are visibly smaller and non-overlapping in dense regions
-- [ ] Marker stroke width also scales with zoom so the white outline stays proportional
-- [ ] Diamond markers (metallic paints) scale the same way as circle markers
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Paint markers on both the Munsell and HSL color wheels scale down proportionally as zoom increases
+- [x] At zoom level 1, markers are the same size as before (no visual regression)
+- [x] At zoom level 10 (max), markers are visibly smaller and non-overlapping in dense regions
+- [x] Marker stroke width also scales with zoom so the white outline stays proportional
+- [x] Diamond markers (metallic paints) scale the same way as circle markers
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Implementation Plan
 
