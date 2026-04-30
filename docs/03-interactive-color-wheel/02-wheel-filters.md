@@ -2,7 +2,7 @@
 
 **Epic:** Interactive Color Wheel
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/wheel-filters`
 **Merge into:** `v1/main`
 
@@ -12,15 +12,15 @@ Add filter controls to the color wheel so users can narrow the displayed paints 
 
 ## Acceptance Criteria
 
-- [ ] Users can filter paints on the wheel by brand (multi-select)
-- [ ] Users can filter by product line within selected brands
-- [ ] Users can filter by paint type (base, layer, shade, etc.)
-- [ ] Authenticated users can toggle to show only paints in their collection
-- [ ] Filters can be combined (e.g., "Citadel base paints I own")
-- [ ] Active filters are displayed and individually removable
-- [ ] Filter state persists via URL search params
-- [ ] Filters apply identically to both Munsell and HSL wheels; switching views preserves filter state
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Users can filter paints on the wheel by brand (multi-select)
+- [x] Users can filter by product line within selected brands
+- [x] Users can filter by paint type (base, layer, shade, etc.)
+- [x] Authenticated users can toggle to show only paints in their collection
+- [x] Filters can be combined (e.g., "Citadel base paints I own")
+- [x] Active filters are displayed and individually removable
+- [x] Filter state persists via URL search params
+- [x] Filters apply identically to both Munsell and HSL wheels; switching views preserves filter state
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Architecture
 
