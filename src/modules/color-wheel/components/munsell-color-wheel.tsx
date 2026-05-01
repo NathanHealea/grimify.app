@@ -69,8 +69,9 @@ function sortChildrenByLightness(children: ColorWheelHue[]): ColorWheelHue[] {
  * @param paints - All paints to plot on the wheel.
  * @param hues - Top-level Munsell hues with nested ISCC-NBS children, used to
  *   draw sector fills and concentric lightness bands.
+ * @param userPaintIds - Set of paint IDs in the user's collection; `undefined` when unauthenticated.
  */
-export function MunsellColorWheel({ paints, hues }: { paints: ColorWheelPaint[]; hues: ColorWheelHue[] }) {
+export function MunsellColorWheel({ paints, hues, userPaintIds }: { paints: ColorWheelPaint[]; hues: ColorWheelHue[]; userPaintIds?: Set<string> }) {
   const { containerRef, hoveredPaint, tooltipPos, handleHover } = useWheelHover()
   const { viewBox, zoom, onWheel, onPointerDown, onPointerMove, onPointerUp, onPointerLeave, onTouchStart, onTouchMove, onTouchEnd } = useWheelTransform(VIEW_BOX)
   const { selectedPaint, handlePaintClick, clearSelection } = useWheelPaintSelection()
@@ -143,23 +144,35 @@ export function MunsellColorWheel({ paints, hues }: { paints: ColorWheelPaint[];
         <circle cx="0" cy="0" r={OUTER_RADIUS} fill="url(#munsell-lightness-overlay)" />
 
         {/* Paint markers — placed inside their assigned ISCC-NBS cell when hue_id is set */}
-        {paints.map((paint) => {
-          const cell = paint.hue_id ? hueIdToCell.get(paint.hue_id) : undefined
-          const { x, y } = cell
-            ? hueCellPosition(cell, paint.id, OUTER_RADIUS)
-            : hslToPosition(paint.hue, paint.lightness, OUTER_RADIUS)
+        {/* Non-collection paints render first (underneath); collection paints render on top with emphasis ring */}
+        {(() => {
+          const ownedPaints = userPaintIds ? paints.filter((p) => userPaintIds.has(p.id)) : []
+          const otherPaints = userPaintIds ? paints.filter((p) => !userPaintIds.has(p.id)) : paints
+          const renderMarker = (paint: ColorWheelPaint, emphasized: boolean) => {
+            const cell = paint.hue_id ? hueIdToCell.get(paint.hue_id) : undefined
+            const { x, y } = cell
+              ? hueCellPosition(cell, paint.id, OUTER_RADIUS)
+              : hslToPosition(paint.hue, paint.lightness, OUTER_RADIUS)
+            return (
+              <PaintMarker
+                key={paint.id}
+                paint={paint}
+                cx={x}
+                cy={y}
+                zoom={zoom}
+                onHover={handleHover}
+                onClick={handlePaintClick}
+                emphasized={emphasized}
+              />
+            )
+          }
           return (
-            <PaintMarker
-              key={paint.id}
-              paint={paint}
-              cx={x}
-              cy={y}
-              zoom={zoom}
-              onHover={handleHover}
-              onClick={handlePaintClick}
-            />
+            <>
+              {otherPaints.map((p) => renderMarker(p, false))}
+              {ownedPaints.map((p) => renderMarker(p, true))}
+            </>
           )
-        })}
+        })()}
       </svg>
 
       {hoveredPaint && !selectedPaint && (
