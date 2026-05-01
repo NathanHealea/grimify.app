@@ -440,7 +440,7 @@ export function createPaintService(supabase: SupabaseClient) {
       while (true) {
         const { data } = await supabase
           .from('paints')
-          .select('id, name, hex, hue, saturation, lightness, hue_id, is_metallic, product_lines!inner(name, brands!inner(name))')
+          .select('id, name, hex, hue, saturation, lightness, hue_id, is_metallic, paint_type, product_line_id, product_lines!inner(id, name, brands!inner(id, name))')
           .eq('is_discontinued', false)
           .order('hue', { ascending: true })
           .order('id', { ascending: true })
@@ -449,7 +449,7 @@ export function createPaintService(supabase: SupabaseClient) {
         if (!data || data.length === 0) break
 
         for (const row of data) {
-          const line = row.product_lines as unknown as { name: string; brands: { name: string } }
+          const line = row.product_lines as unknown as { id: string; name: string; brands: { id: string; name: string } }
           all.push({
             id: row.id,
             name: row.name,
@@ -459,8 +459,11 @@ export function createPaintService(supabase: SupabaseClient) {
             lightness: row.lightness,
             hue_id: row.hue_id,
             is_metallic: row.is_metallic,
+            paint_type: row.paint_type,
+            product_line_id: row.product_line_id,
             brand_name: line.brands.name,
             product_line_name: line.name,
+            brand_id: line.brands.id,
           })
         }
 

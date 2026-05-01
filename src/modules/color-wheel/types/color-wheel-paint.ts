@@ -2,7 +2,7 @@
  * Lightweight paint projection for color wheel rendering.
  *
  * Contains only the fields needed to position a paint on the wheel,
- * style its marker, and populate the hover tooltip.
+ * style its marker, populate the hover tooltip, and support filter operations.
  */
 export type ColorWheelPaint = {
   id: string
@@ -15,4 +15,7 @@ export type ColorWheelPaint = {
   is_metallic: boolean
   brand_name: string
   product_line_name: string
+  brand_id: string
+  product_line_id: string
+  paint_type: string | null
 }

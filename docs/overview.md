@@ -101,7 +101,7 @@ Core functionality:
 
 - [x] [Color wheel rendering and paint mapping](./03-interactive-color-wheel/00-color-wheel-rendering.md)
 - [x] [Zoom, pan, and paint detail interaction](./03-interactive-color-wheel/01-wheel-interaction.md)
-- [ ] [Filter wheel by brand, collection, or owned paints](./03-interactive-color-wheel/02-wheel-filters.md)
+- [x] [Filter wheel by brand, collection, or owned paints](./03-interactive-color-wheel/02-wheel-filters.md)
 - [x] [HSL color wheel](./03-interactive-color-wheel/03-hls-color-wheel.md)
 - [x] [Color wheel zoom — paint marker scaling](./03-interactive-color-wheel/04-color-wheel-zoom-marker-scale.md)
 
