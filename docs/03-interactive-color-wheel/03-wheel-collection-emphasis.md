@@ -34,13 +34,15 @@ When a user is authenticated, paint markers on both the Munsell and HSL wheels t
 
 **File:** `src/modules/color-wheel/components/paint-marker.tsx`
 
-Add `emphasized?: boolean` to the props (defaults to `false`). When true, render an outer ring element behind the paint marker using a gold stroke (`#f59e0b`) to clearly distinguish collection paints from the white stroke on every marker.
+The current props object (`paint`, `cx`, `cy`, `onHover`, `onClick?`, `zoom?`) lives inline on the function signature at line 32. Add `emphasized?: boolean` (default `false`).
 
-For circle markers, add a `<circle>` with `fill="none"`, `stroke="#f59e0b"`, `strokeWidth={2 / zoom}`, and `r={r + 3 / zoom}` — rendered before (behind) the main circle. For diamond (metallic) markers, compute a proportionally larger diamond polygon outline using the same gold stroke.
+When `emphasized` is true, render an outer ring behind the marker using gold stroke (`#f59e0b`). Wrap both the ring and the marker in a `<g>` for explicit grouping.
 
-Wrap both elements in a `<g>` when emphasized so the grouping is explicit:
+**Circle case** — add a ring `<circle>` before the main circle:
 
 ```tsx
+if (paint.is_metallic) { /* ... diamond branch below ... */ }
+
 if (emphasized) {
   return (
     <g>
@@ -49,53 +51,98 @@ if (emphasized) {
     </g>
   )
 }
+
+return <circle cx={cx} cy={cy} r={r} {...shared} />
 ```
 
-Apply the same pattern for the metallic diamond case.
+**Diamond (metallic) case** — the existing half-diagonal is `d = r * 1.4`. The ring half-diagonal scales proportionally: `dRing = (r + 3 / zoom) * 1.4`. Compute ring points with `dRing`, render behind the main diamond:
 
-### 2. Pass `userPaintIds` to both wheel components
+```tsx
+if (paint.is_metallic) {
+  const d = r * 1.4
+  const points = `${cx},${cy - d} ${cx + d},${cy} ${cx},${cy + d} ${cx - d},${cy}`
+  if (emphasized) {
+    const dRing = (r + 3 / zoom) * 1.4
+    const ringPoints = `${cx},${cy - dRing} ${cx + dRing},${cy} ${cx},${cy + dRing} ${cx - dRing},${cy}`
+    return (
+      <g>
+        <polygon points={ringPoints} fill="none" stroke="#f59e0b" strokeWidth={2 / zoom} />
+        <polygon points={points} {...shared} />
+      </g>
+    )
+  }
+  return <polygon points={points} {...shared} />
+}
+```
+
+Update the JSDoc `@param` block to document `emphasized`.
+
+### 2. Thread `userPaintIds` to both wheel components
 
 **File:** `src/modules/color-wheel/components/color-wheel-container.tsx`
 
-`userPaintIds?: Set<string>` already arrives at `ColorWheelContainer`. Thread it to both wheel components:
+`userPaintIds?: Set<string>` already arrives at `ColorWheelContainer` (line 36) and is used for filter state. It is **not yet passed** to the wheel components (lines 82–85). Update both JSX calls:
 
 ```tsx
-<MunsellColorWheel paints={filteredPaints} hues={hues} userPaintIds={userPaintIds} />
-<HslColorWheel paints={filteredPaints} userPaintIds={userPaintIds} />
+{view === 'munsell' ? (
+  <MunsellColorWheel paints={filteredPaints} hues={hues} userPaintIds={userPaintIds} />
+) : (
+  <HslColorWheel paints={filteredPaints} userPaintIds={userPaintIds} />
+)}
 ```
 
 ### 3. Update `MunsellColorWheel`
 
 **File:** `src/modules/color-wheel/components/munsell-color-wheel.tsx`
 
-Add `userPaintIds?: Set<string>` to the component props.
+Add `userPaintIds?: Set<string>` to the component props at line 73. Update the JSDoc `@param` block.
 
-**Render order** — emphasized markers must render on top of non-emphasized ones so the ring is never obscured by a neighboring marker. Split the paint array before rendering:
-
-```tsx
-const [ownedPaints, otherPaints] = userPaintIds
-  ? [paints.filter((p) => userPaintIds.has(p.id)), paints.filter((p) => !userPaintIds.has(p.id))]
-  : [[], paints]
-```
-
-Render `otherPaints` first, then `ownedPaints`, each passed to `PaintMarker` with the appropriate `emphasized` value:
+Split the paint array before the marker render block (currently a single `paints.map` at line 146). Place the split immediately before the `<svg>` return, after `hueIdToCell` is built:
 
 ```tsx
-{otherPaints.map((paint) => (
-  <PaintMarker key={paint.id} paint={paint} ... emphasized={false} />
-))}
-{ownedPaints.map((paint) => (
-  <PaintMarker key={paint.id} paint={paint} ... emphasized />
-))}
+const ownedPaints = userPaintIds ? paints.filter((p) => userPaintIds.has(p.id)) : []
+const otherPaints = userPaintIds ? paints.filter((p) => !userPaintIds.has(p.id)) : paints
 ```
 
-When `userPaintIds` is `undefined`, all paints render through `otherPaints` with no emphasis — preserving unauthenticated behavior.
+Replace the single `paints.map` with two sequential blocks — `otherPaints` first (renders underneath), `ownedPaints` second (renders on top so the ring is never obscured):
+
+```tsx
+{otherPaints.map((paint) => {
+  const cell = paint.hue_id ? hueIdToCell.get(paint.hue_id) : undefined
+  const { x, y } = cell
+    ? hueCellPosition(cell, paint.id, OUTER_RADIUS)
+    : hslToPosition(paint.hue, paint.lightness, OUTER_RADIUS)
+  return (
+    <PaintMarker key={paint.id} paint={paint} cx={x} cy={y} zoom={zoom} onHover={handleHover} onClick={handlePaintClick} />
+  )
+})}
+{ownedPaints.map((paint) => {
+  const cell = paint.hue_id ? hueIdToCell.get(paint.hue_id) : undefined
+  const { x, y } = cell
+    ? hueCellPosition(cell, paint.id, OUTER_RADIUS)
+    : hslToPosition(paint.hue, paint.lightness, OUTER_RADIUS)
+  return (
+    <PaintMarker key={paint.id} paint={paint} cx={x} cy={y} zoom={zoom} onHover={handleHover} onClick={handlePaintClick} emphasized />
+  )
+})}
+```
+
+When `userPaintIds` is `undefined`, all paints flow through `otherPaints` with no emphasis, preserving unauthenticated behavior.
 
 ### 4. Update `HslColorWheel`
 
 **File:** `src/modules/color-wheel/components/hsl-color-wheel.tsx`
 
-Identical change to Step 3, applied inside the `<g id="paint-markers">` block.
+Add `userPaintIds?: Set<string>` to the component props at line 92. Update the JSDoc `@param` block.
+
+Apply the identical split pattern inside the `<g id="paint-markers">` block (currently a single `paints.map` at line 284):
+
+```tsx
+const ownedPaints = userPaintIds ? paints.filter((p) => userPaintIds.has(p.id)) : []
+const otherPaints = userPaintIds ? paints.filter((p) => !userPaintIds.has(p.id)) : paints
+```
+
+Replace the single map with two ordered blocks using `paintToWheelPosition` (the existing position utility), passing `emphasized` to `ownedPaints` markers.
 
 ## Risks & Considerations
 
