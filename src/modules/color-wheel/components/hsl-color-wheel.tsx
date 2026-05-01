@@ -88,15 +88,18 @@ function getSchemeWedges(hue: number, scheme: ColorScheme): SchemeWedge[] {
  * @param paints - All paints to plot on the wheel.
  * @param selectedHue - Wheel-position hue (0–360) of the currently selected paint; enables scheme overlays.
  * @param colorScheme - Active color harmony scheme; requires {@link selectedHue}.
+ * @param userPaintIds - Set of paint IDs in the user's collection; `undefined` when unauthenticated.
  */
 export function HslColorWheel({
   paints,
   selectedHue,
   colorScheme,
+  userPaintIds,
 }: {
   paints: ColorWheelPaint[]
   selectedHue?: number
   colorScheme?: ColorScheme
+  userPaintIds?: Set<string>
 }) {
   const { containerRef, hoveredPaint, tooltipPos, handleHover } = useWheelHover()
   const { viewBox, zoom, onWheel, onPointerDown, onPointerMove, onPointerUp, onPointerLeave, onTouchStart, onTouchMove, onTouchEnd } = useWheelTransform(VIEW_BOX)
@@ -280,21 +283,33 @@ export function HslColorWheel({
         {schemeWedgeOverlays && <g id="scheme-wedge-overlays" pointerEvents="none">{schemeWedgeOverlays}</g>}
 
         {/* Paint markers positioned by raw HSL values */}
+        {/* Non-collection paints render first (underneath); collection paints render on top with emphasis ring */}
         <g id="paint-markers">
-          {paints.map((paint) => {
-            const { x, y } = paintToWheelPosition(paint.hue / 360, paint.lightness / 100, WHEEL_RADIUS)
+          {(() => {
+            const ownedPaints = userPaintIds ? paints.filter((p) => userPaintIds.has(p.id)) : []
+            const otherPaints = userPaintIds ? paints.filter((p) => !userPaintIds.has(p.id)) : paints
+            const renderMarker = (paint: ColorWheelPaint, emphasized: boolean) => {
+              const { x, y } = paintToWheelPosition(paint.hue / 360, paint.lightness / 100, WHEEL_RADIUS)
+              return (
+                <PaintMarker
+                  key={paint.id}
+                  paint={paint}
+                  cx={x}
+                  cy={y}
+                  zoom={zoom}
+                  onHover={handleHover}
+                  onClick={handlePaintClick}
+                  emphasized={emphasized}
+                />
+              )
+            }
             return (
-              <PaintMarker
-                key={paint.id}
-                paint={paint}
-                cx={x}
-                cy={y}
-                zoom={zoom}
-                onHover={handleHover}
-                onClick={handlePaintClick}
-              />
+              <>
+                {otherPaints.map((p) => renderMarker(p, false))}
+                {ownedPaints.map((p) => renderMarker(p, true))}
+              </>
             )
-          })}
+          })()}
         </g>
       </svg>
 
