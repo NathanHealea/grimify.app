@@ -2,7 +2,7 @@
 
 **Epic:** Interactive Color Wheel
 **Type:** Refactor
-**Status:** Todo
+**Status:** Done
 **Branch:** `refactor/hsl-wheel-itten-segment-rendering`
 **Merge into:** `v1/main`
 
@@ -20,13 +20,13 @@ The hue ring, divider lines, segment labels, scheme overlays, and paint markers 
 
 ## Acceptance Criteria
 
-- [ ] `segmentWedges` is built from a single `bands` array and a single nested `flatMap`/`map` — no per-band JSX duplication
-- [ ] Each segment's bands are drawn from `seg.hueStart` to `seg.hueEnd`, with `hueEnd + 360` applied when `hueEnd < hueStart` (Red only)
-- [ ] All three bands render via `annularSectorPath` (its built-in `innerRadius <= 0` short-circuit produces the inner pie-slice)
-- [ ] Band fills use `hslToHex(seg.midAngle, 1, band.lightness)` and `fillOpacity={0.1}`
-- [ ] The Red segment renders as one continuous wedge across the 0° boundary — no gap, no overlap, no second path
-- [ ] Hue ring, dividers, labels, scheme overlays, and paint markers are visually unchanged
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] `segmentWedges` is built from a single `bands` array and a single nested `flatMap`/`map` — no per-band JSX duplication
+- [x] Each segment's bands are drawn from `seg.hueStart` to `seg.hueEnd`, with `hueEnd + 360` applied when `hueEnd < hueStart` (Red only)
+- [x] All three bands render via `annularSectorPath` (its built-in `innerRadius <= 0` short-circuit produces the inner pie-slice)
+- [x] Band fills use `hslToHex(seg.midAngle, 1, band.lightness)` and `fillOpacity={0.1}`
+- [x] The Red segment renders as one continuous wedge across the 0° boundary — no gap, no overlap, no second path
+- [x] Hue ring, dividers, labels, scheme overlays, and paint markers are visually unchanged
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Implementation Plan
 
