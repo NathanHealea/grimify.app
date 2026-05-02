@@ -111,33 +111,27 @@ export function HslColorWheel({
   }, [containerRef])
 
   // Three concentric bands per sector: light (center) → medium → dark (outer)
-  const segmentWedges = useMemo(
-    () =>
-      COLOR_SEGMENTS.flatMap((seg) => [
+  const segmentWedges = useMemo(() => {
+    const bands = [
+      { innerR: 0,             outerR: LIGHT_RADIUS,  lightness: 0.75, label: 'light'  },
+      { innerR: LIGHT_RADIUS,  outerR: MEDIUM_RADIUS, lightness: 0.5,  label: 'medium' },
+      { innerR: MEDIUM_RADIUS, outerR: WHEEL_RADIUS,  lightness: 0.25, label: 'dark'   },
+    ]
+    return COLOR_SEGMENTS.flatMap((seg) => {
+      // Red wraps 345°→15°; normalise so end > start for the arc math.
+      const start = seg.hueStart
+      const end = seg.hueEnd < seg.hueStart ? seg.hueEnd + 360 : seg.hueEnd
+      return bands.map((band) => (
         <path
-          key={`light-${seg.midAngle}`}
-          d={sectorPath(seg.midAngle - 15, seg.midAngle + 15, LIGHT_RADIUS)}
-          fill={hslToHex(seg.midAngle, 0.8, 0.75)}
-          fillOpacity={0.25}
+          key={`${band.label}-${seg.midAngle}`}
+          d={annularSectorPath(start, end, band.innerR, band.outerR)}
+          fill={hslToHex(seg.midAngle, 1, band.lightness)}
+          fillOpacity={0.1}
           stroke="none"
-        />,
-        <path
-          key={`medium-${seg.midAngle}`}
-          d={annularSectorPath(seg.midAngle - 15, seg.midAngle + 15, LIGHT_RADIUS, MEDIUM_RADIUS)}
-          fill={hslToHex(seg.midAngle, 0.8, 0.5)}
-          fillOpacity={0.25}
-          stroke="none"
-        />,
-        <path
-          key={`dark-${seg.midAngle}`}
-          d={annularSectorPath(seg.midAngle - 15, seg.midAngle + 15, MEDIUM_RADIUS, WHEEL_RADIUS)}
-          fill={hslToHex(seg.midAngle, 0.8, 0.25)}
-          fillOpacity={0.25}
-          stroke="none"
-        />,
-      ]),
-    []
-  )
+        />
+      ))
+    })
+  }, [])
 
   // Hue ring — one arc per degree for a smooth continuous gradient
   const hueRingArcs = useMemo(() => {
