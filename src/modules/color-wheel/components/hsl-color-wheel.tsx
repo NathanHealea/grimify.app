@@ -16,6 +16,12 @@ import { PaintMarker } from './paint-marker'
 /** Outer radius of the paint content area in SVG units. */
 const WHEEL_RADIUS = 450
 
+/** Outer edge of the light (innermost) band — one-third of WHEEL_RADIUS. */
+const LIGHT_RADIUS = WHEEL_RADIUS / 3
+
+/** Outer edge of the medium band — two-thirds of WHEEL_RADIUS. */
+const MEDIUM_RADIUS = (WHEEL_RADIUS * 2) / 3
+
 /** Width of the saturated hue ring in SVG units. */
 const RING_WIDTH = 20
 
@@ -104,23 +110,28 @@ export function HslColorWheel({
     return () => el.removeEventListener('wheel', prevent)
   }, [containerRef])
 
-  // Single flat band per sector at mid-lightness so both light and dark paints contrast
-  const segmentWedges = useMemo(() =>
-    COLOR_SEGMENTS.map((seg) => {
+  // Three concentric bands per sector: light (center) → medium → dark (outer)
+  const segmentWedges = useMemo(() => {
+    const bands = [
+      { innerR: 0,             outerR: LIGHT_RADIUS,  lightness: 0.75 },
+      { innerR: LIGHT_RADIUS,  outerR: MEDIUM_RADIUS, lightness: 0.5  },
+      { innerR: MEDIUM_RADIUS, outerR: WHEEL_RADIUS,  lightness: 0.25 },
+    ]
+    return COLOR_SEGMENTS.flatMap((seg) => {
       // Red wraps 345°→15°; normalise so end > start for the arc math.
       const start = seg.hueStart
       const end = seg.hueEnd < seg.hueStart ? seg.hueEnd + 360 : seg.hueEnd
-      return (
+      return bands.map((band, i) => (
         <path
-          key={`seg-${seg.midAngle}`}
-          d={annularSectorPath(start, end, 0, WHEEL_RADIUS)}
-          fill={hslToHex(seg.midAngle, 1, 0.5)}
+          key={`band-${i}-${seg.midAngle}`}
+          d={annularSectorPath(start, end, band.innerR, band.outerR)}
+          fill={hslToHex(seg.midAngle, 1, band.lightness)}
           fillOpacity={0.1}
           stroke="none"
         />
-      )
-    }),
-  [])
+      ))
+    })
+  }, [])
 
   // Hue ring — one arc per degree for a smooth continuous gradient
   const hueRingArcs = useMemo(() => {
