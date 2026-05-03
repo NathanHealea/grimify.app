@@ -16,12 +16,6 @@ import { PaintMarker } from './paint-marker'
 /** Outer radius of the paint content area in SVG units. */
 const WHEEL_RADIUS = 450
 
-/** Outer edge of the light (innermost) band — one-third of WHEEL_RADIUS. */
-const LIGHT_RADIUS = WHEEL_RADIUS / 3
-
-/** Outer edge of the medium band — two-thirds of WHEEL_RADIUS. */
-const MEDIUM_RADIUS = (WHEEL_RADIUS * 2) / 3
-
 /** Width of the saturated hue ring in SVG units. */
 const RING_WIDTH = 20
 
@@ -110,28 +104,23 @@ export function HslColorWheel({
     return () => el.removeEventListener('wheel', prevent)
   }, [containerRef])
 
-  // Three concentric bands per sector: light (center) → medium → dark (outer)
-  const segmentWedges = useMemo(() => {
-    const bands = [
-      { innerR: 0,             outerR: LIGHT_RADIUS,  lightness: 0.75, label: 'light'  },
-      { innerR: LIGHT_RADIUS,  outerR: MEDIUM_RADIUS, lightness: 0.5,  label: 'medium' },
-      { innerR: MEDIUM_RADIUS, outerR: WHEEL_RADIUS,  lightness: 0.25, label: 'dark'   },
-    ]
-    return COLOR_SEGMENTS.flatMap((seg) => {
+  // Single flat band per sector at mid-lightness so both light and dark paints contrast
+  const segmentWedges = useMemo(() =>
+    COLOR_SEGMENTS.map((seg) => {
       // Red wraps 345°→15°; normalise so end > start for the arc math.
       const start = seg.hueStart
       const end = seg.hueEnd < seg.hueStart ? seg.hueEnd + 360 : seg.hueEnd
-      return bands.map((band) => (
+      return (
         <path
-          key={`${band.label}-${seg.midAngle}`}
-          d={annularSectorPath(start, end, band.innerR, band.outerR)}
-          fill={hslToHex(seg.midAngle, 1, band.lightness)}
+          key={`seg-${seg.midAngle}`}
+          d={annularSectorPath(start, end, 0, WHEEL_RADIUS)}
+          fill={hslToHex(seg.midAngle, 1, 0.5)}
           fillOpacity={0.1}
           stroke="none"
         />
-      ))
-    })
-  }, [])
+      )
+    }),
+  [])
 
   // Hue ring — one arc per degree for a smooth continuous gradient
   const hueRingArcs = useMemo(() => {
@@ -258,7 +247,7 @@ export function HslColorWheel({
         className="block"
         aria-label="HSL color wheel showing paint collection"
       >
-        {/* Segment background wedges — light / medium / dark bands per sector */}
+        {/* Segment background wedges — flat mid-lightness tint per sector */}
         <g id="segment-wedges">{segmentWedges}</g>
 
         {/* Smooth per-degree hue ring */}

@@ -40,8 +40,8 @@ export function PaintMarker({
   const r = RADIUS / zoom
   const shared = {
     fill: paint.hex,
-    stroke: 'white',
-    strokeWidth: 1 / zoom,
+    stroke: 'black',
+    strokeWidth: 2 / zoom,
     cursor: 'pointer' as const,
     onMouseEnter: (e: MouseEvent<SVGElement>) => onHover(paint, e),
     onMouseLeave: (e: MouseEvent<SVGElement>) => onHover(null, e),
