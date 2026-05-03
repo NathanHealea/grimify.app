@@ -1,6 +1,6 @@
 'use client'
 
-import type { PointerEvent, TouchEvent, WheelEvent } from 'react'
+import type { MutableRefObject, PointerEvent, TouchEvent, WheelEvent } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 const MIN_ZOOM = 1
@@ -17,6 +17,14 @@ export interface WheelTransformState {
   viewBox: string
   /** Current zoom level (1–10). Use to scale marker geometry inversely so markers stay a constant apparent screen size. */
   zoom: number
+  /** `true` while the user is actively panning via pointer drag. Use to switch between `grab` and `grabbing` cursor. */
+  isDragging: boolean
+  /**
+   * Running pixel distance moved since the last `pointerdown`. Resets to 0 on
+   * each new `pointerdown`. Read this in click handlers to distinguish an
+   * intentional tap (< 3 px) from an accidental click at the end of a drag.
+   */
+  dragDistanceRef: MutableRefObject<number>
   /** Resets zoom to 1 and pan to `{0, 0}`. */
   resetTransform: () => void
   /** Attach to the wheel container div's `onWheel` prop. */
@@ -62,12 +70,7 @@ function pinchDist(t0: { clientX: number; clientY: number }, t1: { clientX: numb
 export function useWheelTransform(baseViewBox: [number, number, number, number]): WheelTransformState {
   const totalSize = baseViewBox[2]
 
-  const [zoom, setZoomState] = useState<number>(() => {
-    if (typeof window === 'undefined') return MIN_ZOOM
-    const saved = sessionStorage.getItem(SESSION_KEY)
-    const parsed = saved ? parseFloat(saved) : NaN
-    return isNaN(parsed) ? MIN_ZOOM : clamp(parsed, MIN_ZOOM, MAX_ZOOM)
-  })
+  const [zoom, setZoomState] = useState<number>(MIN_ZOOM)
   const [pan, setPanState] = useState({ x: 0, y: 0 })
 
   // Kept in sync with state immediately so event handlers always read fresh values.
@@ -84,6 +87,17 @@ export function useWheelTransform(baseViewBox: [number, number, number, number])
     setPanState(p)
   }
 
+  // Restore zoom from sessionStorage after mount to avoid SSR hydration mismatch
+  useEffect(() => {
+    const saved = sessionStorage.getItem(SESSION_KEY)
+    const parsed = saved ? parseFloat(saved) : NaN
+    if (!isNaN(parsed)) {
+      const restored = clamp(parsed, MIN_ZOOM, MAX_ZOOM)
+      if (restored !== MIN_ZOOM) setZoom(restored)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Persist zoom to sessionStorage
   useEffect(() => {
     sessionStorage.setItem(SESSION_KEY, String(zoom))
@@ -96,9 +110,12 @@ export function useWheelTransform(baseViewBox: [number, number, number, number])
   const pendingClientY = useRef<number>(0)
   const pendingRect = useRef<DOMRect | null>(null)
 
-  // Drag state
+  // Drag state — ref for synchronous handler logic, state for cursor rendering
   const isDragging = useRef(false)
+  const [isDraggingState, setIsDraggingState] = useState(false)
   const dragStart = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null)
+  // Pixel distance moved since last pointerdown — used to distinguish taps from drags
+  const dragDistanceRef = useRef(0)
   // Pinch state — stores the last-seen finger distance for incremental scaling
   const pinchDistRef = useRef<number | null>(null)
 
@@ -169,6 +186,8 @@ export function useWheelTransform(baseViewBox: [number, number, number, number])
 
   const onPointerDown = useCallback((e: PointerEvent<HTMLDivElement>) => {
     isDragging.current = true
+    setIsDraggingState(true)
+    dragDistanceRef.current = 0
     const p = panRef.current
     dragStart.current = { x: e.clientX, y: e.clientY, panX: p.x, panY: p.y }
     e.currentTarget.setPointerCapture(e.pointerId)
@@ -179,6 +198,7 @@ export function useWheelTransform(baseViewBox: [number, number, number, number])
       if (!isDragging.current || !dragStart.current) return
       const dx = e.clientX - dragStart.current.x
       const dy = e.clientY - dragStart.current.y
+      dragDistanceRef.current = Math.hypot(dx, dy)
       const rect = e.currentTarget.getBoundingClientRect()
       const size = totalSize / zoomRef.current
       const scale = size / rect.width
@@ -192,6 +212,7 @@ export function useWheelTransform(baseViewBox: [number, number, number, number])
 
   const stopDrag = useCallback(() => {
     isDragging.current = false
+    setIsDraggingState(false)
     dragStart.current = null
   }, [])
 
@@ -270,6 +291,8 @@ export function useWheelTransform(baseViewBox: [number, number, number, number])
   return {
     viewBox: viewBoxStr,
     zoom,
+    isDragging: isDraggingState,
+    dragDistanceRef,
     resetTransform,
     onWheel,
     onPointerDown,
