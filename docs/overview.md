@@ -105,7 +105,7 @@ Core functionality:
 - [ ] [Emphasize collection paints on the color wheel](./03-interactive-color-wheel/03-wheel-collection-emphasis.md)
 - [x] [HSL color wheel](./03-interactive-color-wheel/03-hls-color-wheel.md)
 - [x] [Color wheel zoom — paint marker scaling](./03-interactive-color-wheel/04-color-wheel-zoom-marker-scale.md)
-- [ ] [HSL wheel — Itten segment boundary rendering](./03-interactive-color-wheel/05-hsl-wheel-itten-segment-rendering.md)
+- [x] [HSL wheel — Itten segment boundary rendering](./03-interactive-color-wheel/05-hsl-wheel-itten-segment-rendering.md)
 
 ### Epic: Cross-Brand Comparison
 
