@@ -32,7 +32,6 @@ export function PaintMarker({
   cy,
   onHover,
   onClick,
-  zoom = 1,
   isSelected = false,
 }: {
   paint: ColorWheelPaint

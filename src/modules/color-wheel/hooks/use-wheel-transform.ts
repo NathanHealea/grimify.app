@@ -87,15 +87,16 @@ export function useWheelTransform(baseViewBox: [number, number, number, number])
     setPanState(p)
   }
 
-  // Restore zoom from sessionStorage after mount to avoid SSR hydration mismatch
+  // Restore zoom from sessionStorage after mount to avoid SSR hydration mismatch.
+  // One-time read — empty deps is intentional; setState call here is safe.
   useEffect(() => {
     const saved = sessionStorage.getItem(SESSION_KEY)
     const parsed = saved ? parseFloat(saved) : NaN
     if (!isNaN(parsed)) {
       const restored = clamp(parsed, MIN_ZOOM, MAX_ZOOM)
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (restored !== MIN_ZOOM) setZoom(restored)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Persist zoom to sessionStorage
