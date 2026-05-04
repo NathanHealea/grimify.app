@@ -2,7 +2,7 @@
 
 **Epic:** Color Scheme Explorer
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/scheme-generation`
 **Merge into:** `v1/main`
 
@@ -12,12 +12,12 @@ Provide tools for generating color schemes (complementary, split-complementary, 
 
 ## Acceptance Criteria
 
-- [ ] Users can select a base color (via paint picker or manual hex/hue input)
-- [ ] The app generates complementary, split-complementary, analogous, triadic, and tetradic schemes
-- [ ] Each scheme type is selectable via tabs or toggles
-- [ ] Generated scheme colors are displayed as swatches with their hue/hex values
-- [ ] Users can adjust scheme parameters (e.g., analogous angle spread)
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Users can select a base color (via paint picker or manual hex/hue input)
+- [x] The app generates complementary, split-complementary, analogous, triadic, and tetradic schemes
+- [x] Each scheme type is selectable via tabs or toggles
+- [x] Generated scheme colors are displayed as swatches with their hue/hex values
+- [x] Users can adjust scheme parameters (e.g., analogous angle spread)
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
