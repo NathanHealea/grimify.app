@@ -2,7 +2,7 @@
 
 **Epic:** Color Scheme Explorer
 **Type:** Feature
-**Status:** In Progress
+**Status:** Done
 **Branch:** `feature/scheme-to-paints`
 **Merge into:** `v1/main`
 

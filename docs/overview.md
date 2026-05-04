@@ -126,7 +126,7 @@ Core functionality:
 
 - [x] [Color scheme generation (complementary, split-comp, analogous, triadic)](./05-color-scheme-explorer/00-scheme-generation.md)
 - [ ] [Scheme visualization on the color wheel](./05-color-scheme-explorer/01-scheme-visualization.md)
-- [ ] [Map schemes to available paints](./05-color-scheme-explorer/02-scheme-to-paints.md)
+- [x] [Map schemes to available paints](./05-color-scheme-explorer/02-scheme-to-paints.md)
 
 ### Epic: Collection Tracking
 
