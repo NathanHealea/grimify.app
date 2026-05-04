@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { hexToHsl } from '@/modules/color-wheel/utils/hex-to-hsl'
 import { PaintCombobox } from '@/modules/paints/components/paint-combobox'
@@ -16,12 +18,13 @@ type Mode = 'search' | 'custom'
  * Dual-mode color picker for selecting a scheme base color.
  *
  * Supports two input modes toggled by a button group:
- * - **Search Paints** — delegates to {@link PaintCombobox} for filtered paint selection.
+ * - **Search Paints** — shows {@link PaintCombobox} until a paint is chosen, then
+ *   displays the selection inline with a clear button.
  * - **Custom Color** — accepts a 6-digit hex value and derives HSL via {@link hexToHsl}.
  *
  * @param props.paints - Full paint list to search against.
  * @param props.value - Currently selected base color, or null.
- * @param props.onChange - Called with the new {@link BaseColor} when a selection is made.
+ * @param props.onChange - Called with the new {@link BaseColor} on selection, or null to clear.
  */
 export function BaseColorPicker({
   paints,
@@ -30,7 +33,7 @@ export function BaseColorPicker({
 }: {
   paints: ColorWheelPaint[]
   value: BaseColor | null
-  onChange: (color: BaseColor) => void
+  onChange: (color: BaseColor | null) => void
 }) {
   const [mode, setMode] = useState<Mode>('search')
   const [hexInput, setHexInput] = useState('')
@@ -78,19 +81,30 @@ export function BaseColorPicker({
       </div>
 
       {mode === 'search' && (
-        <div className="flex flex-col gap-2">
-          <PaintCombobox paints={paints} onSelect={selectPaint} />
-          {value && (
-            <p className="flex items-center gap-2 text-sm text-muted-foreground">
+        value ? (
+          <InputGroup>
+            <InputGroupAddon>
               <span
-                className="inline-block size-4 rounded border border-border"
+                className="inline-block size-4 rounded border border-border shrink-0"
                 style={{ backgroundColor: value.hex }}
                 aria-hidden="true"
               />
-              {value.name ?? value.hex}
-            </p>
-          )}
-        </div>
+            </InputGroupAddon>
+            <InputGroupInput value={value.name ?? value.hex} readOnly />
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton
+                aria-label="Clear selection"
+                title="Clear"
+                size="icon-xs"
+                onClick={() => onChange(null)}
+              >
+                <X className="size-4" />
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+        ) : (
+          <PaintCombobox paints={paints} onSelect={selectPaint} />
+        )
       )}
 
       {mode === 'custom' && (
