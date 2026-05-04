@@ -20,7 +20,7 @@
  * Base
  * ----------------------------------------------------------------------- */
 .navbar {
-  @apply flex h-14 w-full items-center px-4
+  @apply flex min-h-14 w-full items-center px-4
     border-b border-border bg-background;
 }
 

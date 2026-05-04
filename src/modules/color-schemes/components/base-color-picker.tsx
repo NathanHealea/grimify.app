@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { hexToHsl } from '@/modules/color-wheel/utils/hex-to-hsl'
-import { PaintCombobox } from '@/modules/paints/components/paint-combobox'
+import { SchemePaintCombox } from '@/modules/color-schemes/components/scheme-paint-combobox'
 import type { BaseColor } from '@/modules/color-schemes/types/base-color'
 
 const HEX_RE = /^#?([0-9a-fA-F]{6})$/
@@ -16,7 +16,7 @@ type Mode = 'search' | 'custom'
  * Dual-mode color picker for selecting a scheme base color.
  *
  * Supports two input modes toggled by a button group:
- * - **Search Paints** — delegates to {@link PaintCombobox} for filtered paint selection.
+ * - **Search Paints** — delegates to {@link SchemePaintCombox} for filtered paint selection.
  * - **Custom Color** — accepts a 6-digit hex value and derives HSL via {@link hexToHsl}.
  *
  * @param props.paints - Full paint list to search against.
@@ -75,7 +75,7 @@ export function BaseColorPicker({
       </div>
 
       {mode === 'search' && (
-        <PaintCombobox paints={paints} onSelect={selectPaint} />
+        <SchemePaintCombox paints={paints} onSelect={selectPaint} />
       )}
 
       {mode === 'custom' && (
