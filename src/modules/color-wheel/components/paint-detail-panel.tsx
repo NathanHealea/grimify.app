@@ -1,8 +1,10 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import { addToCollection } from '@/modules/collection/actions/add-to-collection'
+import { removeFromCollection } from '@/modules/collection/actions/remove-from-collection'
 
 /**
  * Dismissible overlay panel displaying full details for a selected paint.
@@ -12,16 +14,34 @@ import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-pa
  * - Clicking the backdrop (outside the panel)
  * - Pressing the Escape key
  *
+ * When `isOwned` is provided (authenticated users only), renders an Add/Remove
+ * from Collection button that calls the appropriate server action with optimistic
+ * local state — the button flips immediately on success without waiting for a
+ * full server re-render.
+ *
  * @param paint - The selected paint to display.
+ * @param isOwned - Whether the paint is in the user's collection. `undefined` when unauthenticated.
  * @param onClose - Callback to clear the selection and close the panel.
  */
 export function PaintDetailPanel({
   paint,
+  isOwned,
   onClose,
 }: {
   paint: ColorWheelPaint
+  isOwned?: boolean
   onClose: () => void
 }) {
+  const [owned, setOwned] = useState(isOwned ?? false)
+  const [isPending, startTransition] = useTransition()
+  const [actionError, setActionError] = useState<string | null>(null)
+
+  // Sync external isOwned changes (e.g. when the selected paint changes)
+  useEffect(() => {
+    setOwned(isOwned ?? false)
+    setActionError(null)
+  }, [paint.id, isOwned])
+
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose()
@@ -29,6 +49,21 @@ export function PaintDetailPanel({
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [onClose])
+
+  function handleCollectionToggle() {
+    const nextOwned = !owned
+    startTransition(async () => {
+      const result = nextOwned
+        ? await addToCollection(paint.id)
+        : await removeFromCollection(paint.id)
+      if (result.error) {
+        setActionError(result.error)
+      } else {
+        setOwned(nextOwned)
+        setActionError(null)
+      }
+    })
+  }
 
   return (
     <div
@@ -72,6 +107,22 @@ export function PaintDetailPanel({
           <dt className="text-muted-foreground">Type</dt>
           <dd>{paint.is_metallic ? 'Metallic' : 'Standard'}</dd>
         </dl>
+
+        {isOwned !== undefined && (
+          <div className="flex flex-col gap-1 border-t border-border pt-3">
+            <button
+              type="button"
+              onClick={handleCollectionToggle}
+              disabled={isPending}
+              className={owned ? 'btn btn-sm btn-outline' : 'btn btn-sm btn-primary'}
+            >
+              {isPending ? '…' : owned ? 'Remove from Collection' : 'Add to Collection'}
+            </button>
+            {actionError && (
+              <p className="text-xs text-destructive">{actionError}</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

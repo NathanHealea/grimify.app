@@ -208,7 +208,11 @@ export function HslColorWheel({
       )}
 
       {selectedPaint && (
-        <PaintDetailPanel paint={selectedPaint} onClose={clearSelection} />
+        <PaintDetailPanel
+          paint={selectedPaint}
+          isOwned={userPaintIds ? userPaintIds.has(selectedPaint.id) : undefined}
+          onClose={clearSelection}
+        />
       )}
     </div>
   )
