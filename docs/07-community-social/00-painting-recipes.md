@@ -1,8 +1,10 @@
 # Painting Recipes (Step-by-Step Color Layering Guides)
 
+> **⚠️ Superseded:** This placeholder is replaced by the dedicated **[Painting Recipes](../12-painting-recipes/)** epic, which expands the original scope to cover sections, per-step paints (palette-aware), unlimited freeform notes, photo uploads, and public sharing with OG previews. Refer to `docs/12-painting-recipes/` for the source of truth. This file is kept for historical context.
+
 **Epic:** Community & Social
 **Type:** Feature
-**Status:** Todo
+**Status:** Superseded — see [Epic 12: Painting Recipes](../12-painting-recipes/)
 **Branch:** `feature/painting-recipes`
 **Merge into:** `v1/main`
 
