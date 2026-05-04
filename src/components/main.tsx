@@ -5,19 +5,19 @@ type DefaultProps = {
   variant?: 'default'
   /** Additional classes merged on top of the default layout styles. */
   className?: string
-  children: ReactNode
+  children?: ReactNode
 }
 
 type CustomProps = {
   variant: 'custom'
   /** Required when variant is "custom" — replaces all default styles. */
   className: string
-  children: ReactNode
+  children?: ReactNode
 }
 
 type BlankProps = {
   variant: 'blank'
-  children: ReactNode
+  children?: ReactNode
 }
 
 type MainProps = DefaultProps | CustomProps | BlankProps
