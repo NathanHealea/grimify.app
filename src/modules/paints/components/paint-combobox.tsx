@@ -23,13 +23,16 @@ export function PaintCombobox({
   onSelect,
   placeholder = 'Search paints by name…',
   maxResults = 8,
+  initialQuery = '',
 }: {
   paints: ColorWheelPaint[]
   onSelect: (paint: ColorWheelPaint) => void
   placeholder?: string
   maxResults?: number
+  /** Pre-fills the search query, e.g. when a selection is cleared mid-typing. */
+  initialQuery?: string
 }) {
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(initialQuery)
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 

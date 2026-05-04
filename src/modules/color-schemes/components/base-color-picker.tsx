@@ -37,6 +37,7 @@ export function BaseColorPicker({
 }) {
   const [mode, setMode] = useState<Mode>('search')
   const [hexInput, setHexInput] = useState('')
+  const [pendingQuery, setPendingQuery] = useState('')
 
   function selectPaint(paint: ColorWheelPaint) {
     onChange({
@@ -90,20 +91,30 @@ export function BaseColorPicker({
                 aria-hidden="true"
               />
             </InputGroupAddon>
-            <InputGroupInput value={value.name ?? value.hex} readOnly />
+            <InputGroupInput
+              value={value.name ?? value.hex}
+              onChange={(e) => {
+                setPendingQuery(e.target.value)
+                onChange(null)
+              }}
+            />
             <InputGroupAddon align="inline-end">
               <InputGroupButton
                 aria-label="Clear selection"
                 title="Clear"
                 size="icon-xs"
-                onClick={() => onChange(null)}
+                onClick={() => { setPendingQuery(''); onChange(null) }}
               >
                 <X className="size-4" />
               </InputGroupButton>
             </InputGroupAddon>
           </InputGroup>
         ) : (
-          <PaintCombobox paints={paints} onSelect={selectPaint} />
+          <PaintCombobox
+            paints={paints}
+            onSelect={(paint) => { setPendingQuery(''); selectPaint(paint) }}
+            initialQuery={pendingQuery}
+          />
         )
       )}
 
