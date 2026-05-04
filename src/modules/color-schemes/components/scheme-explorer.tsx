@@ -18,11 +18,23 @@ import type { BaseColor } from '@/modules/color-schemes/types/base-color'
  * Derives the full set of scheme colors (with nearest paints) via useMemo.
  *
  * @param props.paints - Full paint list fetched server-side and passed as a prop.
+ * @param props.isAuthenticated - Whether the current user is signed in.
+ * @param props.collectionPaintIds - Array of paint IDs in the user's collection.
  */
-export function SchemeExplorer({ paints }: { paints: ColorWheelPaint[] }) {
+export function SchemeExplorer({
+  paints,
+  isAuthenticated,
+  collectionPaintIds,
+}: {
+  paints: ColorWheelPaint[]
+  isAuthenticated: boolean
+  collectionPaintIds: string[]
+}) {
   const [baseColor, setBaseColor] = useState<BaseColor | null>(null)
   const [activeScheme, setActiveScheme] = useState<ColorScheme>('complementary')
   const [analogousAngle, setAnalogousAngle] = useState(30)
+
+  const ownedIds = useMemo(() => new Set(collectionPaintIds), [collectionPaintIds])
 
   const schemeColors = useMemo(() => {
     if (!baseColor) return []
@@ -44,7 +56,7 @@ export function SchemeExplorer({ paints }: { paints: ColorWheelPaint[] }) {
             analogousAngle={analogousAngle}
             onAnalogousAngleChange={setAnalogousAngle}
           />
-          <SchemeSwatchGrid colors={schemeColors} />
+          <SchemeSwatchGrid colors={schemeColors} isAuthenticated={isAuthenticated} ownedIds={ownedIds} />
         </>
       )}
 

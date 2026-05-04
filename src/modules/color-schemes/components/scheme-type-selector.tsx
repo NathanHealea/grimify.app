@@ -31,8 +31,8 @@ export function SchemeTypeSelector({
   onAnalogousAngleChange: (angle: number) => void
 }) {
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap gap-1">
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-wrap gap-2">
         {SCHEMES.map((s) => (
           <Button
             key={s.value}
