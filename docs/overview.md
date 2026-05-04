@@ -50,6 +50,8 @@ Core functionality:
 8. User Management — Admin tools for managing roles, users, and profiles; requires authentication and roles
 9. Color Management — Admin CRUD for brands, hues, and paints with hue association management and constraint enforcement
 10. Purchase List — Let users bookmark paints they want to buy, with a dedicated dashboard and admin management interface
+11. Color Palettes — Personal palettes of paints (owned and not), built from any source, with drag/drop reorder, scheme integration, and hue-locked HSL swap
+12. Painting Recipes — Step-by-step painting guides with sections, paints per step, photos, freeform notes, and public sharing
 
 ## MVP Features (Epics)
 
@@ -144,8 +146,8 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Painting recipes (step-by-step color layering guides)](./07-community-social/00-painting-recipes.md)
-- [ ] [Curated palette sharing](./07-community-social/01-palette-sharing.md)
+- [ ] ~~[Painting recipes (step-by-step color layering guides)](./07-community-social/00-painting-recipes.md)~~ — superseded by [Epic: Painting Recipes](#epic-painting-recipes)
+- [ ] ~~[Curated palette sharing](./07-community-social/01-palette-sharing.md)~~ — superseded by [Epic: Color Palettes](#epic-color-palettes)
 - [ ] [Community feed and discovery](./07-community-social/02-community-feed.md)
 - [ ] [User profiles and shared collections](./07-community-social/03-user-profiles.md)
 
@@ -184,3 +186,28 @@ Core functionality:
 - [ ] [Purchase list toggle on paint cards](./10-purchase-list/01-purchase-list-toggle.md)
 - [ ] [Purchase list dashboard](./10-purchase-list/02-purchase-list-dashboard.md)
 - [ ] [Admin purchase list management](./10-purchase-list/03-admin-purchase-list-management.md)
+
+### Epic: Color Palettes
+
+**Goal:** Let users build personal palettes of paints (owned and not), assemble them from any source — including the color scheme explorer — drag/drop to reorder, and swap individual paints by saturation/lightness while preserving hue.
+
+**High-Level Scope:**
+
+- [ ] [Palette database schema and module scaffold](./11-color-palettes/00-palette-schema.md)
+- [ ] [Palette management (list, create, edit, delete)](./11-color-palettes/01-palette-management.md)
+- [ ] [Add to palette from paint cards and color schemes](./11-color-palettes/02-add-to-palette.md)
+- [ ] [Drag-and-drop palette reorder](./11-color-palettes/03-palette-reorder.md)
+- [ ] [Hue-locked HSL paint swap](./11-color-palettes/04-palette-hue-swap.md)
+
+### Epic: Painting Recipes
+
+**Goal:** Let users author step-by-step painting recipes — sections, steps with techniques and paints, freeform notes, photos at the recipe and step level — and share completed recipes publicly with discoverable browse and previewable share links.
+
+**High-Level Scope:**
+
+- [ ] [Recipe database schema and module scaffold](./12-painting-recipes/00-recipe-schema.md)
+- [ ] [Recipe builder (sections, steps, instructions)](./12-painting-recipes/01-recipe-builder.md)
+- [ ] [Recipe step paints (palette-aware picker, ratios)](./12-painting-recipes/02-recipe-step-paints.md)
+- [ ] [Recipe photos (upload, cover, lightbox)](./12-painting-recipes/03-recipe-photos.md)
+- [ ] [Recipe notes (multiple notes per recipe and per step)](./12-painting-recipes/04-recipe-notes.md)
+- [ ] [Public recipe sharing, browse, and OG previews](./12-painting-recipes/05-recipe-sharing.md)
