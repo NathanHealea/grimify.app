@@ -106,7 +106,7 @@ Core functionality:
 - [x] [HSL color wheel](./03-interactive-color-wheel/03-hls-color-wheel.md)
 - [x] [Color wheel zoom — paint marker scaling](./03-interactive-color-wheel/04-color-wheel-zoom-marker-scale.md)
 - [x] [HSL wheel — Itten segment boundary rendering](./03-interactive-color-wheel/05-hsl-wheel-itten-segment-rendering.md)
-- [ ] [Paint rendering refactor — groups, brand rings, and halos](./03-interactive-color-wheel/06-paint-rendering.md)
+- [x] [Paint rendering refactor — groups, brand rings, and halos](./03-interactive-color-wheel/06-paint-rendering.md)
 
 ### Epic: Cross-Brand Comparison
 
