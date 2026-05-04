@@ -9,7 +9,7 @@
  * of daisyUI's built-in theme system.
  *
  * Classes:
- *   Base:    .navbar        — Full-width flex container with bottom border (56px)
+ *   Base:    .navbar        — Full-width flex container with bottom border (h-14)
  *   Layout:  .navbar-start  — Left-aligned section (flex-1)
  *            .navbar-center — Center-aligned section
  *            .navbar-end    — Right-aligned section (flex-1, justify-end)
@@ -20,8 +20,7 @@
  * Base
  * ----------------------------------------------------------------------- */
 .navbar {
-  height: 56px;
-  @apply flex w-full items-center px-4
+  @apply flex h-14 w-full items-center px-4
     border-b border-border bg-background;
 }
 
