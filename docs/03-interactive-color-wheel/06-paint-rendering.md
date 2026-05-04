@@ -2,7 +2,7 @@
 
 **Epic:** Interactive Color Wheel
 **Type:** Refactor
-**Status:** Todo
+**Status:** Done
 **Branch:** `refactor/paint-rendering`
 **Merge into:** `v1/main`
 
@@ -31,18 +31,18 @@ This refactor brings the same group-based rendering into `src/modules/color-whee
 
 ## Acceptance Criteria
 
-- [ ] Paints sharing the same `hex` (case-insensitive) collapse into a single rendered dot
-- [ ] Multi-paint groups render a yellow count badge in the upper-right of the dot showing the paint count
-- [ ] Each dot is wrapped by a thin segmented arc band where each segment is colored by a unique brand from the group
-- [ ] Single-brand groups render a continuous brand ring (split into two halves for the degenerate full-circle case, matching the beta)
-- [ ] Authenticated users see a green halo around any group containing a paint they own
-- [ ] When a search query is active, matching groups render a yellow glow ring (using a Gaussian blur SVG filter) and non-matching groups are dimmed
-- [ ] When a color scheme is active, non-matching groups are dimmed (extra-dim when both scheme and search dim apply)
-- [ ] Brand ring visibility, owned ring visibility, and search input are exposed in `WheelFiltersPanel` and persist for the session
-- [ ] Selecting a group via click opens the existing `PaintDetailPanel` for the rep paint (multi-group still resolves to a single paint — see Open Decisions for the chosen behavior)
-- [ ] The selection ring scales with `r` to sit outside the brand ring when the brand ring is visible
-- [ ] All marker geometry continues to ignore `zoom` (matches current `paint-marker.tsx` behavior — markers stay constant in SVG units, just like the beta)
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Paints sharing the same `hex` (case-insensitive) collapse into a single rendered dot
+- [x] Multi-paint groups render a yellow count badge in the upper-right of the dot showing the paint count
+- [x] Each dot is wrapped by a thin segmented arc band where each segment is colored by a unique brand from the group
+- [x] Single-brand groups render a continuous brand ring (split into two halves for the degenerate full-circle case, matching the beta)
+- [x] Authenticated users see a green halo around any group containing a paint they own
+- [x] When a search query is active, matching groups render a yellow glow ring (using a Gaussian blur SVG filter) and non-matching groups are dimmed
+- [x] When a color scheme is active, non-matching groups are dimmed (extra-dim when both scheme and search dim apply)
+- [x] Brand ring visibility, owned ring visibility, and search input are exposed in `WheelFiltersPanel` and persist for the session
+- [x] Selecting a group via click opens the existing `PaintDetailPanel` for the rep paint (multi-group still resolves to a single paint — see Open Decisions for the chosen behavior)
+- [x] The selection ring scales with `r` to sit outside the brand ring when the brand ring is visible
+- [x] All marker geometry continues to ignore `zoom` (matches current `paint-marker.tsx` behavior — markers stay constant in SVG units, just like the beta)
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Affected Files
 
