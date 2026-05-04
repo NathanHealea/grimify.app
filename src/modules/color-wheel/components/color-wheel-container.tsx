@@ -5,7 +5,9 @@ import { useMemo, useState } from 'react'
 import { cn } from '@/lib/utils'
 import type { ColorWheelHue } from '@/modules/color-wheel/types/color-wheel-hue'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import { useWheelDisplayState } from '@/modules/color-wheel/hooks/use-wheel-display-state'
 import { useWheelFilters } from '@/modules/color-wheel/hooks/use-wheel-filters'
+import { useWheelSearch } from '@/modules/color-wheel/hooks/use-wheel-search'
 import { applyWheelFilters } from '@/modules/color-wheel/utils/apply-wheel-filters'
 import { deriveFilterOptions } from '@/modules/color-wheel/utils/derive-filter-options'
 import { WheelFiltersPanel } from './wheel-filters-panel'
@@ -39,6 +41,8 @@ export function ColorWheelContainer({
 
   const { state, setBrandIds, setProductLineIds, setPaintTypes, setOwnedOnly, clearAll, removeFilter } =
     useWheelFilters()
+  const { showBrandRing, showOwnedRing, setShowBrandRing, setShowOwnedRing } = useWheelDisplayState()
+  const { searchQuery, setSearchQuery, searchMatchIds } = useWheelSearch(paints)
 
   const filterOptions = useMemo(() => deriveFilterOptions(paints), [paints])
 
@@ -69,11 +73,17 @@ export function ColorWheelContainer({
       <WheelFiltersPanel
         options={filterOptions}
         state={state}
+        searchQuery={searchQuery}
         showOwnedFilter={userPaintIds !== undefined}
+        showBrandRing={showBrandRing}
+        showOwnedRing={showOwnedRing}
+        onSearchChange={setSearchQuery}
         onBrandChange={setBrandIds}
         onProductLineChange={setProductLineIds}
         onPaintTypeChange={setPaintTypes}
         onOwnedOnlyChange={setOwnedOnly}
+        onBrandRingChange={setShowBrandRing}
+        onOwnedRingChange={setShowOwnedRing}
         onClearAll={clearAll}
         onRemoveFilter={removeFilter}
       />
@@ -81,7 +91,13 @@ export function ColorWheelContainer({
       {view === 'munsell' ? (
         <MunsellColorWheel paints={filteredPaints} hues={hues} />
       ) : (
-        <HslColorWheel paints={filteredPaints} />
+        <HslColorWheel
+          paints={filteredPaints}
+          userPaintIds={userPaintIds}
+          searchMatchIds={searchMatchIds}
+          showBrandRing={showBrandRing}
+          showOwnedRing={showOwnedRing}
+        />
       )}
     </div>
   )

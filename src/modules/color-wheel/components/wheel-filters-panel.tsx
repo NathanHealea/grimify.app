@@ -10,39 +10,58 @@ import type { FilterOptions } from '@/modules/color-wheel/utils/derive-filter-op
 /**
  * Collapsible filter panel for the color wheel.
  *
- * Renders brand multi-select checkboxes, product line checkboxes (scoped to
- * selected brands), paint type toggles, and an optional "My collection" toggle.
+ * Renders a paint search input, brand multi-select checkboxes, product line
+ * checkboxes (scoped to selected brands), paint type toggles, an optional
+ * "My collection" toggle, and dot-decoration toggles (brand ring, owned ring).
  * Active filters are shown as removable chips below the toggle button and are
  * always visible regardless of open/closed state.
  *
  * @param options - Available filter options derived from the full paint array.
  * @param state - Current active filter selections.
+ * @param searchQuery - Current search query string.
  * @param showOwnedFilter - Whether to show the "My collection" toggle (true when user is authenticated).
+ * @param showBrandRing - Whether the brand-ring decoration is enabled.
+ * @param showOwnedRing - Whether the owned-ring decoration is enabled.
+ * @param onSearchChange - Called with the new query string when the search input changes.
  * @param onBrandChange - Called with the new brand ID array when brand selection changes.
  * @param onProductLineChange - Called with the new product line ID array when line selection changes.
  * @param onPaintTypeChange - Called with the new paint type array when type selection changes.
  * @param onOwnedOnlyChange - Called with the new boolean when the owned-only toggle changes.
+ * @param onBrandRingChange - Called with the new boolean when the brand-ring toggle changes.
+ * @param onOwnedRingChange - Called with the new boolean when the owned-ring toggle changes.
  * @param onClearAll - Called when the user clears all active filters.
  * @param onRemoveFilter - Called to remove a single active filter chip.
  */
 export function WheelFiltersPanel({
   options,
   state,
+  searchQuery,
   showOwnedFilter,
+  showBrandRing,
+  showOwnedRing,
+  onSearchChange,
   onBrandChange,
   onProductLineChange,
   onPaintTypeChange,
   onOwnedOnlyChange,
+  onBrandRingChange,
+  onOwnedRingChange,
   onClearAll,
   onRemoveFilter,
 }: {
   options: FilterOptions
   state: WheelFilterState
+  searchQuery: string
   showOwnedFilter: boolean
+  showBrandRing: boolean
+  showOwnedRing: boolean
+  onSearchChange: (query: string) => void
   onBrandChange: (ids: string[]) => void
   onProductLineChange: (ids: string[]) => void
   onPaintTypeChange: (types: string[]) => void
   onOwnedOnlyChange: (value: boolean) => void
+  onBrandRingChange: (value: boolean) => void
+  onOwnedRingChange: (value: boolean) => void
   onClearAll: () => void
   onRemoveFilter: (kind: 'brand' | 'line' | 'type' | 'owned', value?: string) => void
 }) {
@@ -87,6 +106,18 @@ export function WheelFiltersPanel({
 
   return (
     <div className="pointer-events-none absolute left-4 top-4 z-10 flex flex-col gap-2">
+      {/* Search input */}
+      <div className="pointer-events-auto">
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder="Search paints…"
+          className="input input-sm w-48 rounded-lg border border-border bg-background px-3 py-1.5 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+          aria-label="Search paints"
+        />
+      </div>
+
       {/* Toggle button row */}
       <div className="pointer-events-auto flex items-center gap-2">
         <button
@@ -196,6 +227,30 @@ export function WheelFiltersPanel({
               </label>
             </FilterSection>
           )}
+
+          {/* Dot decoration toggles */}
+          <FilterSection label="Display">
+            <label className="flex cursor-pointer items-center justify-between gap-2 text-sm">
+              <span>Brand ring</span>
+              <input
+                type="checkbox"
+                className="h-4 w-4 cursor-pointer accent-primary"
+                checked={showBrandRing}
+                onChange={(e) => onBrandRingChange(e.target.checked)}
+              />
+            </label>
+            {showOwnedFilter && (
+              <label className="flex cursor-pointer items-center justify-between gap-2 text-sm">
+                <span>Owned ring</span>
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 cursor-pointer accent-primary"
+                  checked={showOwnedRing}
+                  onChange={(e) => onOwnedRingChange(e.target.checked)}
+                />
+              </label>
+            )}
+          </FilterSection>
 
           {/* Active chip summary at bottom of open panel */}
           {activeCount > 0 && (
