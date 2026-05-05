@@ -15,6 +15,8 @@
 @import '../styles/navbar.css' layer(components);
 @import '../styles/sidebar.css' layer(components);
 @import '../styles/slider.css' layer(components);
+@import '../styles/dialog.css' layer(components);
+@import '../styles/popover.css' layer(components);
 
 @custom-variant dark (&:is(.dark *));
 
