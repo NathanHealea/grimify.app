@@ -1,14 +1,13 @@
 'use client'
 
-import { useId } from 'react'
+import { Slider } from '@/components/ui/slider'
 
 /**
  * A pair of dual-thumb range sliders for filtering paint candidates by
  * saturation range and lightness range (both 0–100).
  *
- * Each "dual-thumb" control is implemented with two overlapping
- * `<input type="range">` elements sharing the same track via CSS.
- * No external slider dependency is required.
+ * Each control uses the shadcn {@link Slider} (Radix UI) with two thumbs.
+ * A static tick mark shows the source paint's current value on each track.
  *
  * @param props.sRange - Current saturation range `[min, max]`.
  * @param props.lRange - Current lightness range `[min, max]`.
@@ -29,20 +28,15 @@ export function PaletteSwapSliders({
   currentL: number
   onChange: (next: { sRange: [number, number]; lRange: [number, number] }) => void
 }) {
-  const sId = useId()
-  const lId = useId()
-
   return (
     <div className="flex flex-col gap-4">
       <SliderControl
-        id={sId}
         label="Saturation"
         range={sRange}
         currentValue={currentS}
         onChange={(next) => onChange({ sRange: next, lRange })}
       />
       <SliderControl
-        id={lId}
         label="Lightness"
         range={lRange}
         currentValue={currentL}
@@ -53,69 +47,44 @@ export function PaletteSwapSliders({
 }
 
 function SliderControl({
-  id,
   label,
   range,
   currentValue,
   onChange,
 }: {
-  id: string
   label: string
   range: [number, number]
   currentValue: number
   onChange: (next: [number, number]) => void
 }) {
   const [min, max] = range
-  const tickPercent = currentValue
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
-        <label htmlFor={`${id}-min`} className="text-xs font-medium text-muted-foreground">
-          {label}
-        </label>
+        <span className="text-xs font-medium text-muted-foreground">{label}</span>
         <span className="text-xs text-muted-foreground">
           {min}–{max}
         </span>
       </div>
 
-      {/* Track container — positions two range inputs on top of each other */}
-      <div className="relative h-5" style={{ position: 'relative' }}>
+      {/* Track wrapper positions the tick mark relative to the slider track */}
+      <div className="relative">
         {/* Tick mark for the source paint's current value */}
         <div
-          className="absolute top-1/2 h-3 w-0.5 -translate-y-1/2 rounded-full bg-primary/60 pointer-events-none z-10"
-          style={{ left: `${tickPercent}%` }}
+          className="absolute top-1/2 h-3 w-0.5 -translate-y-1/2 rounded-full bg-primary/50 pointer-events-none z-10"
+          style={{ left: `${currentValue}%` }}
           aria-hidden
         />
-
-        {/* Min thumb */}
-        <input
-          id={`${id}-min`}
-          type="range"
+        <Slider
           min={0}
           max={100}
-          value={min}
-          onChange={(e) => {
-            const v = Number(e.target.value)
-            onChange([Math.min(v, max), max])
+          step={1}
+          value={range}
+          onValueChange={(v) => {
+            if (v.length === 2) onChange([v[0], v[1]])
           }}
-          className="range-thumb absolute inset-0 w-full appearance-none bg-transparent"
-          aria-label={`${label} minimum`}
-        />
-
-        {/* Max thumb */}
-        <input
-          id={`${id}-max`}
-          type="range"
-          min={0}
-          max={100}
-          value={max}
-          onChange={(e) => {
-            const v = Number(e.target.value)
-            onChange([min, Math.max(v, min)])
-          }}
-          className="range-thumb absolute inset-0 w-full appearance-none bg-transparent"
-          aria-label={`${label} maximum`}
+          aria-label={label}
         />
       </div>
     </div>
