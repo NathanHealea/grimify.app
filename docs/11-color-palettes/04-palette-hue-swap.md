@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/palette-hue-swap`
 **Merge into:** `v1/main`
 
@@ -14,16 +14,16 @@ This delivers the user's "change colors based on saturation and lightness, keepi
 
 ## Acceptance Criteria
 
-- [ ] Each row in the palette builder has a "Swap by hue" affordance (icon + label or menu item)
-- [ ] Clicking it opens a modal/popover showing same-hue candidate paints
-- [ ] Candidates are filtered to paints in the **same Munsell hue group** as the current slot's paint
-- [ ] Candidates are ranked by perceptual distance (CIE76 ΔE) to the current slot's hex
-- [ ] Saturation and lightness sliders narrow the candidate set (S range, L range, both default to full)
-- [ ] An "Owned only" toggle filters to the user's collection (visible because the user is signed in)
-- [ ] A live legend shows the current slot's hue/sat/lightness; the candidate list updates as sliders move
-- [ ] Selecting a candidate replaces the slot's `paint_id` (not the position); the swatch strip and row update immediately
-- [ ] If the current slot's paint has no hue group (edge case), the swap is disabled with an explanatory tooltip
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Each row in the palette builder has a "Swap by hue" affordance (icon + label or menu item)
+- [x] Clicking it opens a modal/popover showing same-hue candidate paints
+- [x] Candidates are filtered to paints in the **same Munsell hue group** as the current slot's paint
+- [x] Candidates are ranked by perceptual distance (CIE76 ΔE) to the current slot's hex
+- [x] Saturation and lightness sliders narrow the candidate set (S range, L range, both default to full)
+- [x] An "Owned only" toggle filters to the user's collection (visible because the user is signed in)
+- [x] A live legend shows the current slot's hue/sat/lightness; the candidate list updates as sliders move
+- [x] Selecting a candidate replaces the slot's `paint_id` (not the position); the swatch strip and row update immediately
+- [x] If the current slot's paint has no hue group (edge case), the swap is disabled with an explanatory tooltip
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Module additions
 
