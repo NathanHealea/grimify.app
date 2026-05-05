@@ -4,6 +4,7 @@ import type { Palette } from '@/modules/palettes/types/palette'
 import type { PalettePaint } from '@/modules/palettes/types/palette-paint'
 import type { PaletteSummary } from '@/modules/palettes/types/palette-summary'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import { normalizePalettePositions } from '@/modules/palettes/utils/normalize-palette-positions'
 
 /**
  * Creates a palette service bound to the given Supabase client.
@@ -304,6 +305,63 @@ export function createPaletteService(supabase: SupabaseClient) {
 
       if (error) return { error: error.message }
       return {}
+    },
+
+    /**
+     * Appends a single paint to the end of a palette.
+     *
+     * Loads the current slots, appends the new entry, normalizes positions,
+     * then atomically replaces via {@link setPalettePaints}. Mirrors the
+     * read-modify-write pattern used by `removePalettePaint`.
+     *
+     * @param paletteId - UUID of the palette to modify.
+     * @param paintId - UUID of the paint to append.
+     * @param note - Optional per-slot note (left blank when not provided).
+     * @returns An object with an optional `error` string on failure.
+     */
+    async appendPaintToPalette(
+      paletteId: string,
+      paintId: string,
+      note?: string | null,
+    ): Promise<{ error?: string }> {
+      const palette = await this.getPaletteById(paletteId)
+      if (!palette) return { error: 'Palette not found.' }
+
+      const next = normalizePalettePositions([
+        ...palette.paints,
+        { position: palette.paints.length, paintId, note: note ?? null },
+      ])
+
+      return this.setPalettePaints(paletteId, next)
+    },
+
+    /**
+     * Appends an ordered list of paints to the end of a palette in one transaction.
+     *
+     * Loads the current slots, appends all entries in order, normalizes positions,
+     * then atomically replaces via {@link setPalettePaints}.
+     *
+     * @param paletteId - UUID of the palette to modify.
+     * @param paintIds - Ordered list of paint UUIDs to append.
+     * @returns An object with an optional `error` string on failure.
+     */
+    async appendPaintsToPalette(
+      paletteId: string,
+      paintIds: string[],
+    ): Promise<{ error?: string }> {
+      const palette = await this.getPaletteById(paletteId)
+      if (!palette) return { error: 'Palette not found.' }
+
+      const base = palette.paints.length
+      const additions = paintIds.map((id, i) => ({
+        position: base + i,
+        paintId: id,
+        note: null as string | null,
+      }))
+
+      const next = normalizePalettePositions([...palette.paints, ...additions])
+
+      return this.setPalettePaints(paletteId, next)
     },
   }
 }
