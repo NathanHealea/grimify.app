@@ -6,6 +6,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { removePalettePaint } from '@/modules/palettes/actions/remove-palette-paint'
 import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
+import { PaletteSwapButton } from '@/modules/palettes/components/palette-swap-button'
 
 /**
  * A single row in a palette's paint list.
@@ -90,23 +91,26 @@ export function PalettePaintRow({
         )}
       </div>
       {canEdit && (
-        // bind pre-fills paletteId+position; cast required because TS form action
-        // type demands void return but the action returns { error? } for programmatic use.
-        <form
-          action={
-            removePalettePaint.bind(null, paletteId, position) as unknown as (
-              formData: FormData
-            ) => Promise<void>
-          }
-        >
-          <button
-            type="submit"
-            className="btn btn-sm btn-ghost text-destructive hover:text-destructive"
-            aria-label={`Remove ${paint.name}`}
+        <div className="flex items-center gap-1">
+          <PaletteSwapButton paletteId={paletteId} position={position} paint={paint} />
+          {/* bind pre-fills paletteId+position; cast required because TS form action
+              type demands void return but the action returns { error? } for programmatic use. */}
+          <form
+            action={
+              removePalettePaint.bind(null, paletteId, position) as unknown as (
+                formData: FormData
+              ) => Promise<void>
+            }
           >
-            Remove
-          </button>
-        </form>
+            <button
+              type="submit"
+              className="btn btn-sm btn-ghost text-destructive hover:text-destructive"
+              aria-label={`Remove ${paint.name}`}
+            >
+              Remove
+            </button>
+          </form>
+        </div>
       )}
     </div>
   )
