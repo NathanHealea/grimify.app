@@ -198,6 +198,7 @@ Core functionality:
 - [x] [Add to palette from paint cards and color schemes](./11-color-palettes/02-add-to-palette.md)
 - [x] [Drag-and-drop palette reorder](./11-color-palettes/03-palette-reorder.md)
 - [ ] [Hue-locked HSL paint swap](./11-color-palettes/04-palette-hue-swap.md)
+- [ ] [Palette description markdown editor](./11-color-palettes/05-palette-description-markdown.md)
 
 ### Epic: Painting Recipes
 

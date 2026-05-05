@@ -28,128 +28,246 @@ This delivers the user's "change colors based on saturation and lightness, keepi
 ## Module additions
 
 ```
+src/modules/color-wheel/
+└── utils/
+    ├── hex-to-lab.ts                     NEW — sRGB→XYZ→CIE Lab (D65)
+    └── delta-e76.ts                      NEW — CIE76 ΔE between two Lab triples
+
+src/modules/paints/
+└── services/
+    └── paint-service.ts                  MODIFY — add listColorWheelPaintsByHueGroup(parentHueId)
+
 src/modules/palettes/
 ├── actions/
-│   └── swap-palette-paint.ts             NEW — replaces a slot's paint_id
+│   ├── get-hue-swap-candidates.ts        NEW — server action: same-hue candidates + ownedIds
+│   └── swap-palette-paint.ts             NEW — replaces a slot's paint_id by position
 ├── components/
-│   ├── palette-swap-button.tsx           NEW — trigger for the swap UI
-│   ├── palette-swap-dialog.tsx           NEW — modal/popover with candidate grid
-│   ├── palette-swap-candidate-card.tsx   NEW — single candidate tile with swatch + ΔE badge
-│   └── palette-swap-sliders.tsx          NEW — S range + L range dual-thumb sliders
+│   ├── palette-paint-row.tsx             MODIFY — mount <PaletteSwapButton> next to remove
+│   ├── palette-swap-button.tsx           NEW — trigger that opens the dialog
+│   ├── palette-swap-dialog.tsx           NEW — native <dialog> with sliders + candidate grid
+│   ├── palette-swap-candidate-card.tsx   NEW — candidate tile (swatch, name, brand, ΔE badge)
+│   └── palette-swap-sliders.tsx          NEW — dual-thumb S range + L range
 └── utils/
-    ├── filter-paints-by-hue-group.ts     NEW — gates candidates by hue group
-    ├── rank-paints-by-delta-e.ts         NEW — same as scheme matcher; reuses delta-e
-    └── filter-paints-by-hsl-range.ts     NEW — keeps paints whose S/L falls in [min,max]
+    ├── resolve-principal-hue-id.ts       NEW — given a hue_id, returns the principal hue id
+    ├── filter-paints-by-hsl-range.ts     NEW — keeps paints whose S/L falls in [min,max]
+    └── rank-paints-by-delta-e.ts         NEW — Lab-cached ΔE76 ranker against a target hex
 ```
 
 ## Key Files
 
 | Action | File                                                                | Description                                                              |
 | ------ | ------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Create | `src/modules/palettes/actions/swap-palette-paint.ts`                | Updates `palette_paints.paint_id` for a slot                             |
-| Create | `src/modules/palettes/components/palette-swap-button.tsx`           | Icon-only button on each row; "Swap by hue"                              |
-| Create | `src/modules/palettes/components/palette-swap-dialog.tsx`           | Modal with sliders, owned toggle, candidate grid                         |
-| Create | `src/modules/palettes/components/palette-swap-candidate-card.tsx`   | Reuses `CollectionPaintCard`; overlays `ΔE n.n`                          |
-| Create | `src/modules/palettes/components/palette-swap-sliders.tsx`          | Daisy-style range sliders (`input range`); dual-thumb via two inputs     |
-| Create | `src/modules/palettes/utils/filter-paints-by-hue-group.ts`          | Returns paints sharing a Munsell hue group                               |
+| Create | `src/modules/color-wheel/utils/hex-to-lab.ts`                       | Pure function `hexToLab(hex)`; sRGB→XYZ→Lab (D65 white point)            |
+| Create | `src/modules/color-wheel/utils/delta-e76.ts`                        | Pure function `deltaE76(a, b)`; Euclidean distance in Lab                |
+| Modify | `src/modules/paints/services/paint-service.ts`                      | Add `listColorWheelPaintsByHueGroup(parentHueId)` returning `ColorWheelPaint[]` |
+| Create | `src/modules/palettes/actions/get-hue-swap-candidates.ts`           | Server action; resolves principal hue, returns candidates + owned ids    |
+| Create | `src/modules/palettes/actions/swap-palette-paint.ts`                | Server action; read-modify-write via `setPalettePaints` to replace one position's `paintId` |
+| Create | `src/modules/palettes/components/palette-swap-button.tsx`           | Icon-only button on each row; disabled when `paint.hue_id` is null       |
+| Create | `src/modules/palettes/components/palette-swap-dialog.tsx`           | Native `<dialog>` with sliders, owned toggle, candidate grid             |
+| Create | `src/modules/palettes/components/palette-swap-candidate-card.tsx`   | Single candidate tile with swatch, name, brand, and ΔE badge             |
+| Create | `src/modules/palettes/components/palette-swap-sliders.tsx`          | Two `<input type="range">` overlays for S and L ranges                   |
+| Create | `src/modules/palettes/utils/resolve-principal-hue-id.ts`            | Returns `parent_id ?? id` for a given hue id                             |
 | Create | `src/modules/palettes/utils/filter-paints-by-hsl-range.ts`          | Filters by S range and L range                                           |
-| Create | `src/modules/palettes/utils/rank-paints-by-delta-e.ts`              | Wraps `findMatchingPaints`-style ranker; returns ordered ΔE list         |
+| Create | `src/modules/palettes/utils/rank-paints-by-delta-e.ts`              | Caches `hexToLab` per paint id; returns ordered `{ paint, deltaE }` list |
 | Modify | `src/modules/palettes/components/palette-paint-row.tsx`             | Mounts `<PaletteSwapButton>` next to the existing remove + drag handle   |
 
 ## Implementation
 
-### 1. "Same hue" definition
+The work groups into four ordered phases: **(A) primitives**, **(B) data layer**, **(C) UI**, **(D) wire-up**. Phases A–B are pure / server-side and have no UI dependencies, so they can land first as a foundation. Phase C builds the dialog against mock data; Phase D mounts the trigger on the row.
 
-The Munsell-hue refactor in `02-paint-data-search/04-munsell-hue-refactor.md` already gives every paint a hue assignment. Use whichever existing field/relation it lands on (likely a `hue_id` on `paints` or a linked row in a `paint_hues` table — confirm at implementation time). "Same hue" means **same hue group**, not "same hue spoke". Examples: a "Blue" hue group includes its tints and shades; a "Yellow-Green" group includes its tints and shades.
+### Phase A — Color math primitives
 
-`filterPaintsByHueGroup(currentPaint, allPaints)` returns paints whose hue group matches the current paint's hue group. If the current paint has no hue assigned, the function returns an empty array — the swap UI handles this by disabling the trigger.
+The codebase has `hexToHsl` / `hslToHex` but **no Lab or ΔE helpers** yet. Add them to `color-wheel/utils/` so this feature and any future near-match work share one source.
 
-### 2. Sat/light filtering
+#### A1. `hex-to-lab.ts`
 
-Each paint already exposes `hex`. Convert to HSL once via `hexToHsl` (already in `color-wheel/utils`). `filterPaintsByHslRange(paints, { sMin, sMax, lMin, lMax })` keeps paints whose `s ∈ [sMin, sMax]` and `l ∈ [lMin, lMax]`.
+Export `hexToLab(hex: string): { L: number; a: number; b: number }`. Standard sRGB → linear → XYZ (D65) → CIE Lab pipeline. Pure function, no React, no side effects.
 
-The slider component renders two dual-thumb ranges:
+#### A2. `delta-e76.ts`
 
-- **Saturation**: 0–100, default `[0, 100]`
-- **Lightness**: 0–100, default `[0, 100]`
+Export `deltaE76(a: Lab, b: Lab): number`. Euclidean distance in Lab — `sqrt(ΔL² + Δa² + Δb²)`. Two-line function. CIE76 is intentionally chosen over CIEDE2000: cheap, monotone enough for ranking, and matches what the doc commits to.
 
-Both also display the current slot's value as a tick mark on the slider track so users can see where they're starting.
+### Phase B — Data layer
 
-### 3. Ranking
+#### B1. Hue group resolution — `src/modules/palettes/utils/resolve-principal-hue-id.ts`
 
-After the hue and HSL filters narrow the set, `rankPaintsByDeltaE(target.hex, candidates, limit)` orders by ΔE76 (reuse `hex-to-lab.ts` and `delta-e.ts` from `color-wheel/utils/`, already shipped by `02-scheme-to-paints`). Default limit `40` — high enough that sliders rarely cut the result to zero, low enough to keep render cheap.
+`paints.hue_id` may reference either a top-level Munsell principal (`parent_id IS NULL`) or an ISCC-NBS sub-hue (`parent_id` set). The "hue group" is **the principal plus all its sub-hues**. Helper signature:
 
-### 4. Trigger and dialog
-
-`PaletteSwapButton`:
-
-- Lives on each `PalettePaintRow` next to the remove button and drag handle
-- Disabled (greyed) when the current paint has no hue group; tooltip explains why
-- Click opens `<PaletteSwapDialog>` rooted at the row's slot id
-
-`PaletteSwapDialog`:
-
-- Header: current slot's swatch + paint name + "Hue group: {group}"
-- Sliders: `<PaletteSwapSliders>`
-- Filters row: "Owned only" toggle (default off), "Brand" multi-select (optional v1; defer if it crowds)
-- Body: scrollable grid of `<PaletteSwapCandidateCard>`s
-- Footer: cancel + close on selection
-
-State lives in the dialog (not the row): `{ sRange, lRange, ownedOnly }`. Computing the candidate list:
-
+```ts
+resolvePrincipalHueId(hueService, hueId: string): Promise<string | null>
 ```
-candidates = pipe(
-  allPaints,
-  filterPaintsByHueGroup(currentPaint),
-  filterPaintsByHslRange({ sRange, lRange }),
-  ownedOnly ? filter(p => ownedIds.has(p.id)) : identity,
-  rankPaintsByDeltaE(currentPaint.hex, _, 40)
+
+Loads the hue via `hueService.getHueById`; returns `parent_id ?? id`. Returns `null` if the hue is missing.
+
+#### B2. Paint service method — `listColorWheelPaintsByHueGroup`
+
+Add a method on `paint-service.ts`:
+
+```ts
+listColorWheelPaintsByHueGroup(parentHueId: string): Promise<ColorWheelPaint[]>
+```
+
+Implementation:
+
+1. Query `hues` for `id` where `parent_id = parentHueId` to get child sub-hue ids; include `parentHueId` itself in the set so paints whose `hue_id` points directly at the principal are also returned.
+2. Query `paints` joined to `product_lines(brands)` filtered by `hue_id IN (ids)`.
+3. Map rows to `ColorWheelPaint` shape (same mapping used in `palette-service.getPaletteById`). Returning the wheel-paint shape — not `PaintWithBrand` — keeps the dialog and row using identical types.
+
+#### B3. Pure filters / ranker — `src/modules/palettes/utils/`
+
+- `filter-paints-by-hsl-range.ts` — `filterPaintsByHslRange(paints, { sMin, sMax, lMin, lMax }): ColorWheelPaint[]`. Reads `paint.saturation` and `paint.lightness` directly (already on `ColorWheelPaint` in 0–100). No hex-to-HSL conversion needed.
+- `rank-paints-by-delta-e.ts` — `rankPaintsByDeltaE(targetHex, paints, limit = 40): { paint: ColorWheelPaint; deltaE: number }[]`. Internal `Map<paintId, Lab>` cache so re-ranks during slider movement don't re-run `hexToLab` per paint.
+
+### Phase C — UI components
+
+#### C1. `palette-swap-sliders.tsx`
+
+Two side-by-side controls, each a dual-thumb range over 0–100. v1 implementation: two overlapping `<input type="range">`s with custom track CSS (per the existing risk note — avoids a dependency). Each control renders the current slot's value as a static tick mark on the track for orientation. Emits `{ sRange: [number, number]; lRange: [number, number] }`.
+
+#### C2. `palette-swap-candidate-card.tsx`
+
+Compact tile, not full `CollectionPaintCard` (which is built around the catalogue grid layout). Shape:
+
+- 40×40 swatch
+- Paint name (truncated)
+- Brand : product line line (xs muted)
+- ΔE badge top-right (`ΔE 3.2`)
+- "Owned" pill if `ownedIds.has(paint.id)` and the user is signed in
+
+Click handler: `onSelect(paint.id)`. Visual hover state.
+
+#### C3. `palette-swap-dialog.tsx`
+
+Native `<dialog>` element using the pattern in `src/modules/user/components/delete-user-dialog.tsx` (`ref.showModal()` / `ref.close()`, `backdrop:bg-black/40`). Props:
+
+```ts
+type Props = {
+  paletteId: string
+  position: number
+  paint: ColorWheelPaint        // current slot paint (must have non-null hue_id)
+  open: boolean
+  onClose: () => void
+  onSwapped: () => void          // parent re-renders / shows confirmation
+}
+```
+
+Internal state: `{ sRange, lRange, ownedOnly }`. On mount (or when `open` flips true), call `getHueSwapCandidates({ paletteId, position })` once and stash `{ candidates, ownedIds, hueGroupName }` in `useState`. Re-rank/filter pure-locally as state changes:
+
+```ts
+const visible = pipe(
+  candidates,
+  (xs) => filterPaintsByHslRange(xs, { sMin: sRange[0], sMax: sRange[1], lMin: lRange[0], lMax: lRange[1] }),
+  (xs) => (ownedOnly ? xs.filter((p) => ownedIds.has(p.id)) : xs),
+  (xs) => rankPaintsByDeltaE(paint.hex, xs, 40),
 )
 ```
 
-### 5. Selection behavior
+Header: 32×32 swatch + paint name + `Hue group: {hueGroupName}`. Sliders region. "Owned only" toggle (only rendered if user is signed in — gate via the `ownedIds` payload presence). Body: scrollable `grid grid-cols-2 sm:grid-cols-3` of candidate cards.
 
-Clicking a candidate calls `swapPalettePaint(paletteId, slotId, newPaintId)`:
+Empty states:
+- While the candidate fetch is pending: skeleton grid.
+- Filters narrow to zero: muted line `"No same-hue paints match these ranges. Try widening saturation or lightness."` — or `"No paints in your collection match these ranges."` if `ownedOnly` is on.
 
-1. Verifies ownership (RLS too)
-2. `UPDATE palette_paints SET paint_id = $1 WHERE slot_id = $2`
-3. `revalidatePath('/palettes/{id}/edit')`
-4. Returns `{ ok: true }`; the dialog closes and the row re-renders with the new paint
+On candidate select: call `swapPalettePaint(paletteId, position, newPaintId)`; on `{ error }` show inline `aria-live="polite"` error and stay open; on success call `onSwapped()` then `onClose()`.
 
-The slot's `position`, `note`, and `slot_id` are preserved — only `paint_id` changes. This is important for any downstream features that reference slot identity (e.g., recipe step paints).
+#### C4. `palette-swap-button.tsx`
 
-### 6. Loading / empty states
+Icon-only `btn btn-ghost btn-xs btn-square`. Lucide `Replace` icon. Default `aria-label="Swap by hue"`. Props:
 
-- While `allPaints` for the wheel are not yet loaded, show a skeleton candidate grid
-- If filters narrow to zero results, show a single muted line: "No same-hue paints match these ranges. Try widening saturation or lightness."
-- If owned-only is on but the user owns nothing in this hue group, the empty state mentions the owned filter explicitly
+```ts
+type Props = {
+  paletteId: string
+  position: number
+  paint: ColorWheelPaint
+}
+```
 
-### 7. Where the candidate list comes from
+If `paint.hue_id == null`, render the button with `disabled` and a `title` tooltip: `"This paint has no hue assigned and can't be swapped by hue."` Otherwise click flips `open` for a `<PaletteSwapDialog>` it owns.
 
-The dialog needs the full paint set (not just owned). Reuse the same loader path the wheel uses — most likely a server-fetched, cached `getColorWheelPaints` already exposed through the wheel module. Pass the result down through the builder so the dialog doesn't re-fetch per row.
+### Phase D — Server actions
 
-### 8. Manual QA checklist
+#### D1. `get-hue-swap-candidates.ts`
 
-- Open the swap dialog on a blue paint — only blue-group paints render
-- Move sat slider to `[0, 30]` — only desaturated blues remain; ΔE values rise as candidates drift
-- Move lightness slider to `[60, 100]` — only light blues remain
-- Toggle "Owned only" — narrows further; numbers shrink
-- Select a candidate — row updates instantly; refresh confirms persistence
-- Try the swap on a paint with no hue assigned — button is disabled with tooltip
-- Saving same paint as before is a no-op (allow it; user gesture, no error)
-- `npm run build` + `npm run lint`
+```ts
+async function getHueSwapCandidates(input: {
+  paletteId: string
+  position: number
+}): Promise<
+  | { error: string }
+  | {
+      candidates: ColorWheelPaint[]
+      ownedIds: string[]              // marshaled to client; client wraps in Set
+      hueGroupName: string
+    }
+>
+```
+
+1. Auth: `supabase.auth.getUser()` — return error if signed out.
+2. Load palette via `paletteService.getPaletteById(paletteId)`. Verify `palette.userId === user.id`.
+3. Read `palette.paints[position]` to get the source paint. Return error if out of range or `paint.hue_id` is null.
+4. `principalHueId = await resolvePrincipalHueId(hueService, paint.hue_id)`. Return error if null.
+5. Load `principalHue.name` for the dialog header (`hueService.getHueById(principalHueId).name`).
+6. `candidates = await paintService.listColorWheelPaintsByHueGroup(principalHueId)`.
+7. `ownedIds = Array.from(await collectionService.getUserPaintIds(user.id))`.
+8. Return `{ candidates, ownedIds, hueGroupName: principalHue.name }`.
+
+#### D2. `swap-palette-paint.ts`
+
+Mirrors `appendPaintToPalette` (read-modify-write via `setPalettePaints`):
+
+```ts
+async function swapPalettePaint(
+  paletteId: string,
+  position: number,
+  newPaintId: string,
+): Promise<{ error: string } | undefined>
+```
+
+1. Validate inputs (non-empty strings, integer `position >= 0`).
+2. Auth: signed in.
+3. Load palette; verify ownership.
+4. Validate `position` in range (`0 <= position < paints.length`).
+5. If `paints[position].paintId === newPaintId`, return `undefined` (no-op success — see Risks: "Saving same paint is a no-op").
+6. *(Optional v1 hardening — defer if pure UI gating is judged sufficient)*: load the new paint via paint-service, resolve its principal hue, compare against the source paint's principal hue, return error on mismatch. The UI never offers a cross-group candidate, so this is defense-in-depth for direct API calls; consider implementing only if RLS/policy doesn't already block out-of-set writes.
+7. Build the next slot list: clone `palette.paints`, replace `[position].paintId = newPaintId`, preserve `note`. Pass through `normalizePalettePositions`.
+8. `await service.setPalettePaints(paletteId, normalized)`. Return `{ error }` if it fails.
+9. `revalidatePath('/palettes/{paletteId}')` and `revalidatePath('/palettes/{paletteId}/edit')`.
+
+### Phase E — Wire-up
+
+#### E1. Mount the button on `palette-paint-row.tsx`
+
+Render `<PaletteSwapButton paletteId={paletteId} position={position} paint={paint} />` immediately before the existing `<form>` that mounts the remove button (so visual order is: drag handle → swatch → name/brand/note → swap → remove). The button manages its own dialog state, so the row stays simple. No prop signature change needed for `PalettePaintList` — `position` and `paint` are already in scope.
+
+#### E2. Optimistic UX (defer to v1.1 if scope creeps)
+
+Server-action revalidation will refresh the row after a few hundred ms. v1 ships without optimistic update — the dialog closes, the page revalidates. If feedback requests a smoother feel, lift `paints` state into `palette-paint-list.tsx` and apply the swap optimistically before the action resolves, mirroring the rollback pattern already used for reorder.
+
+### Manual QA
+
+- Open the swap dialog on a blue paint — only blue-group paints render in the grid; header reads `Hue group: Blue` (or whichever principal name applies).
+- Move sat slider to `[0, 30]` — only desaturated blues remain; ΔE values rise as candidates drift further from the source.
+- Move lightness slider to `[60, 100]` — only light blues remain.
+- Toggle "Owned only" — narrows further; "Owned" pills are visible on remaining cards.
+- Select a candidate — dialog closes, row re-renders with the new paint, position and note preserved.
+- Try the swap on a paint with `hue_id = null` — button is disabled with tooltip, dialog never opens.
+- Click swap, change nothing, close — state unchanged; no errors.
+- Direct call with the same paintId already in the slot — returns success no-op.
+- `npm run build` + `npm run lint`.
 
 ## Risks & Considerations
 
-- **Hue group field is not yet stable**: The Munsell hue refactor sets the data shape this feature relies on. Confirm at implementation time which column/relation surfaces the hue group, and adjust the filter helper accordingly. If it changes mid-flight, only `filterPaintsByHueGroup` needs updating.
-- **Dual-thumb sliders without a library**: Daisy + Tailwind doesn't ship a native two-thumb range. The simplest approach is two `<input type="range">` overlapping, with custom track CSS. If that gets fiddly, drop in a single tiny dependency (e.g., `react-range`) — keep the swap behind that import boundary.
-- **Performance**: Hue + HSL filters + Lab conversion run client-side over the full paint set per slider movement. Cache `hexToLab(paint.hex)` per paint with a simple `Map` keyed by paint id — avoids re-computing Lab per slider tick.
-- **"Same hue" ambiguity**: A user might expect "same hue" to mean "exact hue spoke" (e.g., 7.5R in Munsell). v1 uses the broader hue **group** because the existing UI talks in groups (Itten/Munsell wheel segments). If feedback says it's too loose, add a "Strict hue" toggle in a v2.
-- **Slot identity preservation**: Swapping `paint_id` keeps the slot stable — important for `recipe_step_paints` (Epic 12), where a recipe step references a `palette_slot_id`. If we ever change the swap to delete + reinsert, that breaks the recipe linkage; keep the in-place update.
-- **Off-database custom colors (deferred)**: True painter intent is sometimes "I want this exact custom mix." That requires a `custom_hex` column and is explicitly out of scope here — see the `00-palette-schema` "Future custom hex slots" note.
+- **Munsell hue model confirmed, but `hue_id` may be null**: `paints.hue_id` references the self-referencing `hues` table; principals have `parent_id IS NULL`, sub-hues have it set. The "hue group" is the principal plus all its sub-hues. Some paints — especially low-saturation/neutral entries — may have `hue_id = null`; the swap button is disabled with a tooltip in that case.
+- **Lab + ΔE primitives don't exist yet**: contrary to the original draft, `color-wheel/utils/` ships `hex-to-hsl.ts` and `hsl-to-hex.ts` but no Lab or ΔE helpers. Phase A adds them. Keep them under `color-wheel/utils/` so `04-cross-brand-comparison` can reuse them later instead of duplicating.
+- **Dual-thumb sliders without a library**: Tailwind doesn't ship a native two-thumb range. The simplest approach is two overlapping `<input type="range">` with custom track CSS. If that gets fiddly, drop in a single tiny dependency (e.g., `react-range`) — keep the swap behind that import boundary so it can be removed later.
+- **Performance**: HSL filtering + Lab ranking run client-side over the candidate set on every slider tick. The candidate set is hue-group-scoped (typically <100 paints), not the full database, so the cost is bounded. The ranker still caches `hexToLab(paint.hex)` in a `Map` keyed by paint id to avoid recomputing Lab between renders.
+- **"Same hue" ambiguity**: a user might expect "same hue" to mean "exact ISCC-NBS sub-hue" (e.g., 7.5R). v1 uses the broader principal hue **group** because the wheel UI already talks in those groups. If feedback says it's too loose, add a "Strict hue" toggle in v2 that narrows to `paint.hue_id == source.hue_id`.
+- **No persistent slot identity**: the `palette_paints` schema is `(palette_id, position)` composite — there is no `slot_id` column. Swap is implemented as read-modify-write via `setPalettePaints` / `replace_palette_paints` RPC, the same pattern used by `appendPaintToPalette`. Position and note are preserved across the swap. **Implication for Epic 12**: `recipe_step_paints` will need either to reference paints directly or a future migration that introduces a stable slot id; revisit when that epic lands.
+- **Off-database custom colors (deferred)**: true painter intent is sometimes "I want this exact custom mix." That requires a `custom_hex` column and is explicitly out of scope here — see the `00-palette-schema` "Future custom hex slots" note.
 
 ## Notes
 
-- This feature depends on `00-palette-schema` (need slot ids, which were added in `03-palette-reorder`'s migration). Sequence: 00 → 01 → 02 → 03 → 04.
-- The Munsell hue group lookup is shared with the color-wheel module — keep the helper in `palettes/utils/` for now; if Cross-Brand Comparison or another feature needs the same filter, promote it to `color-wheel/utils/`.
-- Color-math primitives (`hexToLab`, `deltaE76`) are already shipped by `02-scheme-to-paints`. No new color math needed here.
+- This feature depends only on the existing `palette_paints` schema and the Munsell hue refactor (already shipped in `02-paint-data-search/04-munsell-hue-refactor.md`). No DB migration needed for this feature.
+- Sequence within Epic 11: 00 → 01 → 02 → 03 → 04.
+- The `listColorWheelPaintsByHueGroup` query lives in `paint-service.ts` (paints module) so it sits next to existing same-shape queries; the palette-side utilities (`resolvePrincipalHueId`, `filterPaintsByHslRange`, `rankPaintsByDeltaE`) stay in `palettes/utils/` until a second consumer needs them.
+- Color-math primitives (`hexToLab`, `deltaE76`) are introduced by this feature and live in `color-wheel/utils/` — `04-cross-brand-comparison` should depend on these rather than re-implementing.
