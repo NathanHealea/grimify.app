@@ -2,13 +2,15 @@
 
 import { PaintCard } from '@/modules/paints/components/paint-card'
 import { CollectionToggle } from '@/modules/collection/components/collection-toggle'
+import { AddToPaletteButton } from '@/modules/palettes/components/add-to-palette-button'
 
 /**
- * A paint card with a collection toggle overlaid at the top-right corner.
+ * A paint card with a collection toggle and add-to-palette button overlaid at the top-right.
  *
  * Wraps {@link PaintCard} in a `relative` container and absolutely positions
- * a {@link CollectionToggle} so the full card remains clickable as a link while
- * the toggle intercepts its own clicks (via `stopPropagation` + `preventDefault`).
+ * a {@link CollectionToggle} and {@link AddToPaletteButton} so the full card
+ * remains clickable as a link while each button intercepts its own clicks
+ * (via `stopPropagation` + `preventDefault`).
  *
  * @param props.id - The paint's database UUID.
  * @param props.name - The display name of the paint.
@@ -58,6 +60,12 @@ export function CollectionPaintCard({
         size="sm"
         revalidatePath={revalidatePath}
         className="absolute right-1 top-1"
+      />
+      <AddToPaletteButton
+        paintId={id}
+        variant="icon"
+        isAuthenticated={isAuthenticated}
+        className="absolute right-1 top-9"
       />
     </div>
   )
