@@ -11,7 +11,8 @@ import { PaletteSwapDialog } from '@/modules/palettes/components/palette-swap-di
  *
  * Disabled with an explanatory tooltip when `paint.hue_id` is null — those
  * paints have no hue group and cannot be swapped by hue. The button owns the
- * {@link PaletteSwapDialog} state so the parent row stays stateless.
+ * {@link PaletteSwapDialog} state; the dialog is conditionally mounted so its
+ * state resets automatically on each open.
  *
  * @param props.paletteId - UUID of the owning palette.
  * @param props.position - 0-based slot index for this row.
@@ -46,12 +47,13 @@ export function PaletteSwapButton({
         <Replace className="size-3.5" />
       </button>
 
-      {!disabled && (
+      {/* Dialog is conditionally mounted so its local state (fetch result, sliders)
+          resets automatically each time the user opens it. */}
+      {!disabled && open && (
         <PaletteSwapDialog
           paletteId={paletteId}
           position={position}
           paint={paint}
-          open={open}
           onClose={() => setOpen(false)}
           onSwapped={() => setOpen(false)}
         />

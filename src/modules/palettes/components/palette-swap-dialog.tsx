@@ -10,18 +10,30 @@ import { PaletteSwapSliders } from '@/modules/palettes/components/palette-swap-s
 import { filterPaintsByHslRange } from '@/modules/palettes/utils/filter-paints-by-hsl-range'
 import { rankPaintsByDeltaE } from '@/modules/palettes/utils/rank-paints-by-delta-e'
 
+type FetchState =
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+  | {
+      status: 'success'
+      candidates: ColorWheelPaint[]
+      ownedIds: Set<string>
+      hueGroupName: string
+    }
+
 /**
  * Modal dialog for replacing a palette slot's paint with a same-hue candidate.
  *
- * On open, fetches same-hue candidates from the server. Saturation and
- * lightness sliders narrow the set; candidates are re-ranked by CIE76 ΔE
- * entirely client-side after the initial fetch. Selecting a candidate calls
- * {@link swapPalettePaint} and notifies the parent via `onSwapped`.
+ * Rendered only while the swap UI is open — the parent conditionally mounts this
+ * component so state resets automatically on each open. The native `<dialog>` is
+ * opened via `showModal()` on mount.
+ *
+ * On mount, fetches same-hue candidates from the server. Saturation and lightness
+ * sliders narrow the set; candidates are re-ranked by CIE76 ΔE entirely client-side.
+ * Selecting a candidate calls {@link swapPalettePaint} and notifies the parent.
  *
  * @param props.paletteId - UUID of the owning palette.
  * @param props.position - 0-based slot index to swap.
  * @param props.paint - The current slot's paint (must have non-null `hue_id`).
- * @param props.open - Whether the dialog is visible.
  * @param props.onClose - Called when the dialog closes.
  * @param props.onSwapped - Called after a successful swap (before `onClose`).
  */
@@ -29,26 +41,20 @@ export function PaletteSwapDialog({
   paletteId,
   position,
   paint,
-  open,
   onClose,
   onSwapped,
 }: {
   paletteId: string
   position: number
   paint: ColorWheelPaint
-  open: boolean
   onClose: () => void
   onSwapped: () => void
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [isPending, startTransition] = useTransition()
 
-  // Candidate data loaded from the server on open
-  const [candidates, setCandidates] = useState<ColorWheelPaint[]>([])
-  const [ownedIds, setOwnedIds] = useState<Set<string>>(new Set())
-  const [hueGroupName, setHueGroupName] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [fetchError, setFetchError] = useState<string | null>(null)
+  // Initialized to 'loading' — no synchronous setState needed in effects
+  const [fetchState, setFetchState] = useState<FetchState>({ status: 'loading' })
   const [swapError, setSwapError] = useState<string | null>(null)
 
   // Slider state — default to full range
@@ -56,45 +62,37 @@ export function PaletteSwapDialog({
   const [lRange, setLRange] = useState<[number, number]>([0, 100])
   const [ownedOnly, setOwnedOnly] = useState(false)
 
-  // Open/close the native dialog element
+  // Open the native dialog element on mount
   useEffect(() => {
-    const dialog = dialogRef.current
-    if (!dialog) return
-    if (open && !dialog.open) {
-      dialog.showModal()
-    } else if (!open && dialog.open) {
-      dialog.close()
-    }
-  }, [open])
+    dialogRef.current?.showModal()
+  }, [])
 
-  // Fetch candidates when the dialog opens
+  // Fetch candidates on mount — setState only in the async callback, never synchronously
   useEffect(() => {
-    if (!open) return
     let cancelled = false
-
-    setLoading(true)
-    setFetchError(null)
-    setCandidates([])
 
     getHueSwapCandidates({ paletteId, position }).then((result) => {
       if (cancelled) return
-      setLoading(false)
       if ('error' in result) {
-        setFetchError(result.error)
-        return
+        setFetchState({ status: 'error', message: result.error })
+      } else {
+        setFetchState({
+          status: 'success',
+          candidates: result.candidates,
+          ownedIds: new Set(result.ownedIds),
+          hueGroupName: result.hueGroupName,
+        })
       }
-      setCandidates(result.candidates)
-      setOwnedIds(new Set(result.ownedIds))
-      setHueGroupName(result.hueGroupName)
     })
 
     return () => {
       cancelled = true
     }
-  }, [open, paletteId, position])
+  }, [paletteId, position])
 
   function handleClose() {
     setSwapError(null)
+    dialogRef.current?.close()
     onClose()
   }
 
@@ -111,6 +109,10 @@ export function PaletteSwapDialog({
     })
   }
 
+  const hueGroupName = fetchState.status === 'success' ? fetchState.hueGroupName : ''
+  const candidates = fetchState.status === 'success' ? fetchState.candidates : []
+  const ownedIds = fetchState.status === 'success' ? fetchState.ownedIds : new Set<string>()
+
   // Compute visible candidates purely client-side
   const filtered = filterPaintsByHslRange(candidates, {
     sMin: sRange[0],
@@ -120,8 +122,6 @@ export function PaletteSwapDialog({
   })
   const afterOwned = ownedOnly ? filtered.filter((p) => ownedIds.has(p.id)) : filtered
   const visible = rankPaintsByDeltaE(paint.hex, afterOwned, 40)
-
-  const showOwnedToggle = ownedIds.size > 0
 
   return (
     <dialog
@@ -167,7 +167,7 @@ export function PaletteSwapDialog({
         />
 
         {/* Owned-only toggle */}
-        {showOwnedToggle && (
+        {ownedIds.size > 0 && (
           <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
             <input
               type="checkbox"
@@ -192,7 +192,7 @@ export function PaletteSwapDialog({
 
         {/* Candidate grid */}
         <div className="max-h-80 overflow-y-auto">
-          {loading && (
+          {fetchState.status === 'loading' && (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="h-24 animate-pulse rounded-lg bg-muted" />
@@ -200,11 +200,11 @@ export function PaletteSwapDialog({
             </div>
           )}
 
-          {!loading && fetchError && (
-            <p className="text-sm text-destructive">{fetchError}</p>
+          {fetchState.status === 'error' && (
+            <p className="text-sm text-destructive">{fetchState.message}</p>
           )}
 
-          {!loading && !fetchError && visible.length === 0 && (
+          {fetchState.status === 'success' && visible.length === 0 && (
             <p className="text-sm text-muted-foreground py-4 text-center">
               {ownedOnly
                 ? 'No paints in your collection match these ranges.'
@@ -212,7 +212,7 @@ export function PaletteSwapDialog({
             </p>
           )}
 
-          {!loading && !fetchError && visible.length > 0 && (
+          {fetchState.status === 'success' && visible.length > 0 && (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {visible.map(({ paint: candidate, deltaE }) => (
                 <PaletteSwapCandidateCard
