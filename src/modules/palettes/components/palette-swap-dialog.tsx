@@ -126,7 +126,7 @@ export function PaletteSwapDialog({
     <Dialog open onOpenChange={(o) => !o && handleClose()}>
       <DialogContent
         showCloseButton={false}
-        className="w-full max-w-full h-full rounded-none sm:rounded-lg sm:max-w-2xl sm:h-[90vh] p-0"
+        className="w-full max-w-2xl max-h-[90vh] p-0"
       >
         {/* Header */}
         <div className="flex items-center gap-3 border-b border-border px-5 py-4 shrink-0">

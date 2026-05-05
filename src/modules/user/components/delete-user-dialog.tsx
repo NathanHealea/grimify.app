@@ -1,15 +1,21 @@
 'use client'
 
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 
 import { deleteUser } from '@/modules/user/actions/delete-user'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 /**
  * Modal confirmation dialog for permanently deleting a user account.
  *
- * Built on the native `<dialog>` element (no extra primitive). Requires
- * the admin to type the user's display name before the delete button becomes
- * active, preventing accidental deletions. Calls the {@link deleteUser}
+ * Requires the admin to type the user's display name before the delete button
+ * becomes active, preventing accidental deletions. Calls the {@link deleteUser}
  * server action on confirm — which calls `admin_delete_user` RPC, removing
  * the row from `auth.users` and cascading to `profiles` and `user_roles`.
  *
@@ -33,23 +39,10 @@ export function DeleteUserDialog({
   onClose: () => void
   onDeleted?: () => void
 }) {
-  const dialogRef = useRef<HTMLDialogElement>(null)
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [confirmValue, setConfirmValue] = useState('')
 
-  // Open/close the native dialog element
-  useEffect(() => {
-    const dialog = dialogRef.current
-    if (!dialog) return
-    if (open && !dialog.open) {
-      dialog.showModal()
-    } else if (!open && dialog.open) {
-      dialog.close()
-    }
-  }, [open])
-
-  // Reset state on close so the dialog is clean the next time it opens
   function handleClose() {
     setConfirmValue('')
     setError(null)
@@ -72,24 +65,19 @@ export function DeleteUserDialog({
   const canConfirm = confirmValue === displayName && !isPending
 
   return (
-    <dialog
-      ref={dialogRef}
-      onClose={handleClose}
-      onCancel={handleClose}
-      className="rounded-lg border border-border bg-popover p-0 text-popover-foreground shadow-lg backdrop:bg-black/40"
-    >
-      <div className="flex w-96 max-w-full flex-col gap-4 p-6">
-        <div>
-          <h2 className="text-lg font-semibold">Delete user?</h2>
+    <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
+      <DialogContent className="w-full max-w-sm p-6">
+        <DialogHeader>
+          <DialogTitle>Delete user?</DialogTitle>
           <p className="mt-1 text-sm text-muted-foreground">
             Permanently delete{' '}
             <span className="font-medium">{displayName}</span>. This removes
             their account, profile, and all related data. This action cannot be
             undone.
           </p>
-        </div>
+        </DialogHeader>
 
-        <div className="form-item">
+        <div className="form-item mt-2">
           <label className="form-label text-sm" htmlFor="confirm-name">
             Type <span className="font-medium">{displayName}</span> to confirm
           </label>
@@ -110,7 +98,7 @@ export function DeleteUserDialog({
           </div>
         )}
 
-        <div className="flex justify-end gap-2">
+        <DialogFooter className="mt-2">
           <button
             type="button"
             onClick={handleClose}
@@ -127,8 +115,8 @@ export function DeleteUserDialog({
           >
             {isPending ? 'Deleting...' : 'Delete user'}
           </button>
-        </div>
-      </div>
-    </dialog>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

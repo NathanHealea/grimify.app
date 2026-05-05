@@ -1,20 +1,26 @@
 'use client'
 
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 
 import type { BaseColor } from '@/modules/color-schemes/types/base-color'
 import type { SchemeColor } from '@/modules/color-schemes/types/scheme-color'
 import type { ColorScheme } from '@/modules/color-wheel/types/color-scheme'
 import { buildPaletteFromScheme } from '@/modules/color-schemes/utils/build-palette-from-scheme'
 import { createPaletteWithPaints } from '@/modules/palettes/actions/create-palette-with-paints'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 /**
  * Button that saves the current color scheme as a new palette.
  *
- * Opens a native `<dialog>` (matching the `delete-palette-button.tsx` pattern)
- * with a name input pre-populated by {@link buildPaletteFromScheme}. Confirm
- * calls {@link createPaletteWithPaints} which redirects to the new palette's
- * edit page.
+ * Opens a centered {@link Dialog} with a name input pre-populated by
+ * {@link buildPaletteFromScheme}. Confirm calls {@link createPaletteWithPaints}
+ * which redirects to the new palette's edit page.
  *
  * Disabled when `schemeColors` is empty or every entry has no `nearestPaints`.
  * The disabled state is surfaced via `aria-disabled` and a `title` tooltip.
@@ -32,29 +38,19 @@ export function SaveSchemeAsPaletteButton({
   baseColor: BaseColor
   activeScheme: ColorScheme
 }) {
-  const dialogRef = useRef<HTMLDialogElement>(null)
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   const hasMatches = schemeColors.some((c) => c.nearestPaints.length > 0)
-  const disabledReason = schemeColors.length === 0
-    ? 'Pick a base color first'
-    : !hasMatches
-      ? 'No matching paints'
-      : undefined
+  const disabledReason =
+    schemeColors.length === 0
+      ? 'Pick a base color first'
+      : !hasMatches
+        ? 'No matching paints'
+        : undefined
   const isDisabled = Boolean(disabledReason)
-
-  useEffect(() => {
-    const dialog = dialogRef.current
-    if (!dialog) return
-    if (open && !dialog.open) {
-      dialog.showModal()
-    } else if (!open && dialog.open) {
-      dialog.close()
-    }
-  }, [open])
 
   function handleClose() {
     setOpen(false)
@@ -81,7 +77,11 @@ export function SaveSchemeAsPaletteButton({
         title={disabledReason}
         onClick={() => {
           if (!isDisabled) {
-            const { name: defaultName } = buildPaletteFromScheme(schemeColors, baseColor, activeScheme)
+            const { name: defaultName } = buildPaletteFromScheme(
+              schemeColors,
+              baseColor,
+              activeScheme,
+            )
             setName(defaultName)
             setError(null)
             setOpen(true)
@@ -92,21 +92,16 @@ export function SaveSchemeAsPaletteButton({
         Save as palette
       </button>
 
-      <dialog
-        ref={dialogRef}
-        onClose={handleClose}
-        onCancel={handleClose}
-        className="rounded-lg border border-border bg-popover p-0 text-popover-foreground shadow-lg backdrop:bg-black/40"
-      >
-        <div className="flex w-96 max-w-full flex-col gap-4 p-6">
-          <div>
-            <h2 className="text-lg font-semibold">Save scheme as palette</h2>
+      <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
+        <DialogContent className="w-full max-w-sm p-6">
+          <DialogHeader>
+            <DialogTitle>Save scheme as palette</DialogTitle>
             <p className="mt-1 text-sm text-muted-foreground">
               A new palette will be created with each scheme color&apos;s top paint match.
             </p>
-          </div>
+          </DialogHeader>
 
-          <div className="form-item">
+          <div className="form-item mt-2">
             <label className="form-label text-sm" htmlFor="scheme-palette-name">
               Palette name
             </label>
@@ -128,7 +123,7 @@ export function SaveSchemeAsPaletteButton({
             </div>
           )}
 
-          <div className="flex justify-end gap-2">
+          <DialogFooter className="mt-2">
             <button
               type="button"
               onClick={handleClose}
@@ -145,9 +140,9 @@ export function SaveSchemeAsPaletteButton({
             >
               {isPending ? 'Saving…' : 'Save palette'}
             </button>
-          </div>
-        </div>
-      </dialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
