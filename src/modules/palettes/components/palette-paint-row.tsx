@@ -48,7 +48,15 @@ export function PalettePaintRow({
         )}
       </div>
       {canEdit && (
-        <form action={removePalettePaint.bind(null, paletteId, position)}>
+        // bind pre-fills paletteId+position; cast required because TS form action
+        // type demands void return but the action returns { error? } for programmatic use.
+        <form
+          action={
+            removePalettePaint.bind(null, paletteId, position) as unknown as (
+              formData: FormData
+            ) => Promise<void>
+          }
+        >
           <button
             type="submit"
             className="btn btn-sm btn-ghost text-destructive hover:text-destructive"
