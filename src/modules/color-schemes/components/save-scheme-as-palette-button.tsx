@@ -50,14 +50,11 @@ export function SaveSchemeAsPaletteButton({
     const dialog = dialogRef.current
     if (!dialog) return
     if (open && !dialog.open) {
-      const { name: defaultName } = buildPaletteFromScheme(schemeColors, baseColor, activeScheme)
-      setName(defaultName)
-      setError(null)
       dialog.showModal()
     } else if (!open && dialog.open) {
       dialog.close()
     }
-  }, [open, schemeColors, baseColor, activeScheme])
+  }, [open])
 
   function handleClose() {
     setOpen(false)
@@ -83,7 +80,12 @@ export function SaveSchemeAsPaletteButton({
         aria-disabled={isDisabled}
         title={disabledReason}
         onClick={() => {
-          if (!isDisabled) setOpen(true)
+          if (!isDisabled) {
+            const { name: defaultName } = buildPaletteFromScheme(schemeColors, baseColor, activeScheme)
+            setName(defaultName)
+            setError(null)
+            setOpen(true)
+          }
         }}
         className="btn btn-soft btn-secondary btn-sm"
       >
