@@ -5,7 +5,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 const AUTH_ROUTES = ['/sign-in', '/sign-up', '/auth/callback', '/auth/confirm', '/forgot-password', '/reset-password']
 
 /** Route prefixes accessible without authentication but subject to profile-setup checks for authenticated users. */
-const PUBLIC_ROUTES = ['/brands', '/paints', '/hues', '/schemes']
+const PUBLIC_ROUTES = ['/brands', '/paints', '/hues', '/schemes', '/palettes']
 
 /** Exact routes accessible without authentication but subject to profile-setup checks for authenticated users. */
 const PUBLIC_EXACT_ROUTES = ['/']

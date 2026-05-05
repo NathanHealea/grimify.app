@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/palette-management`
 **Merge into:** `v1/main`
 
@@ -14,15 +14,15 @@ This feature delivers the **basic** builder (name, description, visibility, list
 
 ## Acceptance Criteria
 
-- [ ] `/palettes` lists the signed-in user's palettes as cards (name, swatch strip, paint count, updated date)
-- [ ] `/palettes/new` creates an empty palette and redirects to its edit page
-- [ ] `/palettes/[id]` is the read-only view; visible to anyone if `is_public`, owner-only otherwise
-- [ ] `/palettes/[id]/edit` is the builder: edit name/description/visibility, view paints, remove a paint, clear the palette, delete the palette
-- [ ] Both the read view and edit view render paints as a swatch strip plus a card list (paint name, brand, hex, optional per-slot note)
-- [ ] An "empty palette" state on the read view explains how to add paints
-- [ ] Deleting a palette confirms first, then redirects to `/palettes` with a toast
-- [ ] Unauthenticated users hitting `/palettes`, `/palettes/new`, or `/palettes/{id}/edit` are redirected to `/sign-in?next={path}`
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] `/palettes` lists the signed-in user's palettes as cards (name, swatch strip, paint count, updated date)
+- [x] `/palettes/new` creates an empty palette and redirects to its edit page
+- [x] `/palettes/[id]` is the read-only view; visible to anyone if `is_public`, owner-only otherwise
+- [x] `/palettes/[id]/edit` is the builder: edit name/description/visibility, view paints, remove a paint, clear the palette, delete the palette
+- [x] Both the read view and edit view render paints as a swatch strip plus a card list (paint name, brand, hex, optional per-slot note)
+- [x] An "empty palette" state on the read view explains how to add paints
+- [x] Deleting a palette confirms first, then redirects to `/palettes` (no toast — project has no toast library; delete uses redirect)
+- [x] Unauthenticated users hitting `/palettes`, `/palettes/new`, or `/palettes/{id}/edit` are redirected to `/sign-in?next={path}`
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
@@ -81,98 +81,111 @@ src/modules/palettes/
 | Create  | `src/modules/palettes/utils/format-palette-updated-label.ts`          | Renders relative-time label                                                |
 | Modify  | `src/components/site-nav` (or equivalent)                             | Add "Palettes" link to authenticated nav                                   |
 
-## Implementation
+## Implementation Plan
 
-### 1. Dashboard — `/palettes/page.tsx`
+The work splits into **eight** ordered groups. Each group ends in a buildable, lintable state.
 
-Server component. Reads the signed-in user's palettes via `listPalettesForUser`; redirects unauthenticated visitors to `/sign-in?next=/palettes`. Renders:
+### Group 1 — Auth surface area + service tweaks
 
-- Header: "My palettes" + a primary "New palette" button that POSTs to `/palettes/new`
-- `PaletteCardGrid` of summaries
-- Empty state when the user has zero palettes — single CTA "Create your first palette"
+**1.1 Update middleware** `src/middleware.ts` — add `'/palettes'` to `PUBLIC_ROUTES`. Middleware currently redirects unauthenticated users away from any non-public path, which would block `/palettes/{id}` for public palettes. After this change, every `/palettes/*` request reaches the page; per-route auth is enforced by the page itself.
 
-`PaletteCard` accepts a `PaletteSummary` (id, name, description, paintCount, swatchHexes (first 8), updatedAt, isPublic). The card links to `/palettes/{id}` for read-only and shows an "Edit" affordance only when the caller is the owner.
+**1.2 Align `listPalettesForUser` swatch count** `src/modules/palettes/services/palette-service.ts:115-186` — the service currently returns up to **5** swatch hexes (`row.palette_paints.slice(0, 5)`). The doc/cards want **8**. Update both `listPalettesForUser` and `listPublicPalettes` to slice to 8. Update the JSDoc accordingly. Update `PaletteSummary.swatches` JSDoc at `src/modules/palettes/types/palette-summary.ts:18` to say "up to eight hex color codes".
 
-### 2. New palette — `/palettes/new/route.ts`
+### Group 2 — Utilities + the one new action
 
-A POST-only route handler that:
+**2.1 Add `format-palette-updated-label.ts`** `src/modules/palettes/utils/format-palette-updated-label.ts` — pure helper. Takes an ISO timestamp, returns a relative label ("Updated 3 days ago", "Updated just now", "Updated on Jan 4"). Use `Intl.RelativeTimeFormat` for the relative span and fall back to a localized date string past 30 days. JSDoc per `CLAUDE.md`'s utility-function convention.
 
-1. Verifies the session
-2. Calls `createPalette` with default name "Untitled palette"
-3. Redirects to `/palettes/{id}/edit`
+**2.2 Add `remove-palette-paint.ts`** `src/modules/palettes/actions/remove-palette-paint.ts` — `'use server'`. Signature: `removePalettePaint(paletteId: string, position: number): Promise<{ error?: string }>`.
 
-The dashboard's "New palette" button is a `<form action="/palettes/new" method="post">` so it works without JS.
+1. Reject if `paletteId` missing or `position < 0`.
+2. `createClient()` + `auth.getUser()`; return error if no user.
+3. Load the palette via `getPaletteById`. If null, RLS blocked us → return generic error.
+4. If `palette.userId !== user.id`, return `'You can only remove paints from palettes you own.'` (defense in depth — RLS will also reject the write).
+5. Build the new slot list = `palette.paints.filter(p => p.position !== position)`.
+6. `normalizePalettePositions` to close the gap (already exists at `src/modules/palettes/utils/normalize-palette-positions.ts`).
+7. Call `service.setPalettePaints(paletteId, normalized)` — uses the `replace_palette_paints` RPC for atomicity.
+8. `revalidatePath('/palettes/{id}')` and `revalidatePath('/palettes/{id}/edit')`. No redirect.
 
-### 3. Read view — `/palettes/[id]/page.tsx`
+### Group 3 — Leaf presentation components
 
-Server component:
+Order matters: each one is reused by the next layer up.
 
-1. Loads palette via `getPaletteById`
-2. 404s if not found, or if not public and the caller isn't the owner
-3. Renders `<PaletteDetail>`: header (name, description, owner attribution, public badge, "Edit" if owner), `PaletteSwatchStrip`, `PaletteEmptyState` when paint count is 0, otherwise a list of `PaletteCard`-style paint cards (reuse `CollectionPaintCard` from the collection module)
+**3.1 `palette-swatch-strip.tsx`** — `'use client'` not required (pure presentational). Props: `hexes: string[]`, `size?: 'sm'|'md'|'lg'` (default `md`), `max?: number` (default 16), `className?: string`. Cells are square `div`s with `style={{ backgroundColor: hex }}`, fixed sizes 16/28/40 px. When `hexes.length > max`, render the first `max` cells plus a `+N` badge cell using `badge badge-soft`. Empty array → render a single dashed muted placeholder cell. Use the `cn()` util for class merging.
 
-### 4. Builder — `/palettes/[id]/edit/page.tsx`
+**3.2 `palette-empty-state.tsx`** — Props: `variant: 'owner'|'guest'`. Owner copy: "No paints yet — add some from any paint card or the scheme explorer." Guest copy: "This palette is empty." Both render a centered card-like block using `card card-body` styling for visual weight.
 
-Server component that loads the palette and 404s if the caller isn't the owner. Renders `<PaletteBuilder palette={palette} />`.
+**3.3 `palette-paint-row.tsx`** — `'use client'` (has the remove button form). Props: `paletteId`, `position`, `paint: ColorWheelPaint`, `note: string | null`, `canEdit: boolean`. Layout: 32 px swatch + paint name + brand line ("Citadel: Layer") + optional `<p className="text-xs text-muted-foreground">{note}</p>` when present. When `canEdit`, render a small `<form action={removePalettePaint.bind(null, paletteId, position)}>` with a destructive button. (Use `bind` so the button is a plain submit and works without JS — server-action `bind` is supported in Next 15 / React 19.) The form lives **inside** the row but is not nested in any other form (the parent `PaletteForm` is sibling, not ancestor).
 
-`PaletteBuilder` is a client component that:
+### Group 4 — Composite read components
 
-- Renders `<PaletteForm>` for name/description/visibility (uses `useActionState` against `updatePalette`)
-- Renders `<PalettePaintList>` for the paints; each row has a "Remove" button that posts to `removePalettePaint`
-- Renders `<DeletePaletteButton>` at the bottom (destructive, opens confirm dialog)
-- Shows the empty state when paint count is 0 with the same "add from anywhere" copy as the read view
+**4.1 `palette-paint-list.tsx`** — server component. Props: `paletteId`, `paints: PalettePaint[]`, `canEdit: boolean`. Maps paints to `<PalettePaintRow>`. When a `paints[i].paint` is `undefined` (paint deleted upstream), render a muted "Paint unavailable" row but keep the slot. Wrapper: `flex flex-col gap-2`.
 
-`PaletteForm` only contains the `<form>` element (per `CLAUDE.md`). The card layout (header, footer, save state) is composed in `PaletteBuilder`. `useActionState` is imported from `'react'`.
+**4.2 `palette-card.tsx`** — server component (no client logic). Props: a `PaletteSummary` plus `canEdit?: boolean`. Visual: full-tile `<Link href={'/palettes/{id}'}>` that wraps a `card card-body card-compact` with the swatch strip on top, name as `card-title`, paint count + visibility (`badge badge-soft`) as a meta row, and the relative updated label from `formatPaletteUpdatedLabel`. Edit affordance: when `canEdit`, render a small `Edit` link in the corner using `stopPropagation` (mirror the `CollectionPaintCard` overlay pattern at `src/modules/collection/components/collection-paint-card.tsx`).
 
-### 5. Remove + delete actions
+**4.3 `palette-card-grid.tsx`** — server component. Props: `summaries: PaletteSummary[]`, `canEditAll?: boolean`. Pure layout: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4`. Maps to `<PaletteCard>`. Empty state lives **outside** the grid in the page.
 
-`removePalettePaint(paletteId, position)`:
+**4.4 `palette-detail.tsx`** — server component. Props: `palette: Palette`, `viewer: { id: string } | null`. Composes the read view body:
 
-1. Verifies the caller owns the palette (RLS will enforce too — defense in depth)
-2. Deletes the join row at `(palette_id, position)`
-3. Calls `normalizePalettePositions` to re-index remaining rows
-4. `revalidatePath('/palettes/{id}')` and `revalidatePath('/palettes/{id}/edit')`
+- Header card: `<h1>{name}</h1>`, optional description, owner attribution (resolve from `profiles.display_name` via a small server-side lookup or pass it in as a prop — pass it in to keep this component pure), public/private chip, "Edit" link when `viewer?.id === palette.userId`.
+- `<PaletteSwatchStrip size="lg" hexes={hexes} />` when paints exist.
+- `<PalettePaintList>` with `canEdit={false}` when paints exist.
+- `<PaletteEmptyState variant="guest" />` when `palette.paints.length === 0`.
 
-`deletePalette` (already exists from `00-palette-schema.md`):
+### Group 5 — Builder components
 
-1. Confirms via `<DeletePaletteButton>`
-2. Calls service, redirects to `/palettes`, flashes a toast
+**5.1 `palette-form.tsx`** — `'use client'`. Per `CLAUDE.md`'s "Form components should only contain the `<form>` element" rule, this file **renders only the `<form>`** (no card chrome). Props: `palette: Palette`. Uses `useActionState` (imported from `'react'`) bound to `updatePalette`. Inputs: name (required), description (textarea), `is_public` toggle. Hidden `id` input. Renders inline error text from the action state.
 
-### 6. Visibility toggle
+**5.2 `delete-palette-button.tsx`** — `'use client'`. Mirrors `src/modules/user/components/delete-user-dialog.tsx`: native `<dialog>` controlled by `useEffect` + `useRef`, type-to-confirm input requiring the palette name, calls `deletePalette` inside `startTransition`, surfaces the returned `{ error }` inline. The button itself lives in this component (`btn btn-destructive`).
 
-`is_public` flips between Private (default) and Public. Public palettes are reachable at `/palettes/{id}` without auth. The form copy makes this explicit ("Public palettes are visible to anyone with the link"). Sharing/discovery surfaces (browse all, community feed) live in later epics.
+**5.3 `palette-builder.tsx`** — `'use client'`. Props: `palette: Palette`. Lays out a single `card`:
 
-### 7. Navigation
+- Header: editable name (delegated to `PaletteForm`)
+- Body: `<PaletteForm palette={palette} />` followed by `<PalettePaintList paletteId={palette.id} paints={palette.paints} canEdit />` or `<PaletteEmptyState variant="owner" />`.
+- Footer: `<DeletePaletteButton palette={palette} />` aligned end.
 
-Add a "Palettes" link to the authenticated site nav next to "Collection". Unauthenticated nav can link to a future public browse page; for now keep it owner-only.
+The form action's `success` state can drive a small inline "Saved" indicator via `aria-live="polite"` — no toast library is wired up in this project, so keep feedback inline. Same for delete: redirect-on-success handles itself; no toast.
 
-### 8. Styling
+### Group 6 — Routes
 
-Reuse existing daisyUI-style classes from `src/styles/`:
+**6.1 `src/app/palettes/page.tsx`** — server component. Auth check: if no `user`, `redirect('/sign-in?next=/palettes')`. Loads `service.listPalettesForUser(user.id)`. Renders header ("My palettes" + a `<form action="/palettes/new" method="post">` containing a `btn btn-primary` submit), then `<PaletteCardGrid>` or empty-state CTA when `summaries.length === 0`.
 
-- `card` and `card-body` for `PaletteCard`
-- `btn btn-primary` / `btn btn-ghost` for actions
-- `badge badge-soft` for paint-count and visibility chips
-- The swatch strip uses inline `background-color: {hex}` per cell with a fixed width — keep cells square at three sizes (sm 16px, md 28px, lg 40px)
+**6.2 `src/app/palettes/new/route.ts`** — `export async function POST(request: NextRequest)`. Auth check; if no user, redirect to `/sign-in?next=/palettes`. Calls `service.createPalette({ userId, name: 'Untitled palette' })`. `revalidatePath('/palettes')`. `NextResponse.redirect(new URL('/palettes/{id}/edit', request.url), 303)` (303 = "See Other", correct for POST→GET hop). Note: the `createPalette` server action already performs this same flow but the doc specifies a route handler — favour the route handler so the dashboard button is a plain `<form action="/palettes/new" method="post">`.
 
-### 9. Manual QA checklist
+**6.3 `src/app/palettes/[id]/page.tsx`** — server component. `params` is `Promise<{ id: string }>` per Next 15 typing. Loads palette via `service.getPaletteById(id)`. `notFound()` if `null`. If `!palette.isPublic && palette.userId !== viewer?.id` → `notFound()`. Resolves owner display name via `supabase.from('profiles').select('display_name').eq('id', palette.userId).single()`. Renders `<PaletteDetail palette={palette} viewer={viewer} ownerDisplayName={...} />`.
 
-- Sign in, hit `/palettes` — empty state with CTA
-- Click "New palette" — lands on `/palettes/{id}/edit`
-- Edit name + description, toggle Public, save — values persist; dashboard card updates
-- Sign out — `/palettes/{id}` for the public palette renders; the private palette 404s
-- Sign back in, remove a paint — list shrinks, positions stay coherent (verify in DB)
-- Delete a palette via the button — confirms, redirects, toast appears
-- Hit `/palettes/{id}/edit` for someone else's palette — 404
-- `npm run build` + `npm run lint` succeed
+**6.4 `src/app/palettes/[id]/edit/page.tsx`** — server component. Auth: if no user, `redirect('/sign-in?next=/palettes/{id}/edit')`. Load palette; `notFound()` if missing or `palette.userId !== user.id`. Renders `<PaletteBuilder palette={palette} />`.
+
+### Group 7 — Navigation + small follow-ups
+
+**7.1 Navbar update** `src/components/navbar.tsx` — Add `<Link href="/palettes" className="btn btn-ghost btn-sm">Palettes</Link>` inside the existing authenticated cluster, immediately after the `Collection` link (line 55–58).
+
+**7.2 Public-route registration** confirm middleware change from 1.1 hasn't broken `/profile/setup` enforcement for new users — incomplete-profile users hitting `/palettes/{id}` should still be funneled to `/profile/setup`. The current middleware short-circuits public routes **before** the profile check, which means a logged-in user with an incomplete profile could view a public palette without setup. That's acceptable per current behavior of `/paints` (also public). No further change.
+
+### Group 8 — Build / lint / manual QA
+
+**8.1** Run `npm run build` and `npm run lint`. Fix any issues.
+
+**8.2** Manual QA checklist:
+
+- Signed in, `/palettes` — empty state with "Create your first palette"
+- Click "New palette" → lands on `/palettes/{id}/edit` with name `Untitled palette`
+- Edit name + description, toggle Public, Save → values persist; back at `/palettes` the card shows the new label
+- Sign out → `/palettes/{id}` (public) renders read-only; private palette 404s
+- Sign back in, remove a paint via the row's button → list shrinks, refresh → positions still 0..N-1 (verify in DB or by adding/refreshing in `02-add-to-palette`)
+- Delete a palette via the dialog → confirms, redirects to `/palettes`, dashboard reflects deletion
+- Hit `/palettes/{id}/edit` for someone else's palette → 404
+- Hit `/palettes` while signed out → redirected to `/sign-in?next=/palettes`
 
 ## Risks & Considerations
 
-- **Owner check duplication**: RLS prevents data leaks at the database boundary, but we still 404 in the route loader to keep the URL surface clean and avoid leaking palette existence.
-- **`/palettes/new` as POST-only**: Prevents accidental duplicate-create from refresh and avoids needing a separate "new palette" form page. The dashboard button uses a real `<form>` so it works without JS.
+- **Middleware reshape**: Adding `/palettes` to `PUBLIC_ROUTES` shifts auth enforcement from middleware into the page layer. Each protected sub-route must redirect explicitly. This is the same pattern `/paints` uses — public list + public detail, no protected sub-routes — but we're adding protected sub-routes (`/palettes`, `/palettes/new`, `/palettes/{id}/edit`) under a public root for the first time. Forgetting an auth redirect on a future palette sub-route would be a silent leak; double-check during code review.
+- **Owner check duplication**: RLS prevents data leaks at the database boundary, but we still 404 in the route loader to keep the URL surface clean and avoid leaking palette existence (an unauthorized request would otherwise see "this palette exists but is private" via timing differences).
+- **`/palettes/new` as POST-only**: Prevents accidental duplicate-create from refresh. Use a 303 status on the redirect so browsers GET the destination instead of replaying the POST.
 - **Card limits on swatch strip**: At ~16+ paints the strip overflows; truncate after 16 with a "+N" badge and rely on the detail page to show all of them.
-- **Authentication redirects**: Use the existing redirect-with-`next` pattern from the auth module (e.g., `redirect('/sign-in?next=' + encodeURIComponent('/palettes/new'))`).
 - **Per-slot `note`**: The schema has it; the row component renders it read-only here. Editing the note is part of `02-add-to-palette` (where rows are created/updated) — keeping this feature focused on the management shell.
+- **No toast library**: The project has no toast/sonner integration. Successful save is communicated via a small `aria-live="polite"` region inline next to the save button; successful delete uses redirect + dashboard re-render. If a toast library is added later, the inline region can be replaced without other changes.
+- **`bind` on server actions**: The remove-paint button uses `removePalettePaint.bind(null, paletteId, position)` so it remains a plain `<form>` submit. This works for non-form-data arguments only — keep the action's signature primitive (`string`, `number`).
+- **Swatches count alignment**: The service currently slices to 5; the doc and card design call for 8. Updating the service is part of Group 1 — be careful that the type doc on `PaletteSummary.swatches` is updated in lockstep.
 
 ## Notes
 

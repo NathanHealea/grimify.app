@@ -107,7 +107,7 @@ export function createPaletteService(supabase: SupabaseClient) {
      * Lists all palettes owned by the given user, ordered by most recently
      * updated first.
      *
-     * Includes up to five hex swatch previews per palette.
+     * Includes up to eight hex swatch previews per palette.
      *
      * @param userId - The authenticated user's UUID.
      * @returns Array of {@link PaletteSummary} rows.
@@ -135,7 +135,7 @@ export function createPaletteService(supabase: SupabaseClient) {
         isPublic: row.is_public,
         paintCount: row.palette_paints.length,
         swatches: row.palette_paints
-          .slice(0, 5)
+          .slice(0, 8)
           .map((pp) => pp.paints?.hex ?? '')
           .filter(Boolean),
         updatedAt: row.updated_at,
@@ -178,7 +178,7 @@ export function createPaletteService(supabase: SupabaseClient) {
         isPublic: row.is_public,
         paintCount: row.palette_paints.length,
         swatches: row.palette_paints
-          .slice(0, 5)
+          .slice(0, 8)
           .map((pp) => pp.paints?.hex ?? '')
           .filter(Boolean),
         updatedAt: row.updated_at,
