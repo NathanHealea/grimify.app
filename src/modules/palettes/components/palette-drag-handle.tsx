@@ -1,7 +1,10 @@
 'use client'
 
+import type { ButtonHTMLAttributes } from 'react'
 import { forwardRef } from 'react'
 import { GripVertical } from 'lucide-react'
+
+type PaletteDragHandleProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type' | 'className'>
 
 /**
  * Drag handle button for a sortable palette paint row.
@@ -15,7 +18,7 @@ import { GripVertical } from 'lucide-react'
  *
  * @param props['aria-label'] - Accessible label for the handle button; defaults to "Reorder paint".
  */
-export const PaletteDragHandle = forwardRef<HTMLButtonElement, { 'aria-label'?: string } & Record<string, unknown>>(
+export const PaletteDragHandle = forwardRef<HTMLButtonElement, PaletteDragHandleProps>(
   function PaletteDragHandle({ 'aria-label': ariaLabel, ...rest }, ref) {
     return (
       <button

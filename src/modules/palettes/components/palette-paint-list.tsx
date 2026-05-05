@@ -82,7 +82,6 @@ export function PalettePaintList({
   // Re-seed when the server sends a fresh paints array (after revalidation).
   useEffect(() => {
     setSlots(seedSlots(paints))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paints])
 
   const sensors = useSensors(
