@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/palette-reorder`
 **Merge into:** `v1/main`
 
@@ -12,16 +12,16 @@ Let users reorder paints inside a palette by dragging rows in the builder. Order
 
 ## Acceptance Criteria
 
-- [ ] Each row in the palette builder is draggable
-- [ ] Dropping a row updates the visible order immediately (optimistic)
-- [ ] The new order is persisted via a single server action; positions are renumbered to `0..N-1`
-- [ ] If the persistence call fails, the list snaps back to its previous order and shows an error toast
-- [ ] Keyboard reorder is supported: focus a row, press space to "lift", arrow keys to move, space to drop, escape to cancel
-- [ ] Touch reorder works on a phone (long-press to start drag)
-- [ ] The horizontal swatch strip on the read view reflects the saved order
-- [ ] Drag handles are visually distinct on hover and accessible (`aria-grabbed` / `aria-roledescription="draggable"`)
-- [ ] Reordering is disabled (rows non-draggable) on the read-only `/palettes/[id]` page
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Each row in the palette builder is draggable
+- [x] Dropping a row updates the visible order immediately (optimistic)
+- [x] The new order is persisted via a single server action; positions are renumbered to `0..N-1`
+- [x] If the persistence call fails, the list snaps back to its previous order and shows an error toast
+- [x] Keyboard reorder is supported: focus a row, press space to "lift", arrow keys to move, space to drop, escape to cancel
+- [x] Touch reorder works on a phone (long-press to start drag)
+- [x] The horizontal swatch strip on the read view reflects the saved order
+- [x] Drag handles are visually distinct on hover and accessible (`aria-grabbed` / `aria-roledescription="draggable"`)
+- [x] Reordering is disabled (rows non-draggable) on the read-only `/palettes/[id]` page
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Module additions
 
