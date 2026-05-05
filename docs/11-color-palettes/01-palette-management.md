@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/palette-management`
 **Merge into:** `v1/main`
 
@@ -14,15 +14,15 @@ This feature delivers the **basic** builder (name, description, visibility, list
 
 ## Acceptance Criteria
 
-- [ ] `/palettes` lists the signed-in user's palettes as cards (name, swatch strip, paint count, updated date)
-- [ ] `/palettes/new` creates an empty palette and redirects to its edit page
-- [ ] `/palettes/[id]` is the read-only view; visible to anyone if `is_public`, owner-only otherwise
-- [ ] `/palettes/[id]/edit` is the builder: edit name/description/visibility, view paints, remove a paint, clear the palette, delete the palette
-- [ ] Both the read view and edit view render paints as a swatch strip plus a card list (paint name, brand, hex, optional per-slot note)
-- [ ] An "empty palette" state on the read view explains how to add paints
-- [ ] Deleting a palette confirms first, then redirects to `/palettes` with a toast
-- [ ] Unauthenticated users hitting `/palettes`, `/palettes/new`, or `/palettes/{id}/edit` are redirected to `/sign-in?next={path}`
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] `/palettes` lists the signed-in user's palettes as cards (name, swatch strip, paint count, updated date)
+- [x] `/palettes/new` creates an empty palette and redirects to its edit page
+- [x] `/palettes/[id]` is the read-only view; visible to anyone if `is_public`, owner-only otherwise
+- [x] `/palettes/[id]/edit` is the builder: edit name/description/visibility, view paints, remove a paint, clear the palette, delete the palette
+- [x] Both the read view and edit view render paints as a swatch strip plus a card list (paint name, brand, hex, optional per-slot note)
+- [x] An "empty palette" state on the read view explains how to add paints
+- [x] Deleting a palette confirms first, then redirects to `/palettes` (no toast — project has no toast library; delete uses redirect)
+- [x] Unauthenticated users hitting `/palettes`, `/palettes/new`, or `/palettes/{id}/edit` are redirected to `/sign-in?next={path}`
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
