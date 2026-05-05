@@ -1,20 +1,28 @@
 'use client'
 
+import { CSS } from '@dnd-kit/utilities'
+import { useSortable } from '@dnd-kit/sortable'
+
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { removePalettePaint } from '@/modules/palettes/actions/remove-palette-paint'
+import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
 
 /**
  * A single row in a palette's paint list.
  *
- * Displays a 32 px color swatch, the paint name, brand/product-line label,
- * and an optional per-slot note. When `canEdit` is true, renders a server-action
- * form with a remove button so the slot can be deleted without JavaScript.
+ * In edit mode, the row is sortable via dnd-kit: the drag handle is the
+ * sole activator node so clicks on the row's other elements (remove button)
+ * remain usable. `isDragging` applies a lifted visual state.
+ *
+ * In read mode (`canEdit={false}`, `dndId` absent), the row renders without
+ * any DnD wiring or handle.
  *
  * @param props.paletteId - UUID of the owning palette.
  * @param props.position - 0-based slot index; passed to {@link removePalettePaint}.
  * @param props.paint - Full paint data for display.
  * @param props.note - Optional per-slot painter note.
- * @param props.canEdit - When true, renders the remove button form.
+ * @param props.canEdit - When true, renders the remove button and drag handle.
+ * @param props.dndId - Mount-stable DnD id assigned by {@link PalettePaintList}; required when `canEdit` is true.
  */
 export function PalettePaintRow({
   paletteId,
@@ -22,17 +30,51 @@ export function PalettePaintRow({
   paint,
   note,
   canEdit,
+  dndId,
 }: {
   paletteId: string
   position: number
   paint: ColorWheelPaint
   note: string | null
   canEdit: boolean
+  dndId?: string
 }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: dndId ?? '', disabled: !canEdit || !dndId })
+
   const brandLine = [paint.brand_name, paint.product_line_name].filter(Boolean).join(': ')
 
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
   return (
-    <div className="flex items-start gap-3 rounded-lg border border-border p-3">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={[
+        'flex items-start gap-3 rounded-lg border border-border p-3',
+        isDragging ? 'shadow-lg bg-muted' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      {canEdit && dndId && (
+        <PaletteDragHandle
+          ref={setActivatorNodeRef}
+          aria-label={`Reorder ${paint.name}`}
+          {...attributes}
+          {...listeners}
+        />
+      )}
       <div
         className="mt-0.5 size-8 shrink-0 rounded-sm"
         style={{ backgroundColor: paint.hex }}
