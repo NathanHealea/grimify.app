@@ -1,8 +1,17 @@
 'use client'
 
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
+import { Info } from 'lucide-react'
 
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { getHueSwapCandidates } from '@/modules/palettes/actions/get-hue-swap-candidates'
 import { swapPalettePaint } from '@/modules/palettes/actions/swap-palette-paint'
 import { PaletteSwapCandidateCard } from '@/modules/palettes/components/palette-swap-candidate-card'
@@ -21,15 +30,15 @@ type FetchState =
     }
 
 /**
- * Modal dialog for replacing a palette slot's paint with a same-hue candidate.
+ * Full-screen modal dialog for replacing a palette slot's paint with a same-hue candidate.
  *
  * Rendered only while the swap UI is open — the parent conditionally mounts this
- * component so state resets automatically on each open. The native `<dialog>` is
- * opened via `showModal()` on mount.
+ * component so state resets automatically on each open. The dialog opens immediately
+ * on mount via a controlled `open` prop set to `true`.
  *
  * On mount, fetches same-hue candidates from the server. Saturation and lightness
  * sliders narrow the set; candidates are re-ranked by CIE76 ΔE entirely client-side.
- * Selecting a candidate calls {@link swapPalettePaint} and notifies the parent.
+ * An info popover explains how the filters and ΔE score work.
  *
  * @param props.paletteId - UUID of the owning palette.
  * @param props.position - 0-based slot index to swap.
@@ -50,22 +59,14 @@ export function PaletteSwapDialog({
   onClose: () => void
   onSwapped: () => void
 }) {
-  const dialogRef = useRef<HTMLDialogElement>(null)
   const [isPending, startTransition] = useTransition()
 
-  // Initialized to 'loading' — no synchronous setState needed in effects
   const [fetchState, setFetchState] = useState<FetchState>({ status: 'loading' })
   const [swapError, setSwapError] = useState<string | null>(null)
 
-  // Slider state — default to full range
   const [sRange, setSRange] = useState<[number, number]>([0, 100])
   const [lRange, setLRange] = useState<[number, number]>([0, 100])
   const [ownedOnly, setOwnedOnly] = useState(false)
-
-  // Open the native dialog element on mount
-  useEffect(() => {
-    dialogRef.current?.showModal()
-  }, [])
 
   // Fetch candidates on mount — setState only in the async callback, never synchronously
   useEffect(() => {
@@ -92,7 +93,6 @@ export function PaletteSwapDialog({
 
   function handleClose() {
     setSwapError(null)
-    dialogRef.current?.close()
     onClose()
   }
 
@@ -113,7 +113,6 @@ export function PaletteSwapDialog({
   const candidates = fetchState.status === 'success' ? fetchState.candidates : []
   const ownedIds = fetchState.status === 'success' ? fetchState.ownedIds : new Set<string>()
 
-  // Compute visible candidates purely client-side
   const filtered = filterPaintsByHslRange(candidates, {
     sMin: sRange[0],
     sMax: sRange[1],
@@ -124,111 +123,120 @@ export function PaletteSwapDialog({
   const visible = rankPaintsByDeltaE(paint.hex, afterOwned, 40)
 
   return (
-    <dialog
-      ref={dialogRef}
-      onClose={handleClose}
-      onCancel={handleClose}
-      className="rounded-lg border border-border bg-popover p-0 text-popover-foreground shadow-lg backdrop:bg-black/40 w-full max-w-lg"
-    >
-      <div className="flex flex-col gap-4 p-5">
+    <Dialog open onOpenChange={(o) => !o && handleClose()}>
+      <DialogContent
+        showCloseButton={false}
+        className="w-full max-w-full h-full rounded-none sm:rounded-lg sm:max-w-2xl sm:h-[90vh] p-0"
+      >
         {/* Header */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 border-b border-border px-5 py-4 shrink-0">
           <div
-            className="size-8 shrink-0 rounded-sm"
+            className="size-9 shrink-0 rounded-md"
             style={{ backgroundColor: paint.hex }}
             aria-hidden
           />
-          <div className="min-w-0">
-            <h2 className="truncate text-base font-semibold">{paint.name}</h2>
+          <DialogHeader className="min-w-0 flex-1">
+            <DialogTitle className="truncate">{paint.name}</DialogTitle>
             {hueGroupName && (
               <p className="text-xs text-muted-foreground">Hue group: {hueGroupName}</p>
             )}
-          </div>
+          </DialogHeader>
           <button
             type="button"
             onClick={handleClose}
-            className="btn btn-ghost btn-xs btn-square ml-auto"
+            className="btn btn-ghost btn-xs btn-square shrink-0"
             aria-label="Close"
           >
             ✕
           </button>
         </div>
 
-        {/* Sliders */}
-        <PaletteSwapSliders
-          sRange={sRange}
-          lRange={lRange}
-          currentS={paint.saturation}
-          currentL={paint.lightness}
-          onChange={({ sRange: s, lRange: l }) => {
-            setSRange(s)
-            setLRange(l)
-          }}
-        />
+        {/* Body */}
+        <div className="flex flex-col gap-4 overflow-y-auto px-5 py-4 flex-1">
+          {/* Filter controls */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Filters
+              </span>
+              <SliderInfoPopover />
+            </div>
 
-        {/* Owned-only toggle */}
-        {ownedIds.size > 0 && (
-          <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={ownedOnly}
-              onChange={(e) => setOwnedOnly(e.target.checked)}
-              className="checkbox checkbox-sm"
+            <PaletteSwapSliders
+              sRange={sRange}
+              lRange={lRange}
+              currentS={paint.saturation}
+              currentL={paint.lightness}
+              onChange={({ sRange: s, lRange: l }) => {
+                setSRange(s)
+                setLRange(l)
+              }}
             />
-            Owned only
-          </label>
-        )}
 
-        {/* Swap error */}
-        {swapError && (
-          <div
-            role="alert"
-            aria-live="polite"
-            className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive"
-          >
-            {swapError}
-          </div>
-        )}
-
-        {/* Candidate grid */}
-        <div className="max-h-80 overflow-y-auto">
-          {fetchState.status === 'loading' && (
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-24 animate-pulse rounded-lg bg-muted" />
-              ))}
-            </div>
-          )}
-
-          {fetchState.status === 'error' && (
-            <p className="text-sm text-destructive">{fetchState.message}</p>
-          )}
-
-          {fetchState.status === 'success' && visible.length === 0 && (
-            <p className="text-sm text-muted-foreground py-4 text-center">
-              {ownedOnly
-                ? 'No paints in your collection match these ranges.'
-                : 'No same-hue paints match these ranges. Try widening saturation or lightness.'}
-            </p>
-          )}
-
-          {fetchState.status === 'success' && visible.length > 0 && (
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {visible.map(({ paint: candidate, deltaE }) => (
-                <PaletteSwapCandidateCard
-                  key={candidate.id}
-                  paint={candidate}
-                  deltaE={deltaE}
-                  isOwned={ownedIds.has(candidate.id)}
-                  onSelect={handleSelect}
+            {ownedIds.size > 0 && (
+              <label className="flex cursor-pointer select-none items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={ownedOnly}
+                  onChange={(e) => setOwnedOnly(e.target.checked)}
+                  className="checkbox checkbox-sm"
                 />
-              ))}
+                Owned only
+              </label>
+            )}
+          </div>
+
+          {/* Swap error */}
+          {swapError && (
+            <div
+              role="alert"
+              aria-live="polite"
+              className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive"
+            >
+              {swapError}
             </div>
           )}
+
+          {/* Candidate grid */}
+          <div>
+            {fetchState.status === 'loading' && (
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="h-24 animate-pulse rounded-lg bg-muted" />
+                ))}
+              </div>
+            )}
+
+            {fetchState.status === 'error' && (
+              <p className="text-sm text-destructive">{fetchState.message}</p>
+            )}
+
+            {fetchState.status === 'success' && visible.length === 0 && (
+              <p className="py-4 text-center text-sm text-muted-foreground">
+                {ownedOnly
+                  ? 'No paints in your collection match these ranges.'
+                  : 'No same-hue paints match these ranges. Try widening saturation or lightness.'}
+              </p>
+            )}
+
+            {fetchState.status === 'success' && visible.length > 0 && (
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {visible.map(({ paint: candidate, deltaE }) => (
+                  <PaletteSwapCandidateCard
+                    key={candidate.id}
+                    paint={candidate}
+                    deltaE={deltaE}
+                    isOwned={ownedIds.has(candidate.id)}
+                    onSelect={handleSelect}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end">
+        <DialogFooter className="border-t border-border px-5 py-3 shrink-0">
           <button
             type="button"
             onClick={handleClose}
@@ -237,8 +245,65 @@ export function PaletteSwapDialog({
           >
             Cancel
           </button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+/**
+ * Info popover explaining how the saturation/lightness sliders and ΔE score work.
+ */
+function SliderInfoPopover() {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="btn btn-ghost btn-xs btn-square"
+          aria-label="How filters work"
+        >
+          <Info className="size-3.5" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent side="left" align="start" className="w-80">
+        <div className="flex flex-col gap-3 text-sm">
+          <div>
+            <p className="font-medium">Saturation &amp; Lightness</p>
+            <p className="mt-1 text-muted-foreground">
+              Each slider has two handles defining a range. Drag the left handle to set the
+              minimum and the right to set the maximum. Only paints whose saturation or lightness
+              falls inside both ranges are shown. The tick mark on each track shows where your
+              current paint sits.
+            </p>
+          </div>
+          <div>
+            <p className="font-medium">
+              ΔE <span className="font-normal text-muted-foreground">(Delta E)</span>
+            </p>
+            <p className="mt-1 text-muted-foreground">
+              A perceptual color-distance score. Lower means more similar to your current paint:
+            </p>
+            <ul className="mt-1.5 space-y-0.5 text-muted-foreground">
+              <li>
+                <span className="font-medium text-foreground">&lt; 2</span> — nearly identical
+              </li>
+              <li>
+                <span className="font-medium text-foreground">2–5</span> — very close match
+              </li>
+              <li>
+                <span className="font-medium text-foreground">5–10</span> — noticeable but similar
+              </li>
+              <li>
+                <span className="font-medium text-foreground">&gt; 10</span> — clearly different
+              </li>
+            </ul>
+            <p className="mt-2 text-muted-foreground">
+              Candidates are sorted by ΔE so the closest match appears first.
+            </p>
+          </div>
         </div>
-      </div>
-    </dialog>
+      </PopoverContent>
+    </Popover>
   )
 }
