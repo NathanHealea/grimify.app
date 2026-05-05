@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/palette-reorder`
 **Merge into:** `v1/main`
 
@@ -12,125 +12,257 @@ Let users reorder paints inside a palette by dragging rows in the builder. Order
 
 ## Acceptance Criteria
 
-- [ ] Each row in the palette builder is draggable
-- [ ] Dropping a row updates the visible order immediately (optimistic)
-- [ ] The new order is persisted via a single server action; positions are renumbered to `0..N-1`
-- [ ] If the persistence call fails, the list snaps back to its previous order and shows an error toast
-- [ ] Keyboard reorder is supported: focus a row, press space to "lift", arrow keys to move, space to drop, escape to cancel
-- [ ] Touch reorder works on a phone (long-press to start drag)
-- [ ] The horizontal swatch strip on the read view reflects the saved order
-- [ ] Drag handles are visually distinct on hover and accessible (`aria-grabbed` / `aria-roledescription="draggable"`)
-- [ ] Reordering is disabled (rows non-draggable) on the read-only `/palettes/[id]` page
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Each row in the palette builder is draggable
+- [x] Dropping a row updates the visible order immediately (optimistic)
+- [x] The new order is persisted via a single server action; positions are renumbered to `0..N-1`
+- [x] If the persistence call fails, the list snaps back to its previous order and shows an error toast
+- [x] Keyboard reorder is supported: focus a row, press space to "lift", arrow keys to move, space to drop, escape to cancel
+- [x] Touch reorder works on a phone (long-press to start drag)
+- [x] The horizontal swatch strip on the read view reflects the saved order
+- [x] Drag handles are visually distinct on hover and accessible (`aria-grabbed` / `aria-roledescription="draggable"`)
+- [x] Reordering is disabled (rows non-draggable) on the read-only `/palettes/[id]` page
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Module additions
 
 ```
 src/modules/palettes/
 ├── actions/
-│   └── reorder-palette-paints.ts        NEW
+│   └── reorder-palette-paints.ts         NEW
 ├── components/
-│   ├── (modify) palette-paint-list.tsx   wraps list in DnD context, handles state
+│   ├── (modify) palette-paint-list.tsx   wraps list in DnD context, owns local order + persistence
 │   ├── (modify) palette-paint-row.tsx    becomes a draggable item with a handle
 │   └── palette-drag-handle.tsx           NEW — six-dot grip icon button
 └── utils/
-    └── reorder-array.ts                  NEW — pure helper, immutable splice
+    └── reorder-array.ts                  NEW — pure immutable splice helper
 ```
 
 ## Key Files
 
-| Action | File                                                              | Description                                                              |
-| ------ | ----------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Create | `src/modules/palettes/actions/reorder-palette-paints.ts`          | Accepts a palette id + ordered paint position list, persists in one call |
-| Create | `src/modules/palettes/components/palette-drag-handle.tsx`         | Visual grip; becomes the keyboard target                                 |
-| Create | `src/modules/palettes/utils/reorder-array.ts`                     | `reorderArray(items, fromIndex, toIndex)` — pure                         |
-| Modify | `src/modules/palettes/components/palette-paint-list.tsx`          | Wraps list in `<DndContext>`; owns local order state + persistence       |
-| Modify | `src/modules/palettes/components/palette-paint-row.tsx`           | Renders the handle, applies `useSortable` transforms                     |
-| Modify | `src/modules/palettes/services/palette-service.ts`                | `reorderPalettePaints(client, paletteId, orderedPaletteSlotIds)` helper  |
-| Add    | `package.json`                                                    | `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities` deps          |
+| Action | File                                                       | Description                                                                                |
+| ------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Create | `src/modules/palettes/actions/reorder-palette-paints.ts`   | Accepts a palette id + ordered list of `{ paintId, note }` slots, persists in one call     |
+| Create | `src/modules/palettes/components/palette-drag-handle.tsx`  | Visual grip; the dnd-kit listeners attach here so links/buttons in the row stay clickable  |
+| Create | `src/modules/palettes/utils/reorder-array.ts`              | `reorderArray(items, fromIndex, toIndex)` — pure                                           |
+| Modify | `src/modules/palettes/components/palette-paint-list.tsx`   | Becomes `'use client'`; wraps list in `<DndContext>`; owns local order state + persistence |
+| Modify | `src/modules/palettes/components/palette-paint-row.tsx`    | Renders the handle, applies `useSortable` transforms, reflects `isDragging`                |
+| Add    | `package.json`                                             | `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities` deps                            |
 
-## Implementation
+## Implementation Plan
 
-### 1. Library choice — dnd-kit
+The plan is grouped into seven steps. Each step ends in a state where `npm run build` and `npm run lint` still pass.
 
-Use `@dnd-kit/core` + `@dnd-kit/sortable`. Reasons:
+### Step 1 — Install dnd-kit
 
-- First-class keyboard accessibility (`KeyboardSensor`) and built-in screen reader announcements
-- Touch + pointer + keyboard sensors out of the box
-- Active maintenance + small bundle (~15kb gzipped)
-- Already a common React ecosystem default
+Add three packages from the dnd-kit family:
 
-Alternative considered: `react-beautiful-dnd` — unmaintained, larger, no first-class keyboard story. Skip.
+```
+npm install @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities
+```
 
-### 2. Stable row identity
+Why `dnd-kit`:
 
-Drag-and-drop libraries need a stable per-row id. The `(palette_id, position)` PK rotates on reorder, so we don't use it as the DnD id.
+- First-class keyboard accessibility (`KeyboardSensor` + `sortableKeyboardCoordinates`) and built-in screen-reader announcements.
+- Pointer / touch / keyboard sensors out of the box, with sensor activation thresholds that prevent accidental drags from absorbing clicks on the link inside each row.
+- Actively maintained; ~15 kB gzipped.
+- React 19 compatible; we are on `next@16.1.6` + `react@19.2.3` (verified in `package.json`).
 
-Two options:
+`react-beautiful-dnd` was considered and rejected — unmaintained, no first-class keyboard story, larger.
 
-- **A** — Add a `slot_id uuid` column on `palette_paints` keyed off `gen_random_uuid()` and use that as the DnD id (and as the persistence key going forward). Stable across reorders.
-- **B** — Use `paintId + positionAtMount` as the DnD id and persist by sending the new full ordered list of `paintId`s.
+### Step 2 — `reorderArray` utility (pure)
 
-Pick **A**: tighter, supports duplicates of the same `paintId` cleanly, and gives later features (per-slot photos, per-slot notes) a stable foreign key target. Add the column in this feature's migration with a backfill that gives existing rows a fresh uuid each. Update the composite key model accordingly: keep the composite PK on `(palette_id, position)` for ordering integrity, but add a `UNIQUE (slot_id)` constraint so DnD ids stay unique application-wide.
+Create `src/modules/palettes/utils/reorder-array.ts`:
 
-### 3. Reorder action
+```ts
+/**
+ * Returns a new array with the item at `fromIndex` moved to `toIndex`.
+ *
+ * Pure — does not mutate the input. Works for any out-of-range indices by
+ * clamping (callers should already validate, but clamping makes the helper
+ * safe for animation frame edge cases).
+ */
+export function reorderArray<T>(items: T[], fromIndex: number, toIndex: number): T[] {
+  const next = [...items]
+  const [moved] = next.splice(fromIndex, 1)
+  next.splice(toIndex, 0, moved)
+  return next
+}
+```
 
-`reorderPalettePaints(paletteId, orderedSlotIds: string[])`:
+This is a thin wrapper around `arrayMove` from `@dnd-kit/sortable`, kept in the module so the action and tests can use it without importing dnd-kit on the server.
 
-1. Verify ownership
-2. In a transaction, update each slot's `position` to its new index in `orderedSlotIds`
-   - Use a two-phase update or a temp negative-position trick to avoid violating the PK during the swap (e.g. `UPDATE … SET position = position - 1000` on all matching rows first, then re-set to final positions)
-3. Validate that every slot id maps to a row in this palette and that no extra rows are missing — reject with a 400-style error otherwise
-4. `revalidatePath('/palettes/{id}')` and `revalidatePath('/palettes/{id}/edit')`
-5. Return `{ ok: true }` on success; the client trusts the optimistic update
+### Step 3 — `reorderPalettePaints` server action
 
-### 4. List component changes
+Create `src/modules/palettes/actions/reorder-palette-paints.ts`. Mirrors the structure of `remove-palette-paint.ts`:
 
-`palette-paint-list.tsx`:
+```ts
+'use server'
 
-- Becomes a client component (was already if managing remove)
-- Wraps children in `<DndContext sensors={[Pointer, Touch, Keyboard]} onDragEnd={handleDragEnd}>` and `<SortableContext items={slotIds}>`
-- Holds local `orderedSlots` state seeded from props; updates optimistically in `handleDragEnd`
-- On `handleDragEnd`, computes the new order with `reorderArray` and triggers a `useTransition`-wrapped server action call
-- On failure, restores the previous order and shows a toast
-- Uses `KeyboardSensor` with `sortableKeyboardCoordinates` so arrow keys actually move the focused item
+import { revalidatePath } from 'next/cache'
+import { createClient } from '@/lib/supabase/server'
+import { createPaletteService } from '@/modules/palettes/services/palette-service'
+import { normalizePalettePositions } from '@/modules/palettes/utils/normalize-palette-positions'
 
-`palette-paint-row.tsx`:
+type ReorderInput = { paintId: string; note: string | null }
 
-- Calls `useSortable({ id: slot.id })` and applies `transform`/`transition` styles
-- Adds `<PaletteDragHandle {...listeners} {...attributes} />` — the **handle** is what's draggable, not the whole row, so the click area still works for the link inside the row
-- Adds `aria-roledescription="draggable"` and reflects `isDragging` state in styles
+export async function reorderPalettePaints(
+  paletteId: string,
+  ordered: ReorderInput[],
+): Promise<{ error: string } | undefined> {
+  if (!paletteId || !Array.isArray(ordered)) {
+    return { error: 'Invalid reorder request.' }
+  }
 
-### 5. Visual affordance
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'You must be signed in to reorder a palette.' }
 
-- A six-dot grip icon (`grip-vertical` from lucide-react) on the left of every row
-- On row hover, the handle lights up
-- During drag, the row gets `shadow-lg` and `bg-base-200`
-- The drop indicator is the default dnd-kit translation; no custom overlay needed for v1
+  const service = createPaletteService(supabase)
+  const palette = await service.getPaletteById(paletteId)
+  if (!palette) return { error: 'Palette not found.' }
+  if (palette.userId !== user.id) {
+    return { error: 'You can only reorder palettes you own.' }
+  }
 
-### 6. Read view
+  // Multiset check: ordered must be a permutation of the current paint slots.
+  // Compares by `paintId` count rather than identity since the same paint may
+  // legitimately appear in multiple slots.
+  if (ordered.length !== palette.paints.length) {
+    return { error: 'Reorder list does not match palette.' }
+  }
+  const expected = new Map<string, number>()
+  for (const slot of palette.paints) {
+    expected.set(slot.paintId, (expected.get(slot.paintId) ?? 0) + 1)
+  }
+  for (const slot of ordered) {
+    const remaining = (expected.get(slot.paintId) ?? 0) - 1
+    if (remaining < 0) return { error: 'Reorder list does not match palette.' }
+    expected.set(slot.paintId, remaining)
+  }
 
-`/palettes/[id]` keeps `palette-paint-list` but renders rows in the non-DnD variant (no handle, no SortableContext). Easiest split: keep one component with a `readOnly?: boolean` prop and only mount the DnD context when `!readOnly`.
+  const normalized = normalizePalettePositions(
+    ordered.map((slot, index) => ({
+      position: index,
+      paintId: slot.paintId,
+      note: slot.note,
+    })),
+  )
 
-### 7. Manual QA checklist
+  const result = await service.setPalettePaints(paletteId, normalized)
+  if (result.error) return { error: result.error }
 
-- Drag rows into a new order with the mouse — order persists across page refresh
-- Reorder via keyboard (Tab to handle, Space to lift, Arrow keys, Space to drop) — same behavior
-- Reorder with touch on a phone — works after long-press
-- Trigger a server failure (e.g., network throttling, kill the dev server briefly) — order snaps back, toast shown
-- Re-load the read-only `/palettes/{id}` view — swatch strip + paint list reflect the saved order
-- Verify in DB that positions are `0..N-1` after the reorder
-- `npm run build` + `npm run lint`
+  revalidatePath(`/palettes/${paletteId}`)
+  revalidatePath(`/palettes/${paletteId}/edit`)
+}
+```
+
+Why no schema migration:
+
+- The existing `replace_palette_paints` RPC (created in `20260425000000_create_palettes_tables.sql`) does the entire delete+insert in a single transaction. Positions never enter a half-updated state, so the two-phase "negative offset" workaround is unnecessary.
+- A `slot_id uuid` column was considered. It would simplify DnD identity (stable across reorders) and give per-slot foreign-key targets later. But: `note` is already per-slot and rides with `(paintId, note)` in the payload, duplicates of the same `paintId` are handled cleanly by sending notes alongside, and the React tree's DnD ids only need to be stable **for the lifetime of one mounted list** — see Step 4. Skipping the migration keeps this feature small and keeps `02-add-to-palette` insert paths untouched.
+
+### Step 4 — Mount-stable DnD ids in the list
+
+Convert `src/modules/palettes/components/palette-paint-list.tsx` into a client component that owns the order. The new internal type:
+
+```ts
+type DraggableSlot = {
+  // dnd id — generated once at mount and never reused. Survives optimistic
+  // updates (state never replaces the id) and lets duplicate paintIds coexist.
+  dndId: string
+  paintId: string
+  note: string | null
+  paint: ColorWheelPaint | undefined
+}
+```
+
+Behaviour:
+
+- Seed `slots` state from `props.paints` once at mount, assigning each row a unique `dndId` (`useId()` + index suffix, or `crypto.randomUUID()`; the latter is fine in client code).
+- When `props.paints` reference changes (after revalidation), reseed with a `useEffect` that compares lengths/paintIds. Since the action `revalidatePath`s, this keeps the list in sync after a successful save without losing local optimistic state.
+- Render shape: `<DndContext>` with `PointerSensor`, `TouchSensor` (with a 200 ms long-press activation), `KeyboardSensor` (with `sortableKeyboardCoordinates`), and screen-reader announcements. Wrap `<SortableContext items={slots.map(s => s.dndId)} strategy={verticalListSortingStrategy}>` and map each slot to a `<PalettePaintRow>`.
+- `handleDragEnd(event)`: compute `newSlots = reorderArray(slots, fromIndex, toIndex)`. Call `setSlots(newSlots)` (optimistic). Capture `previousSlots` first; pass it into the rollback closure. Call the action inside `startTransition`. On `result?.error`: `setSlots(previousSlots)` and surface the error inline (see Step 6).
+- Concurrency: keep a `latestConfirmedRef = useRef(slots)` that only advances on success. If a second drag completes before the first response, capture rollback state from the ref so a single failure can roll back across multiple in-flight transitions cleanly.
+- `canEdit={false}` short-circuits all of the above and renders a plain `<ul>` of rows with no DnD context, no handle, and no row state — the existing detail page (`PaletteDetail`) stays read-only.
+
+Public props stay the same (`paletteId`, `paints`, `canEdit`), so the read page (`PaletteDetail`) and edit page (`PaletteBuilder`) need no changes.
+
+### Step 5 — `palette-paint-row.tsx` becomes draggable
+
+In edit mode each row:
+
+- Calls `useSortable({ id: slot.dndId, disabled: !canEdit })`.
+- Applies `transform: CSS.Transform.toString(transform)` and `transition` to its outer `style`.
+- Renders `<PaletteDragHandle {...attributes} {...listeners} ref={setActivatorNodeRef} />` as the **drag activator** — only the handle is grabbable, so the existing link click target inside the row stays usable.
+- Adds `aria-roledescription="draggable"` and toggles styles on `isDragging` (`shadow-lg` + `bg-base-200`).
+- Keeps the existing remove form unchanged.
+
+In read mode (`canEdit={false}`), the row renders without `useSortable` (or with `disabled: true`) and no handle.
+
+The remove form continues to use `(paletteId, position)` for the server action. Because each successful drag persists and revalidates, the props the row receives always reflect the saved positions on next render — no drift.
+
+### Step 6 — Drag handle component + inline error UI
+
+Create `src/modules/palettes/components/palette-drag-handle.tsx`:
+
+```tsx
+'use client'
+
+import { forwardRef } from 'react'
+import { GripVertical } from 'lucide-react'
+
+export const PaletteDragHandle = forwardRef<HTMLButtonElement, { 'aria-label'?: string }>(
+  function PaletteDragHandle({ 'aria-label': ariaLabel, ...rest }, ref) {
+    return (
+      <button
+        ref={ref}
+        type="button"
+        aria-label={ariaLabel ?? 'Reorder paint'}
+        aria-roledescription="draggable"
+        className="btn btn-ghost btn-xs cursor-grab touch-none px-1 active:cursor-grabbing"
+        {...rest}
+      >
+        <GripVertical className="size-4" aria-hidden />
+      </button>
+    )
+  },
+)
+```
+
+`touch-none` is required for the touch sensor to activate on phones (otherwise the browser scrolls instead).
+
+Inline error UI (no toast lib — matches `palette-form.tsx`): the list component renders an `aria-live="polite"` region above the list. Errors set local state shaped like `{ message: string }`; cleared on the next successful drag. Example markup:
+
+```tsx
+{error && (
+  <p role="status" aria-live="polite" className="text-sm text-destructive">
+    {error}
+  </p>
+)}
+```
+
+### Step 7 — Manual QA + final checks
+
+- Drag rows into a new order with the mouse on `/palettes/{id}/edit`; refresh and confirm the order persists.
+- Reorder via keyboard: `Tab` to a handle, `Space` to lift, `↑/↓` to move, `Space` to drop, `Esc` to cancel. Live region should announce position changes.
+- Reorder with touch on a phone: long-press the handle (~200 ms) before dragging; clicks on the row link should still navigate.
+- Simulate a server failure: throttle the network in DevTools or temporarily make the action `throw`. Confirm the order snaps back and the inline error appears.
+- Reload `/palettes/{id}` and verify the swatch strip + paint list reflect the saved order.
+- Inspect `palette_paints` rows in Supabase Studio after reorders — `position` should always be `0..N-1` (no gaps).
+- Confirm reorder UI is **not** rendered on `/palettes/{id}` (no handle, no DnD context) — `canEdit={false}` path.
+- Run `npm run build` and `npm run lint`.
 
 ## Risks & Considerations
 
-- **Position update non-atomicity**: Updating positions sequentially can violate the PK if a transient state has two rows at the same position. The two-phase update (move to negative offsets first, then to final positions) avoids this entirely. Document the trick in the action's JSDoc so future maintainers don't simplify it back into something broken.
-- **`slot_id` migration**: Backfilling slot ids on existing palette_paints rows is cheap (gen_random_uuid for each), but the migration must run in a single transaction to avoid mid-flight gaps. If we ever ship `02-add-to-palette` before this feature, every new row will need a slot_id at insert — update the inserts in `02` to set it explicitly. (Until this feature lands, the column doesn't exist; coordinate sequencing.)
-- **Optimistic UX**: The optimistic update lets users keep dragging quickly; the rollback path needs to handle the case where the user has already dragged again before the first response arrived. Easiest: queue calls and only roll back to the latest "successful" snapshot. Concretely — track the most recently confirmed order and roll back to that on failure.
-- **Sensor conflicts**: dnd-kit's pointer sensor can conflict with row-level click handlers. Constrain the `useSortable` listeners to the handle (not the whole row).
-- **Bundle size**: dnd-kit adds ~15kb gzipped. Worth it for full a11y + touch.
+- **No schema change**: relying on the existing `replace_palette_paints` RPC means each reorder rewrites every row. For small palettes (the realistic ceiling is dozens), this is fine; the RPC already runs in one transaction so concurrent writers can't see a half-updated state.
+- **Optimistic UX with rapid drags**: a second drag may complete before the first server response. The `latestConfirmedRef` pattern rolls back to the most recently confirmed snapshot rather than the immediately previous one, so a failure mid-stream doesn't strand the UI in a stale interim state.
+- **Sensor conflicts with row link**: dnd-kit's `PointerSensor` can swallow clicks on the row's link/remove form if the listeners are attached to the whole row. Attaching them only to the drag handle (via `setActivatorNodeRef`) keeps the rest of the row clickable. `PointerSensor` is also configured with an activation distance (e.g. `{ distance: 4 }`) to be extra defensive.
+- **Touch scroll vs drag**: the handle must have `touch-action: none` (`touch-none` Tailwind class) — without it, vertical scroll wins on mobile and the drag never starts.
+- **Bundle size**: dnd-kit adds ~15 kB gzipped. Acceptable for the a11y + touch story; only loaded by the edit page since the read page renders the no-DnD branch.
+- **Note preservation across reorder**: notes ride with each slot in the persisted payload (`{ paintId, note }`), so dragging a row carries its note with it even when duplicate `paintId`s exist.
 
 ## Notes
 
-- Sequencing: lands after `01-palette-management` (needs the row component to exist) and after `02-add-to-palette` (needs adds to behave so a populated list exists to reorder). The `slot_id` schema change ships in this feature's migration; update earlier migrations only if `02` reaches main first and the inserts need tweaking.
-- The horizontal swatch strip used by `PaletteCard` and `PaletteDetail` reads from the same `paints` array; once positions persist, the strip naturally reflects the new order.
+- Sequencing: lands after `01-palette-management` (the row component must exist) and after `02-add-to-palette` (a populated list to reorder). No coordination with earlier migrations is required since this feature ships no schema change.
+- The horizontal swatch strip used by `PaletteCard` and `PaletteDetail` reads from the same ordered `paints` array; once positions persist, the strip naturally reflects the new order.
+- Future feature `04-palette-hue-swap` will mutate paint identity per slot. The `{ paintId, note }` payload model is forward compatible — when that lands, the swap action can call the same `setPalettePaints` path. If a stable `slot_id` becomes useful then (e.g. for per-slot photos), revisit Option A as its own migration.
