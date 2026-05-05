@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/add-to-palette`
 **Merge into:** `v1/main`
 
@@ -18,18 +18,18 @@ Paints can be added whether or not the user owns them (no collection check). Eac
 
 ## Acceptance Criteria
 
-- [ ] Every `CollectionPaintCard` shows an "Add to palette" action (icon + label or menu item)
-- [ ] The paint detail page (`/paints/[id]`) shows the same action
-- [ ] The action opens a popover/menu listing the user's existing palettes plus a "Create new palette" option
-- [ ] Selecting an existing palette appends the paint at the next position
-- [ ] "Create new palette" opens an inline name input, then creates the palette and adds the paint
-- [ ] Adding shows a toast with "Added to {palette name}" and a link to view the palette
-- [ ] Adding a paint already in the target palette is allowed (the schema permits duplicates)
-- [ ] The Color Scheme Explorer adds a "Save as palette" button that, given the active filter state, creates a new palette containing each scheme color's nearest paint match (skipping empty match slots)
-- [ ] "Save as palette" prompts for a palette name (defaulting to "{schemeType} from {baseLabel}")
-- [ ] Unauthenticated users clicking any add action are redirected to `/sign-in?next={current-path}`
-- [ ] All adds preserve order; positions remain `0..N-1` after every mutation
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Every `CollectionPaintCard` shows an "Add to palette" action (icon + label or menu item)
+- [x] The paint detail page (`/paints/[id]`) shows the same action
+- [x] The action opens a popover/menu listing the user's existing palettes plus a "Create new palette" option
+- [x] Selecting an existing palette appends the paint at the next position
+- [x] "Create new palette" opens an inline name input, then creates the palette and adds the paint
+- [x] Adding shows a toast with "Added to {palette name}" and a link to view the palette
+- [x] Adding a paint already in the target palette is allowed (the schema permits duplicates)
+- [x] The Color Scheme Explorer adds a "Save as palette" button that, given the active filter state, creates a new palette containing each scheme color's nearest paint match (skipping empty match slots)
+- [x] "Save as palette" prompts for a palette name (defaulting to "{schemeType} from {baseLabel}")
+- [x] Unauthenticated users clicking any add action are redirected to `/sign-in?next={current-path}`
+- [x] All adds preserve order; positions remain `0..N-1` after every mutation
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
