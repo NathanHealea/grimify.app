@@ -1,36 +1,32 @@
 'use client'
 
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 
 import type { Palette } from '@/modules/palettes/types/palette'
 import { deletePalette } from '@/modules/palettes/actions/delete-palette'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 /**
- * Destructive delete button with a type-to-confirm native dialog.
+ * Destructive delete button with a type-to-confirm dialog.
  *
- * Opens a `<dialog>` element and requires the user to type the palette name
- * before the confirm button activates. Calls {@link deletePalette} inside
+ * Opens a centered {@link Dialog} and requires the user to type the palette
+ * name before the confirm button activates. Calls {@link deletePalette} inside
  * `startTransition`; on success the action redirects to `/palettes`.
  * Surfaces any returned error inline.
  *
  * @param props.palette - The palette to delete; its `id` and `name` are used.
  */
 export function DeletePaletteButton({ palette }: { palette: Palette }) {
-  const dialogRef = useRef<HTMLDialogElement>(null)
   const [open, setOpen] = useState(false)
   const [confirmValue, setConfirmValue] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
-
-  useEffect(() => {
-    const dialog = dialogRef.current
-    if (!dialog) return
-    if (open && !dialog.open) {
-      dialog.showModal()
-    } else if (!open && dialog.open) {
-      dialog.close()
-    }
-  }, [open])
 
   function handleClose() {
     setConfirmValue('')
@@ -60,23 +56,18 @@ export function DeletePaletteButton({ palette }: { palette: Palette }) {
         Delete palette
       </button>
 
-      <dialog
-        ref={dialogRef}
-        onClose={handleClose}
-        onCancel={handleClose}
-        className="rounded-lg border border-border bg-popover p-0 text-popover-foreground shadow-lg backdrop:bg-black/40"
-      >
-        <div className="flex w-96 max-w-full flex-col gap-4 p-6">
-          <div>
-            <h2 className="text-lg font-semibold">Delete palette?</h2>
+      <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
+        <DialogContent className="w-full max-w-sm p-6">
+          <DialogHeader>
+            <DialogTitle>Delete palette?</DialogTitle>
             <p className="mt-1 text-sm text-muted-foreground">
               Permanently delete{' '}
               <span className="font-medium">{palette.name}</span> and all its
               paint slots. This action cannot be undone.
             </p>
-          </div>
+          </DialogHeader>
 
-          <div className="form-item">
+          <div className="form-item mt-2">
             <label className="form-label text-sm" htmlFor="confirm-palette-name">
               Type <span className="font-medium">{palette.name}</span> to confirm
             </label>
@@ -97,7 +88,7 @@ export function DeletePaletteButton({ palette }: { palette: Palette }) {
             </div>
           )}
 
-          <div className="flex justify-end gap-2">
+          <DialogFooter className="mt-2">
             <button
               type="button"
               onClick={handleClose}
@@ -114,9 +105,9 @@ export function DeletePaletteButton({ palette }: { palette: Palette }) {
             >
               {isPending ? 'Deleting…' : 'Delete palette'}
             </button>
-          </div>
-        </div>
-      </dialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

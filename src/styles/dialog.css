@@ -1,0 +1,75 @@
+/*
+ * Modal / Dialog Component
+ *
+ * Based on the daisyUI Modal component API.
+ * https://daisyui.com/components/modal/
+ *
+ * Implements daisyUI's class naming conventions using this project's
+ * Tailwind CSS theme tokens instead of daisyUI's built-in theme system.
+ *
+ * Designed for use with the Radix UI Dialog primitive via the
+ * src/components/ui/dialog.tsx wrapper. Apply classes to the Radix parts:
+ *   - Overlay → .modal-overlay
+ *   - Content → .modal-box
+ *   - Header  → .modal-header
+ *   - Footer  → .modal-footer
+ *   - Title   → .modal-title
+ *   - Desc    → .modal-description
+ *
+ * Classes:
+ *   Overlay: .modal-overlay     — Fixed full-screen translucent backdrop
+ *   Box:     .modal-box         — Centered content panel (flex column, rounded, bordered)
+ *   Header:  .modal-header      — Title + subtitle area (flex column)
+ *   Footer:  .modal-footer      — Action row, right-aligned
+ *   Title:   .modal-title       — Dialog heading (semibold, tight leading)
+ *   Desc:    .modal-description — Muted subtitle text
+ */
+
+/* -------------------------------------------------------------------------
+ * Overlay (backdrop)
+ * ----------------------------------------------------------------------- */
+.modal-overlay {
+  @apply fixed inset-0 z-50 bg-black/50
+    data-[state=open]:animate-in data-[state=closed]:animate-out
+    data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0;
+}
+
+/* -------------------------------------------------------------------------
+ * Box (content panel)
+ * ----------------------------------------------------------------------- */
+.modal-box {
+  @apply fixed left-1/2 top-1/2 z-50 flex flex-col
+    -translate-x-1/2 -translate-y-1/2
+    rounded-lg border border-border bg-popover text-popover-foreground shadow-lg
+    data-[state=open]:animate-in data-[state=closed]:animate-out
+    data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
+    data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95;
+}
+
+/* -------------------------------------------------------------------------
+ * Header
+ * ----------------------------------------------------------------------- */
+.modal-header {
+  @apply flex flex-col gap-1;
+}
+
+/* -------------------------------------------------------------------------
+ * Footer (action row)
+ * ----------------------------------------------------------------------- */
+.modal-footer {
+  @apply flex items-center justify-end gap-2;
+}
+
+/* -------------------------------------------------------------------------
+ * Title
+ * ----------------------------------------------------------------------- */
+.modal-title {
+  @apply text-base font-semibold leading-tight;
+}
+
+/* -------------------------------------------------------------------------
+ * Description
+ * ----------------------------------------------------------------------- */
+.modal-description {
+  @apply text-sm text-muted-foreground;
+}

@@ -1,0 +1,132 @@
+/*
+ * Range / Slider Component
+ *
+ * Based on the daisyUI Range component API.
+ * https://daisyui.com/components/range/
+ *
+ * Implements daisyUI's class naming conventions using this project's
+ * Tailwind CSS theme tokens instead of daisyUI's built-in theme system.
+ *
+ * Designed for use with the Radix UI Slider primitive via the
+ * src/components/ui/slider.tsx wrapper. Apply classes to the Radix parts:
+ *   - Root  → .range
+ *   - Track → .range-track
+ *   - Range → .range-range
+ *   - Thumb → .range-thumb
+ *
+ * Classes:
+ *   Base:    .range             — Slider root (flex row, full width, touch-none)
+ *            .range-track       — Track bar (rounded, overflow-hidden)
+ *            .range-range       — Filled portion of the track
+ *            .range-thumb       — Draggable thumb handle
+ *   Sizes:   .range-xs          — Extra-small track (h-1) and thumb (size-3)
+ *            .range-sm          — Small track (h-1.5) and thumb (size-3.5)
+ *            .range-md          — Medium / default track (h-2) and thumb (size-4)
+ *            .range-lg          — Large track (h-2.5) and thumb (size-5)
+ *   Colors:  .range-primary     — Primary color track fill and thumb border
+ *            .range-secondary   — Secondary color track fill and thumb border
+ *            .range-accent      — Accent color track fill and thumb border
+ *            .range-destructive — Destructive/error color track fill and thumb border
+ *   States:  .range-disabled    — Disabled appearance (pointer-events-none, opacity-50)
+ */
+
+/* -------------------------------------------------------------------------
+ * Base — Root
+ * ----------------------------------------------------------------------- */
+.range {
+  @apply relative flex w-full touch-none select-none items-center
+    data-[disabled]:pointer-events-none data-[disabled]:opacity-50;
+}
+
+/* -------------------------------------------------------------------------
+ * Base — Track
+ * ----------------------------------------------------------------------- */
+.range-track {
+  @apply relative h-1.5 w-full grow overflow-hidden rounded-full bg-border;
+}
+
+/* -------------------------------------------------------------------------
+ * Base — Range (filled portion)
+ * ----------------------------------------------------------------------- */
+.range-range {
+  @apply absolute h-full bg-primary;
+}
+
+/* -------------------------------------------------------------------------
+ * Base — Thumb
+ * ----------------------------------------------------------------------- */
+.range-thumb {
+  @apply block size-4 rounded-full border border-primary/50 bg-background shadow
+    transition-colors outline-none
+    focus-visible:ring-1 focus-visible:ring-ring
+    disabled:pointer-events-none disabled:opacity-50;
+}
+
+/* -------------------------------------------------------------------------
+ * Sizes
+ * ----------------------------------------------------------------------- */
+.range-xs .range-track {
+  @apply h-1;
+}
+.range-xs .range-thumb {
+  @apply size-3;
+}
+
+.range-sm .range-track {
+  @apply h-1.5;
+}
+.range-sm .range-thumb {
+  @apply size-3.5;
+}
+
+.range-md .range-track {
+  @apply h-2;
+}
+.range-md .range-thumb {
+  @apply size-4;
+}
+
+.range-lg .range-track {
+  @apply h-2.5;
+}
+.range-lg .range-thumb {
+  @apply size-5;
+}
+
+/* -------------------------------------------------------------------------
+ * Color variants — apply to root (.range), cascades to track/range/thumb
+ * ----------------------------------------------------------------------- */
+.range-primary .range-range {
+  @apply bg-primary;
+}
+.range-primary .range-thumb {
+  @apply border-primary/50 focus-visible:ring-primary;
+}
+
+.range-secondary .range-range {
+  @apply bg-secondary-foreground;
+}
+.range-secondary .range-thumb {
+  @apply border-secondary-foreground/50 focus-visible:ring-secondary;
+}
+
+.range-accent .range-range {
+  @apply bg-accent-foreground;
+}
+.range-accent .range-thumb {
+  @apply border-accent-foreground/50 focus-visible:ring-accent;
+}
+
+.range-destructive .range-range {
+  @apply bg-destructive;
+}
+.range-destructive .range-thumb {
+  @apply border-destructive/50 focus-visible:ring-destructive;
+}
+
+/* -------------------------------------------------------------------------
+ * States
+ * ----------------------------------------------------------------------- */
+.range-disabled {
+  @apply pointer-events-none opacity-50;
+}
