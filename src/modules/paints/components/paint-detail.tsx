@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 import type { Hue } from '@/types/color'
 import { CollectionToggle } from '@/modules/collection/components/collection-toggle'
+import { AddToPaletteButton } from '@/modules/palettes/components/add-to-palette-button'
 import type { PaintWithRelationsAndHue } from '@/modules/paints/services/paint-service'
 
 /**
@@ -11,8 +12,8 @@ import type { PaintWithRelationsAndHue } from '@/modules/paints/services/paint-s
  * paint type, color values (hex, RGB, HSL), hue classification links,
  * and status badges for metallic or discontinued paints.
  *
- * Renders a {@link CollectionToggle} next to the paint name when `isAuthenticated`
- * is provided.
+ * Renders a {@link CollectionToggle} and {@link AddToPaletteButton} next to
+ * the paint name when `isAuthenticated` is provided.
  *
  * @param props.paint - The paint record with joined product line, brand, and hue data.
  * @param props.parentHue - The parent Munsell principal hue, if the paint has a sub-hue.
@@ -52,6 +53,11 @@ export function PaintDetail({
               isAuthenticated={isAuthenticated}
               size="md"
               revalidatePath={`/paints/${paint.id}`}
+            />
+            <AddToPaletteButton
+              paintId={paint.id}
+              variant="full"
+              isAuthenticated={isAuthenticated}
             />
           </div>
           <p className="text-muted-foreground">
