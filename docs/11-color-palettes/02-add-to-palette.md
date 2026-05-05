@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/add-to-palette`
 **Merge into:** `v1/main`
 
@@ -18,18 +18,18 @@ Paints can be added whether or not the user owns them (no collection check). Eac
 
 ## Acceptance Criteria
 
-- [ ] Every `CollectionPaintCard` shows an "Add to palette" action (icon + label or menu item)
-- [ ] The paint detail page (`/paints/[id]`) shows the same action
-- [ ] The action opens a popover/menu listing the user's existing palettes plus a "Create new palette" option
-- [ ] Selecting an existing palette appends the paint at the next position
-- [ ] "Create new palette" opens an inline name input, then creates the palette and adds the paint
-- [ ] Adding shows a toast with "Added to {palette name}" and a link to view the palette
-- [ ] Adding a paint already in the target palette is allowed (the schema permits duplicates)
-- [ ] The Color Scheme Explorer adds a "Save as palette" button that, given the active filter state, creates a new palette containing each scheme color's nearest paint match (skipping empty match slots)
-- [ ] "Save as palette" prompts for a palette name (defaulting to "{schemeType} from {baseLabel}")
-- [ ] Unauthenticated users clicking any add action are redirected to `/sign-in?next={current-path}`
-- [ ] All adds preserve order; positions remain `0..N-1` after every mutation
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Every `CollectionPaintCard` shows an "Add to palette" action (icon + label or menu item)
+- [x] The paint detail page (`/paints/[id]`) shows the same action
+- [x] The action opens a popover/menu listing the user's existing palettes plus a "Create new palette" option
+- [x] Selecting an existing palette appends the paint at the next position
+- [x] "Create new palette" opens an inline name input, then creates the palette and adds the paint
+- [x] Adding shows a toast with "Added to {palette name}" and a link to view the palette
+- [x] Adding a paint already in the target palette is allowed (the schema permits duplicates)
+- [x] The Color Scheme Explorer adds a "Save as palette" button that, given the active filter state, creates a new palette containing each scheme color's nearest paint match (skipping empty match slots)
+- [x] "Save as palette" prompts for a palette name (defaulting to "{schemeType} from {baseLabel}")
+- [x] Unauthenticated users clicking any add action are redirected to `/sign-in?next={current-path}`
+- [x] All adds preserve order; positions remain `0..N-1` after every mutation
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
@@ -84,108 +84,148 @@ utils/
 
 ## Implementation
 
+Builds on the existing palette infrastructure (`createPaletteService`, `setPalettePaints` RPC wrapper, `normalizePalettePositions`, `validatePaletteName`, `palette-service.client.ts`, `CollectionToggle`). No new database migrations or RPCs are required — the existing `replace_palette_paints` RPC handles atomic writes and ownership checks.
+
 ### 1. Service additions
 
-In `palette-service.ts`, add:
+Edit `src/modules/palettes/services/palette-service.ts` and add two read-modify-write methods that compose on top of the existing `setPalettePaints` (which delegates to the `replace_palette_paints` RPC). Reusing the RPC keeps positions contiguous and ownership-checked in a single transaction — the same pattern `removePalettePaint` already uses.
 
-- `appendPaintToPalette(client, paletteId, paintId, note?)` — reads max position, inserts at `max+1`, returns the new row
-- `appendPaintsToPalette(client, paletteId, paintIds[])` — single insert with computed positions; uses an RPC or a transaction to keep order coherent
+```ts
+async appendPaintToPalette(
+  paletteId: string,
+  paintId: string,
+  note?: string | null,
+): Promise<{ error?: string }>
 
-Both run after the action verifies ownership (RLS enforces too). After insert, callers normalize positions only if they detect a gap (shouldn't happen in append flows).
+async appendPaintsToPalette(
+  paletteId: string,
+  paintIds: string[],
+): Promise<{ error?: string }>
+```
 
-### 2. Per-paint add — `<AddToPaletteButton>`
+Implementation sketch (mirrors `removePalettePaint`):
 
-Client component with two responsibilities: trigger and popover.
+1. Call `getPaletteById(paletteId)` to load the existing slots (RLS still enforces visibility).
+2. Build `next = [...palette.paints, { position: palette.paints.length, paintId, note: note ?? null }]` (or append all `paintIds` for the bulk variant).
+3. Pass through `normalizePalettePositions` for safety, then call `setPalettePaints(paletteId, …)`.
 
-Trigger variants via a `variant` prop:
+The actions (Step 6) own the auth/ownership preflight; the service stays thin.
 
-- `icon` (default for paint cards) — a plus-folder icon button, `btn btn-ghost btn-xs`
-- `full` (paint detail page) — `btn btn-soft btn-primary` with label "Add to palette"
+### 2. Per-paint add — `<AddToPaletteButton>` and `<AddToPaletteMenu>`
 
-The popover body is `<AddToPaletteMenu>`. On trigger click, fetch the user's palettes via a thin client query (use the existing `palette-service.client.ts`). Render:
+Trigger button (`'use client'`) with two `variant` modes:
 
-- A short scrollable list of palettes (name + paint count)
-- "Create new palette" footer that toggles `<NewPaletteInlineForm>` inside the popover
+| variant | Used in                                  | Styles                                                |
+| ------- | ---------------------------------------- | ----------------------------------------------------- |
+| `icon`  | `CollectionPaintCard` action overlay     | `btn btn-ghost btn-square btn-sm`, `Plus` lucide icon |
+| `full`  | `/paints/[id]` page next to the toggle   | `btn btn-soft btn-primary btn-md`, label "Add to palette" |
 
-Both paths call a server action; on success, close the popover and toast "Added to {palette name}" with a "View" link to `/palettes/{id}`.
+The button uses `Radix DropdownMenu` from `src/components/ui/dropdown-menu.tsx` (no Popover primitive exists yet; dropdown is the closest match and already styles a portaled, focus-trapped surface). The menu body is `<AddToPaletteMenu>`.
 
-`AddToPaletteMenu` must:
+`<AddToPaletteMenu>` responsibilities:
 
-- Loading state while fetching palettes
-- Empty state ("You don't have any palettes yet — create your first one")
-- Error state with retry
+- On open, fetch the viewer's palettes with `getPaletteService()` from `palette-service.client.ts` (`listPalettesForUser(viewerId)`), keyed by viewer id. Re-fetch on every open so newly created palettes from another tab show up.
+- Render four states: loading skeleton, error (with a retry button), empty (single "Create new palette" CTA), and populated (scrollable list of `DropdownMenuItem` rows showing `name + paintCount`, then a separator + "Create new palette" footer).
+- Sort matches the dashboard (`updated_at desc`) — `listPalettesForUser` already returns that order, so the most-recently-edited palette ends up first / highlighted (Step 7).
+- Selecting an existing palette calls `addPaintToPalette` (Step 6); on success collapse the menu and show a brief inline `aria-live="polite"` "Added to {name}" message anchored to the trigger (the project has no toast library — `palette-form.tsx` documents the inline-message convention in its JSDoc).
+- Selecting "Create new palette" swaps the menu body for `<NewPaletteInlineForm>` (a single-row name input + "Create" / "Cancel"). On submit it calls `createPaletteWithPaints` (Step 6).
 
-For unauthenticated users the trigger should redirect to `/sign-in?next={current-path}` rather than render a popover. Reuse the same redirect handling pattern as `CollectionToggle`.
+Unauthenticated users: the trigger does not open the menu — a click calls `router.push('/sign-in?next=' + encodeURIComponent(pathname))`. Reuse the exact redirect pattern from `CollectionToggle` (`usePathname()` + `useRouter()`).
+
+`<NewPaletteInlineForm>` validates the name with the existing `validatePaletteName` from `src/modules/palettes/validation.ts` before submission so users see the same constraint message as the dashboard (1–80 chars, required).
 
 ### 3. Wiring into `CollectionPaintCard`
 
-Add the icon-variant button to the paint card. Position:
+Edit `src/modules/collection/components/collection-paint-card.tsx` — it already wraps `PaintCard` in a `relative` container with `CollectionToggle` overlaid at `top-1 right-1`. Stack the new button under the toggle:
 
-- Sits next to the existing collection toggle in the card's action row
-- `pointer-events-auto` and `stopPropagation()` on click so it doesn't trigger the underlying `<Link>` from `PaintCard`
+```tsx
+<AddToPaletteButton
+  paintId={id}
+  variant="icon"
+  isAuthenticated={isAuthenticated}
+  className="absolute right-1 top-9"
+/>
+```
 
-The card will now have two affordances: collection toggle (existing) and add-to-palette (new). Verify visual density at `xs` and `sm` card sizes.
+Mirror `CollectionToggle`'s click handling — the button must call `e.stopPropagation()` and `e.preventDefault()` on the trigger so the underlying `PaintCard` `<Link>` does not navigate.
+
+The card is already a client component (`'use client'`), so no boundary changes are needed. Verify visual density at the smallest card size used by the wheel/explorer.
 
 ### 4. Wiring into the paint detail page
 
-`/paints/[id]/page.tsx` adds `<AddToPaletteButton variant="full" paintId={id} />` next to the existing collection toggle.
+Edit `src/modules/paints/components/paint-detail.tsx` (not the route page — the toggle currently lives in the component, so the new button belongs there too). Place `<AddToPaletteButton variant="full" paintId={paint.id} isAuthenticated={isAuthenticated} revalidatePath={'/paints/' + paint.id} />` directly after the `CollectionToggle` inside the heading row.
 
 ### 5. Save scheme as palette
 
-`SaveSchemeAsPaletteButton` lives next to the scheme type selector or in the explorer's header.
+`SaveSchemeAsPaletteButton` mounts inside `scheme-explorer.tsx`, after `<SchemeTypeSelector>` and before `<SchemeSwatchGrid>`, so it has access to the derived `schemeColors`, `baseColor`, and `activeScheme`.
 
-Behavior:
+Update `scheme-explorer.tsx` to pass these three props to the new button. The button itself is a small client component:
 
-1. Disabled when the active scheme has zero matches (e.g., filters eliminated all candidates)
-2. On click, opens a dialog with a name input pre-filled from `build-palette-from-scheme.ts` (e.g., "Triadic from Cobalt Blue")
-3. Confirm calls `createPaletteWithPaints` with `{ name, paintIds }` where `paintIds` is the top match per scheme color (skipping any color whose `nearestPaints` is empty)
-4. On success, redirect to `/palettes/{id}/edit` so the user can immediately curate
+1. Disabled when `schemeColors.length === 0` or every entry has an empty `nearestPaints`.
+2. On click, opens a native `<dialog>` (matches the `delete-palette-button.tsx` pattern — no extra UI deps) containing a name input and Confirm/Cancel actions.
+3. Default name is computed by `buildPaletteFromScheme(schemeColors, baseColor, activeScheme)`.
+4. Confirm calls the `createPaletteWithPaints` server action; on success Next.js redirects to `/palettes/{id}/edit`.
+5. Disabled state is also surfaced via `aria-disabled` and a tooltip-friendly `title` ("Pick a base color first" / "No matching paints").
 
-`build-palette-from-scheme.ts` is a pure helper:
+`build-palette-from-scheme.ts` lives in `src/modules/color-schemes/utils/`:
 
 ```ts
-export function buildPaletteFromScheme(scheme: SchemeColor[], baseLabel: string, schemeType: ColorScheme): {
-  name: string
-  paintIds: string[]
-}
+import type { BaseColor } from '@/modules/color-schemes/types/base-color'
+import type { SchemeColor } from '@/modules/color-schemes/types/scheme-color'
+import type { ColorScheme } from '@/modules/color-wheel/types/color-scheme'
+
+export function buildPaletteFromScheme(
+  scheme: SchemeColor[],
+  base: BaseColor,
+  schemeType: ColorScheme,
+): { name: string; paintIds: string[] }
 ```
 
-Skips empty match slots; the scheme color's hue still matters for naming, but only colors with a top match contribute paint IDs.
+- `name` formats `<Title-cased schemeType> from <baseLabel>`, where `baseLabel = base.name ?? base.hex` (the base picker stores `name` for paint-mode and leaves it absent for hex-mode — see `BaseColorPicker.selectPaint` and `handleHexChange`).
+- `paintIds` collects each color's `nearestPaints[0].id`, skipping any entry where `nearestPaints` is empty.
+
+The helper is pure — unit-test-friendly and free of React imports.
 
 ### 6. Action implementation notes
 
-`addPaintToPalette(paletteId, paintId)`:
+All three actions live in `src/modules/palettes/actions/` (one file per action, matching the module convention). They mirror the patterns established in `create-palette.ts` and `remove-palette-paint.ts`.
 
-1. `getSession()`, redirect to sign-in if unauthenticated
-2. Service call (RLS enforces ownership)
-3. `revalidatePath('/palettes/{id}')` and `revalidatePath('/palettes/{id}/edit')`
-4. Returns `{ ok: true, palette: { id, name } }` so the toast can show context
+`add-paint-to-palette.ts` — `addPaintToPalette(paletteId, paintId)`:
 
-`addPaintsToPalette(paletteId, paintIds)`:
+1. Read the user from `createClient()` (server). Return `{ error: 'You must be signed in to add paints to a palette.' }` if absent (the trigger already redirects pre-flight, but the action stays defensive).
+2. Service call: load palette, verify `palette.userId === user.id`, then `appendPaintToPalette`.
+3. `revalidatePath('/palettes')`, `revalidatePath('/palettes/' + paletteId)`, `revalidatePath('/palettes/' + paletteId + '/edit')`.
+4. Returns `{ ok: true, paletteName: string } | { error: string }` so the menu can render the inline "Added to …" confirmation.
 
-- Same as above but takes an array; service runs a single insert with computed `position` values
+`add-paints-to-palette.ts` — `addPaintsToPalette(paletteId, paintIds)`:
 
-`createPaletteWithPaints({ name, description?, paintIds })`:
+- Same shape as above but accepts an array. Used by the bulk-from-scheme path indirectly (via `createPaletteWithPaints`) and reserved for the deferred multi-select grid.
 
-1. Validates name
-2. Creates palette
-3. Appends paints in one go
-4. Redirects to `/palettes/{id}/edit`
+`create-palette-with-paints.ts` — `createPaletteWithPaints({ name, description?, paintIds })`:
+
+1. Validate name with `validatePaletteForm`. Return validation errors as a structured response (the dialog can surface them inline).
+2. Create the palette via `service.createPalette`.
+3. Call `service.appendPaintsToPalette(palette.id, paintIds)`. If it fails, the palette still exists but is empty — return `{ ok: true, paletteId, warning: 'Created, but failed to add paints.' }` so the user lands in the editor and can retry.
+4. `revalidatePath('/palettes')` then `redirect('/palettes/' + palette.id + '/edit')`.
+
+All three return plain serializable objects; none rely on `useActionState` since the call sites are imperative (button onClick / dialog confirm), not form-driven.
 
 ### 7. Default-target heuristic
 
-The "Add to palette" menu's default highlighted palette is the user's most-recently-edited (already first in the dashboard ordering — `updated_at desc`). No persisted "last used" — the implicit ordering already conveys it.
+`listPalettesForUser` already returns palettes ordered by `updated_at desc` (see `palette-service.ts` line 120). The first row is therefore the implicit "most recently edited" target. No persistence of a "last used" preference — the menu simply highlights the first row by giving it `data-default="true"` and styling, and pressing Enter when the menu opens commits to it.
 
 ### 8. Manual QA checklist
 
-- Add a paint from a paint card → toast appears, palette count increments on the dashboard
-- Add the same paint twice → both rows persist, palette swatches show duplicates
-- "Create new palette" inline → palette is created and the paint added; dashboard shows it
-- From a paint card with no palettes → menu shows the empty state with a single "Create new" CTA
-- Generate a complementary scheme, click "Save as palette" → name pre-fills, confirm lands on the edit page with the palettes' paints in scheme order
-- Apply a brand filter that wipes all matches → "Save as palette" disables
-- Sign out, click any "Add to palette" → redirects to sign-in with `next` set
-- `npm run build` + `npm run lint`
+- Add a paint from a paint card → inline "Added to {name}" message; dashboard shows the paint count incremented after the next page revalidate.
+- Add the same paint twice → both rows persist (composite PK is `(palette_id, position)`, not `(palette_id, paint_id)`); palette swatches show duplicates.
+- "Create new palette" inline → palette is created and the paint added; menu collapses and dashboard shows the new row.
+- From a paint card with no palettes → menu shows the empty state with a single "Create new" CTA.
+- Generate a triadic scheme from "Cobalt Blue", click "Save as palette" → name pre-fills as "Triadic from Cobalt Blue"; confirm lands on the edit page with each scheme color's top match in scheme order.
+- Apply a hex base color, click "Save as palette" → name pre-fills as e.g. "Triadic from #2a52be".
+- Apply a base color whose paints all share the same hue but `nearestPaints` is empty for some scheme positions → "Save as palette" still works, only populated slots contribute paints.
+- Pick a base color where every scheme entry has an empty `nearestPaints` → "Save as palette" is disabled with the explanatory `title`.
+- Sign out, click any "Add to palette" → redirects to `/sign-in?next={current-path}`.
+- `npm run build` + `npm run lint`.
 
 ## Risks & Considerations
 

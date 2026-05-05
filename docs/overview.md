@@ -195,7 +195,7 @@ Core functionality:
 
 - [ ] [Palette database schema and module scaffold](./11-color-palettes/00-palette-schema.md)
 - [x] [Palette management (list, create, edit, delete)](./11-color-palettes/01-palette-management.md)
-- [ ] [Add to palette from paint cards and color schemes](./11-color-palettes/02-add-to-palette.md)
+- [x] [Add to palette from paint cards and color schemes](./11-color-palettes/02-add-to-palette.md)
 - [ ] [Drag-and-drop palette reorder](./11-color-palettes/03-palette-reorder.md)
 - [ ] [Hue-locked HSL paint swap](./11-color-palettes/04-palette-hue-swap.md)
 

@@ -10,12 +10,14 @@ import { SchemeSwatchGrid } from '@/modules/color-schemes/components/scheme-swat
 import { generateScheme } from '@/modules/color-schemes/utils/generate-scheme'
 import { findNearestPaints } from '@/modules/color-schemes/utils/find-nearest-paints'
 import type { BaseColor } from '@/modules/color-schemes/types/base-color'
+import { SaveSchemeAsPaletteButton } from '@/modules/color-schemes/components/save-scheme-as-palette-button'
 
 /**
  * Main client component for the Color Scheme Explorer.
  *
  * Manages base color selection, active scheme type, and analogous spread angle.
  * Derives the full set of scheme colors (with nearest paints) via useMemo.
+ * Renders a {@link SaveSchemeAsPaletteButton} once a base color is selected.
  *
  * @param props.paints - Full paint list fetched server-side and passed as a prop.
  * @param props.isAuthenticated - Whether the current user is signed in.
@@ -56,6 +58,13 @@ export function SchemeExplorer({
             analogousAngle={analogousAngle}
             onAnalogousAngleChange={setAnalogousAngle}
           />
+          <div className="flex justify-end">
+            <SaveSchemeAsPaletteButton
+              schemeColors={schemeColors}
+              baseColor={baseColor}
+              activeScheme={activeScheme}
+            />
+          </div>
           <SchemeSwatchGrid colors={schemeColors} isAuthenticated={isAuthenticated} ownedIds={ownedIds} />
         </>
       )}
