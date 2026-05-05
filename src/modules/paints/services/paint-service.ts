@@ -475,6 +475,52 @@ export function createPaintService(supabase: SupabaseClient) {
     },
 
     /**
+     * Fetches all non-discontinued paints whose `hue_id` belongs to the given
+     * principal hue group (the principal itself plus all its ISCC-NBS sub-hues).
+     *
+     * Used to populate the hue-swap dialog candidate grid.
+     *
+     * @param parentHueId - UUID of the top-level Munsell principal hue.
+     * @returns Array of {@link ColorWheelPaint} ordered by name.
+     */
+    async listColorWheelPaintsByHueGroup(parentHueId: string): Promise<ColorWheelPaint[]> {
+      const { data: children } = await supabase
+        .from('hues')
+        .select('id')
+        .eq('parent_id', parentHueId)
+
+      const hueIds = [parentHueId, ...(children?.map((c) => c.id) ?? [])]
+
+      const { data } = await supabase
+        .from('paints')
+        .select('id, name, hex, hue, saturation, lightness, hue_id, is_metallic, paint_type, product_line_id, product_lines!inner(id, name, brands!inner(id, name))')
+        .in('hue_id', hueIds)
+        .eq('is_discontinued', false)
+        .order('name', { ascending: true })
+
+      if (!data) return []
+
+      return data.map((row) => {
+        const line = row.product_lines as unknown as { id: string; name: string; brands: { id: string; name: string } }
+        return {
+          id: row.id,
+          name: row.name,
+          hex: row.hex,
+          hue: row.hue,
+          saturation: row.saturation,
+          lightness: row.lightness,
+          hue_id: row.hue_id,
+          is_metallic: row.is_metallic,
+          paint_type: row.paint_type,
+          product_line_id: row.product_line_id,
+          brand_name: line.brands.name,
+          product_line_name: line.name,
+          brand_id: line.brands.id,
+        }
+      })
+    },
+
+    /**
      * Fetches all paint references for a given paint, with the related paint
      * data joined (including product line and brand).
      *
