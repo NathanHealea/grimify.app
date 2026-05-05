@@ -12,6 +12,10 @@ import { cn } from '@/lib/utils'
  * Supports single and multi-thumb (range) configurations. For a range slider,
  * pass a two-element array to `value` / `defaultValue`.
  *
+ * Styled with `.range`, `.range-track`, `.range-range`, and `.range-thumb`
+ * CSS classes from `src/styles/slider.css`. Pass size or color modifier classes
+ * (e.g. `range-sm`, `range-primary`) via `className` on the root.
+ *
  * @param props - All props from {@link SliderPrimitive.Root}.
  */
 function Slider({ className, ...props }: ComponentProps<typeof SliderPrimitive.Root>) {
@@ -24,21 +28,14 @@ function Slider({ className, ...props }: ComponentProps<typeof SliderPrimitive.R
   return (
     <SliderPrimitive.Root
       data-slot="slider"
-      className={cn(
-        'relative flex w-full touch-none items-center select-none',
-        'data-[disabled]:opacity-50',
-        className,
-      )}
+      className={cn('range', className)}
       {...props}
     >
-      <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-border">
-        <SliderPrimitive.Range className="absolute h-full bg-primary" />
+      <SliderPrimitive.Track className="range-track">
+        <SliderPrimitive.Range className="range-range" />
       </SliderPrimitive.Track>
       {Array.from({ length: thumbCount }).map((_, i) => (
-        <SliderPrimitive.Thumb
-          key={i}
-          className="block size-4 rounded-full border border-primary/50 bg-background shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
-        />
+        <SliderPrimitive.Thumb key={i} className="range-thumb" />
       ))}
     </SliderPrimitive.Root>
   )

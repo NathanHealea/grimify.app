@@ -14,6 +14,7 @@
 @import '../styles/badge.css' layer(components);
 @import '../styles/navbar.css' layer(components);
 @import '../styles/sidebar.css' layer(components);
+@import '../styles/slider.css' layer(components);
 
 @custom-variant dark (&:is(.dark *));
 
