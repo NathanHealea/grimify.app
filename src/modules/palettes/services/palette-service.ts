@@ -314,18 +314,27 @@ export function createPaletteService(supabase: SupabaseClient) {
      * then atomically replaces via {@link setPalettePaints}. Mirrors the
      * read-modify-write pattern used by `removePalettePaint`.
      *
+     * Rejects the call with `code: 'duplicate'` when `paintId` is already in
+     * the palette — the application layer enforces uniqueness because the
+     * schema's composite PK is `(palette_id, position)`, not `(palette_id,
+     * paint_id)`.
+     *
      * @param paletteId - UUID of the palette to modify.
      * @param paintId - UUID of the paint to append.
      * @param note - Optional per-slot note (left blank when not provided).
-     * @returns An object with an optional `error` string on failure.
+     * @returns An object with an optional `error` string and `code` discriminator.
      */
     async appendPaintToPalette(
       paletteId: string,
       paintId: string,
       note?: string | null,
-    ): Promise<{ error?: string }> {
+    ): Promise<{ error?: string; code?: 'duplicate' | 'not_found' }> {
       const palette = await this.getPaletteById(paletteId)
-      if (!palette) return { error: 'Palette not found.' }
+      if (!palette) return { error: 'Palette not found.', code: 'not_found' }
+
+      if (palette.paints.some((slot) => slot.paintId === paintId)) {
+        return { error: 'This paint is already in the palette.', code: 'duplicate' }
+      }
 
       const next = normalizePalettePositions([
         ...palette.paints,
@@ -341,16 +350,36 @@ export function createPaletteService(supabase: SupabaseClient) {
      * Loads the current slots, appends all entries in order, normalizes positions,
      * then atomically replaces via {@link setPalettePaints}.
      *
+     * Rejects the entire call atomically with `code: 'duplicate'` when any
+     * input paint already exists in the palette OR appears more than once in
+     * the input list. Duplicate paint IDs are reported back via `duplicateIds`
+     * so the caller can name them in user-facing feedback.
+     *
      * @param paletteId - UUID of the palette to modify.
      * @param paintIds - Ordered list of paint UUIDs to append.
-     * @returns An object with an optional `error` string on failure.
+     * @returns An object with an optional `error` string, `code` discriminator, and `duplicateIds` list.
      */
     async appendPaintsToPalette(
       paletteId: string,
       paintIds: string[],
-    ): Promise<{ error?: string }> {
+    ): Promise<{ error?: string; code?: 'duplicate' | 'not_found'; duplicateIds?: string[] }> {
       const palette = await this.getPaletteById(paletteId)
-      if (!palette) return { error: 'Palette not found.' }
+      if (!palette) return { error: 'Palette not found.', code: 'not_found' }
+
+      const existing = new Set(palette.paints.map((slot) => slot.paintId))
+      const seen = new Set<string>()
+      const duplicates: string[] = []
+      for (const id of paintIds) {
+        if (existing.has(id) || seen.has(id)) duplicates.push(id)
+        seen.add(id)
+      }
+      if (duplicates.length > 0) {
+        return {
+          error: `${duplicates.length} paint(s) are already in this palette.`,
+          code: 'duplicate',
+          duplicateIds: duplicates,
+        }
+      }
 
       const base = palette.paints.length
       const additions = paintIds.map((id, i) => ({
