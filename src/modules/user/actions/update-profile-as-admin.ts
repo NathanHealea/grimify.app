@@ -57,8 +57,8 @@ export async function updateProfileAsAdmin(
     return { errors: { display_name: displayNameError } }
   }
 
-  if (bio.length > 500) {
-    return { errors: { bio: 'Bio must be 500 characters or fewer.' } }
+  if (bio.length > 1000) {
+    return { errors: { bio: 'Bio must be 1000 characters or fewer.' } }
   }
 
   const { error } = await supabase
