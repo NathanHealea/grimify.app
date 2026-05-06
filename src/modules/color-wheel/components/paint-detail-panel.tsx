@@ -2,6 +2,8 @@
 
 import { useEffect, useTransition, useState } from 'react'
 
+import { toast } from 'sonner'
+
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { addToCollection } from '@/modules/collection/actions/add-to-collection'
 import { removeFromCollection } from '@/modules/collection/actions/remove-from-collection'
@@ -17,7 +19,8 @@ import { removeFromCollection } from '@/modules/collection/actions/remove-from-c
  * When `isOwned` is provided (authenticated users only), renders an Add/Remove
  * from Collection button that calls the appropriate server action with optimistic
  * local state — the button flips immediately on success without waiting for a
- * full server re-render.
+ * full server re-render. Success and failure are surfaced as Sonner toasts;
+ * there is no inline error message.
  *
  * @param paint - The selected paint to display.
  * @param isOwned - Whether the paint is in the user's collection. `undefined` when unauthenticated.
@@ -34,7 +37,6 @@ export function PaintDetailPanel({
 }) {
   const [owned, setOwned] = useState(isOwned ?? false)
   const [isPending, startTransition] = useTransition()
-  const [actionError, setActionError] = useState<string | null>(null)
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -51,11 +53,15 @@ export function PaintDetailPanel({
         ? await addToCollection(paint.id)
         : await removeFromCollection(paint.id)
       if (result.error) {
-        setActionError(result.error)
-      } else {
-        setOwned(nextOwned)
-        setActionError(null)
+        toast.error(result.error)
+        return
       }
+      setOwned(nextOwned)
+      toast.success(
+        nextOwned
+          ? `Added '${paint.name}' to your collection`
+          : `Removed '${paint.name}' from your collection`,
+      )
     })
   }
 
@@ -112,9 +118,6 @@ export function PaintDetailPanel({
             >
               {isPending ? '…' : owned ? 'Remove from Collection' : 'Add to Collection'}
             </button>
-            {actionError && (
-              <p className="text-xs text-destructive">{actionError}</p>
-            )}
           </div>
         )}
       </div>
