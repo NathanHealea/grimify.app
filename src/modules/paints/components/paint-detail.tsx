@@ -49,6 +49,7 @@ export function PaintDetail({
             <h1 className="text-3xl font-bold">{paint.name}</h1>
             <CollectionToggle
               paintId={paint.id}
+              paintName={paint.name}
               isInCollection={isInCollection}
               isAuthenticated={isAuthenticated}
               size="md"

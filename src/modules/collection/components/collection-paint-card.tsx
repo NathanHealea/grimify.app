@@ -55,6 +55,7 @@ export function CollectionPaintCard({
       />
       <CollectionToggle
         paintId={id}
+        paintName={name}
         isInCollection={isInCollection}
         isAuthenticated={isAuthenticated}
         size="sm"

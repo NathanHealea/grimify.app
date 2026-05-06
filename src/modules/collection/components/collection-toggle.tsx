@@ -4,6 +4,7 @@ import { useOptimistic, useTransition } from 'react'
 
 import { Bookmark } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 import { cn } from '@/lib/utils'
 import { addToCollection } from '@/modules/collection/actions/add-to-collection'
@@ -15,11 +16,17 @@ import { removeFromCollection } from '@/modules/collection/actions/remove-from-c
  * Uses `useOptimistic` for an instant state flip on click and reverts on error.
  * When `isAuthenticated` is false, clicking redirects to `/sign-in?next={pathname}`.
  *
+ * On success, surfaces a green Sonner toast describing which side of the toggle
+ * fired (e.g. _"Added 'Mephiston Red' to your collection"_). On error, surfaces
+ * a red toast carrying the action's `error` message and reverts the optimistic
+ * flip.
+ *
  * Place this inside a `relative` wrapper with an absolute position to overlay
  * on top of a paint card `<Link>` — the click handler stops propagation so
  * the card navigation is not triggered.
  *
  * @param props.paintId - UUID of the paint to toggle.
+ * @param props.paintName - Display name of the paint, used in success toast messages.
  * @param props.isInCollection - Server-rendered initial membership state.
  * @param props.isAuthenticated - Whether the current user is signed in.
  * @param props.size - Button size: `'sm'` (default) or `'md'`.
@@ -28,6 +35,7 @@ import { removeFromCollection } from '@/modules/collection/actions/remove-from-c
  */
 export function CollectionToggle({
   paintId,
+  paintName,
   isInCollection,
   isAuthenticated,
   size = 'sm',
@@ -35,6 +43,7 @@ export function CollectionToggle({
   className,
 }: {
   paintId: string
+  paintName: string
   isInCollection: boolean
   isAuthenticated: boolean
   size?: 'sm' | 'md'
@@ -56,6 +65,10 @@ export function CollectionToggle({
     }
 
     startTransition(async () => {
+      // `next` is captured here, before the await, so the toast message
+      // describes the user's intent for *this* click. Reading
+      // `optimisticInCollection` after the await would reflect the settled
+      // server state and produce the wrong message in the error-revert path.
       const next = !optimisticInCollection
       setOptimisticInCollection(next)
 
@@ -67,7 +80,15 @@ export function CollectionToggle({
         // Revert — useOptimistic automatically resets to the server value on
         // re-render, but we trigger one explicitly by flipping back.
         setOptimisticInCollection(!next)
+        toast.error(result.error)
+        return
       }
+
+      toast.success(
+        next
+          ? `Added '${paintName}' to your collection`
+          : `Removed '${paintName}' from your collection`,
+      )
     })
   }
 
