@@ -204,7 +204,7 @@ Core functionality:
 - [x] [Hue-locked HSL paint swap](./11-color-palettes/04-palette-hue-swap.md)
 - [x] [Palette description markdown editor](./11-color-palettes/05-palette-description-markdown.md)
 - [x] [Prevent duplicate paints + toast feedback](./11-color-palettes/06-prevent-duplicate-paint-add.md)
-- [ ] [Palette & scheme toast feedback](./11-color-palettes/07-palette-toast.md)
+- [x] [Palette & scheme toast feedback](./11-color-palettes/07-palette-toast.md)
 
 ### Epic: Painting Recipes
 
