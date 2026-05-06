@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/palette-description-markdown`
 **Merge into:** `v1/main`
 
@@ -12,14 +12,14 @@ Replace the plain-text `<textarea>` for palette descriptions with a lightweight 
 
 ## Acceptance Criteria
 
-- [ ] The palette edit form (`/palettes/[id]/edit`) shows a markdown toolbar above the description textarea
-- [ ] Toolbar buttons: **B** (bold), *I* (italic), bullet list, numbered list
-- [ ] Clicking a toolbar button inserts markdown syntax at the cursor; selected text is wrapped
-- [ ] Helper text below the textarea explains supported syntax: `**bold**, *italic*, bullet lists, numbered lists`
-- [ ] The palette detail page (`/palettes/[id]`) renders description markdown as HTML (bold, italic, `ul`, `ol`)
-- [ ] If no description is set, nothing is rendered (existing behaviour preserved)
-- [ ] The 1000-character limit still applies to the raw markdown string (validated in JS and enforced by the DB constraint)
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] The palette edit form (`/palettes/[id]/edit`) shows a markdown toolbar above the description textarea
+- [x] Toolbar buttons: **B** (bold), *I* (italic), bullet list, numbered list
+- [x] Clicking a toolbar button inserts markdown syntax at the cursor; selected text is wrapped
+- [x] Helper text below the textarea explains supported syntax: `**bold**, *italic*, bullet lists, numbered lists`
+- [x] The palette detail page (`/palettes/[id]`) renders description markdown as HTML (bold, italic, `ul`, `ol`)
+- [x] If no description is set, nothing is rendered (existing behaviour preserved)
+- [x] The 1000-character limit still applies to the raw markdown string (validated in JS and enforced by the DB constraint)
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Implementation Plan
 
