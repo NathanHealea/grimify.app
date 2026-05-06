@@ -10,9 +10,16 @@ import {
 } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
 import { listRoles } from '@/modules/admin/services/role-service'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 import { AdminDeleteUserSection } from '@/modules/user/components/admin-delete-user-section'
 import { AdminEditProfileForm } from '@/modules/user/components/admin-edit-profile-form'
 import { AdminUserRolesEditor } from '@/modules/user/components/admin-user-roles-editor'
+
+export const metadata = pageMetadata({
+  title: 'Edit user',
+  description: 'Edit user profile and roles.',
+  noindex: true,
+})
 import { getProfileById } from '@/modules/user/services/profile-service'
 import { getUserRoles } from '@/modules/user/services/user-roles-service'
 

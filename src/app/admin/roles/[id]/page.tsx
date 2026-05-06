@@ -5,6 +5,13 @@ import { createClient } from '@/lib/supabase/server'
 import { AssignRoleForm } from '@/modules/admin/components/assign-role-form'
 import { RoleDetailCard } from '@/modules/admin/components/role-detail-card'
 import { RoleUsersTable } from '@/modules/admin/components/role-users-table'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Role detail',
+  description: 'Admin role detail.',
+  noindex: true,
+})
 
 export default async function AdminRoleDetailPage({
   params,

@@ -3,6 +3,14 @@ import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { OAuthButtons } from '@/modules/auth/components/oauth-buttons'
 import { SignInForm } from '@/modules/auth/components/sign-in-form'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Sign in',
+  description: 'Sign in to your Grimify account.',
+  path: '/sign-in',
+  noindex: true,
+})
 
 export default async function SignInPage({ searchParams }: { searchParams: Promise<{ message?: string; error?: string }> }) {
   const { message, error } = await searchParams

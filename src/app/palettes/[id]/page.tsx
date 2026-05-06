@@ -1,8 +1,37 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { PaletteDetail } from '@/modules/palettes/components/palette-detail'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const service = createPaletteService(supabase)
+  const palette = await service.getPaletteById(id)
+
+  if (!palette) {
+    return pageMetadata({ title: 'Palette not found', description: 'This palette could not be found.', noindex: true })
+  }
+
+  const isViewerOwner = palette.userId === user?.id
+  if (!palette.isPublic && !isViewerOwner) {
+    return pageMetadata({ title: 'Palette not found', description: 'This palette could not be found.', noindex: true })
+  }
+
+  return pageMetadata({
+    title: palette.name,
+    description: palette.description?.slice(0, 200) ?? `${palette.name} — a paint palette on Grimify.`,
+    path: `/palettes/${id}`,
+    noindex: !palette.isPublic,
+  })
+}
 
 export default async function PaletteDetailPage({
   params,

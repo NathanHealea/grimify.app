@@ -6,6 +6,13 @@ import { ArrowLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { PaletteBuilder } from '@/modules/palettes/components/palette-builder'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Edit palette',
+  description: 'Edit your paint palette on Grimify.',
+  noindex: true,
+})
 
 export default async function PaletteEditPage({
   params,

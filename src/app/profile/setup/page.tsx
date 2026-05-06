@@ -1,7 +1,15 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
 import { ProfileForm } from '@/modules/user/components/profile-form'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 import { redirect } from 'next/navigation'
+
+export const metadata = pageMetadata({
+  title: 'Set up your profile',
+  description: 'Choose a display name to finish setting up your Grimify account.',
+  path: '/profile/setup',
+  noindex: true,
+})
 
 export default async function ProfileSetupPage() {
   const supabase = await createClient()

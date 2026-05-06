@@ -1,5 +1,12 @@
 import { BrandCard } from '@/modules/brands/components/brand-card'
 import { getBrandService } from '@/modules/brands/services/brand-service.server'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Brands',
+  description: 'Browse miniature paint brands and their product lines on Grimify.',
+  path: '/brands',
+})
 
 export default async function BrandsPage() {
   const brandService = await getBrandService()

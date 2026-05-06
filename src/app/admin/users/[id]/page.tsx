@@ -2,11 +2,18 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase/server'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 import type { AuthInfo } from '@/modules/user/components/user-detail'
 import { UserDetail } from '@/modules/user/components/user-detail'
 import { getAuthUser } from '@/modules/user/services/auth-user-service'
 import { getProfileById } from '@/modules/user/services/profile-service'
 import { getUserRoles } from '@/modules/user/services/user-roles-service'
+
+export const metadata = pageMetadata({
+  title: 'User detail',
+  description: 'Admin user detail.',
+  noindex: true,
+})
 
 export default async function AdminUserDetailPage({
   params,

@@ -1,6 +1,14 @@
 import { createClient } from '@/lib/supabase/server'
 import { CreateRoleForm } from '@/modules/admin/components/create-role-form'
 import { RoleListTable } from '@/modules/admin/components/role-list-table'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Role management',
+  description: 'Admin: manage Grimify roles.',
+  path: '/admin/roles',
+  noindex: true,
+})
 
 export default async function AdminRolesPage() {
   const supabase = await createClient()
