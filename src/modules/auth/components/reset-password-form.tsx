@@ -1,6 +1,7 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useEffect } from 'react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,18 +14,22 @@ import type { AuthState } from '@/modules/auth/types/auth-state'
  *
  * Uses the {@link updatePassword} server action via `useActionState`.
  * Requires two matching password fields with a minimum of 6 characters.
- * Displays error feedback from the server (e.g. expired token, validation errors).
+ * Surfaces server-returned errors (e.g. expired token, validation errors)
+ * as a Sonner toast; successful reset redirects server-side, so no success
+ * toast fires here.
  */
 export function ResetPasswordForm() {
   const [state, formAction, pending] = useActionState<AuthState, FormData>(updatePassword, null)
 
+  useEffect(() => {
+    if (!state) return
+    if (state.error) {
+      toast.error(state.error)
+    }
+  }, [state])
+
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      {state?.error && (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
-          {state.error}
-        </div>
-      )}
       <div className="form-item">
         <Label htmlFor="password">New password</Label>
         <Input

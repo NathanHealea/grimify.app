@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useActionState } from 'react'
+import { useActionState, useEffect } from 'react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,18 +14,21 @@ import type { AuthState } from '@/modules/auth/types/auth-state'
  * Email and password sign-in form.
  *
  * Uses the {@link signIn} server action via `useActionState`.
- * Displays field-level error feedback from the server.
+ * Surfaces server-returned errors as a Sonner toast; successful sign-in
+ * redirects server-side, so no success toast fires here.
  */
 export function SignInForm() {
   const [state, formAction, pending] = useActionState<AuthState, FormData>(signIn, null)
 
+  useEffect(() => {
+    if (!state) return
+    if (state.error) {
+      toast.error(state.error)
+    }
+  }, [state])
+
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      {state?.error && (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
-          {state.error}
-        </div>
-      )}
       <div className="form-item">
         <Label htmlFor="email">Email</Label>
         <Input id="email" name="email" type="email" placeholder="you@example.com" required autoComplete="email" />
