@@ -95,6 +95,7 @@ Core functionality:
 - [x] [Brand and product line browsing](./02-paint-data-search/03-brand-browsing.md)
 - [x] [Munsell hue system refactor](./02-paint-data-search/04-munsell-hue-refactor.md)
 - [ ] [Paint database data improvement](./02-paint-data-search/05-paint-database-data-improvement.md)
+- [x] [Paint search v2 (rearchitecture)](./02-paint-data-search/06-paint-search-v2.md)
 
 ### Epic: Interactive Color Wheel
 

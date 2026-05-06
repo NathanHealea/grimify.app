@@ -2,11 +2,11 @@
 
 **Epic:** Paint Data & Search
 **Type:** Feature
-**Status:** In Progress — Phases 1–8 in progress (manual verification)
+**Status:** Completed
 **Branch:** `refactor/paint-search`
 **Merge into:** `v1/main`
 
-> **Status: In Progress.** Phases 1–7 shipped on `refactor/paint-search`. Phase 8 manual verification underway. `PaintCardWithToggle` renamed to `CollectionPaintCard` (`collection-paint-card.tsx`). Public `/paints` explorer now renders `CollectionPaintCard` for authenticated users.
+> **Status: Completed.** All 8 phases shipped on `refactor/paint-search`. `PaintCardWithToggle` was renamed to `CollectionPaintCard` (`collection-paint-card.tsx`). Public `/paints` explorer now renders `CollectionPaintCard` for authenticated users.
 >
 > **Lint note:** 4 pre-existing lint errors remain in the Phase 2–4 hooks (`use-admin-paint-search`, `use-hue-filter`, `use-paint-search`, `use-search-url-state`) — `react-hooks/set-state-in-effect` and a ref-during-render warning. No new errors were introduced in Phases 5–7.
 
