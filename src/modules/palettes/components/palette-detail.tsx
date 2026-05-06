@@ -4,6 +4,7 @@ import type { Palette } from '@/modules/palettes/types/palette'
 import { PaletteSwatchStrip } from '@/modules/palettes/components/palette-swatch-strip'
 import { PalettePaintList } from '@/modules/palettes/components/palette-paint-list'
 import { PaletteEmptyState } from '@/modules/palettes/components/palette-empty-state'
+import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
 
 /**
  * Read-only body for a palette detail page.
@@ -37,9 +38,10 @@ export function PaletteDetail({
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <h1 className="text-2xl font-bold">{palette.name}</h1>
-            {palette.description && (
-              <p className="mt-1 text-muted-foreground">{palette.description}</p>
-            )}
+            <MarkdownRenderer
+              content={palette.description}
+              className="mt-1 text-muted-foreground"
+            />
             <div className="mt-2 flex flex-wrap items-center gap-2">
               {ownerDisplayName && (
                 <span className="text-sm text-muted-foreground">
