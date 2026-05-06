@@ -2,7 +2,7 @@
 
 **Epic:** Collection Tracking
 **Type:** Enhancement
-**Status:** Todo
+**Status:** Completed
 **Branch:** `enhancement/collection-toast`
 **Merge into:** `v1/main`
 

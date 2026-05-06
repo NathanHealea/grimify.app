@@ -140,7 +140,7 @@ Core functionality:
 - [x] [Add/remove paints to personal collection](./06-collection-tracking/00-manage-collection.md)
 - [ ] [Collection overview and statistics](./06-collection-tracking/01-collection-overview.md)
 - [x] [Collection dashboard](./06-collection-tracking/02-collection-dashboard.md)
-- [ ] [Collection toast feedback (add / remove)](./06-collection-tracking/03-collection-toast.md)
+- [x] [Collection toast feedback (add / remove)](./06-collection-tracking/03-collection-toast.md)
 
 ### Epic: Community & Social
 
