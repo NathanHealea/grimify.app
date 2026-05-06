@@ -199,7 +199,7 @@ Core functionality:
 - [x] [Drag-and-drop palette reorder](./11-color-palettes/03-palette-reorder.md)
 - [x] [Hue-locked HSL paint swap](./11-color-palettes/04-palette-hue-swap.md)
 - [x] [Palette description markdown editor](./11-color-palettes/05-palette-description-markdown.md)
-- [ ] [Prevent duplicate paints + toast feedback](./11-color-palettes/06-prevent-duplicate-paint-add.md)
+- [x] [Prevent duplicate paints + toast feedback](./11-color-palettes/06-prevent-duplicate-paint-add.md)
 
 ### Epic: Painting Recipes
 
