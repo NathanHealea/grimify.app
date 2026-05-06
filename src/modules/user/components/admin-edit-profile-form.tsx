@@ -68,8 +68,8 @@ export function AdminEditProfileForm({
           id="bio"
           name="bio"
           defaultValue={initialBio ?? ''}
-          maxLength={500}
-          rows={4}
+          maxLength={1000}
+          rows={10}
         />
         {state?.errors?.bio && (
           <p className="text-xs text-destructive">{state.errors.bio}</p>
