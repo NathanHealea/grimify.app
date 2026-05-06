@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
+import type { AddPaintsToPaletteResult } from '@/modules/palettes/types/add-paint-to-palette-result'
 
 /**
  * Server action that appends an ordered list of paints to an existing palette.
@@ -13,29 +14,43 @@ import { createPaletteService } from '@/modules/palettes/services/palette-servic
  * detail pages on success. Reserved for the deferred multi-select grid path;
  * the scheme save flow uses {@link createPaletteWithPaints} instead.
  *
+ * Threads the service-layer `code` discriminator and `duplicateIds` array
+ * through so callers can surface duplicate-specific feedback that names the
+ * offending paints.
+ *
  * @param paletteId - UUID of the target palette.
  * @param paintIds - Ordered list of paint UUIDs to append.
- * @returns `{ ok: true }` on success; `{ error }` on failure.
+ * @returns An {@link AddPaintsToPaletteResult} discriminated by `error`.
  */
 export async function addPaintsToPalette(
   paletteId: string,
   paintIds: string[],
-): Promise<{ ok: true } | { error: string }> {
+): Promise<AddPaintsToPaletteResult> {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) return { error: 'You must be signed in to add paints to a palette.' }
+  if (!user) {
+    return { error: 'You must be signed in to add paints to a palette.', code: 'auth' }
+  }
 
   const service = createPaletteService(supabase)
   const palette = await service.getPaletteById(paletteId)
 
-  if (!palette) return { error: 'Palette not found.' }
-  if (palette.userId !== user.id) return { error: 'You can only add paints to palettes you own.' }
+  if (!palette) return { error: 'Palette not found.', code: 'not_found' }
+  if (palette.userId !== user.id) {
+    return { error: 'You can only add paints to palettes you own.', code: 'forbidden' }
+  }
 
   const result = await service.appendPaintsToPalette(paletteId, paintIds)
-  if (result.error) return { error: result.error }
+  if (result.error) {
+    return {
+      error: result.error,
+      code: result.code ?? 'unknown',
+      ...(result.duplicateIds ? { duplicateIds: result.duplicateIds } : {}),
+    }
+  }
 
   revalidatePath('/palettes')
   revalidatePath(`/palettes/${paletteId}`)
