@@ -2,7 +2,7 @@
 
 **Epic:** User Management
 **Type:** Enhancement
-**Status:** Todo
+**Status:** Completed
 **Branch:** `enhancement/profile-toast`
 **Merge into:** `v1/main`
 

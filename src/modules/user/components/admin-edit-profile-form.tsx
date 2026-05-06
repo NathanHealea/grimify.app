@@ -1,7 +1,8 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useEffect } from 'react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -37,14 +38,12 @@ export function AdminEditProfileForm({
     FormData
   >(action, null)
 
+  useEffect(() => {
+    if (state?.error) toast.error(state.error)
+  }, [state])
+
   return (
     <form action={formAction} className="flex flex-col gap-4">
-      {state?.error && (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
-          {state.error}
-        </div>
-      )}
-
       <div className="form-item">
         <Label htmlFor="display_name">Display name</Label>
         <Input
