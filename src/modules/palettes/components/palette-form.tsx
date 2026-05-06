@@ -5,6 +5,7 @@ import { useActionState } from 'react'
 import type { Palette } from '@/modules/palettes/types/palette'
 import type { PaletteFormState } from '@/modules/palettes/types/palette-form-state'
 import { updatePalette } from '@/modules/palettes/actions/update-palette'
+import { MarkdownEditor } from '@/modules/markdown/components/markdown-editor'
 
 const initialState = (palette: Palette): PaletteFormState => ({
   values: {
@@ -58,18 +59,14 @@ export function PaletteForm({ palette }: { palette: Palette }) {
         <label htmlFor="palette-description" className="form-label">
           Description
         </label>
-        <textarea
+        <MarkdownEditor
           id="palette-description"
           name="description"
-          rows={3}
-          maxLength={1000}
           defaultValue={state.values.description}
-          className="input w-full"
+          maxLength={1000}
           placeholder="Optional description"
+          error={state.errors.description}
         />
-        {state.errors.description && (
-          <p className="text-sm text-destructive">{state.errors.description}</p>
-        )}
       </div>
 
       <div className="form-item flex-row items-center gap-3">
