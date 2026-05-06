@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import { Breadcrumbs } from '@/components/breadcrumbs'
@@ -5,6 +6,29 @@ import { createClient } from '@/lib/supabase/server'
 import { getCollectionService } from '@/modules/collection/services/collection-service.server'
 import { BrandPaintList } from '@/modules/brands/components/brand-paint-list'
 import { getBrandService } from '@/modules/brands/services/brand-service.server'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const numericId = parseInt(id, 10)
+
+  if (isNaN(numericId)) {
+    return pageMetadata({ title: 'Brand not found', description: 'This brand could not be found.', noindex: true })
+  }
+
+  const brandService = await getBrandService()
+  const brand = await brandService.getBrandById(numericId)
+
+  if (!brand) {
+    return pageMetadata({ title: 'Brand not found', description: 'This brand could not be found.', noindex: true })
+  }
+
+  return pageMetadata({
+    title: brand.name,
+    description: `Browse ${brand.name} miniature paints on Grimify.`,
+    path: `/brands/${id}`,
+  })
+}
 
 export default async function BrandDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

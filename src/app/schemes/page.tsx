@@ -2,6 +2,14 @@ import { createClient } from '@/lib/supabase/server'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
 import { getCollectionService } from '@/modules/collection/services/collection-service.server'
 import { SchemeExplorer } from '@/modules/color-schemes/components/scheme-explorer'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Color schemes',
+  description:
+    'Pick a base color and explore complementary, analogous, triadic, and split-complementary schemes — matched to real miniature paints.',
+  path: '/schemes',
+})
 
 export default async function SchemesPage() {
   const supabase = await createClient()

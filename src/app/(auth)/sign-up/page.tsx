@@ -3,6 +3,13 @@ import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { OAuthButtons } from '@/modules/auth/components/oauth-buttons'
 import { SignUpForm } from '@/modules/auth/components/sign-up-form'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Create an account',
+  description: 'Sign up for Grimify to build your paint collection, palettes, and recipes.',
+  path: '/sign-up',
+})
 
 export default function SignUpPage() {
   return (

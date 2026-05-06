@@ -3,6 +3,14 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { PaletteCardGrid } from '@/modules/palettes/components/palette-card-grid'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'My palettes',
+  description: 'Manage your saved Grimify palettes.',
+  path: '/palettes',
+  noindex: true,
+})
 
 export default async function PalettesPage() {
   const supabase = await createClient()

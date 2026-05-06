@@ -6,6 +6,14 @@ import { UserSearch } from '@/modules/user/components/user-search'
 import { UserRoleFilter } from '@/modules/user/components/user-role-filter'
 import { listRoles } from '@/modules/admin/services/role-service'
 import { listProfiles } from '@/modules/user/services/profile-service'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'User management',
+  description: 'Admin: manage Grimify user accounts.',
+  path: '/admin/users',
+  noindex: true,
+})
 
 /** Number of users shown per page. */
 const PAGE_SIZE = 20

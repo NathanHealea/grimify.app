@@ -2,6 +2,14 @@ import Link from 'next/link'
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ForgotPasswordForm } from '@/modules/auth/components/forgot-password-form'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Forgot password',
+  description: 'Send yourself a password reset link for your Grimify account.',
+  path: '/forgot-password',
+  noindex: true,
+})
 
 export default function ForgotPasswordPage() {
   return (

@@ -3,6 +3,14 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { CollectionPaintGrid } from '@/modules/collection/components/collection-paint-grid'
 import { getCollectionService } from '@/modules/collection/services/collection-service.server'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Collection paints',
+  description: 'Browse the paints in your Grimify collection.',
+  path: '/collection/paints',
+  noindex: true,
+})
 
 /** Valid page sizes that the paginated grid supports. */
 const VALID_SIZES = [25, 50, 100, 200]

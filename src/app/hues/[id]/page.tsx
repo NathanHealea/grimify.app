@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { Breadcrumbs } from '@/components/breadcrumbs';
@@ -8,9 +9,26 @@ import { getHueService } from '@/modules/hues/services/hue-service.server';
 import { HueGroupPaintGrid } from '@/modules/paints/components/hue-group-paint-grid';
 import { HuePaintGrid } from '@/modules/paints/components/hue-paint-grid';
 import { getPaintService } from '@/modules/paints/services/paint-service.server';
+import { pageMetadata } from '@/modules/seo/utils/page-metadata';
 
 /** Valid page sizes that the paginated grid supports. */
 const VALID_SIZES = [25, 50, 100, 200]
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const hueService = await getHueService()
+  const hue = await hueService.getHueById(id)
+
+  if (!hue) {
+    return pageMetadata({ title: 'Hue not found', description: 'This hue could not be found.', noindex: true })
+  }
+
+  return pageMetadata({
+    title: hue.name,
+    description: `Browse miniature paints in the ${hue.name} hue on Grimify.`,
+    path: `/hues/${id}`,
+  })
+}
 
 export default async function HuePage({
   params,

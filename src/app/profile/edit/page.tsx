@@ -1,6 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
 import { ChangePasswordForm } from '@/modules/user/components/change-password-form'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Edit profile',
+  description: 'Update your Grimify account settings.',
+  path: '/profile/edit',
+  noindex: true,
+})
 
 export default async function ProfileEditPage() {
   const supabase = await createClient()

@@ -8,6 +8,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Admin dashboard',
+  description: 'Grimify admin dashboard.',
+  path: '/admin',
+  noindex: true,
+})
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient()

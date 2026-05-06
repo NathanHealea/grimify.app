@@ -2,6 +2,14 @@ import Link from 'next/link'
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ResetPasswordForm } from '@/modules/auth/components/reset-password-form'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Reset password',
+  description: 'Choose a new password for your Grimify account.',
+  path: '/reset-password',
+  noindex: true,
+})
 
 export default function ResetPasswordPage() {
   return (

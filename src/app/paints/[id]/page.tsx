@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import { Breadcrumbs } from '@/components/breadcrumbs'
@@ -7,6 +8,23 @@ import { getHueService } from '@/modules/hues/services/hue-service.server'
 import { PaintDetail } from '@/modules/paints/components/paint-detail'
 import { PaintReferences } from '@/modules/paints/components/paint-references'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const paintService = await getPaintService()
+  const paint = await paintService.getPaintById(id)
+
+  if (!paint) {
+    return pageMetadata({ title: 'Paint not found', description: 'This paint could not be found.', noindex: true })
+  }
+
+  return pageMetadata({
+    title: paint.name,
+    description: `${paint.name} miniature paint on Grimify.`,
+    path: `/paints/${id}`,
+  })
+}
 
 export default async function PaintDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

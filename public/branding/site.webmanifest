@@ -1,0 +1,13 @@
+{
+  "name": "Grimify",
+  "short_name": "Grimify",
+  "description": "Interactive color research and collection management for miniature painters.",
+  "icons": [
+    { "src": "/branding/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/branding/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#3d3d3d",
+  "background_color": "#0a0a0a",
+  "display": "standalone",
+  "start_url": "/"
+}

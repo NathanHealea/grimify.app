@@ -4,8 +4,15 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { AdminCollectionClient } from '@/modules/admin/components/admin-collection-client'
 import { getAdminCollectionPageData } from '@/modules/admin/services/collection-service'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 const DEFAULT_PAGE_SIZE = 25
+
+export const metadata = pageMetadata({
+  title: 'User collection',
+  description: 'Admin view of a user\'s paint collection.',
+  noindex: true,
+})
 
 export default async function AdminUserCollectionPage({
   params,

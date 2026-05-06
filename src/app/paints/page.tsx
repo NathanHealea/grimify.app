@@ -2,6 +2,14 @@ import { createClient } from '@/lib/supabase/server'
 import { getHueService } from '@/modules/hues/services/hue-service.server'
 import { PaintExplorer } from '@/modules/paints/components/paint-explorer'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Paints',
+  description:
+    'Browse and search miniature paints across every supported brand. Filter by hue, compare swatches, and add to your collection.',
+  path: '/paints',
+})
 
 /** Valid page sizes that the paginated grid supports. */
 const VALID_SIZES = [25, 50, 100, 200]

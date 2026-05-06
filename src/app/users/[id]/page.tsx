@@ -1,8 +1,34 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('display_name, bio')
+    .eq('id', id)
+    .single()
+
+  if (!profile) {
+    return pageMetadata({ title: 'User not found', description: 'This user could not be found.', noindex: true })
+  }
+
+  const name = profile.display_name ?? 'Grimify user'
+  const description = profile.bio?.slice(0, 200) ?? `${name}'s profile on Grimify.`
+
+  return pageMetadata({
+    title: name,
+    description,
+    path: `/users/${id}`,
+  })
+}
 
 export default async function UserProfilePage({
   params,
