@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
 
 import { deleteUser } from '@/modules/user/actions/delete-user'
 import {
@@ -18,6 +19,10 @@ import {
  * becomes active, preventing accidental deletions. Calls the {@link deleteUser}
  * server action on confirm — which calls `admin_delete_user` RPC, removing
  * the row from `auth.users` and cascading to `profiles` and `user_roles`.
+ *
+ * Success and failure are surfaced as Sonner toasts. On failure, the dialog
+ * stays open so the admin can retry; on success, the toast fires before the
+ * dialog closes so it persists across any navigation triggered by `onDeleted`.
  *
  * @param props.userId - UUID of the account to delete.
  * @param props.displayName - Name shown in the confirmation prompt and required for type-to-confirm.
@@ -40,23 +45,21 @@ export function DeleteUserDialog({
   onDeleted?: () => void
 }) {
   const [isPending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
   const [confirmValue, setConfirmValue] = useState('')
 
   function handleClose() {
     setConfirmValue('')
-    setError(null)
     onClose()
   }
 
   function handleConfirm() {
-    setError(null)
     startTransition(async () => {
       const result = await deleteUser(userId)
       if (result.error) {
-        setError(result.error)
+        toast.error(result.error)
         return
       }
+      toast.success(`Deleted user '${displayName}'`)
       onDeleted?.()
       handleClose()
     })
@@ -91,12 +94,6 @@ export function DeleteUserDialog({
             autoComplete="off"
           />
         </div>
-
-        {error && (
-          <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
-            {error}
-          </div>
-        )}
 
         <DialogFooter className="mt-2">
           <button

@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
+import { toast } from 'sonner'
 
 import { createRole } from '@/modules/admin/actions/create-role'
 import { validateRoleName } from '@/modules/admin/validation'
@@ -9,19 +10,28 @@ import { validateRoleName } from '@/modules/admin/validation'
  * Inline form for creating a new custom role.
  *
  * Validates the role name client-side before submitting to the
- * {@link createRole} server action. Displays error messages inline.
+ * {@link createRole} server action. Validation and server errors are
+ * surfaced as Sonner toasts; a success toast confirms creation.
  */
 export function CreateRoleForm() {
-  const [state, formAction, isPending] = useActionState(
-    async (_prev: { error?: string }, formData: FormData) => {
+  const [, formAction, isPending] = useActionState(
+    async (_prev: Record<string, never>, formData: FormData) => {
       const name = formData.get('name') as string
 
       const validationError = validateRoleName(name)
       if (validationError) {
-        return { error: validationError }
+        toast.error(validationError)
+        return {}
       }
 
-      return createRole(name)
+      const result = await createRole(name)
+      if (result.error) {
+        toast.error(result.error)
+        return {}
+      }
+
+      toast.success(`Created role '${name}'`)
+      return {}
     },
     {}
   )
@@ -40,9 +50,6 @@ export function CreateRoleForm() {
           className="input input-sm w-60"
           disabled={isPending}
         />
-        {state.error && (
-          <p className="text-xs text-destructive">{state.error}</p>
-        )}
       </div>
       <button
         type="submit"

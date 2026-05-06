@@ -1,6 +1,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
+import { toast } from 'sonner'
 
 import { updateRole } from '@/modules/admin/actions/update-role'
 import { validateRoleName } from '@/modules/admin/validation'
@@ -11,6 +12,8 @@ import { validateRoleName } from '@/modules/admin/validation'
  * Built-in roles display a read-only name with a "Built-in" badge.
  * Custom roles show an edit button that reveals a rename form using
  * `useActionState` to submit to the {@link updateRole} server action.
+ * Validation errors and server errors are surfaced as Sonner toasts;
+ * a success toast confirms the rename.
  *
  * @param props.role - The role to display.
  */
@@ -21,20 +24,25 @@ export function RoleDetailCard({
 }) {
   const [editing, setEditing] = useState(false)
 
-  const [state, formAction, isPending] = useActionState(
-    async (_prev: { error?: string }, formData: FormData) => {
+  const [, formAction, isPending] = useActionState(
+    async (_prev: Record<string, never>, formData: FormData) => {
       const newName = formData.get('name') as string
 
       const validationError = validateRoleName(newName)
       if (validationError) {
-        return { error: validationError }
+        toast.error(validationError)
+        return {}
       }
 
       const result = await updateRole(role.id, newName)
-      if (!result.error) {
-        setEditing(false)
+      if (result.error) {
+        toast.error(result.error)
+        return {}
       }
-      return result
+
+      toast.success(`Renamed role to '${newName}'`)
+      setEditing(false)
+      return {}
     },
     {}
   )
@@ -57,9 +65,6 @@ export function RoleDetailCard({
                 disabled={isPending}
                 autoFocus
               />
-              {state.error && (
-                <p className="text-xs text-destructive">{state.error}</p>
-              )}
             </div>
             <button
               type="submit"
