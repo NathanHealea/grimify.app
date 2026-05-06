@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
 
 import type { BaseColor } from '@/modules/color-schemes/types/base-color'
 import type { SchemeColor } from '@/modules/color-schemes/types/scheme-color'
@@ -20,7 +21,8 @@ import {
  *
  * Opens a centered {@link Dialog} with a name input pre-populated by
  * {@link buildPaletteFromScheme}. Confirm calls {@link createPaletteWithPaints}
- * which redirects to the new palette's edit page.
+ * which redirects to the new palette's edit page on success; failures stay in
+ * the dialog and surface via a Sonner toast.
  *
  * Disabled when `schemeColors` is empty or every entry has no `nearestPaints`.
  * The disabled state is surfaced via `aria-disabled` and a `title` tooltip.
@@ -40,7 +42,6 @@ export function SaveSchemeAsPaletteButton({
 }) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
-  const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   const hasMatches = schemeColors.some((c) => c.nearestPaints.length > 0)
@@ -54,16 +55,14 @@ export function SaveSchemeAsPaletteButton({
 
   function handleClose() {
     setOpen(false)
-    setError(null)
   }
 
   function handleConfirm() {
-    setError(null)
     const { paintIds } = buildPaletteFromScheme(schemeColors, baseColor, activeScheme)
     startTransition(async () => {
       const result = await createPaletteWithPaints({ name, paintIds })
       if (result?.error) {
-        setError(result.error)
+        toast.error(result.error)
       }
       // On success the action redirects — nothing to do here
     })
@@ -83,7 +82,6 @@ export function SaveSchemeAsPaletteButton({
               activeScheme,
             )
             setName(defaultName)
-            setError(null)
             setOpen(true)
           }
         }}
@@ -116,12 +114,6 @@ export function SaveSchemeAsPaletteButton({
               autoComplete="off"
             />
           </div>
-
-          {error && (
-            <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
-              {error}
-            </div>
-          )}
 
           <DialogFooter className="mt-2">
             <button

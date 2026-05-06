@@ -16,6 +16,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
+import { toast } from 'sonner'
 
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import type { PalettePaint } from '@/modules/palettes/types/palette-paint'
@@ -52,8 +53,9 @@ function seedSlots(paints: PalettePaint[]): DraggableSlot[] {
  *
  * In edit mode (`canEdit={true}`) the list wraps rows in a dnd-kit
  * `DndContext` so users can drag to reorder. Order is persisted optimistically
- * via {@link reorderPalettePaints}; on failure the list rolls back and shows
- * an inline error. In read mode the list renders a plain ordered `<div>`.
+ * via {@link reorderPalettePaints}; on failure the list rolls back and surfaces
+ * the error via a Sonner toast. In read mode the list renders a plain ordered
+ * `<div>`.
  *
  * Public props are unchanged from the original server component so callers
  * (`PaletteDetail`, `PaletteBuilder`) need no updates.
@@ -72,7 +74,6 @@ export function PalettePaintList({
   canEdit: boolean
 }) {
   const [slots, setSlots] = useState<DraggableSlot[]>(() => seedSlots(paints))
-  const [error, setError] = useState<string | null>(null)
   const [, startTransition] = useTransition()
 
   // Tracks the last successfully persisted order so rapid drags can roll back
@@ -101,7 +102,6 @@ export function PalettePaintList({
     const previousSlots = latestConfirmedRef.current
     const newSlots = reorderArray(slots, fromIndex, toIndex)
     setSlots(newSlots)
-    setError(null)
 
     startTransition(async () => {
       const result = await reorderPalettePaints(
@@ -111,7 +111,7 @@ export function PalettePaintList({
 
       if (result?.error) {
         setSlots(previousSlots)
-        setError(result.error)
+        toast.error(result.error)
       } else {
         latestConfirmedRef.current = newSlots
       }
@@ -146,11 +146,6 @@ export function PalettePaintList({
 
   return (
     <div className="flex flex-col gap-2">
-      {error && (
-        <p role="status" aria-live="polite" className="text-sm text-destructive">
-          {error}
-        </p>
-      )}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={slots.map((s) => s.dndId)} strategy={verticalListSortingStrategy}>
           {slots.map((slot, index) =>

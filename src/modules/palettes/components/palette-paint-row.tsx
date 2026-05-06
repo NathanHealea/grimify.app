@@ -1,7 +1,9 @@
 'use client'
 
+import { useTransition } from 'react'
 import { CSS } from '@dnd-kit/utilities'
 import { useSortable } from '@dnd-kit/sortable'
+import { toast } from 'sonner'
 
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { removePalettePaint } from '@/modules/palettes/actions/remove-palette-paint'
@@ -13,7 +15,10 @@ import { PaletteSwapButton } from '@/modules/palettes/components/palette-swap-bu
  *
  * In edit mode, the row is sortable via dnd-kit: the drag handle is the
  * sole activator node so clicks on the row's other elements (remove button)
- * remain usable. `isDragging` applies a lifted visual state.
+ * remain usable. `isDragging` applies a lifted visual state. Removing the
+ * slot is handled via a `useTransition`-wrapped click that calls
+ * {@link removePalettePaint} directly and surfaces success/error through
+ * Sonner toasts.
  *
  * In read mode (`canEdit={false}`, `dndId` absent), the row renders without
  * any DnD wiring or handle.
@@ -23,7 +28,7 @@ import { PaletteSwapButton } from '@/modules/palettes/components/palette-swap-bu
  * @param props.paint - Full paint data for display.
  * @param props.note - Optional per-slot painter note.
  * @param props.canEdit - When true, renders the remove button and drag handle.
- * @param props.dndId - Mount-stable DnD id assigned by {@link PalettePaintList}; required when `canEdit` is true.
+ * @param props.dndId - Mount-stable DnD id assigned by `PalettePaintList`; required when `canEdit` is true.
  */
 export function PalettePaintRow({
   paletteId,
@@ -50,11 +55,24 @@ export function PalettePaintRow({
     isDragging,
   } = useSortable({ id: dndId ?? '', disabled: !canEdit || !dndId })
 
+  const [isPending, startTransition] = useTransition()
+
   const brandLine = [paint.brand_name, paint.product_line_name].filter(Boolean).join(': ')
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+  }
+
+  function handleRemove() {
+    startTransition(async () => {
+      const result = await removePalettePaint(paletteId, position)
+      if (result?.error) {
+        toast.error(result.error)
+        return
+      }
+      toast.success(`Removed '${paint.name}' from palette`)
+    })
   }
 
   return (
@@ -93,23 +111,15 @@ export function PalettePaintRow({
       {canEdit && (
         <div className="flex items-center gap-1">
           <PaletteSwapButton paletteId={paletteId} position={position} paint={paint} />
-          {/* bind pre-fills paletteId+position; cast required because TS form action
-              type demands void return but the action returns { error? } for programmatic use. */}
-          <form
-            action={
-              removePalettePaint.bind(null, paletteId, position) as unknown as (
-                formData: FormData
-              ) => Promise<void>
-            }
+          <button
+            type="button"
+            onClick={handleRemove}
+            disabled={isPending}
+            className="btn btn-sm btn-ghost text-destructive hover:text-destructive"
+            aria-label={`Remove ${paint.name}`}
           >
-            <button
-              type="submit"
-              className="btn btn-sm btn-ghost text-destructive hover:text-destructive"
-              aria-label={`Remove ${paint.name}`}
-            >
-              Remove
-            </button>
-          </form>
+            {isPending ? 'Removing…' : 'Remove'}
+          </button>
         </div>
       )}
     </div>

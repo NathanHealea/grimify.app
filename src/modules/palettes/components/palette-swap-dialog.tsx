@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from 'react'
 import { Info } from 'lucide-react'
+import { toast } from 'sonner'
 
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import {
@@ -62,7 +63,6 @@ export function PaletteSwapDialog({
   const [isPending, startTransition] = useTransition()
 
   const [fetchState, setFetchState] = useState<FetchState>({ status: 'loading' })
-  const [swapError, setSwapError] = useState<string | null>(null)
 
   const [sRange, setSRange] = useState<[number, number]>([0, 100])
   const [lRange, setLRange] = useState<[number, number]>([0, 100])
@@ -92,18 +92,18 @@ export function PaletteSwapDialog({
   }, [paletteId, position])
 
   function handleClose() {
-    setSwapError(null)
     onClose()
   }
 
   function handleSelect(paintId: string) {
-    setSwapError(null)
+    const candidate = visible.find(({ paint: p }) => p.id === paintId)?.paint
     startTransition(async () => {
       const result = await swapPalettePaint(paletteId, position, paintId)
       if (result?.error) {
-        setSwapError(result.error)
+        toast.error(result.error)
         return
       }
+      toast.success(`Swapped to '${candidate?.name ?? 'paint'}'`)
       onSwapped()
       handleClose()
     })
@@ -185,17 +185,6 @@ export function PaletteSwapDialog({
               </label>
             )}
           </div>
-
-          {/* Swap error */}
-          {swapError && (
-            <div
-              role="alert"
-              aria-live="polite"
-              className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive"
-            >
-              {swapError}
-            </div>
-          )}
 
           {/* Candidate grid */}
           <div>
