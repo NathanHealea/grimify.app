@@ -2,7 +2,7 @@
 
 **Epic:** Authentication & User Accounts
 **Type:** Enhancement
-**Status:** Todo
+**Status:** Completed
 **Branch:** `enhancement/auth-toast`
 **Merge into:** `v1/main`
 

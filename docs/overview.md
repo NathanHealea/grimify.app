@@ -81,7 +81,7 @@ Core functionality:
 - [x] [User password reset and change](./01-authentication-and-user-accounts/05-user-reset-password.md)
 - [x] [OAuth profile setup redirect bug](./01-authentication-and-user-accounts/06-oauth-profile-setup-redirect.md)
 - [ ] [Edit user profile](./01-authentication-and-user-accounts/07-edit-user-profile.md)
-- [ ] [Auth & account toast feedback](./01-authentication-and-user-accounts/08-auth-toast.md)
+- [x] [Auth & account toast feedback](./01-authentication-and-user-accounts/08-auth-toast.md)
 
 ### Epic: Paint Data & Search
 
