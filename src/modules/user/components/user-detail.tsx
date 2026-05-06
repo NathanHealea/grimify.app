@@ -237,7 +237,11 @@ export function UserDetail({
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
-            <DeactivateUserButton userId={profile.id} isBanned={isBanned} />
+            <DeactivateUserButton
+              userId={profile.id}
+              isBanned={isBanned}
+              displayName={profile.display_name ?? 'this user'}
+            />
 
             <button
               type="button"

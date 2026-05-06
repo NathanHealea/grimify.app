@@ -2,6 +2,7 @@
 
 import { MoreHorizontal, Trash2 } from 'lucide-react'
 import { useTransition } from 'react'
+import { toast } from 'sonner'
 
 import {
   DropdownMenu,
@@ -18,7 +19,9 @@ import { PaintCard } from '@/modules/paints/components/paint-card'
  *
  * Wraps {@link PaintCard} in a `relative` container and absolutely positions
  * an ellipsis trigger button at the top-right — matching the positioning
- * pattern used in {@link CollectionPaintCard}.
+ * pattern used in {@link CollectionPaintCard}. Consumes the result of
+ * {@link removePaintFromCollection} and surfaces success or failure as
+ * Sonner toasts.
  *
  * @param props.userId - UUID of the target user (collection owner).
  * @param props.id - The paint's database UUID.
@@ -46,7 +49,12 @@ export function AdminCollectionPaintCard({
 
   function handleRemove() {
     startTransition(async () => {
-      await removePaintFromCollection(userId, id)
+      const result = await removePaintFromCollection(userId, id)
+      if (result.error) {
+        toast.error(result.error)
+        return
+      }
+      toast.success(`Removed '${name}'`)
     })
   }
 

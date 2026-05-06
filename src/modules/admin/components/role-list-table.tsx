@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
 
 import { deleteRole } from '@/modules/admin/actions/delete-role'
 
@@ -54,7 +55,6 @@ export function RoleListTable({ roles }: { roles: RoleRow[] }) {
 
 function RoleRow({ role }: { role: RoleRow }) {
   const [isPending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
   const [confirming, setConfirming] = useState(false)
 
   const canDelete = !role.builtin && role.userCount === 0
@@ -65,13 +65,14 @@ function RoleRow({ role }: { role: RoleRow }) {
       return
     }
 
-    setError(null)
     startTransition(async () => {
       const result = await deleteRole(role.id)
       if (result.error) {
-        setError(result.error)
+        toast.error(result.error)
         setConfirming(false)
+        return
       }
+      toast.success(`Deleted role '${role.name}'`)
     })
   }
 
@@ -90,9 +91,6 @@ function RoleRow({ role }: { role: RoleRow }) {
       <td className="px-4 py-3">{role.userCount}</td>
       <td className="px-4 py-3 text-right">
         <div className="flex items-center justify-end gap-2">
-          {error && (
-            <span className="text-xs text-destructive">{error}</span>
-          )}
           <Link
             href={`/admin/roles/${role.id}`}
             className="btn btn-sm btn-ghost"

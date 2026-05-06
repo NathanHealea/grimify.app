@@ -2,6 +2,7 @@
 
 import { Check, Plus } from 'lucide-react'
 import { useEffect, useState, useTransition } from 'react'
+import { toast } from 'sonner'
 
 import SearchInput from '@/components/search'
 import { addPaintToCollection } from '@/modules/admin/actions/add-paint-to-collection'
@@ -33,6 +34,7 @@ function serializePickerState(state: { q: string }) {
  * Suggestions remain open after each add so the admin can add multiple paints without re-typing.
  * Paints added in this session are tracked with a check icon to prevent duplicate adds.
  * The active query is synced to the URL via `replaceState` so the state is shareable.
+ * Success and failure are surfaced as Sonner toasts.
  *
  * @param props.userId - UUID of the target user whose collection is being modified.
  * @param props.initialQuery - Pre-filled query string, typically parsed from the URL by the page.
@@ -59,7 +61,6 @@ export function AdminAddPaintForm({
 
   const [inputValue, setInputValue] = useState(initialQuery)
   const [addedIds, setAddedIds] = useState<Set<string>>(new Set())
-  const [addError, setAddError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   const debouncedQuery = useDebouncedQuery(inputValue, { delay: 250, minChars: 1 })
@@ -79,15 +80,15 @@ export function AdminAddPaintForm({
 
   function handleSelect(paint: PaintWithBrand) {
     if (addedIds.has(paint.id)) return
-    setAddError(null)
     startTransition(async () => {
       const result = await addPaintToCollection(userId, paint.id)
       if (result.error) {
-        setAddError(result.error)
-      } else {
-        setAddedIds((prev) => new Set(prev).add(paint.id))
-        onAdded?.()
+        toast.error(result.error)
+        return
       }
+      setAddedIds((prev) => new Set(prev).add(paint.id))
+      onAdded?.()
+      toast.success(`Added '${paint.name}'`)
     })
   }
 
@@ -99,7 +100,6 @@ export function AdminAddPaintForm({
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
       />
-      {addError && <p className="text-sm text-destructive">{addError}</p>}
       {showSuggestions && (
         <ul className="rounded-md border border-border bg-popover shadow-md">
           {paints.map((paint) => {

@@ -1,7 +1,8 @@
 'use client'
 
 import Image from 'next/image'
-import { useState, useTransition } from 'react'
+import { useTransition } from 'react'
+import { toast } from 'sonner'
 
 import { revokeRole } from '@/modules/admin/actions/revoke-role'
 
@@ -80,7 +81,6 @@ function UserRow({
   isUserRole: boolean
 }) {
   const [isPending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
 
   const initials = (user.display_name ?? '?')
     .split(/\s+/)
@@ -89,12 +89,13 @@ function UserRow({
     .slice(0, 2)
 
   function handleRevoke() {
-    setError(null)
     startTransition(async () => {
       const result = await revokeRole(user.id, roleId)
       if (result.error) {
-        setError(result.error)
+        toast.error(result.error)
+        return
       }
+      toast.success(`Revoked role from '${user.display_name ?? 'user'}'`)
     })
   }
 
@@ -123,9 +124,6 @@ function UserRow({
       </td>
       <td className="px-4 py-3 text-right">
         <div className="flex items-center justify-end gap-2">
-          {error && (
-            <span className="text-xs text-destructive">{error}</span>
-          )}
           {isUserRole ? (
             <span className="text-xs text-muted-foreground">
               Cannot revoke baseline role

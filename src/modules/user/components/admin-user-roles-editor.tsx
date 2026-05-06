@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
 
 import { assignRole } from '@/modules/admin/actions/assign-role'
 import { revokeRole } from '@/modules/admin/actions/revoke-role'
@@ -13,7 +14,8 @@ type Role = { id: string; name: string }
  * Displays the user's currently assigned roles as removable badges, and a
  * dropdown to assign new roles. Each action fires immediately via the existing
  * {@link assignRole} and {@link revokeRole} server actions — no profile save
- * is required. Local state is updated optimistically on success.
+ * is required. Local state is updated optimistically on success and outcomes
+ * are reported as Sonner toasts.
  *
  * The `user` baseline role is shown but cannot be revoked. Owner-assigned
  * users should not reach this component (the edit page guards them upstream).
@@ -34,7 +36,6 @@ export function AdminUserRolesEditor({
   const [assigned, setAssigned] = useState<Role[]>(initialAssigned)
   const [selectedRoleId, setSelectedRoleId] = useState('')
   const [isPending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
 
   const unassigned = allRoles.filter(
     (r) => !assigned.some((a) => a.id === r.id)
@@ -45,27 +46,28 @@ export function AdminUserRolesEditor({
     const role = allRoles.find((r) => r.id === selectedRoleId)
     if (!role) return
 
-    setError(null)
     startTransition(async () => {
       const result = await assignRole(userId, selectedRoleId)
       if (result.error) {
-        setError(result.error)
-      } else {
-        setAssigned((prev) => [...prev, role])
-        setSelectedRoleId('')
+        toast.error(result.error)
+        return
       }
+      setAssigned((prev) => [...prev, role])
+      setSelectedRoleId('')
+      toast.success(`Assigned '${role.name}'`)
     })
   }
 
   function handleRevoke(roleId: string) {
-    setError(null)
+    const role = assigned.find((r) => r.id === roleId)
     startTransition(async () => {
       const result = await revokeRole(userId, roleId)
       if (result.error) {
-        setError(result.error)
-      } else {
-        setAssigned((prev) => prev.filter((r) => r.id !== roleId))
+        toast.error(result.error)
+        return
       }
+      setAssigned((prev) => prev.filter((r) => r.id !== roleId))
+      toast.success(`Revoked '${role?.name ?? 'role'}'`)
     })
   }
 
@@ -133,10 +135,6 @@ export function AdminUserRolesEditor({
             {isPending ? 'Saving…' : 'Add'}
           </button>
         </div>
-      )}
-
-      {error && (
-        <p className="text-xs text-destructive">{error}</p>
       )}
     </div>
   )
