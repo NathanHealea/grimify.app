@@ -81,6 +81,7 @@ Core functionality:
 - [x] [User password reset and change](./01-authentication-and-user-accounts/05-user-reset-password.md)
 - [x] [OAuth profile setup redirect bug](./01-authentication-and-user-accounts/06-oauth-profile-setup-redirect.md)
 - [ ] [Edit user profile](./01-authentication-and-user-accounts/07-edit-user-profile.md)
+- [ ] [Auth & account toast feedback](./01-authentication-and-user-accounts/08-auth-toast.md)
 
 ### Epic: Paint Data & Search
 
@@ -165,6 +166,8 @@ Core functionality:
 - [ ] [Profile and account merging](./08-user-management/04-profile-merging.md)
 - [ ] [User profile deletion (self-service)](./08-user-management/05-user-profile-deletion.md)
 - [x] [Collection management](./08-user-management/06-collection-management.md)
+- [ ] [Profile form toast feedback](./08-user-management/07-profile-toast.md)
+- [ ] [Admin management toast feedback](./08-user-management/08-admin-toast.md)
 
 ### Epic: Color Management
 
@@ -201,6 +204,7 @@ Core functionality:
 - [x] [Hue-locked HSL paint swap](./11-color-palettes/04-palette-hue-swap.md)
 - [x] [Palette description markdown editor](./11-color-palettes/05-palette-description-markdown.md)
 - [x] [Prevent duplicate paints + toast feedback](./11-color-palettes/06-prevent-duplicate-paint-add.md)
+- [ ] [Palette & scheme toast feedback](./11-color-palettes/07-palette-toast.md)
 
 ### Epic: Painting Recipes
 
