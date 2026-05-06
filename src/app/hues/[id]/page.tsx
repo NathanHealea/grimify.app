@@ -9,6 +9,7 @@ import { getHueService } from '@/modules/hues/services/hue-service.server';
 import { HueGroupPaintGrid } from '@/modules/paints/components/hue-group-paint-grid';
 import { HuePaintGrid } from '@/modules/paints/components/hue-paint-grid';
 import { getPaintService } from '@/modules/paints/services/paint-service.server';
+import { buildOgUrl } from '@/modules/seo/utils/build-og-url';
 import { pageMetadata } from '@/modules/seo/utils/page-metadata';
 
 /** Valid page sizes that the paginated grid supports. */
@@ -32,6 +33,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     title: hue.name,
     description,
     path: `/hues/${id}`,
+    image: {
+      url: buildOgUrl('hue', id),
+      width: 1200,
+      height: 630,
+      alt: hue.name,
+    },
   })
 }
 

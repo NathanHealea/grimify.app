@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { PaletteDetail } from '@/modules/palettes/components/palette-detail'
+import { buildOgUrl } from '@/modules/seo/utils/build-og-url'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -30,6 +31,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     description: palette.description?.slice(0, 200) ?? `${palette.name} — a paint palette on Grimify.`,
     path: `/palettes/${id}`,
     noindex: !palette.isPublic,
+    image: palette.isPublic
+      ? {
+          url: buildOgUrl('palette', id),
+          width: 1200,
+          height: 630,
+          alt: palette.name,
+        }
+      : undefined,
   })
 }
 

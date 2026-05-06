@@ -8,6 +8,7 @@ import { getHueService } from '@/modules/hues/services/hue-service.server'
 import { PaintDetail } from '@/modules/paints/components/paint-detail'
 import { PaintReferences } from '@/modules/paints/components/paint-references'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
+import { buildOgUrl } from '@/modules/seo/utils/build-og-url'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -28,6 +29,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     title: paint.name,
     description,
     path: `/paints/${id}`,
+    image: {
+      url: buildOgUrl('paint', id),
+      width: 1200,
+      height: 630,
+      alt: paint.name,
+    },
   })
 }
 
