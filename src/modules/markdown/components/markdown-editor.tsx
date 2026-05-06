@@ -1,7 +1,16 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { Bold, Eye, Italic, List, ListOrdered } from 'lucide-react'
+import {
+  Bold,
+  Code,
+  Eye,
+  Heading2,
+  Heading3,
+  Italic,
+  List,
+  ListOrdered,
+} from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
@@ -29,7 +38,14 @@ export type MarkdownEditorProps = {
   placeholder?: string
 }
 
-type Action = 'bold' | 'italic' | 'bullet' | 'numbered'
+type Action =
+  | 'bold'
+  | 'italic'
+  | 'code'
+  | 'h2'
+  | 'h3'
+  | 'bullet'
+  | 'numbered'
 
 /**
  * Lightweight WYSIWYG-style markdown editor — a toolbar above an uncontrolled
@@ -63,6 +79,7 @@ export function MarkdownEditor({
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [previewMode, setPreviewMode] = useState(false)
   const [previewContent, setPreviewContent] = useState('')
+  const [count, setCount] = useState(defaultValue?.length ?? 0)
 
   function togglePreview() {
     if (!previewMode) {
@@ -81,14 +98,14 @@ export function MarkdownEditor({
     let cursorStart: number
     let cursorEnd: number
 
-    if (action === 'bold' || action === 'italic') {
-      const wrap = action === 'bold' ? '**' : '*'
+    if (action === 'bold' || action === 'italic' || action === 'code') {
+      const wrap = action === 'bold' ? '**' : action === 'italic' ? '*' : '`'
       if (selected.length > 0) {
         next = value.slice(0, start) + wrap + selected + wrap + value.slice(end)
         cursorStart = start + wrap.length
         cursorEnd = cursorStart + selected.length
       } else {
-        const placeholderText = action === 'bold' ? 'bold' : 'italic'
+        const placeholderText = action
         next =
           value.slice(0, start) +
           wrap +
@@ -97,6 +114,40 @@ export function MarkdownEditor({
           value.slice(end)
         cursorStart = start + wrap.length
         cursorEnd = cursorStart + placeholderText.length
+      }
+    } else if (action === 'h2' || action === 'h3') {
+      const prefix = action === 'h2' ? '## ' : '### '
+      const lineStart = value.lastIndexOf('\n', start - 1) + 1
+      if (selected.length > 0) {
+        const nextNewline = value.indexOf('\n', end)
+        const lineEnd = nextNewline === -1 ? value.length : nextNewline
+        const block = value.slice(lineStart, lineEnd)
+        const lines = block.split('\n')
+        const transformed = lines
+          .map((line) => (line.length > 0 ? prefix + line : line))
+          .join('\n')
+        next = value.slice(0, lineStart) + transformed + value.slice(lineEnd)
+        cursorStart = lineStart
+        cursorEnd = lineStart + transformed.length
+      } else {
+        const currentLineEndIndex = value.indexOf('\n', start)
+        const currentLineEnd =
+          currentLineEndIndex === -1 ? value.length : currentLineEndIndex
+        const currentLine = value.slice(lineStart, currentLineEnd)
+        if (currentLine.length === 0) {
+          const placeholderText = 'Heading'
+          next =
+            value.slice(0, lineStart) +
+            prefix +
+            placeholderText +
+            value.slice(lineStart)
+          cursorStart = lineStart + prefix.length
+          cursorEnd = cursorStart + placeholderText.length
+        } else {
+          next = value.slice(0, lineStart) + prefix + value.slice(lineStart)
+          cursorStart = start + prefix.length
+          cursorEnd = cursorStart
+        }
       }
     } else {
       const lineStart = value.lastIndexOf('\n', start - 1) + 1
@@ -128,7 +179,7 @@ export function MarkdownEditor({
       <div
         role="toolbar"
         aria-label="Formatting"
-        className="flex gap-1 mb-2"
+        className="flex flex-wrap gap-1 mb-2"
       >
         <button
           type="button"
@@ -147,6 +198,33 @@ export function MarkdownEditor({
           onClick={() => insertMarkdown('italic')}
         >
           <Italic className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          aria-label="Inline code"
+          disabled={previewMode}
+          className="btn btn-ghost btn-sm btn-square"
+          onClick={() => insertMarkdown('code')}
+        >
+          <Code className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          aria-label="Heading 2"
+          disabled={previewMode}
+          className="btn btn-ghost btn-sm btn-square"
+          onClick={() => insertMarkdown('h2')}
+        >
+          <Heading2 className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          aria-label="Heading 3"
+          disabled={previewMode}
+          className="btn btn-ghost btn-sm btn-square"
+          onClick={() => insertMarkdown('h3')}
+        >
+          <Heading3 className="h-4 w-4" />
         </button>
         <button
           type="button"
@@ -196,15 +274,28 @@ export function MarkdownEditor({
         maxLength={maxLength}
         placeholder={placeholder}
         rows={10}
+        onInput={(e) => setCount(e.currentTarget.value.length)}
         className={cn(
           'textarea w-full',
           error && 'textarea-error',
           previewMode && 'hidden'
         )}
       />
-      <p className="mt-1 text-xs text-muted-foreground">
-        Supports **bold**, *italic*, bullet lists, and numbered lists.
-      </p>
+      <div className="mt-1 flex justify-between gap-2 text-xs text-muted-foreground">
+        <p>
+          Supports **bold**, *italic*, `code`, ## headings, and lists.
+        </p>
+        {maxLength != null && (
+          <p
+            className={cn(
+              'tabular-nums',
+              count > maxLength && 'text-destructive'
+            )}
+          >
+            {count} / {maxLength}
+          </p>
+        )}
+      </div>
       {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
     </div>
   )

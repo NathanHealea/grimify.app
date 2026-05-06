@@ -3,7 +3,17 @@ import ReactMarkdown from 'react-markdown'
 
 import { cn } from '@/lib/utils'
 
-const ALLOWED = ['p', 'strong', 'em', 'ul', 'ol', 'li'] as const
+const ALLOWED = [
+  'p',
+  'strong',
+  'em',
+  'code',
+  'h2',
+  'h3',
+  'ul',
+  'ol',
+  'li',
+] as const
 
 const COMPONENTS = {
   p: (props: { children?: ReactNode }) => (
@@ -14,6 +24,19 @@ const COMPONENTS = {
   ),
   em: (props: { children?: ReactNode }) => (
     <em className="italic">{props.children}</em>
+  ),
+  code: (props: { children?: ReactNode }) => (
+    <code className="rounded bg-muted px-1 py-0.5 font-mono text-sm">
+      {props.children}
+    </code>
+  ),
+  h2: (props: { children?: ReactNode }) => (
+    <h2 className="mt-4 mb-2 text-xl font-bold first:mt-0">{props.children}</h2>
+  ),
+  h3: (props: { children?: ReactNode }) => (
+    <h3 className="mt-3 mb-1 text-lg font-semibold first:mt-0">
+      {props.children}
+    </h3>
   ),
   ul: (props: { children?: ReactNode }) => (
     <ul className="mb-2 ml-6 list-disc last:mb-0">{props.children}</ul>
@@ -42,13 +65,13 @@ export type MarkdownRendererProps = {
 }
 
 /**
- * Renders a constrained subset of markdown (`bold`, `italic`, `ul`, `ol`, `li`)
- * as HTML.
+ * Renders a constrained subset of markdown — bold, italic, inline code,
+ * H2/H3 headings, and unordered/ordered lists — as HTML.
  *
- * The renderer pairs with {@link MarkdownEditor} — the four toolbar actions
- * exposed by the editor are the only markdown surface this component supports
- * for v1. Anything outside that allow-list (headings, links, code, raw HTML)
- * is unwrapped to plain text.
+ * The renderer pairs with {@link MarkdownEditor} — the toolbar actions
+ * exposed by the editor are the only markdown surface this component
+ * supports. Anything outside the allow-list (links, code blocks, raw HTML,
+ * H1/H4+, etc.) is unwrapped to plain text.
  *
  * @remarks
  * - Safe by default: `react-markdown` does not use `dangerouslySetInnerHTML`,
