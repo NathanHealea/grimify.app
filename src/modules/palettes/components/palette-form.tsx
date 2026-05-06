@@ -1,6 +1,7 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useEffect } from 'react'
+import { toast } from 'sonner'
 
 import type { Palette } from '@/modules/palettes/types/palette'
 import type { PaletteFormState } from '@/modules/palettes/types/palette-form-state'
@@ -21,8 +22,9 @@ const initialState = (palette: Palette): PaletteFormState => ({
  *
  * Renders only the `<form>` element — card chrome and surrounding layout belong
  * in the parent. Wires to {@link updatePalette} via `useActionState` and shows
- * inline field errors. A small `aria-live` region confirms a successful save
- * without requiring a toast library.
+ * inline field errors. Top-level success and form-level error feedback is
+ * surfaced via Sonner toasts (see effect below); field-level errors remain
+ * inline beneath their inputs.
  *
  * @param props.palette - The palette being edited; used to seed initial values.
  */
@@ -31,6 +33,14 @@ export function PaletteForm({ palette }: { palette: Palette }) {
     updatePalette,
     initialState(palette)
   )
+
+  useEffect(() => {
+    if (state.errors.form) {
+      toast.error(state.errors.form)
+    } else if (state.success) {
+      toast.success('Palette saved')
+    }
+  }, [state])
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
@@ -83,10 +93,6 @@ export function PaletteForm({ palette }: { palette: Palette }) {
         </label>
       </div>
 
-      {state.errors.form && (
-        <p className="text-sm text-destructive">{state.errors.form}</p>
-      )}
-
       <div className="flex items-center gap-3">
         <button
           type="submit"
@@ -95,11 +101,6 @@ export function PaletteForm({ palette }: { palette: Palette }) {
         >
           {isPending ? 'Saving…' : 'Save'}
         </button>
-        {state.success && (
-          <p aria-live="polite" className="text-sm text-muted-foreground">
-            Saved
-          </p>
-        )}
       </div>
     </form>
   )

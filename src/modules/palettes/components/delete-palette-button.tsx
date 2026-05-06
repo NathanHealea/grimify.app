@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
 
 import type { Palette } from '@/modules/palettes/types/palette'
 import { deletePalette } from '@/modules/palettes/actions/delete-palette'
@@ -17,30 +18,28 @@ import {
  *
  * Opens a centered {@link Dialog} and requires the user to type the palette
  * name before the confirm button activates. Calls {@link deletePalette} inside
- * `startTransition`; on success the action redirects to `/palettes`.
- * Surfaces any returned error inline.
+ * `startTransition`; on success the action redirects to `/palettes`. On error,
+ * the dialog stays open and the failure is surfaced via a Sonner toast.
  *
  * @param props.palette - The palette to delete; its `id` and `name` are used.
  */
 export function DeletePaletteButton({ palette }: { palette: Palette }) {
   const [open, setOpen] = useState(false)
   const [confirmValue, setConfirmValue] = useState('')
-  const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   function handleClose() {
     setConfirmValue('')
-    setError(null)
     setOpen(false)
   }
 
   function handleConfirm() {
-    setError(null)
     startTransition(async () => {
       const result = await deletePalette(palette.id)
       if (result?.error) {
-        setError(result.error)
+        toast.error(result.error)
       }
+      // success: server already redirected, this code path is unreachable
     })
   }
 
@@ -81,12 +80,6 @@ export function DeletePaletteButton({ palette }: { palette: Palette }) {
               autoComplete="off"
             />
           </div>
-
-          {error && (
-            <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
-              {error}
-            </div>
-          )}
 
           <DialogFooter className="mt-2">
             <button
