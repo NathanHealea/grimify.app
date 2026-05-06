@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, type KeyboardEvent } from 'react'
 import {
   Bold,
   Code,
@@ -65,6 +65,8 @@ type Action =
  *   value remains in the form's submission payload. The preview snapshot is
  *   captured into local state on toggle, then rendered through
  *   {@link MarkdownRenderer}.
+ * - Keyboard shortcuts: `Ctrl/Cmd+B` toggles bold and `Ctrl/Cmd+I` toggles
+ *   italic on the focused textarea.
  *
  * @param props - See {@link MarkdownEditorProps}.
  */
@@ -86,6 +88,18 @@ export function MarkdownEditor({
       setPreviewContent(textareaRef.current?.value ?? '')
     }
     setPreviewMode((p) => !p)
+  }
+
+  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (!(e.ctrlKey || e.metaKey)) return
+    const key = e.key.toLowerCase()
+    if (key === 'b') {
+      e.preventDefault()
+      insertMarkdown('bold')
+    } else if (key === 'i') {
+      e.preventDefault()
+      insertMarkdown('italic')
+    }
   }
 
   function insertMarkdown(action: Action) {
@@ -275,6 +289,7 @@ export function MarkdownEditor({
         placeholder={placeholder}
         rows={10}
         onInput={(e) => setCount(e.currentTarget.value.length)}
+        onKeyDown={handleKeyDown}
         className={cn(
           'textarea w-full',
           error && 'textarea-error',
