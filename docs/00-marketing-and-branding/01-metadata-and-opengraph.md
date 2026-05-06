@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 **Branch:** `v1/feature/metadata-and-opengraph`
 **Merge into:** `v1/main`
 
@@ -16,16 +16,16 @@ The dynamic OG image handler renders real content — a paint's hex swatch with 
 
 ## Acceptance Criteria
 
-- [ ] Root `src/app/layout.tsx` exports a `metadata` object with site title (with `%s | Grimify` template), description, keywords, and default OpenGraph + Twitter card fields
-- [ ] A static `public/og-image.png` (1200×630) exists as the fallback OG image for routes without dynamic content
-- [ ] Favicon and `apple-touch-icon.png` (180×180) are configured, sourced from the branding icon
+- [x] Root `src/app/layout.tsx` exports a `metadata` object with site title (with `%s | Grimify` template), description, keywords, and default OpenGraph + Twitter card fields
+- [x] A static `public/og-image.png` (1200×630) exists as the fallback OG image for routes without dynamic content
+- [x] Favicon and `apple-touch-icon.png` (180×180) are configured, sourced from the branding icon
 - [ ] `src/app/robots.ts` exposes a robots policy (allow all in production, disallow in non-prod via env)
 - [ ] `src/app/sitemap.ts` generates a sitemap including all public static routes plus public palettes, paints, brands, hues, and profiles
 - [ ] `src/app/paints/[id]/page.tsx` exports `generateMetadata` returning the paint's name + brand in the title and a description containing the paint's hex / hue
 - [ ] `src/app/brands/[id]/page.tsx` exports `generateMetadata` with brand name + paint count
 - [ ] `src/app/hues/[id]/page.tsx` exports `generateMetadata` with hue name + Itten classification
-- [ ] `src/app/users/[id]/page.tsx` exports `generateMetadata` with display name + bio snippet
-- [ ] `src/app/palettes/[id]/page.tsx` exports `generateMetadata` with palette name + paint count (only when palette is public; private palettes return `noindex` metadata)
+- [x] `src/app/users/[id]/page.tsx` exports `generateMetadata` with display name + bio snippet
+- [x] `src/app/palettes/[id]/page.tsx` exports `generateMetadata` with palette name + paint count (only when palette is public; private palettes return `noindex` metadata)
 - [ ] Dynamic OG image route handlers exist at `src/app/api/og/paint/[id]/route.tsx`, `src/app/api/og/palette/[id]/route.tsx`, `src/app/api/og/brand/[id]/route.tsx`, `src/app/api/og/hue/[id]/route.tsx`, `src/app/api/og/user/[id]/route.tsx`, each returning a 1200×630 `ImageResponse`
 - [ ] Each dynamic page wires its OG image URL into `openGraph.images` and `twitter.images` via `generateMetadata`
 - [ ] Private palettes do NOT expose a dynamic OG image (the route handler returns 404 for non-public palettes)
