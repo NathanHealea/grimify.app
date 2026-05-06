@@ -1,9 +1,10 @@
 'use client'
 
-import { useRef } from 'react'
-import { Bold, Italic, List, ListOrdered } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { Bold, Eye, Italic, List, ListOrdered } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
+import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
 
 /**
  * Props accepted by {@link MarkdownEditor}.
@@ -31,8 +32,9 @@ export type MarkdownEditorProps = {
 type Action = 'bold' | 'italic' | 'bullet' | 'numbered'
 
 /**
- * Lightweight WYSIWYG-style markdown editor — a four-button toolbar above an
- * uncontrolled textarea.
+ * Lightweight WYSIWYG-style markdown editor — a toolbar above an uncontrolled
+ * textarea, with a Preview button that swaps the textarea for a
+ * {@link MarkdownRenderer}.
  *
  * Supports bold, italic, bullet lists, and numbered lists. The textarea stays
  * uncontrolled so its value is read by `<form action>` via FormData on submit.
@@ -41,8 +43,12 @@ type Action = 'bold' | 'italic' | 'bullet' | 'numbered'
  * - The component does not call `setState` on every keystroke; toolbar actions
  *   mutate the textarea value directly via the DOM and dispatch an `input`
  *   event so any framework-level listeners run.
- * - The four toolbar buttons use `type="button"` to avoid submitting the
- *   parent form.
+ * - All toolbar buttons use `type="button"` to avoid submitting the parent
+ *   form.
+ * - In preview mode the textarea is hidden via CSS (not unmounted) so its
+ *   value remains in the form's submission payload. The preview snapshot is
+ *   captured into local state on toggle, then rendered through
+ *   {@link MarkdownRenderer}.
  *
  * @param props - See {@link MarkdownEditorProps}.
  */
@@ -55,6 +61,15 @@ export function MarkdownEditor({
   placeholder,
 }: MarkdownEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const [previewMode, setPreviewMode] = useState(false)
+  const [previewContent, setPreviewContent] = useState('')
+
+  function togglePreview() {
+    if (!previewMode) {
+      setPreviewContent(textareaRef.current?.value ?? '')
+    }
+    setPreviewMode((p) => !p)
+  }
 
   function insertMarkdown(action: Action) {
     const ta = textareaRef.current
@@ -118,6 +133,7 @@ export function MarkdownEditor({
         <button
           type="button"
           aria-label="Bold"
+          disabled={previewMode}
           className="btn btn-ghost btn-sm btn-square"
           onClick={() => insertMarkdown('bold')}
         >
@@ -126,6 +142,7 @@ export function MarkdownEditor({
         <button
           type="button"
           aria-label="Italic"
+          disabled={previewMode}
           className="btn btn-ghost btn-sm btn-square"
           onClick={() => insertMarkdown('italic')}
         >
@@ -134,6 +151,7 @@ export function MarkdownEditor({
         <button
           type="button"
           aria-label="Bulleted list"
+          disabled={previewMode}
           className="btn btn-ghost btn-sm btn-square"
           onClick={() => insertMarkdown('bullet')}
         >
@@ -142,12 +160,34 @@ export function MarkdownEditor({
         <button
           type="button"
           aria-label="Numbered list"
+          disabled={previewMode}
           className="btn btn-ghost btn-sm btn-square"
           onClick={() => insertMarkdown('numbered')}
         >
           <ListOrdered className="h-4 w-4" />
         </button>
+        <button
+          type="button"
+          aria-label={previewMode ? 'Show editor' : 'Show preview'}
+          aria-pressed={previewMode}
+          className="btn btn-ghost btn-sm ml-auto"
+          onClick={togglePreview}
+        >
+          <Eye className="h-4 w-4" />
+          <span className="ml-1 text-xs">
+            {previewMode ? 'Edit' : 'Preview'}
+          </span>
+        </button>
       </div>
+      {previewMode && (
+        <div className="textarea w-full" style={{ minHeight: '17rem' }}>
+          {previewContent.trim().length > 0 ? (
+            <MarkdownRenderer content={previewContent} />
+          ) : (
+            <p className="italic text-muted-foreground">Nothing to preview</p>
+          )}
+        </div>
+      )}
       <textarea
         ref={textareaRef}
         id={id}
@@ -155,7 +195,12 @@ export function MarkdownEditor({
         defaultValue={defaultValue}
         maxLength={maxLength}
         placeholder={placeholder}
-        className={cn('textarea w-full', error && 'textarea-error')}
+        rows={10}
+        className={cn(
+          'textarea w-full',
+          error && 'textarea-error',
+          previewMode && 'hidden'
+        )}
       />
       <p className="mt-1 text-xs text-muted-foreground">
         Supports **bold**, *italic*, bullet lists, and numbered lists.
