@@ -1,6 +1,7 @@
 'use client'
 
-import { type SubmitEvent, useActionState, useState } from 'react'
+import { type SubmitEvent, useActionState, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -36,6 +37,10 @@ export function ProfileForm({
   const [state, formAction, pending] = useActionState<ProfileFormState, FormData>(setupProfile, null)
   const [clientError, setClientError] = useState<string | null>(null)
 
+  useEffect(() => {
+    if (state?.error) toast.error(state.error)
+  }, [state])
+
   function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     const formData = new FormData(e.currentTarget)
     const displayName = (formData.get('display_name') as string) ?? ''
@@ -52,11 +57,6 @@ export function ProfileForm({
 
   return (
     <form action={formAction} onSubmit={handleSubmit} className="flex flex-col gap-4">
-      {state?.error && (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
-          {state.error}
-        </div>
-      )}
       <div className="form-item">
         <Label htmlFor="display_name">Display name</Label>
         <Input
