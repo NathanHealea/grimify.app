@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { Logo } from '@/components/logo'
 import { createClient } from '@/lib/supabase/server'
 import { UserMenu } from '@/modules/user/components/user-menu'
 import { getUserRoles } from '@/modules/user/utils/roles'
@@ -37,8 +38,8 @@ export async function Navbar() {
   return (
     <nav className="navbar sticky top-0 z-50 gap-2 bg-background">
       <div className="navbar-start gap-2">
-        <Link href="/" className="navbar-brand">
-          Grimify
+        <Link href="/" className="navbar-brand inline-flex items-center" aria-label="Grimify home">
+          <Logo size="md" />
         </Link>
       </div>
       <div className="navbar-center grow justify-center align-center gap-2">
