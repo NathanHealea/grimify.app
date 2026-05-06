@@ -166,7 +166,7 @@ Core functionality:
 - [ ] [Profile and account merging](./08-user-management/04-profile-merging.md)
 - [ ] [User profile deletion (self-service)](./08-user-management/05-user-profile-deletion.md)
 - [x] [Collection management](./08-user-management/06-collection-management.md)
-- [ ] [Profile form toast feedback](./08-user-management/07-profile-toast.md)
+- [x] [Profile form toast feedback](./08-user-management/07-profile-toast.md)
 - [x] [Admin management toast feedback](./08-user-management/08-admin-toast.md)
 
 ### Epic: Color Management
