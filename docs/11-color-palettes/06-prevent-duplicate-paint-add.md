@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Bug
-**Status:** Todo
+**Status:** Done
 **Branch:** `bug/prevent-duplicate-paint-add`
 **Merge into:** `v1/main`
 
@@ -39,15 +39,15 @@ This bug:
 
 ## Acceptance Criteria
 
-- [ ] `appendPaintToPalette` returns `{ error, code: 'duplicate' }` when `paintId` already exists in the palette and does not write through the RPC.
-- [ ] `appendPaintsToPalette` returns `{ error, code: 'duplicate', duplicateIds }` when any input paint is already in the palette and does not write any rows.
-- [ ] `createPaletteWithPaints` deduplicates `paintIds` before inserting so a caller (e.g. "Save scheme as palette") cannot seed a brand-new palette with two of the same paint.
-- [ ] `addPaintToPalette` server action propagates the `code: 'duplicate'` flag and the human-readable error.
-- [ ] Selecting an existing palette for a paint already in it shows a toast _"'{paint name}' is already in '{palette name}'"_ — no inline message inside the menu.
-- [ ] Selecting an existing palette for a new paint shows a toast _"Added '{paint name}' to '{palette name}'"_; the dropdown closes.
-- [ ] Generic action errors (auth, network) show an error toast with the action's `error` string.
-- [ ] The previous acceptance bullet in `02-add-to-palette.md` is updated to reflect the new behavior; the change is noted in this PR's commit body.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] `appendPaintToPalette` returns `{ error, code: 'duplicate' }` when `paintId` already exists in the palette and does not write through the RPC.
+- [x] `appendPaintsToPalette` returns `{ error, code: 'duplicate', duplicateIds }` when any input paint is already in the palette and does not write any rows.
+- [x] `createPaletteWithPaints` deduplicates `paintIds` before inserting so a caller (e.g. "Save scheme as palette") cannot seed a brand-new palette with two of the same paint.
+- [x] `addPaintToPalette` server action propagates the `code: 'duplicate'` flag and the human-readable error.
+- [x] Selecting an existing palette for a paint already in it shows a toast _"'{paint name}' is already in '{palette name}'"_ — no inline message inside the menu.
+- [x] Selecting an existing palette for a new paint shows a toast _"Added '{paint name}' to '{palette name}'"_; the dropdown closes.
+- [x] Generic action errors (auth, network) show an error toast with the action's `error` string.
+- [x] The previous acceptance bullet in `02-add-to-palette.md` is updated to reflect the new behavior; the change is noted in this PR's commit body.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Out of Scope
 
@@ -187,7 +187,7 @@ This is silent (no error) because the upstream caller — the scheme save dialog
 
 ### Step 4 — Update server actions
 
-`add-paint-to-palette.ts`: import the new result type; add a `paintName` lookup so the success payload includes both the palette and paint names for the toast.
+`add-paint-to-palette.ts`: import the new result type and thread `code` through. No extra DB lookup is needed for the toast — the UI sources `paintName` from its own props (Step 5); the action only returns `paletteName` from the existing `palette.name` value already loaded for the ownership check.
 
 ```ts
 export async function addPaintToPalette(

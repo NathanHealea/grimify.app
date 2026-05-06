@@ -63,6 +63,7 @@ export function CollectionPaintCard({
       />
       <AddToPaletteButton
         paintId={id}
+        paintName={name}
         variant="icon"
         isAuthenticated={isAuthenticated}
         className="absolute right-1 top-9"

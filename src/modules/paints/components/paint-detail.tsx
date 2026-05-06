@@ -56,6 +56,7 @@ export function PaintDetail({
             />
             <AddToPaletteButton
               paintId={paint.id}
+              paintName={paint.name}
               variant="full"
               isAuthenticated={isAuthenticated}
             />

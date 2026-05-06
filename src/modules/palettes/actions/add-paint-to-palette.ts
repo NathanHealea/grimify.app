@@ -4,38 +4,46 @@ import { revalidatePath } from 'next/cache'
 
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
+import type { AddPaintToPaletteResult } from '@/modules/palettes/types/add-paint-to-palette-result'
 
 /**
  * Server action that appends a single paint to an existing palette.
  *
  * Performs auth and ownership checks before delegating to
  * {@link appendPaintToPalette}. Revalidates the palette list and both palette
- * detail pages on success. Returns the palette name so the caller can render
- * an inline "Added to {name}" confirmation without a redirect.
+ * detail pages on success. Returns the palette name so the caller can surface
+ * a "Added '{paint}' to '{palette}'" toast.
+ *
+ * The result includes a `code` discriminator so callers can render a
+ * duplicate-specific toast message without parsing the human-readable error.
  *
  * @param paletteId - UUID of the target palette.
  * @param paintId - UUID of the paint to append.
- * @returns `{ ok: true, paletteName }` on success; `{ error }` on failure.
+ * @returns An {@link AddPaintToPaletteResult} discriminated by `error`.
  */
 export async function addPaintToPalette(
   paletteId: string,
   paintId: string,
-): Promise<{ ok: true; paletteName: string } | { error: string }> {
+): Promise<AddPaintToPaletteResult> {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) return { error: 'You must be signed in to add paints to a palette.' }
+  if (!user) {
+    return { error: 'You must be signed in to add paints to a palette.', code: 'auth' }
+  }
 
   const service = createPaletteService(supabase)
   const palette = await service.getPaletteById(paletteId)
 
-  if (!palette) return { error: 'Palette not found.' }
-  if (palette.userId !== user.id) return { error: 'You can only add paints to palettes you own.' }
+  if (!palette) return { error: 'Palette not found.', code: 'not_found' }
+  if (palette.userId !== user.id) {
+    return { error: 'You can only add paints to palettes you own.', code: 'forbidden' }
+  }
 
   const result = await service.appendPaintToPalette(paletteId, paintId)
-  if (result.error) return { error: result.error }
+  if (result.error) return { error: result.error, code: result.code ?? 'unknown' }
 
   revalidatePath('/palettes')
   revalidatePath(`/palettes/${paletteId}`)

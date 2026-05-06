@@ -24,7 +24,7 @@ Paints can be added whether or not the user owns them (no collection check). Eac
 - [x] Selecting an existing palette appends the paint at the next position
 - [x] "Create new palette" opens an inline name input, then creates the palette and adds the paint
 - [x] Adding shows a toast with "Added to {palette name}" and a link to view the palette
-- [x] Adding a paint already in the target palette is allowed (the schema permits duplicates)
+- [x] Adding a paint already in the target palette is rejected with a duplicate error toast — see [06-prevent-duplicate-paint-add.md](./06-prevent-duplicate-paint-add.md)
 - [x] The Color Scheme Explorer adds a "Save as palette" button that, given the active filter state, creates a new palette containing each scheme color's nearest paint match (skipping empty match slots)
 - [x] "Save as palette" prompts for a palette name (defaulting to "{schemeType} from {baseLabel}")
 - [x] Unauthenticated users clicking any add action are redirected to `/sign-in?next={current-path}`
@@ -217,7 +217,7 @@ All three return plain serializable objects; none rely on `useActionState` since
 ### 8. Manual QA checklist
 
 - Add a paint from a paint card → inline "Added to {name}" message; dashboard shows the paint count incremented after the next page revalidate.
-- Add the same paint twice → both rows persist (composite PK is `(palette_id, position)`, not `(palette_id, paint_id)`); palette swatches show duplicates.
+- Add the same paint twice → second add is rejected with a duplicate error toast and the palette is unchanged (see [06-prevent-duplicate-paint-add.md](./06-prevent-duplicate-paint-add.md)).
 - "Create new palette" inline → palette is created and the paint added; menu collapses and dashboard shows the new row.
 - From a paint card with no palettes → menu shows the empty state with a single "Create new" CTA.
 - Generate a triadic scheme from "Cobalt Blue", click "Save as palette" → name pre-fills as "Triadic from Cobalt Blue"; confirm lands on the edit page with each scheme color's top match in scheme order.
