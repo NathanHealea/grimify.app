@@ -56,8 +56,12 @@ export async function createPaletteWithPaints(input: {
     return { error: message }
   }
 
-  if (input.paintIds.length > 0) {
-    await service.appendPaintsToPalette(palette.id, input.paintIds)
+  // Dedupe defensively so callers like "Save scheme as palette" cannot seed
+  // a brand-new palette with two of the same paint when scheme matches collide
+  // (e.g. triadic/analogous slots resolving to the same nearest paint).
+  const uniquePaintIds = Array.from(new Set(input.paintIds))
+  if (uniquePaintIds.length > 0) {
+    await service.appendPaintsToPalette(palette.id, uniquePaintIds)
     // If append fails, palette exists but is empty — redirect to editor to retry
   }
 
