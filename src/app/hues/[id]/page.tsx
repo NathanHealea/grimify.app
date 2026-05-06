@@ -23,9 +23,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return pageMetadata({ title: 'Hue not found', description: 'This hue could not be found.', noindex: true })
   }
 
+  const parent = hue.parent_id ? await hueService.getHueById(hue.parent_id) : null
+  const description = parent
+    ? `${hue.name} (${parent.name}) — browse miniature paints in this hue on Grimify.`
+    : `Browse miniature paints in the ${hue.name} hue on Grimify.`
+
   return pageMetadata({
     title: hue.name,
-    description: `Browse miniature paints in the ${hue.name} hue on Grimify.`,
+    description,
     path: `/hues/${id}`,
   })
 }
