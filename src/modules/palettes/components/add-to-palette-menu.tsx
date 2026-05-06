@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
 
 import { createClient } from '@/lib/supabase/client'
 import { getPaletteService } from '@/modules/palettes/services/palette-service.client'
@@ -22,25 +23,32 @@ type MenuState = 'loading' | 'error' | 'list' | 'create'
  * open so newly created palettes from other tabs are reflected. Renders four
  * states: loading skeleton, error with retry, empty CTA, and a scrollable
  * palette list. Selecting an existing palette calls {@link addPaintToPalette}
- * and shows an inline aria-live confirmation. Selecting "Create new palette"
- * swaps the body to {@link NewPaletteInlineForm}.
+ * and surfaces success/error via Sonner toasts. On a successful add, calls
+ * `onClose` so the parent dropdown closes; on a duplicate the menu stays open
+ * so the user can choose another palette. Selecting "Create new palette" swaps
+ * the body to {@link NewPaletteInlineForm}.
  *
  * The first palette row receives `data-default="true"` (the most-recently-edited
  * palette, since `listPalettesForUser` returns `updated_at desc`).
  *
  * @param props.paintId - UUID of the paint to add.
+ * @param props.paintName - Display name of the paint, used in toast messages.
  * @param props.open - Whether the parent dropdown is open; triggers a re-fetch on each open.
+ * @param props.onClose - Called after a successful add so the parent can close the dropdown.
  */
 export function AddToPaletteMenu({
   paintId,
+  paintName,
   open,
+  onClose,
 }: {
   paintId: string
+  paintName: string
   open: boolean
+  onClose: () => void
 }) {
   const [menuState, setMenuState] = useState<MenuState>('loading')
   const [palettes, setPalettes] = useState<PaletteSummary[]>([])
-  const [confirmation, setConfirmation] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   // Fetch palettes every time the menu opens
@@ -48,7 +56,6 @@ export function AddToPaletteMenu({
   if (open && !lastOpen) {
     setLastOpen(true)
     setMenuState('loading')
-    setConfirmation(null)
     ;(async () => {
       try {
         const supabase = createClient()
@@ -62,7 +69,7 @@ export function AddToPaletteMenu({
         const service = getPaletteService()
         const list = await service.listPalettesForUser(user.id)
         setPalettes(list)
-        setMenuState(list.length === 0 ? 'list' : 'list')
+        setMenuState('list')
       } catch {
         setMenuState('error')
       }
@@ -77,19 +84,17 @@ export function AddToPaletteMenu({
     startTransition(async () => {
       const result = await addPaintToPalette(palette.id, paintId)
       if ('error' in result) {
-        setConfirmation(`Error: ${result.error}`)
-      } else {
-        setConfirmation(`Added to ${result.paletteName}`)
+        if (result.code === 'duplicate') {
+          toast.error(`'${paintName}' is already in '${palette.name}'`)
+        } else {
+          toast.error(result.error)
+        }
+        // Keep the menu open on duplicate/error so the user can pick another palette
+        return
       }
+      toast.success(`Added '${paintName}' to '${result.paletteName}'`)
+      onClose()
     })
-  }
-
-  if (confirmation) {
-    return (
-      <div className="px-3 py-2 text-sm" aria-live="polite">
-        {confirmation}
-      </div>
-    )
   }
 
   if (menuState === 'loading') {

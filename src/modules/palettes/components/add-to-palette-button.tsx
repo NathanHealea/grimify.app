@@ -24,18 +24,25 @@ import { AddToPaletteMenu } from '@/modules/palettes/components/add-to-palette-m
  * (same pattern as {@link CollectionToggle}). Click events stop propagation so
  * the button can be overlaid on a card `<Link>` without triggering navigation.
  *
+ * Forwards `paintName` to {@link AddToPaletteMenu} so success/error toasts can
+ * name the paint, and passes a close callback so the menu can dismiss the
+ * dropdown after a successful add.
+ *
  * @param props.paintId - UUID of the paint to add to a palette.
+ * @param props.paintName - Display name of the paint, used in toast messages.
  * @param props.variant - Display style: `'icon'` or `'full'`.
  * @param props.isAuthenticated - Whether the current user is signed in.
  * @param props.className - Optional additional CSS classes for the trigger button.
  */
 export function AddToPaletteButton({
   paintId,
+  paintName,
   variant = 'icon',
   isAuthenticated,
   className,
 }: {
   paintId: string
+  paintName: string
   variant?: 'icon' | 'full'
   isAuthenticated: boolean
   className?: string
@@ -74,7 +81,12 @@ export function AddToPaletteButton({
       </DropdownMenuTrigger>
       {isAuthenticated && (
         <DropdownMenuContent align="end" className="w-56">
-          <AddToPaletteMenu paintId={paintId} open={open} />
+          <AddToPaletteMenu
+            paintId={paintId}
+            paintName={paintName}
+            open={open}
+            onClose={() => setOpen(false)}
+          />
         </DropdownMenuContent>
       )}
     </DropdownMenu>
