@@ -187,7 +187,7 @@ This is silent (no error) because the upstream caller — the scheme save dialog
 
 ### Step 4 — Update server actions
 
-`add-paint-to-palette.ts`: import the new result type; add a `paintName` lookup so the success payload includes both the palette and paint names for the toast.
+`add-paint-to-palette.ts`: import the new result type and thread `code` through. No extra DB lookup is needed for the toast — the UI sources `paintName` from its own props (Step 5); the action only returns `paletteName` from the existing `palette.name` value already loaded for the ownership check.
 
 ```ts
 export async function addPaintToPalette(
