@@ -195,6 +195,8 @@ Edit `src/modules/palettes/components/palette-form.tsx`:
 
 3. Delete the now-redundant `{state.errors.description && <p>...</p>}` block — the editor renders its own error.
 
+> **Class swap is intentional.** The existing block uses `className="input w-full"` and `rows={3}` — that is the `.input` class (single-line styling) applied to a `<textarea>` for legacy convenience. The new `<MarkdownEditor>` internally uses `cn('textarea w-full', error && 'textarea-error')`. `.textarea` is the daisyUI-style multi-line counterpart and includes `field-sizing-content` (`src/styles/input.css:99`), so the textarea auto-grows to fit content. Drop the `rows` prop entirely — do not preserve `rows={3}` by reflex; it would just enforce a hard initial height that fights the auto-grow.
+
 The form's `<form action={formAction}>` continues to submit `description` from the inner textarea. `useActionState` keeps working because the action reads from FormData, not from React state.
 
 ### 4. Wire into the palette detail page
