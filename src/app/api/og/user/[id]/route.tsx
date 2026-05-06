@@ -67,6 +67,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
           }}
         >
           {profile.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element -- next/og satori only supports <img>, not next/image.
             <img
               src={profile.avatar_url}
               width={240}
