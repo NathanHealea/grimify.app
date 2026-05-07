@@ -1,12 +1,27 @@
+import { createClient } from '@/lib/supabase/server'
+import { CtaSection } from '@/modules/marketing/components/cta-section'
+import { FeatureGrid } from '@/modules/marketing/components/feature-grid'
+import { Hero } from '@/modules/marketing/components/hero'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
   title: 'Color research for miniature painters',
   description:
-    'Search paints across brands, compare colors, build palettes, and share recipes — Grimify is the painter\'s color companion.',
+    'Search paints across every major brand, build palettes, track your collection, and share recipes — Grimify is the painter\'s color companion.',
   path: '/',
 })
 
-export default function Home() {
-  return <main className="flex min-h-0 flex-1 items-center justify-center"></main>
+export default async function Home() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  return (
+    <main className="flex flex-1 flex-col">
+      <Hero />
+      <FeatureGrid />
+      <CtaSection isAuthenticated={!!user} />
+    </main>
+  )
 }
