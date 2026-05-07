@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 
+import { Footer } from '@/components/footer'
 import { Navbar } from '@/components/navbar'
 import { cn } from '@/lib/utils'
 import { siteUrl } from '@/modules/seo/utils/site-url'
@@ -76,9 +77,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn('font-sans', geist.variable)}>
-      <body className="flex h-dvh flex-col">
+      <body className="flex min-h-dvh flex-col">
         <Navbar />
         {children}
+        <Footer />
         <Toaster position="bottom-right" richColors closeButton theme="system" />
       </body>
     </html>

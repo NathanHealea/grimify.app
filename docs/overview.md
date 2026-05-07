@@ -64,7 +64,7 @@ Core functionality:
 - [x] [Color scheme and theme](./00-marketing-and-branding/00-color-scheme-and-theme.md)
 - [x] [Metadata and OpenGraph](./00-marketing-and-branding/01-metadata-and-opengraph.md)
 - [x] [Branding images](./00-marketing-and-branding/02-branding-images.md)
-- [ ] [Terms of Use](./00-marketing-and-branding/03-terms-of-use.md)
+- [x] [Terms of Use](./00-marketing-and-branding/03-terms-of-use.md)
 - [ ] [Code of Conduct](./00-marketing-and-branding/04-code-of-conduct.md)
 
 ### Epic: Authentication & User Accounts

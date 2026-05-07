@@ -4,6 +4,9 @@ import { type NextRequest, NextResponse } from 'next/server'
 /** Routes that bypass ALL middleware checks (auth flow pages). */
 const AUTH_ROUTES = ['/sign-in', '/sign-up', '/auth/callback', '/auth/confirm', '/forgot-password', '/reset-password']
 
+/** Legal pages that bypass ALL middleware checks — must be readable signed-out, signed-in, or with an incomplete profile. */
+const LEGAL_ROUTES = ['/terms', '/code-of-conduct']
+
 /** Route prefixes accessible without authentication but subject to profile-setup checks for authenticated users. */
 const PUBLIC_ROUTES = ['/brands', '/paints', '/hues', '/schemes', '/palettes']
 
@@ -34,8 +37,11 @@ export async function middleware(request: NextRequest) {
 
   let supabaseResponse = NextResponse.next({ request })
 
-  // Auth flow routes are fully exempt — no session refresh or checks needed
-  if (AUTH_ROUTES.some((route) => pathname.startsWith(route))) {
+  // Auth flow and legal routes are fully exempt — no session refresh or checks needed
+  if (
+    AUTH_ROUTES.some((route) => pathname.startsWith(route)) ||
+    LEGAL_ROUTES.some((route) => pathname.startsWith(route))
+  ) {
     return supabaseResponse
   }
 
