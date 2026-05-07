@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `v1/feature/terms-of-use`
 **Merge into:** `v1/main`
 
