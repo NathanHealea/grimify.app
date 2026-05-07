@@ -33,7 +33,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     supabase.from('paints').select('id, updated_at'),
     supabase.from('brands').select('id, created_at'),
     supabase.from('hues').select('id, created_at'),
-    supabase.from('palettes').select('id, updated_at').eq('is_public', true),
+    supabase
+      .from('palettes')
+      .select('id, updated_at')
+      .eq('is_public', true)
+      .order('updated_at', { ascending: false })
+      .limit(1000),
     supabase.from('profiles').select('id, updated_at, display_name').not('display_name', 'is', null),
   ])
 
