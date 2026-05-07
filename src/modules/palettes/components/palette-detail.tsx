@@ -55,7 +55,7 @@ export function PaletteDetail({
           </div>
           {isOwner && (
             <Link
-              href={`/palettes/${palette.id}/edit`}
+              href={`/user/palettes/${palette.id}/edit`}
               className="btn btn-sm btn-ghost shrink-0"
             >
               Edit
