@@ -9,8 +9,9 @@ import { createPaletteService } from '@/modules/palettes/services/palette-servic
 /**
  * Server action that hard-deletes a palette and all its paint slots.
  *
- * On success, revalidates `/palettes` and redirects to `/palettes`. On
- * auth failure or a missing ID, returns an error object without redirecting.
+ * On success, revalidates `/user/palettes` (owner dashboard) and `/palettes`
+ * (public catalog drops a row) and redirects to `/user/palettes`. On auth
+ * failure or a missing ID, returns an error object without redirecting.
  *
  * @param id - The UUID of the palette to delete.
  * @returns `undefined` on success (redirect fires); `{ error: string }` on failure.
@@ -34,6 +35,7 @@ export async function deletePalette(id: string): Promise<{ error: string } | und
     return { error: message }
   }
 
+  revalidatePath('/user/palettes')
   revalidatePath('/palettes')
-  redirect('/palettes')
+  redirect('/user/palettes')
 }

@@ -10,8 +10,9 @@ import { normalizePalettePositions } from '@/modules/palettes/utils/normalize-pa
  * Server action that removes a single paint slot from a palette.
  *
  * Filters out the slot at `position`, renumbers the remaining slots to close
- * the gap, then atomically replaces all slots via `setPalettePaints`. Revalidates
- * the detail and edit pages. Returns `{ error }` on any failure; no redirect.
+ * the gap, then atomically replaces all slots via `setPalettePaints`.
+ * Revalidates `/user/palettes`, the public catalog, the palette detail page,
+ * and the owner edit page. Returns `{ error }` on any failure; no redirect.
  *
  * @param paletteId - UUID of the palette to modify.
  * @param position - 0-based slot index to remove.
@@ -49,6 +50,8 @@ export async function removePalettePaint(
     return { error: message }
   }
 
+  revalidatePath('/user/palettes')
+  revalidatePath('/palettes')
   revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/palettes/${paletteId}/edit`)
+  revalidatePath(`/user/palettes/${paletteId}/edit`)
 }

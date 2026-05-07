@@ -17,8 +17,9 @@ const DEFAULT_STATE: PaletteFormState = {
  * Server action that creates a new palette for the authenticated user.
  *
  * Intended for use with React 19's `useActionState`. On success, revalidates
- * `/palettes` and redirects to `/palettes/{id}/edit`. On validation or auth
- * failure, returns a {@link PaletteFormState} with error messages.
+ * `/user/palettes` and `/palettes` then redirects to `/user/palettes/{id}/edit`.
+ * On validation or auth failure, returns a {@link PaletteFormState} with error
+ * messages.
  *
  * Default palette name is `"Untitled palette"` when the field is left blank.
  *
@@ -68,6 +69,7 @@ export async function createPalette(
     return { values, errors: { form: message } }
   }
 
+  revalidatePath('/user/palettes')
   revalidatePath('/palettes')
-  redirect(`/palettes/${palette.id}/edit`)
+  redirect(`/user/palettes/${palette.id}/edit`)
 }

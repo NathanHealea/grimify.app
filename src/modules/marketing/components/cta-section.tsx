@@ -13,7 +13,7 @@ export function CtaSection({ isAuthenticated }: { isAuthenticated: boolean }) {
     ? { label: 'Open your collection', href: '/collection' }
     : { label: 'Create your account', href: '/sign-up' }
   const secondary = isAuthenticated
-    ? { label: 'Build a palette', href: '/palettes' }
+    ? { label: 'Build a palette', href: '/user/palettes' }
     : { label: 'Browse paints', href: '/paints' }
 
   return (

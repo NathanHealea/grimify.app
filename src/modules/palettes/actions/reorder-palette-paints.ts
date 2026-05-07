@@ -14,7 +14,8 @@ type ReorderInput = { paintId: string; note: string | null }
  * Accepts the full ordered list of `{ paintId, note }` slots and atomically
  * replaces all palette_paints rows via {@link setPalettePaints}. Validates
  * that the input is a permutation of the current slots (multiset check by
- * paintId count). Revalidates the detail and edit pages on success.
+ * paintId count). Revalidates `/user/palettes`, the public catalog, the
+ * palette detail page, and the owner edit page on success.
  *
  * @param paletteId - UUID of the palette to reorder.
  * @param ordered - The complete new slot list in the desired order.
@@ -69,6 +70,8 @@ export async function reorderPalettePaints(
   const result = await service.setPalettePaints(paletteId, normalized)
   if (result.error) return { error: result.error }
 
+  revalidatePath('/user/palettes')
+  revalidatePath('/palettes')
   revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/palettes/${paletteId}/edit`)
+  revalidatePath(`/user/palettes/${paletteId}/edit`)
 }

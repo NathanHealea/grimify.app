@@ -28,6 +28,11 @@ export function PaletteCard({
         <PaletteSwatchStrip hexes={summary.swatches} size="sm" />
         <div>
           <h3 className="card-title text-base">{summary.name}</h3>
+          {summary.ownerDisplayName && (
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              by {summary.ownerDisplayName}
+            </p>
+          )}
           <div className="mt-1 flex flex-wrap items-center gap-2">
             <span className="text-xs text-muted-foreground">
               {summary.paintCount} {summary.paintCount === 1 ? 'paint' : 'paints'}
@@ -51,7 +56,7 @@ export function PaletteCard({
       />
       {canEdit && (
         <Link
-          href={`/palettes/${summary.id}/edit`}
+          href={`/user/palettes/${summary.id}/edit`}
           className="btn btn-ghost btn-xs absolute right-2 top-2 z-10"
         >
           Edit

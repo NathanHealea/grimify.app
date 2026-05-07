@@ -12,8 +12,9 @@ import type { PaletteFormState } from '@/modules/palettes/types/palette-form-sta
  * visibility.
  *
  * Intended for use with React 19's `useActionState`. On success, revalidates
- * `/palettes` and the palette detail path, then returns a success state. On
- * failure, returns a {@link PaletteFormState} with error messages.
+ * `/user/palettes` (owner dashboard), `/palettes` (public catalog), and the
+ * palette detail path, then returns a success state. On failure, returns a
+ * {@link PaletteFormState} with error messages.
  *
  * @param _prevState - Previous action state (required by `useActionState`).
  * @param formData - Form data submitted by the user. Must include `id`.
@@ -61,6 +62,7 @@ export async function updatePalette(
     return { values, errors: { form: message } }
   }
 
+  revalidatePath('/user/palettes')
   revalidatePath('/palettes')
   revalidatePath(`/palettes/${id}`)
 

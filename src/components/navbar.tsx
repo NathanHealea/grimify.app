@@ -52,14 +52,17 @@ export async function Navbar() {
         <Link href="/schemes" className="btn btn-ghost btn-sm">
           Schemes
         </Link>
+        <Link href="/palettes" className="btn btn-ghost btn-sm">
+          Palettes
+        </Link>
         {user && (
           <Link href="/collection" className="btn btn-ghost btn-sm">
             Collection
           </Link>
         )}
         {user && (
-          <Link href="/palettes" className="btn btn-ghost btn-sm">
-            Palettes
+          <Link href="/user/palettes" className="btn btn-ghost btn-sm">
+            My palettes
           </Link>
         )}
       </div>
