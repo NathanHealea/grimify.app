@@ -146,11 +146,13 @@ export function createPaletteService(supabase: SupabaseClient) {
     /**
      * Lists public palettes, paginated.
      *
-     * Ordered by most recently updated first. Default page size is 24.
+     * Ordered by most recently updated first. Default page size is 24. Each
+     * row is augmented with the owner's profile display name so catalog cards
+     * can credit the author.
      *
      * @param opts.limit - Max rows to return (default 24).
      * @param opts.offset - Row offset for pagination (default 0).
-     * @returns Array of {@link PaletteSummary} rows.
+     * @returns Array of {@link PaletteSummary} rows with `ownerDisplayName` populated.
      */
     async listPublicPalettes(opts?: { limit?: number; offset?: number }): Promise<PaletteSummary[]> {
       const limit = opts?.limit ?? 24
@@ -158,7 +160,7 @@ export function createPaletteService(supabase: SupabaseClient) {
 
       const { data, error } = await supabase
         .from('palettes')
-        .select('id, name, is_public, updated_at, palette_paints(paint_id, paints(hex))')
+        .select('id, name, is_public, updated_at, profiles(display_name), palette_paints(paint_id, paints(hex))')
         .eq('is_public', true)
         .order('updated_at', { ascending: false })
         .range(offset, offset + limit - 1)
@@ -170,6 +172,7 @@ export function createPaletteService(supabase: SupabaseClient) {
         name: string
         is_public: boolean
         updated_at: string
+        profiles: { display_name: string | null } | null
         palette_paints: { paint_id: string; paints: { hex: string } | null }[]
       }
 
@@ -183,7 +186,25 @@ export function createPaletteService(supabase: SupabaseClient) {
           .map((pp) => pp.paints?.hex ?? '')
           .filter(Boolean),
         updatedAt: row.updated_at,
+        ownerDisplayName: row.profiles?.display_name ?? null,
       }))
+    },
+
+    /**
+     * Returns the total count of palettes with `is_public = true`.
+     *
+     * Used for paginating the public catalog at `/palettes`.
+     *
+     * @returns The count, or `0` on error.
+     */
+    async countPublicPalettes(): Promise<number> {
+      const { count, error } = await supabase
+        .from('palettes')
+        .select('id', { count: 'exact', head: true })
+        .eq('is_public', true)
+
+      if (error) return 0
+      return count ?? 0
     },
 
     /**
