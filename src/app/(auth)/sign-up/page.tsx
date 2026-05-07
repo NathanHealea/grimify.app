@@ -21,6 +21,20 @@ export default function SignUpPage() {
       <CardContent>
         <SignUpForm />
         <OAuthButtons />
+        <p className="mt-4 text-center text-xs text-muted-foreground">
+          By signing up, you agree to our{' '}
+          <Link href="/terms" className="underline underline-offset-4 hover:text-foreground">
+            Terms of Use
+          </Link>{' '}
+          and{' '}
+          <Link
+            href="/code-of-conduct"
+            className="underline underline-offset-4 hover:text-foreground"
+          >
+            Code of Conduct
+          </Link>
+          .
+        </p>
       </CardContent>
       <CardFooter className="justify-center">
         <p className="text-sm text-muted-foreground">
