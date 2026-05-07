@@ -9,6 +9,7 @@ import { getHueService } from '@/modules/hues/services/hue-service.server';
 import { HueGroupPaintGrid } from '@/modules/paints/components/hue-group-paint-grid';
 import { HuePaintGrid } from '@/modules/paints/components/hue-paint-grid';
 import { getPaintService } from '@/modules/paints/services/paint-service.server';
+import { buildOgUrl } from '@/modules/seo/utils/build-og-url';
 import { pageMetadata } from '@/modules/seo/utils/page-metadata';
 
 /** Valid page sizes that the paginated grid supports. */
@@ -23,10 +24,21 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return pageMetadata({ title: 'Hue not found', description: 'This hue could not be found.', noindex: true })
   }
 
+  const parent = hue.parent_id ? await hueService.getHueById(hue.parent_id) : null
+  const description = parent
+    ? `${hue.name} (${parent.name}) — browse miniature paints in this hue on Grimify.`
+    : `Browse miniature paints in the ${hue.name} hue on Grimify.`
+
   return pageMetadata({
     title: hue.name,
-    description: `Browse miniature paints in the ${hue.name} hue on Grimify.`,
+    description,
     path: `/hues/${id}`,
+    image: {
+      url: buildOgUrl('hue', id),
+      width: 1200,
+      height: 630,
+      alt: hue.name,
+    },
   })
 }
 

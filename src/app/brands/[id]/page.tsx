@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCollectionService } from '@/modules/collection/services/collection-service.server'
 import { BrandPaintList } from '@/modules/brands/components/brand-paint-list'
 import { getBrandService } from '@/modules/brands/services/brand-service.server'
+import { buildOgUrl } from '@/modules/seo/utils/build-og-url'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -23,10 +24,23 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return pageMetadata({ title: 'Brand not found', description: 'This brand could not be found.', noindex: true })
   }
 
+  const supabase = await createClient()
+  const { count } = await supabase
+    .from('paints')
+    .select('id, product_lines!inner(brand_id)', { count: 'exact', head: true })
+    .eq('product_lines.brand_id', numericId)
+  const paintCount = count ?? 0
+
   return pageMetadata({
     title: brand.name,
-    description: `Browse ${brand.name} miniature paints on Grimify.`,
+    description: `${brand.name} miniature paints on Grimify. ${paintCount} ${paintCount === 1 ? 'paint' : 'paints'}.`,
     path: `/brands/${id}`,
+    image: {
+      url: buildOgUrl('brand', numericId),
+      width: 1200,
+      height: 630,
+      alt: brand.name,
+    },
   })
 }
 

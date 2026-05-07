@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
+import { buildOgUrl } from '@/modules/seo/utils/build-og-url'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -27,6 +28,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     title: name,
     description,
     path: `/users/${id}`,
+    image: profile.display_name
+      ? {
+          url: buildOgUrl('user', id),
+          width: 1200,
+          height: 630,
+          alt: name,
+        }
+      : undefined,
   })
 }
 
