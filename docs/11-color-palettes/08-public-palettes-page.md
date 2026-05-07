@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Enhancement
-**Status:** Todo
+**Status:** Done
 **Branch:** `v1/enhancement/public-palettes-page`
 **Merge into:** `v1/main`
 
@@ -19,20 +19,20 @@ The data layer requires **no migration** — `palettes` already has `is_public b
 
 ## Acceptance Criteria
 
-- [ ] `/palettes` renders a paginated list of public palettes (anyone, including signed-out)
-- [ ] `/palettes/[id]` continues to serve both signed-out (when `is_public = true`) and the owner (always)
-- [ ] `/user/palettes` renders today's owner-only "My palettes" dashboard (moved from `/palettes`)
-- [ ] `/user/palettes/new` accepts the POST that creates a draft palette and redirects to `/user/palettes/[id]/edit`
-- [ ] `/user/palettes/[id]/edit` renders the existing palette edit UI (moved from `/palettes/[id]/edit`)
-- [ ] Old POST to `/palettes/new` keeps working — handler is moved or forwards to `/user/palettes/new` so external `<form>` posts and bookmarks don't break
-- [ ] Anyone visiting old `/palettes/[id]/edit` is forwarded to `/user/palettes/[id]/edit` (owner) or to the read-only detail page (non-owner)
-- [ ] Navbar: `/palettes` link is shown to all visitors; a separate `/user/palettes` link is shown to signed-in users (label disambiguates them — see step 11)
-- [ ] Public palette catalog cards show the owner's display name; "My palettes" cards do not
-- [ ] Sitemap includes `/palettes` (already present) and dynamically emits public palette detail URLs
-- [ ] All `revalidatePath` calls inside `src/modules/palettes/actions/` are updated for the new route shape (revalidate both the public catalog and the owner dashboard when relevant)
-- [ ] All in-tree links/forms that point at `/palettes/new` and `/palettes/[id]/edit` are repointed at the `/user/palettes/...` equivalents
-- [ ] Page metadata uses `pageMetadata` from the `seo` module on every new/changed route
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] `/palettes` renders a paginated list of public palettes (anyone, including signed-out)
+- [x] `/palettes/[id]` continues to serve both signed-out (when `is_public = true`) and the owner (always)
+- [x] `/user/palettes` renders today's owner-only "My palettes" dashboard (moved from `/palettes`)
+- [x] `/user/palettes/new` accepts the POST that creates a draft palette and redirects to `/user/palettes/[id]/edit`
+- [x] `/user/palettes/[id]/edit` renders the existing palette edit UI (moved from `/palettes/[id]/edit`)
+- [x] Old POST to `/palettes/new` keeps working — handler is moved or forwards to `/user/palettes/new` so external `<form>` posts and bookmarks don't break
+- [x] Anyone visiting old `/palettes/[id]/edit` is forwarded to `/user/palettes/[id]/edit` (owner) or to the read-only detail page (non-owner)
+- [x] Navbar: `/palettes` link is shown to all visitors; a separate `/user/palettes` link is shown to signed-in users (label disambiguates them — see step 11)
+- [x] Public palette catalog cards show the owner's display name; "My palettes" cards do not
+- [x] Sitemap includes `/palettes` (already present) and dynamically emits public palette detail URLs
+- [x] All `revalidatePath` calls inside `src/modules/palettes/actions/` are updated for the new route shape (revalidate both the public catalog and the owner dashboard when relevant)
+- [x] All in-tree links/forms that point at `/palettes/new` and `/palettes/[id]/edit` are repointed at the `/user/palettes/...` equivalents
+- [x] Page metadata uses `pageMetadata` from the `seo` module on every new/changed route
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 

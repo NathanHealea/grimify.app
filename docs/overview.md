@@ -208,7 +208,7 @@ Core functionality:
 - [x] [Palette description markdown editor](./11-color-palettes/05-palette-description-markdown.md)
 - [x] [Prevent duplicate paints + toast feedback](./11-color-palettes/06-prevent-duplicate-paint-add.md)
 - [x] [Palette & scheme toast feedback](./11-color-palettes/07-palette-toast.md)
-- [ ] [Public palettes catalog & user routes move](./11-color-palettes/08-public-palettes-page.md)
+- [x] [Public palettes catalog & user routes move](./11-color-palettes/08-public-palettes-page.md)
 
 ### Epic: Painting Recipes
 
