@@ -132,6 +132,7 @@ Core functionality:
 - [x] [Color scheme generation (complementary, split-comp, analogous, triadic)](./05-color-scheme-explorer/00-scheme-generation.md)
 - [ ] [Scheme visualization on the color wheel](./05-color-scheme-explorer/01-scheme-visualization.md)
 - [ ] [Map schemes to available paints](./05-color-scheme-explorer/02-scheme-to-paints.md)
+- [ ] [Public schemes catalog & user explorer move](./05-color-scheme-explorer/03-public-schema-page.md)
 
 ### Epic: Collection Tracking
 
@@ -207,6 +208,7 @@ Core functionality:
 - [x] [Palette description markdown editor](./11-color-palettes/05-palette-description-markdown.md)
 - [x] [Prevent duplicate paints + toast feedback](./11-color-palettes/06-prevent-duplicate-paint-add.md)
 - [x] [Palette & scheme toast feedback](./11-color-palettes/07-palette-toast.md)
+- [ ] [Public palettes catalog & user routes move](./11-color-palettes/08-public-palettes-page.md)
 
 ### Epic: Painting Recipes
 
