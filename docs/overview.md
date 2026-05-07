@@ -66,6 +66,7 @@ Core functionality:
 - [x] [Branding images](./00-marketing-and-branding/02-branding-images.md)
 - [x] [Terms of Use](./00-marketing-and-branding/03-terms-of-use.md)
 - [ ] [Code of Conduct](./00-marketing-and-branding/04-code-of-conduct.md)
+- [x] [Homepage marketing landing page](./00-marketing-and-branding/05-homepage-marketing.md)
 
 ### Epic: Authentication & User Accounts
 
