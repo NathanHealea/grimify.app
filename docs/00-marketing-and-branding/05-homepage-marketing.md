@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 **Branch:** `v1/feature/homepage-marketing`
 **Merge into:** `v1/main`
 
@@ -12,17 +12,17 @@ Replace the empty `/` route with a marketing landing page: a hero containing a p
 
 ## Acceptance Criteria
 
-- [ ] `/` renders a marketing landing page (currently empty)
-- [ ] Hero contains the Grimify wordmark/logo, a one-line value prop, a sub-headline, and a **paint search input** that submits to `/paints?q={query}`
-- [ ] Pressing **Enter** in the hero search submits; an explicit submit button is also present
-- [ ] Hero search uses the existing `SearchInput` component (`src/components/search.tsx`) — no new search input from scratch
-- [ ] Features section shows **5 feature cards** (Color Wheel, Cross-Brand Search, Color Schemes, Palettes & Collection, Recipes) with icon, title, blurb, and link to the relevant route
-- [ ] Each feature card is a real link to its destination route (`/wheel`, `/paints`, `/schemes`, `/palettes`, future `/recipes`)
-- [ ] CTA section adapts to auth state: signed-out users see **"Create an account"** + **"Browse paints"**; signed-in users see **"Open my collection"** + **"Build a palette"**
-- [ ] Page metadata uses `pageMetadata` and inherits the existing root OpenGraph image
-- [ ] Layout is responsive — mobile (single column), tablet (2-up cards), desktop (max-w-6xl, 3-up cards)
-- [ ] Logo, navbar, and footer are unchanged; landing content lives only inside `<main>`
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] `/` renders a marketing landing page (currently empty)
+- [ ] Hero contains the Grimify wordmark/logo, a one-line value prop, a sub-headline, and a **paint search input** that submits to `/paints?q={query}` *(intentionally tagline-first — see Risks; navbar already shows the wordmark)*
+- [x] Pressing **Enter** in the hero search submits; an explicit submit button is also present
+- [x] Hero search uses the existing `SearchInput` component (`src/components/search.tsx`) — no new search input from scratch
+- [x] Features section shows **5 feature cards** (Color Wheel, Cross-Brand Search, Color Schemes, Palettes & Collection, Recipes) with icon, title, blurb, and link to the relevant route
+- [x] Each feature card is a real link to its destination route (`/wheel`, `/paints`, `/schemes`, `/palettes`, future `/recipes`)
+- [x] CTA section adapts to auth state: signed-out users see **"Create an account"** + **"Browse paints"**; signed-in users see **"Open my collection"** + **"Build a palette"**
+- [x] Page metadata uses `pageMetadata` and inherits the existing root OpenGraph image
+- [x] Layout is responsive — mobile (single column), tablet (2-up cards), desktop (max-w-6xl, 3-up cards)
+- [x] Logo, navbar, and footer are unchanged; landing content lives only inside `<main>`
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
