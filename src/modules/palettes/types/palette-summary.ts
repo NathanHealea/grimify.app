@@ -18,4 +18,10 @@ export type PaletteSummary = {
   swatches: string[]
   /** ISO timestamp of last update; used for default sort order. */
   updatedAt: string
+  /**
+   * Owner's profile display name. Populated by `listPublicPalettes` so catalog
+   * cards can credit the author; omitted (or `null`) on owner-scoped queries
+   * where the viewer always owns the palette.
+   */
+  ownerDisplayName?: string | null
 }
