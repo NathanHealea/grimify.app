@@ -1,4 +1,4 @@
-import { BookOpen, Disc3, Layers, Palette, Search } from 'lucide-react'
+import { BookOpen, Layers, Palette, Search } from 'lucide-react'
 
 import type { Feature } from '@/modules/marketing/types/feature'
 
@@ -10,14 +10,6 @@ import type { Feature } from '@/modules/marketing/types/feature'
  *   will resolve to a 404 until that route lands.
  */
 export const features: Feature[] = [
-  {
-    slug: 'color-wheel',
-    title: 'Color Wheel',
-    blurb:
-      'Map every paint you own onto an interactive color wheel and see your gaps at a glance.',
-    icon: Disc3,
-    href: '/wheel',
-  },
   {
     slug: 'paints',
     title: 'Cross-Brand Search',
