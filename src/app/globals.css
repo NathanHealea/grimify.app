@@ -17,6 +17,7 @@
 @import '../styles/slider.css' layer(components);
 @import '../styles/dialog.css' layer(components);
 @import '../styles/popover.css' layer(components);
+@import '../styles/skeleton.css' layer(components);
 
 @custom-variant dark (&:is(.dark *));
 
