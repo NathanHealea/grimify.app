@@ -32,12 +32,12 @@ export const features: Feature[] = [
     icon: Layers,
     href: '/palettes',
   },
-  {
-    slug: 'recipes',
-    title: 'Recipes',
-    blurb:
-      'Document and share step-by-step painting recipes with paints, layers, and notes.',
-    icon: BookOpen,
-    href: '/recipes',
-  },
+  // {
+  //   slug: 'recipes',
+  //   title: 'Recipes',
+  //   blurb:
+  //     'Document and share step-by-step painting recipes with paints, layers, and notes.',
+  //   icon: BookOpen,
+  //   href: '/recipes',
+  // },
 ]
