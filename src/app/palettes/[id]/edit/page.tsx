@@ -1,20 +1,16 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { notFound } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
 
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
-import { PaletteBuilder } from '@/modules/palettes/components/palette-builder'
-import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
-export const metadata = pageMetadata({
-  title: 'Edit palette',
-  description: 'Edit your paint palette on Grimify.',
-  noindex: true,
-})
-
-export default async function PaletteEditPage({
+/**
+ * Legacy edit URL — owner-aware redirect.
+ *
+ * Owners are forwarded to the new `/user/palettes/[id]/edit` location;
+ * everyone else is sent to the read-only public detail page. Kept for
+ * bookmark continuity; safe to delete once analytics show no inbound traffic.
+ */
+export default async function PaletteEditRedirect({
   params,
 }: {
   params: Promise<{ id: string }>
@@ -26,24 +22,13 @@ export default async function PaletteEditPage({
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) redirect(`/sign-in?next=/palettes/${id}/edit`)
+  if (user) {
+    const service = createPaletteService(supabase)
+    const palette = await service.getPaletteById(id)
+    if (palette && palette.userId === user.id) {
+      redirect(`/user/palettes/${id}/edit`)
+    }
+  }
 
-  const service = createPaletteService(supabase)
-  const palette = await service.getPaletteById(id)
-
-  if (!palette || palette.userId !== user.id) notFound()
-
-  return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-12">
-      <Link
-        href={`/palettes/${id}`}
-        className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        Back to palette
-      </Link>
-      <h1 className="mb-8 text-3xl font-bold">Edit palette</h1>
-      <PaletteBuilder palette={palette} />
-    </div>
-  )
+  redirect(`/palettes/${id}`)
 }
