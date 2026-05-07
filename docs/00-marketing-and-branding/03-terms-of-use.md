@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `v1/feature/terms-of-use`
 **Merge into:** `v1/main`
 
@@ -12,15 +12,15 @@ Boilerplate Terms of Use page that frames Grimify as a hobbyist project provided
 
 ## Acceptance Criteria
 
-- [ ] A `/terms` route exists and is publicly accessible
-- [ ] Page includes an explicit **"As-Is" / No Warranty** disclaimer
-- [ ] Page includes a **Non-Affiliation / Trademarks** section disclaiming any relationship with paint manufacturers and acknowledging third-party trademarks
-- [ ] Page covers: acceptance of terms, account responsibilities, user-generated content, prohibited conduct, limitation of liability, termination, changes to terms, and contact
-- [ ] Content is written in plain, readable language (boilerplate, not heavy legalese)
-- [ ] Page is linked from the site footer (creating the footer is in scope if one does not yet exist)
-- [ ] Sign-up page references the Terms of Use (e.g., "By signing up, you agree to our Terms of Use and Code of Conduct")
-- [ ] Page metadata uses `pageMetadata` from the `seo` module
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] A `/terms` route exists and is publicly accessible
+- [x] Page includes an explicit **"As-Is" / No Warranty** disclaimer
+- [x] Page includes a **Non-Affiliation / Trademarks** section disclaiming any relationship with paint manufacturers and acknowledging third-party trademarks
+- [x] Page covers: acceptance of terms, account responsibilities, user-generated content, prohibited conduct, limitation of liability, termination, changes to terms, and contact
+- [x] Content is written in plain, readable language (boilerplate, not heavy legalese)
+- [x] Page is linked from the site footer (creating the footer is in scope if one does not yet exist)
+- [x] Sign-up page references the Terms of Use (e.g., "By signing up, you agree to our Terms of Use and Code of Conduct")
+- [x] Page metadata uses `pageMetadata` from the `seo` module
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
