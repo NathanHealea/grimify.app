@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Enhancement
-**Status:** Done
+**Status:** Completed
 **Branch:** `v1/enhancement/public-palettes-page`
 **Merge into:** `v1/main`
 
