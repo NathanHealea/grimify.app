@@ -1,7 +1,6 @@
 import { ImageResponse } from 'next/og'
 
 import { createClient } from '@/lib/supabase/server'
-import { createPaletteService } from '@/modules/palettes/services/palette-service'
 
 export const runtime = 'edge'
 
@@ -17,29 +16,38 @@ const MAX_SWATCHES = 10
  * horizontal strip of up to 10 paint swatches. Palettes with more paints get a
  * trailing `+N more` tile.
  *
- * Returns 404 when the palette is missing or private — RLS already filters
- * private rows for anonymous crawlers, but the explicit `is_public` check
- * is defense-in-depth in case policies drift.
+ * Uses a slim direct query — only the columns the image needs — so the route
+ * stays fast and avoids any deep-join surprises. Returns 404 when the palette
+ * is missing or private (RLS already filters anonymous reads, but the explicit
+ * `is_public` check is defense-in-depth in case policies drift).
  */
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
-  const service = createPaletteService(supabase)
-  const palette = await service.getPaletteById(id)
 
-  if (!palette || !palette.isPublic) {
+  const { data: palette, error } = await supabase
+    .from('palettes')
+    .select('id, name, user_id, is_public, palette_paints(position, paints(hex))')
+    .eq('id', id)
+    .maybeSingle()
+
+  if (error || !palette || !palette.is_public) {
     return new Response('Not found', { status: 404 })
   }
 
   const { data: ownerProfile } = await supabase
     .from('profiles')
     .select('display_name')
-    .eq('id', palette.userId)
+    .eq('id', palette.user_id)
     .single()
 
-  const swatches = palette.paints
-    .map((p) => p.paint?.hex)
+  type PalettePaintRow = { position: number; paints: { hex: string } | null }
+  const rows = (palette.palette_paints as unknown as PalettePaintRow[] | null) ?? []
+  const swatches = [...rows]
+    .sort((a, b) => a.position - b.position)
+    .map((row) => row.paints?.hex)
     .filter((hex): hex is string => Boolean(hex))
+
   const visibleSwatches = swatches.slice(0, MAX_SWATCHES)
   const overflow = swatches.length - visibleSwatches.length
   const swatchCount = visibleSwatches.length + (overflow > 0 ? 1 : 0)
@@ -68,8 +76,9 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
         >
           <div style={{ fontSize: 72, fontWeight: 600, lineHeight: 1.1 }}>{palette.name}</div>
           <div style={{ fontSize: 28, opacity: 0.7, marginTop: 24 }}>
-            {`${palette.paints.length} ${palette.paints.length === 1 ? 'paint' : 'paints'}`}
-            {ownerProfile?.display_name ? ` · by ${ownerProfile.display_name}` : ''}
+            {`${swatches.length} ${swatches.length === 1 ? 'paint' : 'paints'}${
+              ownerProfile?.display_name ? ` · by ${ownerProfile.display_name}` : ''
+            }`}
           </div>
         </div>
         <div style={{ display: 'flex', height: 220, width: '100%' }}>
