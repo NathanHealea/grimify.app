@@ -14,8 +14,8 @@ import { validatePaletteForm } from '@/modules/palettes/validation'
  * Validates the name with {@link validatePaletteForm}, creates the palette,
  * then appends all `paintIds` via `appendPaintsToPalette`. If the paint append
  * fails the palette still exists (empty) and the user is redirected to the
- * editor to retry. Revalidates `/palettes` then redirects to the edit page
- * on success.
+ * editor to retry. Revalidates `/user/palettes` and `/palettes` then redirects
+ * to the owner edit page on success.
  *
  * @param input.name - Palette name (1–80 chars, required).
  * @param input.description - Optional description (max 1000 chars).
@@ -65,6 +65,7 @@ export async function createPaletteWithPaints(input: {
     // If append fails, palette exists but is empty — redirect to editor to retry
   }
 
+  revalidatePath('/user/palettes')
   revalidatePath('/palettes')
-  redirect(`/palettes/${palette.id}/edit`)
+  redirect(`/user/palettes/${palette.id}/edit`)
 }

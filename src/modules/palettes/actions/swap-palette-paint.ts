@@ -11,8 +11,9 @@ import { normalizePalettePositions } from '@/modules/palettes/utils/normalize-pa
  *
  * Read-modify-write via `setPalettePaints` — clones the slot list, replaces
  * `paints[position].paintId`, preserves position and note, then atomically
- * persists via the `replace_palette_paints` RPC. Revalidates both the detail
- * and edit pages.
+ * persists via the `replace_palette_paints` RPC. Revalidates `/user/palettes`,
+ * the public catalog, the palette detail page, and the owner edit page so card
+ * swatches stay fresh.
  *
  * Swapping a slot with its current paint is a silent no-op (returns `undefined`
  * without touching the database).
@@ -62,6 +63,8 @@ export async function swapPalettePaint(
     return { error: message }
   }
 
+  revalidatePath('/user/palettes')
+  revalidatePath('/palettes')
   revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/palettes/${paletteId}/edit`)
+  revalidatePath(`/user/palettes/${paletteId}/edit`)
 }

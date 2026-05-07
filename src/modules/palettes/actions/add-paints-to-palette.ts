@@ -10,9 +10,10 @@ import type { AddPaintsToPaletteResult } from '@/modules/palettes/types/add-pain
  * Server action that appends an ordered list of paints to an existing palette.
  *
  * Performs auth and ownership checks before delegating to
- * {@link appendPaintsToPalette}. Revalidates the palette list and both palette
- * detail pages on success. Reserved for the deferred multi-select grid path;
- * the scheme save flow uses {@link createPaletteWithPaints} instead.
+ * {@link appendPaintsToPalette}. Revalidates `/user/palettes` (owner
+ * dashboard), `/palettes` (public catalog), the palette detail page, and the
+ * owner edit page on success. Reserved for the deferred multi-select grid
+ * path; the scheme save flow uses {@link createPaletteWithPaints} instead.
  *
  * Threads the service-layer `code` discriminator and `duplicateIds` array
  * through so callers can surface duplicate-specific feedback that names the
@@ -52,9 +53,10 @@ export async function addPaintsToPalette(
     }
   }
 
+  revalidatePath('/user/palettes')
   revalidatePath('/palettes')
   revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/palettes/${paletteId}/edit`)
+  revalidatePath(`/user/palettes/${paletteId}/edit`)
 
   return { ok: true }
 }
