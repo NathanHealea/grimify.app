@@ -213,6 +213,7 @@ Core functionality:
 - [x] [Palette & scheme toast feedback](./11-color-palettes/07-palette-toast.md)
 - [x] [Public palettes catalog & user routes move](./11-color-palettes/08-public-palettes-page.md)
 - [ ] [Color palette groups](./11-color-palettes/09-color-palette-groups.md)
+- [ ] [Color palette paint sorting](./11-color-palettes/10-color-palette-sorting.md)
 
 ### Epic: Painting Recipes
 
