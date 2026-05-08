@@ -114,7 +114,7 @@ export function RecipeStepPaintPicker({
           Add paint
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col gap-4 p-6">
         <DialogHeader>
           <DialogTitle>Add paint</DialogTitle>
           <DialogDescription>
@@ -129,7 +129,7 @@ export function RecipeStepPaintPicker({
         )}
 
         {mode === 'palette' && palette ? (
-          <div className="flex flex-col gap-3 overflow-hidden">
+          <div className="flex min-h-0 flex-1 flex-col gap-3">
             <Input
               type="search"
               value={paletteFilter}
@@ -181,7 +181,7 @@ export function RecipeStepPaintPicker({
             </div>
           </div>
         ) : (
-          <div className="flex flex-col gap-3 overflow-hidden">
+          <div className="flex min-h-0 flex-1 flex-col gap-3">
             <Input
               type="search"
               value={libraryQuery}
