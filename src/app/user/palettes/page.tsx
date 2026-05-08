@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 
+import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { PaletteCardGrid } from '@/modules/palettes/components/palette-card-grid'
@@ -24,7 +25,7 @@ export default async function UserPalettesPage() {
   const summaries = await service.listPalettesForUser(user.id)
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-12">
+    <Main width="6xl">
       <div className="mb-8 flex items-center justify-between gap-4">
         <h1 className="text-3xl font-bold">My palettes</h1>
         <form action="/user/palettes/new" method="post">
@@ -48,6 +49,6 @@ export default async function UserPalettesPage() {
           </form>
         </div>
       )}
-    </div>
+    </Main>
   )
 }

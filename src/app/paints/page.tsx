@@ -1,3 +1,4 @@
+import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { getHueService } from '@/modules/hues/services/hue-service.server'
 import { PaintExplorer } from '@/modules/paints/components/paint-explorer'
@@ -86,7 +87,7 @@ export default async function PaintsPage({
   const huePaintCounts = Object.fromEntries(hueCountEntries)
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-12">
+    <Main width="6xl">
       <div className="mb-8 flex flex-col gap-4">
         <h1 className="text-3xl font-bold">Paints</h1>
         <p className="text-sm text-muted-foreground">
@@ -106,6 +107,6 @@ export default async function PaintsPage({
         isAuthenticated={!!user}
         userPaintIds={userPaintIds}
       />
-    </div>
+    </Main>
   )
 }
