@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
+import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import type { Recipe } from '@/modules/recipes/types/recipe'
 import type { RecipeNote } from '@/modules/recipes/types/recipe-note'
 import type { RecipePhoto } from '@/modules/recipes/types/recipe-photo'
@@ -35,11 +36,25 @@ export function createRecipeService(supabase: SupabaseClient) {
   return {
     /**
      * Fetches a single recipe by ID, fully hydrated with sections, steps,
-     * step paints, notes, and photos.
+     * step paints, notes, photos, and the linked palette (when set).
      *
-     * Joins the entire tree in one Supabase request and sorts each child
-     * collection by `position` ascending. Returns `null` when the recipe does
-     * not exist or is not visible to the caller (RLS enforced).
+     * Joins the recipe tree in one Supabase request and sorts each child
+     * collection by `position` ascending. When `palette_id` is set, makes a
+     * second round-trip via the palette service so the returned `palette` is
+     * visible to the step-paint picker and detail view without further calls.
+     * Returns `null` when the recipe does not exist or is not visible to the
+     * caller (RLS enforced).
+     *
+     * @remarks
+     * **Live-join deferral**: The doc plan for `02-recipe-step-paints` calls
+     * for hydrating each step paint's "current" `paint_id` via a live join
+     * through `palette_slot_id`. The `palette_paints` table does not yet
+     * expose a stable slot identifier (its PK is `(palette_id, position)`),
+     * so this read returns the **denormalized** `paint_id` from
+     * `recipe_step_paints` directly. AC #8 of the feature doc — palette swaps
+     * propagating into step paints — is parked until a future migration adds
+     * a `slot_id` column and rewrites the `replace_palette_paints` RPC to
+     * preserve it across reorders.
      *
      * @param id - The recipe UUID.
      * @returns The hydrated {@link Recipe}, or `null` if not found.
@@ -239,10 +254,15 @@ export function createRecipeService(supabase: SupabaseClient) {
       const allNotes = (raw.recipe_notes ?? []).slice().sort((a, b) => a.position - b.position)
       const allPhotos = (raw.recipe_photos ?? []).slice().sort((a, b) => a.position - b.position)
 
+      const palette = raw.palette_id
+        ? await createPaletteService(supabase).getPaletteById(raw.palette_id)
+        : null
+
       return {
         id: raw.id,
         userId: raw.user_id,
         paletteId: raw.palette_id,
+        palette,
         title: raw.title,
         summary: raw.summary,
         coverPhotoId: raw.cover_photo_id,
@@ -414,6 +434,7 @@ export function createRecipeService(supabase: SupabaseClient) {
         id: data.id,
         userId: data.user_id,
         paletteId: data.palette_id,
+        palette: null,
         title: data.title,
         summary: data.summary,
         coverPhotoId: data.cover_photo_id,
@@ -466,6 +487,7 @@ export function createRecipeService(supabase: SupabaseClient) {
         id: data.id,
         userId: data.user_id,
         paletteId: data.palette_id,
+        palette: null,
         title: data.title,
         summary: data.summary,
         coverPhotoId: data.cover_photo_id,
