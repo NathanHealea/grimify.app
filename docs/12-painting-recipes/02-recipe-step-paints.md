@@ -2,7 +2,7 @@
 
 **Epic:** Painting Recipes
 **Type:** Feature
-**Status:** In Progress
+**Status:** Completed
 **Branch:** `feature/recipe-step-paints`
 **Merge into:** `v1/feature/paint-recipes`
 
