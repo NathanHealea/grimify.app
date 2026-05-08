@@ -19,10 +19,14 @@ import {
 import { toast } from 'sonner'
 
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import type { PaintSortDirection, PaintSortField } from '@/modules/paints/utils/sort-paints'
+import { PaintSortBar } from '@/modules/paints/components/paint-sort-bar'
 import type { PalettePaint } from '@/modules/palettes/types/palette-paint'
 import { reorderPalettePaints } from '@/modules/palettes/actions/reorder-palette-paints'
 import { PalettePaintRow } from '@/modules/palettes/components/palette-paint-row'
+import { PaletteSortConfirmDialog } from '@/modules/palettes/components/palette-sort-confirm-dialog'
 import { reorderArray } from '@/modules/palettes/utils/reorder-array'
+import { sortPaletteSlots } from '@/modules/palettes/utils/sort-palette-slots'
 
 /**
  * A single slot with a mount-stable synthetic DnD id.
@@ -75,6 +79,12 @@ export function PalettePaintList({
 }) {
   const [slots, setSlots] = useState<DraggableSlot[]>(() => seedSlots(paints))
   const [, startTransition] = useTransition()
+  const [sortField, setSortField] = useState<PaintSortField>('name')
+  const [sortDirection, setSortDirection] = useState<PaintSortDirection>('asc')
+  const [pendingSort, setPendingSort] = useState<{
+    field: PaintSortField
+    direction: PaintSortDirection
+  } | null>(null)
 
   // Tracks the last successfully persisted order so rapid drags can roll back
   // to a stable snapshot rather than to a stale intermediate state.
@@ -118,6 +128,33 @@ export function PalettePaintList({
     })
   }
 
+  function handleConfirmSort() {
+    if (!pendingSort) return
+
+    const sortedSlots = sortPaletteSlots(slots, pendingSort.field, pendingSort.direction)
+    const previousSlots = latestConfirmedRef.current
+    setSlots(sortedSlots)
+    setPendingSort(null)
+
+    startTransition(async () => {
+      const result = await reorderPalettePaints(
+        paletteId,
+        sortedSlots.map((s) => ({ paintId: s.paintId, note: s.note })),
+      )
+
+      if (result?.error) {
+        setSlots(previousSlots)
+        toast.error(result.error)
+      } else {
+        latestConfirmedRef.current = sortedSlots
+      }
+    })
+  }
+
+  function handleCancelSort() {
+    setPendingSort(null)
+  }
+
   if (!canEdit) {
     return (
       <div className="flex flex-col gap-2">
@@ -146,6 +183,30 @@ export function PalettePaintList({
 
   return (
     <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <PaintSortBar
+          field={sortField}
+          direction={sortDirection}
+          onChange={(f, d) => {
+            setSortField(f)
+            setSortDirection(d)
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => setPendingSort({ field: sortField, direction: sortDirection })}
+          className="btn btn-sm btn-outline"
+        >
+          Apply sort
+        </button>
+      </div>
+
+      <PaletteSortConfirmDialog
+        open={pendingSort !== null}
+        onConfirm={handleConfirmSort}
+        onCancel={handleCancelSort}
+      />
+
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={slots.map((s) => s.dndId)} strategy={verticalListSortingStrategy}>
           {slots.map((slot, index) =>

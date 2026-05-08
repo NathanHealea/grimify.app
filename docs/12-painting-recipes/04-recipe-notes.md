@@ -4,7 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `feature/recipe-notes`
-**Merge into:** `v1/main`
+**Merge into:** `v1/feature/paint-recipes`
 
 ## Summary
 
