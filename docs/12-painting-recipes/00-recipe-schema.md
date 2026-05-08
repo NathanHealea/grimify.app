@@ -2,7 +2,7 @@
 
 **Epic:** Painting Recipes
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/recipe-schema`
 **Merge into:** `v1/main`
 
@@ -14,19 +14,19 @@ A recipe is a user-owned, optionally public, step-by-step painting guide. Steps 
 
 ## Acceptance Criteria
 
-- [ ] `recipes` table exists with id, user_id, title, summary, palette_id (nullable), is_public, created_at, updated_at
-- [ ] `recipe_sections` table exists with id, recipe_id, position, title
-- [ ] `recipe_steps` table exists with id, section_id, position, title, instructions, technique
-- [ ] `recipe_step_paints` table links steps to paints with an optional palette slot reference and an ordering position
-- [ ] `recipe_notes` table holds an arbitrary number of notes attached to either a recipe or a step
-- [ ] `recipe_photos` table holds an arbitrary number of photos attached to either a recipe or a step (Storage path + URL)
-- [ ] All tables enable RLS; ownership cascades from the parent recipe
-- [ ] `is_public` palettes referenced by `palette_id` remain accessible to public viewers; private palettes 404 the recipe view (or hide the palette section) — codified in the service layer
-- [ ] `updated_at` is maintained by triggers on `recipes`
-- [ ] `src/modules/recipes/` is scaffolded with `actions/`, `components/`, `services/`, `types/`, `utils/`, `validation.ts`
-- [ ] Service layer exposes `getRecipeById`, `listRecipesForUser`, `listPublicRecipes`, `createRecipe`, `updateRecipe`, `deleteRecipe`
-- [ ] Generated Supabase TypeScript types include the new tables
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] `recipes` table exists with id, user_id, title, summary, palette_id (nullable), is_public, created_at, updated_at
+- [x] `recipe_sections` table exists with id, recipe_id, position, title
+- [x] `recipe_steps` table exists with id, section_id, position, title, instructions, technique
+- [x] `recipe_step_paints` table links steps to paints with an optional palette slot reference and an ordering position
+- [x] `recipe_notes` table holds an arbitrary number of notes attached to either a recipe or a step
+- [x] `recipe_photos` table holds an arbitrary number of photos attached to either a recipe or a step (Storage path + URL)
+- [x] All tables enable RLS; ownership cascades from the parent recipe
+- [x] `is_public` palettes referenced by `palette_id` remain accessible to public viewers; private palettes 404 the recipe view (or hide the palette section) — codified in the service layer
+- [x] `updated_at` is maintained by triggers on `recipes`
+- [x] `src/modules/recipes/` is scaffolded with `actions/`, `components/`, `services/`, `types/`, `utils/`, `validation.ts`
+- [x] Service layer exposes `getRecipeById`, `listRecipesForUser`, `listPublicRecipes`, `createRecipe`, `updateRecipe`, `deleteRecipe`
+- [x] Generated Supabase TypeScript types include the new tables
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Database
 
