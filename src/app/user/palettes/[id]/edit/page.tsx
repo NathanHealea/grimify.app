@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { PaletteBuilder } from '@/modules/palettes/components/palette-builder'
@@ -43,7 +44,9 @@ export default async function UserPaletteEditPage({
         <ArrowLeft className="size-4" />
         Back to palette
       </Link>
-      <h1 className="mb-8 text-3xl font-bold">Edit palette</h1>
+      <PageHeader>
+        <PageTitle>Edit palette</PageTitle>
+      </PageHeader>
       <PaletteBuilder palette={palette} />
     </Main>
   )
