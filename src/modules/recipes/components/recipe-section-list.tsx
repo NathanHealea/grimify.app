@@ -19,6 +19,7 @@ import {
 import { Plus } from 'lucide-react'
 import { toast } from 'sonner'
 
+import type { Palette } from '@/modules/palettes/types/palette'
 import { addRecipeSection } from '@/modules/recipes/actions/add-recipe-section'
 import { reorderRecipeSections } from '@/modules/recipes/actions/reorder-recipe-sections'
 import { RecipeSectionCard } from '@/modules/recipes/components/recipe-section-card'
@@ -42,13 +43,17 @@ import { reorderArray } from '@/modules/palettes/utils/reorder-array'
  *
  * @param props.recipeId - UUID of the parent recipe.
  * @param props.sections - Ordered array of sections from the server.
+ * @param props.palette - Hydrated linked palette (or `null`); threaded down to
+ *   the per-step paint picker so palette mode can render its slots.
  */
 export function RecipeSectionList({
   recipeId,
   sections,
+  palette,
 }: {
   recipeId: string
   sections: RecipeSection[]
+  palette: Palette | null
 }) {
   const [orderedSections, setOrderedSections] = useState<RecipeSection[]>(sections)
   const [trackedSections, setTrackedSections] = useState<RecipeSection[]>(sections)
@@ -129,6 +134,7 @@ export function RecipeSectionList({
                   section={section}
                   dndId={section.id}
                   label={String(index + 1)}
+                  palette={palette}
                 />
               ))}
             </div>

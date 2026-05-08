@@ -8,9 +8,11 @@ import { toast } from 'sonner'
 
 import { MarkdownEditor } from '@/modules/markdown/components/markdown-editor'
 import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
+import type { Palette } from '@/modules/palettes/types/palette'
 import { deleteRecipeStep } from '@/modules/recipes/actions/delete-recipe-step'
 import { updateRecipeStep } from '@/modules/recipes/actions/update-recipe-step'
-import { RecipeStepPaintPlaceholder } from '@/modules/recipes/components/recipe-step-paint-placeholder'
+import { RecipeStepPaintList } from '@/modules/recipes/components/recipe-step-paint-list'
+import { RecipeStepPaintPicker } from '@/modules/recipes/components/recipe-step-paint-picker'
 import type { RecipeStep } from '@/modules/recipes/types/recipe-step'
 
 /**
@@ -30,15 +32,20 @@ import type { RecipeStep } from '@/modules/recipes/types/recipe-step'
  * @param props.step - Step row being edited; seeds initial input values.
  * @param props.label - Computed display label (e.g. `"1.1"`).
  * @param props.dndId - Mount-stable DnD id assigned by the parent step list.
+ * @param props.palette - The recipe's linked palette, or `null` when none.
+ *   Forwarded to {@link RecipeStepPaintPicker} so palette-mode is the default
+ *   when the recipe has a pinned palette.
  */
 export function RecipeStepCard({
   step,
   label,
   dndId,
+  palette,
 }: {
   step: RecipeStep
   label: string
   dndId: string
+  palette: Palette | null
 }) {
   const {
     attributes,
@@ -185,7 +192,19 @@ export function RecipeStepCard({
         </div>
       </div>
 
-      <RecipeStepPaintPlaceholder />
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-medium text-muted-foreground">
+            Paints
+          </span>
+          <RecipeStepPaintPicker stepId={step.id} palette={palette} />
+        </div>
+        <RecipeStepPaintList
+          stepId={step.id}
+          paints={step.paints}
+          canEdit={true}
+        />
+      </div>
     </div>
   )
 }
