@@ -809,6 +809,199 @@ export function createRecipeService(supabase: SupabaseClient) {
       const phase2Error = phase2.find((res) => res.error)?.error
       if (phase2Error) throw new Error(phase2Error.message)
     },
+
+    /**
+     * Appends a new paint to a step.
+     *
+     * Reads the current max `position` for the step and inserts at
+     * `max + 1` (or `0` when the step has no paints). Returns a
+     * `RecipeStepPaint` with the embedded {@link ColorWheelPaint} hydrated
+     * from the canonical paints table.
+     *
+     * The `paletteSlotId` field is recorded as a free-form uuid (no FK) and
+     * does not currently drive any live join — see the live-join deferral
+     * note on {@link getRecipeById}.
+     *
+     * @param stepId - UUID of the parent step.
+     * @param init - Paint reference plus optional palette context, ratio, note.
+     * @returns The newly created step paint with `paint` embedded.
+     */
+    async addStepPaint(
+      stepId: string,
+      init: {
+        paintId: string
+        paletteSlotId?: string | null
+        ratio?: string | null
+        note?: string | null
+      },
+    ): Promise<RecipeStepPaint> {
+      const { data: existing, error: existingError } = await supabase
+        .from('recipe_step_paints')
+        .select('position')
+        .eq('step_id', stepId)
+        .order('position', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      if (existingError) throw new Error(existingError.message)
+
+      const nextPosition = existing ? existing.position + 1 : 0
+
+      const { data, error } = await supabase
+        .from('recipe_step_paints')
+        .insert({
+          step_id: stepId,
+          position: nextPosition,
+          paint_id: init.paintId,
+          palette_slot_id: init.paletteSlotId ?? null,
+          ratio: init.ratio ?? null,
+          note: init.note ?? null,
+        })
+        .select(
+          `
+          id, step_id, position, paint_id, palette_slot_id, ratio, note,
+          paints(*, product_lines(*, brands(*)))
+        `,
+        )
+        .single()
+
+      if (error || !data) throw new Error(error?.message ?? 'Failed to add step paint.')
+
+      type RawPaintJoin = {
+        id: string
+        name: string
+        hex: string
+        hue: number
+        saturation: number
+        lightness: number
+        hue_id: string | null
+        is_metallic: boolean
+        paint_type: string | null
+        product_lines: {
+          id: number
+          name: string
+          brands: { id: number; name: string }
+        }
+      } | null
+
+      type RawRow = {
+        id: string
+        step_id: string
+        position: number
+        paint_id: string
+        palette_slot_id: string | null
+        ratio: string | null
+        note: string | null
+        paints: RawPaintJoin
+      }
+
+      const row = data as unknown as RawRow
+      const p = row.paints
+      const paint: ColorWheelPaint | undefined = p
+        ? {
+            id: p.id,
+            name: p.name,
+            hex: p.hex,
+            hue: p.hue,
+            saturation: p.saturation,
+            lightness: p.lightness,
+            hue_id: p.hue_id,
+            is_metallic: p.is_metallic,
+            paint_type: p.paint_type,
+            brand_name: p.product_lines.brands.name,
+            product_line_name: p.product_lines.name,
+            brand_id: String(p.product_lines.brands.id),
+            product_line_id: String(p.product_lines.id),
+          }
+        : undefined
+
+      return {
+        id: row.id,
+        stepId: row.step_id,
+        position: row.position,
+        paintId: row.paint_id,
+        paletteSlotId: row.palette_slot_id,
+        ratio: row.ratio,
+        note: row.note,
+        paint,
+      }
+    },
+
+    /**
+     * Updates a step paint's mutable text fields.
+     *
+     * Position changes go through {@link setStepPaints}. Pass `null` to
+     * clear an optional field; omit a key to leave it unchanged.
+     *
+     * @param id - The step paint UUID.
+     * @param patch - Fields to update.
+     */
+    async updateStepPaint(
+      id: string,
+      patch: { ratio?: string | null; note?: string | null },
+    ): Promise<void> {
+      const { error } = await supabase
+        .from('recipe_step_paints')
+        .update({
+          ...(patch.ratio !== undefined && { ratio: patch.ratio }),
+          ...(patch.note !== undefined && { note: patch.note }),
+        })
+        .eq('id', id)
+
+      if (error) throw new Error(error.message)
+    },
+
+    /**
+     * Hard-deletes a step paint.
+     *
+     * Caller is responsible for renumbering remaining sibling step paints via
+     * {@link setStepPaints} after deletion to close the position gap.
+     *
+     * @param id - The step paint UUID.
+     */
+    async deleteStepPaint(id: string): Promise<void> {
+      const { error } = await supabase.from('recipe_step_paints').delete().eq('id', id)
+      if (error) throw new Error(error.message)
+    },
+
+    /**
+     * Atomically replaces all step paint rows for a step.
+     *
+     * Delegates to the `replace_recipe_step_paints` RPC, which performs
+     * delete + reinsert in a single transaction and enforces ownership at
+     * the database level. Use this for any reorder, bulk replace, or
+     * post-delete renumber so positions never enter a gap state.
+     *
+     * @param stepId - UUID of the parent step.
+     * @param rows - Complete payload for every paint that should exist on
+     *   the step after the call. Positions should be normalized to `0..N-1`.
+     * @throws When the RPC fails (auth/ownership errors raise `not_owner`).
+     */
+    async setStepPaints(
+      stepId: string,
+      rows: Array<{
+        position: number
+        paintId: string
+        paletteSlotId: string | null
+        ratio: string | null
+        note: string | null
+      }>,
+    ): Promise<void> {
+      const payload = rows.map((row) => ({
+        position: row.position,
+        paint_id: row.paintId,
+        palette_slot_id: row.paletteSlotId ?? null,
+        ratio: row.ratio,
+        note: row.note,
+      }))
+
+      const { error } = await supabase.rpc('replace_recipe_step_paints', {
+        p_step_id: stepId,
+        p_rows: payload,
+      })
+
+      if (error) throw new Error(error.message)
+    },
   }
 }
 
