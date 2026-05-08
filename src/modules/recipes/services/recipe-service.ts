@@ -61,7 +61,7 @@ export function createRecipeService(supabase: SupabaseClient) {
             )
           ),
           recipe_notes(id, recipe_id, step_id, position, body, created_at),
-          recipe_photos(id, recipe_id, step_id, position, storage_path, width_px, height_px, caption, created_at)
+          recipe_photos!recipe_photos_recipe_id_fkey(id, recipe_id, step_id, position, storage_path, width_px, height_px, caption, created_at)
         `,
         )
         .eq('id', id)
@@ -491,6 +491,301 @@ export function createRecipeService(supabase: SupabaseClient) {
     async deleteRecipe(id: string): Promise<void> {
       const { error } = await supabase.from('recipes').delete().eq('id', id)
       if (error) throw new Error(error.message)
+    },
+
+    /**
+     * Appends a new section at the end of a recipe.
+     *
+     * Reads the current max `position` for the recipe and inserts at
+     * `max + 1` (or `0` when the recipe has no sections yet). The composite
+     * unique constraint `(recipe_id, position)` guarantees the row lands in
+     * a fresh slot.
+     *
+     * @param recipeId - UUID of the parent recipe.
+     * @param title - Section heading (1–120 chars).
+     * @returns The newly created section with an empty `steps` array.
+     */
+    async addSection(recipeId: string, title: string): Promise<RecipeSection> {
+      const { data: existing, error: existingError } = await supabase
+        .from('recipe_sections')
+        .select('position')
+        .eq('recipe_id', recipeId)
+        .order('position', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      if (existingError) throw new Error(existingError.message)
+
+      const nextPosition = existing ? existing.position + 1 : 0
+
+      const { data, error } = await supabase
+        .from('recipe_sections')
+        .insert({ recipe_id: recipeId, position: nextPosition, title })
+        .select()
+        .single()
+
+      if (error || !data) throw new Error(error?.message ?? 'Failed to add section')
+
+      return {
+        id: data.id,
+        recipeId: data.recipe_id,
+        position: data.position,
+        title: data.title,
+        steps: [],
+      }
+    },
+
+    /**
+     * Updates a section's mutable fields.
+     *
+     * Currently only `title` is patchable here. Position changes go through
+     * {@link setSections} so the renumber stays atomic.
+     *
+     * @param id - The section UUID.
+     * @param patch - Fields to update.
+     * @returns The updated section with an empty `steps` array.
+     */
+    async updateSection(
+      id: string,
+      patch: { title?: string },
+    ): Promise<RecipeSection> {
+      const { data, error } = await supabase
+        .from('recipe_sections')
+        .update({
+          ...(patch.title !== undefined && { title: patch.title }),
+        })
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error || !data) throw new Error(error?.message ?? 'Failed to update section')
+
+      return {
+        id: data.id,
+        recipeId: data.recipe_id,
+        position: data.position,
+        title: data.title,
+        steps: [],
+      }
+    },
+
+    /**
+     * Hard-deletes a section. Cascades to all steps, step paints, and any
+     * notes/photos attached to those steps.
+     *
+     * Caller is responsible for renumbering remaining sibling sections via
+     * {@link setSections} after deletion to close the position gap.
+     *
+     * @param id - The section UUID.
+     */
+    async deleteSection(id: string): Promise<void> {
+      const { error } = await supabase.from('recipe_sections').delete().eq('id', id)
+      if (error) throw new Error(error.message)
+    },
+
+    /**
+     * Atomically renumbers sections within a recipe.
+     *
+     * Performs a two-phase position update: first shifts each row to a
+     * negative offset (`-1 - i`) to dodge the `(recipe_id, position)` unique
+     * constraint, then assigns the requested final positions. Both phases
+     * run in parallel via `Promise.all` for a constant 2 round-trips of
+     * concurrent updates regardless of section count.
+     *
+     * @param recipeId - UUID of the parent recipe.
+     * @param ordered - Complete `(id, position)` mapping for every section
+     *   in the recipe. Callers should pass already-normalized positions
+     *   (`0..N-1`) — the helper does not renumber for you.
+     * @throws When any phase fails. Partial failures may leave sections in
+     *   the negative-offset intermediate state; callers should treat this
+     *   as a hard error and reload from the server.
+     */
+    async setSections(
+      recipeId: string,
+      ordered: Array<{ id: string; position: number }>,
+    ): Promise<void> {
+      if (ordered.length === 0) return
+
+      const phase1 = await Promise.all(
+        ordered.map((row, index) =>
+          supabase
+            .from('recipe_sections')
+            .update({ position: -1 - index })
+            .eq('id', row.id)
+            .eq('recipe_id', recipeId),
+        ),
+      )
+      const phase1Error = phase1.find((res) => res.error)?.error
+      if (phase1Error) throw new Error(phase1Error.message)
+
+      const phase2 = await Promise.all(
+        ordered.map((row) =>
+          supabase
+            .from('recipe_sections')
+            .update({ position: row.position })
+            .eq('id', row.id)
+            .eq('recipe_id', recipeId),
+        ),
+      )
+      const phase2Error = phase2.find((res) => res.error)?.error
+      if (phase2Error) throw new Error(phase2Error.message)
+    },
+
+    /**
+     * Appends a new step at the end of a section.
+     *
+     * Reads the current max `position` for the section and inserts at
+     * `max + 1` (or `0` when the section has no steps). All editable fields
+     * are optional — a fresh step is allowed to be entirely blank, and the
+     * builder hydrates them via subsequent `updateStep` calls.
+     *
+     * @param sectionId - UUID of the parent section.
+     * @param init - Optional initial fields for the step.
+     * @returns The newly created step with an empty `paints` array.
+     */
+    async addStep(
+      sectionId: string,
+      init?: {
+        title?: string | null
+        technique?: string | null
+        instructions?: string | null
+      },
+    ): Promise<RecipeStep> {
+      const { data: existing, error: existingError } = await supabase
+        .from('recipe_steps')
+        .select('position')
+        .eq('section_id', sectionId)
+        .order('position', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      if (existingError) throw new Error(existingError.message)
+
+      const nextPosition = existing ? existing.position + 1 : 0
+
+      const { data, error } = await supabase
+        .from('recipe_steps')
+        .insert({
+          section_id: sectionId,
+          position: nextPosition,
+          title: init?.title ?? null,
+          technique: init?.technique ?? null,
+          instructions: init?.instructions ?? null,
+        })
+        .select()
+        .single()
+
+      if (error || !data) throw new Error(error?.message ?? 'Failed to add step')
+
+      return {
+        id: data.id,
+        sectionId: data.section_id,
+        position: data.position,
+        title: data.title,
+        technique: data.technique,
+        instructions: data.instructions,
+        paints: [],
+      }
+    },
+
+    /**
+     * Updates a step's mutable text fields.
+     *
+     * Position changes go through {@link setSteps}; cross-section moves are
+     * out of scope for this helper (delete + add in the new section).
+     *
+     * @param id - The step UUID.
+     * @param patch - Fields to update. Pass `null` to clear an optional
+     *   field; omit a key to leave it unchanged.
+     * @returns The updated step with an empty `paints` array.
+     */
+    async updateStep(
+      id: string,
+      patch: {
+        title?: string | null
+        technique?: string | null
+        instructions?: string | null
+      },
+    ): Promise<RecipeStep> {
+      const { data, error } = await supabase
+        .from('recipe_steps')
+        .update({
+          ...(patch.title !== undefined && { title: patch.title }),
+          ...(patch.technique !== undefined && { technique: patch.technique }),
+          ...(patch.instructions !== undefined && { instructions: patch.instructions }),
+        })
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error || !data) throw new Error(error?.message ?? 'Failed to update step')
+
+      return {
+        id: data.id,
+        sectionId: data.section_id,
+        position: data.position,
+        title: data.title,
+        technique: data.technique,
+        instructions: data.instructions,
+        paints: [],
+      }
+    },
+
+    /**
+     * Hard-deletes a step. Cascades to all `recipe_step_paints` rows and any
+     * notes/photos attached to the step.
+     *
+     * Caller is responsible for renumbering remaining sibling steps via
+     * {@link setSteps} after deletion to close the position gap.
+     *
+     * @param id - The step UUID.
+     */
+    async deleteStep(id: string): Promise<void> {
+      const { error } = await supabase.from('recipe_steps').delete().eq('id', id)
+      if (error) throw new Error(error.message)
+    },
+
+    /**
+     * Atomically renumbers steps within a section.
+     *
+     * Mirrors {@link setSections} exactly: two-phase negative-offset update
+     * to dodge the `(section_id, position)` unique constraint, both phases
+     * dispatched in parallel.
+     *
+     * @param sectionId - UUID of the parent section.
+     * @param ordered - Complete `(id, position)` mapping for every step in
+     *   the section. Positions should be normalized to `0..N-1`.
+     * @throws When any phase fails.
+     */
+    async setSteps(
+      sectionId: string,
+      ordered: Array<{ id: string; position: number }>,
+    ): Promise<void> {
+      if (ordered.length === 0) return
+
+      const phase1 = await Promise.all(
+        ordered.map((row, index) =>
+          supabase
+            .from('recipe_steps')
+            .update({ position: -1 - index })
+            .eq('id', row.id)
+            .eq('section_id', sectionId),
+        ),
+      )
+      const phase1Error = phase1.find((res) => res.error)?.error
+      if (phase1Error) throw new Error(phase1Error.message)
+
+      const phase2 = await Promise.all(
+        ordered.map((row) =>
+          supabase
+            .from('recipe_steps')
+            .update({ position: row.position })
+            .eq('id', row.id)
+            .eq('section_id', sectionId),
+        ),
+      )
+      const phase2Error = phase2.find((res) => res.error)?.error
+      if (phase2Error) throw new Error(phase2Error.message)
     },
   }
 }

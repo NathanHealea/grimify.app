@@ -65,6 +65,11 @@ export async function Navbar() {
             My palettes
           </Link>
         )}
+        {user && (
+          <Link href="/user/recipes" className="btn btn-ghost btn-sm">
+            My recipes
+          </Link>
+        )}
       </div>
       <div className="navbar-end gap-2">
         {isAdmin && (
