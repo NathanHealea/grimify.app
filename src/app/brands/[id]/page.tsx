@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 
 import { Breadcrumbs } from '@/components/breadcrumbs'
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { getCollectionService } from '@/modules/collection/services/collection-service.server'
 import { BrandPaintList } from '@/modules/brands/components/brand-paint-list'
@@ -77,19 +78,21 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ id
   return (
     <Main>
       <Breadcrumbs items={[{ label: 'Brands', href: '/brands' }, { label: brand.name }]} />
-      <div className="mb-8 flex flex-col gap-2">
-        <h1 className="text-3xl font-bold">{brand.name}</h1>
+      <PageHeader>
+        <PageTitle>{brand.name}</PageTitle>
         {brand.website_url && (
-          <a
-            href={brand.website_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-primary underline hover:text-primary/80"
-          >
-            {brand.website_url}
-          </a>
+          <PageSubtitle>
+            <a
+              href={brand.website_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary underline hover:text-primary/80"
+            >
+              {brand.website_url}
+            </a>
+          </PageSubtitle>
         )}
-      </div>
+      </PageHeader>
 
       <BrandPaintList
         brandName={brand.name}

@@ -1,6 +1,7 @@
 import Image from 'next/image'
 
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import {
   Card,
@@ -57,12 +58,10 @@ export default async function AdminDashboardPage() {
 
   return (
     <Main as="div">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          Overview of user and role statistics.
-        </p>
-      </div>
+      <PageHeader>
+        <PageTitle>Admin Dashboard</PageTitle>
+        <PageSubtitle>Overview of user and role statistics.</PageSubtitle>
+      </PageHeader>
 
       {/* Stat cards */}
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

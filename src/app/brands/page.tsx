@@ -1,4 +1,5 @@
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import { BrandCard } from '@/modules/brands/components/brand-card'
 import { getBrandService } from '@/modules/brands/services/brand-service.server'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
@@ -15,12 +16,10 @@ export default async function BrandsPage() {
 
   return (
     <Main>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Brands</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Browse paint brands and their product lines.
-        </p>
-      </div>
+      <PageHeader>
+        <PageTitle>Brands</PageTitle>
+        <PageSubtitle>Browse paint brands and their product lines.</PageSubtitle>
+      </PageHeader>
 
       {brands.length > 0 ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

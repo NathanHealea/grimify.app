@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import {
   Card,
   CardContent,
@@ -70,12 +71,12 @@ export default async function AdminEditUserPage({
         </Link>
       </div>
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Edit User</h1>
-        <p className="text-sm text-muted-foreground">
+      <PageHeader>
+        <PageTitle>Edit User</PageTitle>
+        <PageSubtitle>
           Update profile details, manage roles, or delete the account.
-        </p>
-      </div>
+        </PageSubtitle>
+      </PageHeader>
 
       <div className="space-y-6">
         {/* Profile */}
