@@ -1,4 +1,5 @@
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle } from '@/components/page-header'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
 import { ChangePasswordForm } from '@/modules/user/components/change-password-form'
@@ -24,7 +25,9 @@ export default async function ProfileEditPage() {
   return (
     <Main>
       <div className="w-full max-w-md space-y-6">
-        <h1 className="text-2xl font-bold">Edit Profile</h1>
+        <PageHeader>
+          <PageTitle size="md">Edit Profile</PageTitle>
+        </PageHeader>
 
         {hasEmailIdentity && (
           <Card>
