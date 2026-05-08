@@ -61,7 +61,7 @@ export function createRecipeService(supabase: SupabaseClient) {
             )
           ),
           recipe_notes(id, recipe_id, step_id, position, body, created_at),
-          recipe_photos(id, recipe_id, step_id, position, storage_path, width_px, height_px, caption, created_at)
+          recipe_photos!recipe_photos_recipe_id_fkey(id, recipe_id, step_id, position, storage_path, width_px, height_px, caption, created_at)
         `,
         )
         .eq('id', id)
