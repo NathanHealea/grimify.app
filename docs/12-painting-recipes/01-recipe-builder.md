@@ -2,7 +2,7 @@
 
 **Epic:** Painting Recipes
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/recipe-builder`
 **Merge into:** `v1/main`
 
@@ -14,19 +14,19 @@ This feature delivers the **structural** builder. Per-step paint pickers live in
 
 ## Acceptance Criteria
 
-- [ ] `/recipes` lists the signed-in user's recipes as cards (title, cover image, section count, step count, updated)
-- [ ] `/recipes/new` creates an empty recipe and redirects to its edit page
-- [ ] `/recipes/[id]` is the read-only view; visible to anyone if `is_public`, owner-only otherwise
-- [ ] `/recipes/[id]/edit` is the builder
-- [ ] Builder edits title, summary, visibility (private/public), optional palette association
-- [ ] Builder lets the user add, rename, reorder (drag/drop), and delete sections
-- [ ] Within a section, the user can add, edit, reorder (drag/drop), and delete steps
-- [ ] Each step has an editable title, technique, and instructions field
-- [ ] Step **paints** are placeholder rows here ("Add paints in step paints feature"); actual editing comes in `02-recipe-step-paints.md`
-- [ ] Read view renders sections as headings, steps as numbered subitems with technique/instructions/paint references; markdown rendering for `summary` and `instructions`
-- [ ] Deleting a recipe confirms first, redirects to `/recipes` with a toast
-- [ ] Unauthenticated users hitting `/recipes`, `/recipes/new`, or `/recipes/{id}/edit` are redirected to `/sign-in?next={path}`
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] `/user/recipes` lists the signed-in user's recipes as cards (title, cover image, section count, step count, updated). _(Routes were moved from `/recipes` to `/user/recipes` per the "Route convention drift" risk; public catalog at `/recipes` is deferred to `05-recipe-sharing.md`.)_
+- [x] `/user/recipes/new` creates an empty recipe and redirects to its edit page
+- [x] `/recipes/[id]` is the read-only view; visible to anyone if `is_public`, owner-only otherwise
+- [x] `/user/recipes/[id]/edit` is the builder; legacy `/recipes/[id]/edit` redirects owner-aware
+- [x] Builder edits title, summary, visibility (private/public), optional palette association
+- [x] Builder lets the user add, rename, reorder (drag/drop), and delete sections
+- [x] Within a section, the user can add, edit, reorder (drag/drop), and delete steps
+- [x] Each step has an editable title, technique, and instructions field
+- [x] Step **paints** are placeholder rows here ("Add paints in step paints feature"); actual editing comes in `02-recipe-step-paints.md`
+- [x] Read view renders sections as headings, steps as numbered subitems with technique/instructions/paint references; markdown rendering for `summary` and `instructions`
+- [x] Deleting a recipe confirms first, redirects to `/user/recipes` with a toast
+- [x] Unauthenticated users hitting `/user/recipes`, `/user/recipes/new`, or `/user/recipes/{id}/edit` are redirected to `/sign-in?next={path}`
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
