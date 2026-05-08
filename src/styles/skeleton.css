@@ -1,0 +1,67 @@
+/*
+ * Skeleton Component
+ *
+ * Based on the daisyUI Skeleton component API.
+ * https://daisyui.com/components/skeleton/
+ *
+ * Implements daisyUI's class naming conventions (.skeleton, .skeleton-circle, etc.)
+ * using this project's Tailwind CSS theme tokens instead of daisyUI's built-in
+ * theme system.
+ *
+ * Classes:
+ *   Base:    .skeleton          — Pulsing muted block (default rounded rectangle)
+ *   Shapes:  .skeleton-circle   — Perfectly round
+ *            .skeleton-text     — Single line of text (h-4)
+ *            .skeleton-avatar   — Round avatar block
+ *   Sizes:   .skeleton-xs       — Extra small (h-2)
+ *            .skeleton-sm       — Small (h-3)
+ *            .skeleton-md       — Medium (h-4, default)
+ *            .skeleton-lg       — Large (h-6)
+ *            .skeleton-xl       — Extra large (h-8)
+ */
+
+/* -------------------------------------------------------------------------
+ * Base
+ * ----------------------------------------------------------------------- */
+.skeleton {
+  @apply animate-pulse rounded
+    bg-muted;
+}
+
+/* -------------------------------------------------------------------------
+ * Shape variants
+ * ----------------------------------------------------------------------- */
+.skeleton-circle {
+  @apply rounded-full;
+}
+
+.skeleton-text {
+  @apply h-4 rounded;
+}
+
+.skeleton-avatar {
+  @apply aspect-square rounded-full;
+}
+
+/* -------------------------------------------------------------------------
+ * Sizes
+ * ----------------------------------------------------------------------- */
+.skeleton-xs {
+  @apply h-2;
+}
+
+.skeleton-sm {
+  @apply h-3;
+}
+
+.skeleton-md {
+  @apply h-4;
+}
+
+.skeleton-lg {
+  @apply h-6;
+}
+
+.skeleton-xl {
+  @apply h-8;
+}

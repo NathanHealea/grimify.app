@@ -1,7 +1,16 @@
+import { Skeleton } from '@/components/ui/skeleton'
+
 export default function Loading() {
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
-      <div className="mx-auto aspect-square w-full max-w-2xl animate-pulse rounded-full bg-muted" />
-    </main>
+    <div className="mx-auto w-full max-w-6xl px-4 py-12">
+      <div className="mb-8 flex flex-col gap-4">
+        <Skeleton className="h-9 w-48" />
+        <Skeleton className="h-5 w-72" />
+      </div>
+      <div className="flex flex-col gap-4">
+        <Skeleton className="h-32 w-full" />
+        <Skeleton className="h-32 w-full" />
+      </div>
+    </div>
   )
 }
