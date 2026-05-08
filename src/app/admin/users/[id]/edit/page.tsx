@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import { Main } from '@/components/main'
 import {
   Card,
   CardContent,
@@ -59,7 +60,7 @@ export default async function AdminEditUserPage({
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-12">
+    <Main as="div" width="2xl">
       <div className="mb-6">
         <Link
           href={`/admin/users/${id}`}
@@ -130,6 +131,6 @@ export default async function AdminEditUserPage({
           </Card>
         )}
       </div>
-    </div>
+    </Main>
   )
 }
