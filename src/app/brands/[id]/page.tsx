@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import { Breadcrumbs } from '@/components/breadcrumbs'
+import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { getCollectionService } from '@/modules/collection/services/collection-service.server'
 import { BrandPaintList } from '@/modules/brands/components/brand-paint-list'
@@ -74,7 +75,7 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ id
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-12">
+    <Main width="6xl">
       <Breadcrumbs items={[{ label: 'Brands', href: '/brands' }, { label: brand.name }]} />
       <div className="mb-8 flex flex-col gap-2">
         <h1 className="text-3xl font-bold">{brand.name}</h1>
@@ -97,6 +98,6 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ id
         userPaintIds={userPaintIds}
         isAuthenticated={user !== null}
       />
-    </div>
+    </Main>
   )
 }

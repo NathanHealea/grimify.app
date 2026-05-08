@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 
+import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { PaletteBuilder } from '@/modules/palettes/components/palette-builder'
@@ -34,7 +35,7 @@ export default async function UserPaletteEditPage({
   if (!palette || palette.userId !== user.id) notFound()
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-12">
+    <Main width="3xl">
       <Link
         href={`/palettes/${id}`}
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
@@ -44,6 +45,6 @@ export default async function UserPaletteEditPage({
       </Link>
       <h1 className="mb-8 text-3xl font-bold">Edit palette</h1>
       <PaletteBuilder palette={palette} />
-    </div>
+    </Main>
   )
 }

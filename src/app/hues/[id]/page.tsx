@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { Breadcrumbs } from '@/components/breadcrumbs';
+import { Main } from '@/components/main';
 import { createClient } from '@/lib/supabase/server';
 import { getCollectionService } from '@/modules/collection/services/collection-service.server';
 import { ChildHueCard } from '@/modules/hues/components/child-hue-card';
@@ -86,7 +87,7 @@ export default async function HuePage({
     )
 
     return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-12">
+      <Main width="6xl">
         <Breadcrumbs items={[{ label: 'Paints', href: '/paints' }, { label: hue.name }]} />
 
         <div className="mb-8 flex items-center gap-4">
@@ -121,7 +122,7 @@ export default async function HuePage({
           userPaintIds={userPaintIds}
           isAuthenticated={user !== null}
         />
-      </div>
+      </Main>
     )
   }
 
@@ -134,7 +135,7 @@ export default async function HuePage({
   const paints = await paintService.getPaintsByHueId(id, { limit: pageSize, offset })
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-12">
+    <Main width="6xl">
       <Breadcrumbs
         items={[
           { label: 'Paints', href: '/paints' },
@@ -166,6 +167,6 @@ export default async function HuePage({
         userPaintIds={userPaintIds}
         isAuthenticated={user !== null}
       />
-    </div>
+    </Main>
   )
 }
