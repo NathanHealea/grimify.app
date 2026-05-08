@@ -185,7 +185,7 @@ export function RecipeStepCard({
         </div>
       </div>
 
-      <RecipeStepPaintPlaceholder stepId={step.id} />
+      <RecipeStepPaintPlaceholder />
     </div>
   )
 }
