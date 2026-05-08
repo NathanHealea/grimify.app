@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import {
   DndContext,
   KeyboardSensor,
@@ -68,15 +68,19 @@ export function RecipeStepPaintList({
   canEdit: boolean
 }) {
   const [slots, setSlots] = useState<DraggableStepPaint[]>(() => seedSlots(paints))
+  const [trackedPaints, setTrackedPaints] = useState<RecipeStepPaint[]>(paints)
+  const [latestConfirmed, setLatestConfirmed] = useState<DraggableStepPaint[]>(slots)
   const [, startTransition] = useTransition()
 
-  const latestConfirmedRef = useRef<DraggableStepPaint[]>(slots)
-
-  useEffect(() => {
+  // Re-seed slots when the server sends a fresh paints array (after
+  // revalidation). Setting state during render when an external prop has
+  // changed avoids the effect-only state mirror anti-pattern.
+  if (paints !== trackedPaints) {
     const next = seedSlots(paints)
+    setTrackedPaints(paints)
     setSlots(next)
-    latestConfirmedRef.current = next
-  }, [paints])
+    setLatestConfirmed(next)
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -92,7 +96,7 @@ export function RecipeStepPaintList({
     const toIndex = slots.findIndex((s) => s.dndId === over.id)
     if (fromIndex === -1 || toIndex === -1) return
 
-    const previousSlots = latestConfirmedRef.current
+    const previousSlots = latestConfirmed
     const newSlots = reorderArray(slots, fromIndex, toIndex)
     setSlots(newSlots)
 
@@ -105,7 +109,7 @@ export function RecipeStepPaintList({
         setSlots(previousSlots)
         toast.error(result.error)
       } else {
-        latestConfirmedRef.current = newSlots
+        setLatestConfirmed(newSlots)
       }
     })
   }
