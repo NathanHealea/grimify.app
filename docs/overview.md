@@ -212,7 +212,7 @@ Core functionality:
 - [x] [Prevent duplicate paints + toast feedback](./11-color-palettes/06-prevent-duplicate-paint-add.md)
 - [x] [Palette & scheme toast feedback](./11-color-palettes/07-palette-toast.md)
 - [x] [Public palettes catalog & user routes move](./11-color-palettes/08-public-palettes-page.md)
-- [ ] [Color palette groups](./11-color-palettes/09-color-palette-groups.md)
+- [x] [Color palette groups](./11-color-palettes/09-color-palette-groups.md)
 - [x] [Color palette paint sorting](./11-color-palettes/10-color-palette-sorting.md)
 
 ### Epic: Painting Recipes

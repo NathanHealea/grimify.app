@@ -161,80 +161,6 @@ export type Database = {
           },
         ]
       }
-      palette_paints: {
-        Row: {
-          added_at: string
-          note: string | null
-          paint_id: string
-          palette_id: string
-          position: number
-        }
-        Insert: {
-          added_at?: string
-          note?: string | null
-          paint_id: string
-          palette_id: string
-          position: number
-        }
-        Update: {
-          added_at?: string
-          note?: string | null
-          paint_id?: string
-          palette_id?: string
-          position?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "palette_paints_paint_id_fkey"
-            columns: ["paint_id"]
-            referencedRelation: "paints"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "palette_paints_palette_id_fkey"
-            columns: ["palette_id"]
-            referencedRelation: "palettes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      palettes: {
-        Row: {
-          created_at: string
-          description: string | null
-          id: string
-          is_public: boolean
-          name: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_public?: boolean
-          name: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_public?: boolean
-          name?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "palettes_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       paints: {
         Row: {
           b: number
@@ -311,6 +237,120 @@ export type Database = {
           },
         ]
       }
+      palette_groups: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          palette_id: string
+          position: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          palette_id: string
+          position: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          palette_id?: string
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "palette_groups_palette_id_fkey"
+            columns: ["palette_id"]
+            referencedRelation: "palettes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      palette_paints: {
+        Row: {
+          added_at: string
+          group_id: string | null
+          note: string | null
+          paint_id: string
+          palette_id: string
+          position: number
+        }
+        Insert: {
+          added_at?: string
+          group_id?: string | null
+          note?: string | null
+          paint_id: string
+          palette_id: string
+          position: number
+        }
+        Update: {
+          added_at?: string
+          group_id?: string | null
+          note?: string | null
+          paint_id?: string
+          palette_id?: string
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "palette_paints_group_id_fkey"
+            columns: ["group_id"]
+            referencedRelation: "palette_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "palette_paints_paint_id_fkey"
+            columns: ["paint_id"]
+            referencedRelation: "paints"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "palette_paints_palette_id_fkey"
+            columns: ["palette_id"]
+            referencedRelation: "palettes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      palettes: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_public: boolean
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "palettes_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_lines: {
         Row: {
           brand_id: number
@@ -377,6 +417,255 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      recipe_notes: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          position: number
+          recipe_id: string | null
+          step_id: string | null
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          position: number
+          recipe_id?: string | null
+          step_id?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          position?: number
+          recipe_id?: string | null
+          step_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_notes_recipe_id_fkey"
+            columns: ["recipe_id"]
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipe_notes_step_id_fkey"
+            columns: ["step_id"]
+            referencedRelation: "recipe_steps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recipe_photos: {
+        Row: {
+          caption: string | null
+          created_at: string
+          height_px: number | null
+          id: string
+          position: number
+          recipe_id: string | null
+          step_id: string | null
+          storage_path: string
+          width_px: number | null
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          height_px?: number | null
+          id?: string
+          position: number
+          recipe_id?: string | null
+          step_id?: string | null
+          storage_path: string
+          width_px?: number | null
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          height_px?: number | null
+          id?: string
+          position?: number
+          recipe_id?: string | null
+          step_id?: string | null
+          storage_path?: string
+          width_px?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_photos_recipe_id_fkey"
+            columns: ["recipe_id"]
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipe_photos_step_id_fkey"
+            columns: ["step_id"]
+            referencedRelation: "recipe_steps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recipe_sections: {
+        Row: {
+          id: string
+          position: number
+          recipe_id: string
+          title: string
+        }
+        Insert: {
+          id?: string
+          position: number
+          recipe_id: string
+          title: string
+        }
+        Update: {
+          id?: string
+          position?: number
+          recipe_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_sections_recipe_id_fkey"
+            columns: ["recipe_id"]
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recipe_step_paints: {
+        Row: {
+          id: string
+          note: string | null
+          paint_id: string
+          palette_slot_id: string | null
+          position: number
+          ratio: string | null
+          step_id: string
+        }
+        Insert: {
+          id?: string
+          note?: string | null
+          paint_id: string
+          palette_slot_id?: string | null
+          position: number
+          ratio?: string | null
+          step_id: string
+        }
+        Update: {
+          id?: string
+          note?: string | null
+          paint_id?: string
+          palette_slot_id?: string | null
+          position?: number
+          ratio?: string | null
+          step_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_step_paints_paint_id_fkey"
+            columns: ["paint_id"]
+            referencedRelation: "paints"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipe_step_paints_step_id_fkey"
+            columns: ["step_id"]
+            referencedRelation: "recipe_steps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recipe_steps: {
+        Row: {
+          id: string
+          instructions: string | null
+          position: number
+          section_id: string
+          technique: string | null
+          title: string | null
+        }
+        Insert: {
+          id?: string
+          instructions?: string | null
+          position: number
+          section_id: string
+          technique?: string | null
+          title?: string | null
+        }
+        Update: {
+          id?: string
+          instructions?: string | null
+          position?: number
+          section_id?: string
+          technique?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_steps_section_id_fkey"
+            columns: ["section_id"]
+            referencedRelation: "recipe_sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recipes: {
+        Row: {
+          cover_photo_id: string | null
+          created_at: string
+          id: string
+          is_public: boolean
+          palette_id: string | null
+          summary: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cover_photo_id?: string | null
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          palette_id?: string | null
+          summary?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cover_photo_id?: string | null
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          palette_id?: string | null
+          summary?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipes_cover_photo_id_fkey"
+            columns: ["cover_photo_id"]
+            referencedRelation: "recipe_photos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipes_palette_id_fkey"
+            columns: ["palette_id"]
+            referencedRelation: "palettes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recipes_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       roles: {
         Row: {
@@ -470,8 +759,20 @@ export type Database = {
       extract_oauth_display_name: { Args: { meta: Json }; Returns: string }
       generate_profile_name: { Args: never; Returns: string }
       get_user_roles: { Args: { user_uuid: string }; Returns: string[] }
+      is_recipe_owner_via_step: {
+        Args: { p_step_id: string }
+        Returns: boolean
+      }
+      is_recipe_visible_via_step: {
+        Args: { p_step_id: string }
+        Returns: boolean
+      }
       replace_palette_paints: {
         Args: { p_palette_id: string; p_rows: Json }
+        Returns: undefined
+      }
+      replace_recipe_step_paints: {
+        Args: { p_rows: Json; p_step_id: string }
         Returns: undefined
       }
     }

@@ -21,6 +21,8 @@ export type PalettePaint = {
   note: string | null
   /** ISO timestamp when this paint was added to the palette. */
   addedAt: string
+  /** UUID of the group this paint belongs to; `null` when ungrouped. */
+  groupId: string | null
   /** Full paint data, present when loaded via `getPaletteById`. */
   paint?: ColorWheelPaint
 }

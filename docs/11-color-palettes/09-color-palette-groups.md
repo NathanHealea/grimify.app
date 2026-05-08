@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/color-palette-groups`
 **Merge into:** `v1/main`
 
@@ -12,15 +12,15 @@ Allow palette owners to create named groups within a palette to organize paints 
 
 ## Acceptance Criteria
 
-- [ ] Palette owners can create a group by typing a name and submitting an inline form inside the palette builder
-- [ ] Groups are displayed as labeled section headers within the paint list (builder and read view)
-- [ ] Group names can be edited inline via a text input that auto-saves on blur
-- [ ] Deleting a group does not delete any palette paints — their `group_id` becomes `NULL` (ungrouped) via `ON DELETE SET NULL`
-- [ ] Paints can be assigned to a group, moved to a different group, or moved back to ungrouped via a per-row select in the builder
-- [ ] Groups are ordered by `position`; owners can drag-and-drop to reorder groups (group DnD is a separate `DndContext` from paint DnD)
-- [ ] Ungrouped paints render as a distinct section below all named groups
-- [ ] The read-only view (`/palettes/[id]`) also renders paints organized by group
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Palette owners can create a group by typing a name and submitting an inline form inside the palette builder
+- [x] Groups are displayed as labeled section headers within the paint list (builder and read view)
+- [x] Group names can be edited inline via a text input that auto-saves on blur
+- [x] Deleting a group does not delete any palette paints — their `group_id` becomes `NULL` (ungrouped) via `ON DELETE SET NULL`
+- [x] Paints can be assigned to a group, moved to a different group, or moved back to ungrouped via a per-row select in the builder
+- [x] Groups are ordered by `position`; owners can drag-and-drop to reorder groups (group DnD is a separate `DndContext` from paint DnD)
+- [x] Ungrouped paints render as a distinct section below all named groups
+- [x] The read-only view (`/palettes/[id]`) also renders paints organized by group
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Implementation Plan
 

@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { normalizePalettePositions } from '@/modules/palettes/utils/normalize-palette-positions'
 
-type ReorderInput = { paintId: string; note: string | null }
+type ReorderInput = { paintId: string; note: string | null; groupId?: string | null }
 
 /**
  * Server action that persists a new paint slot order for a palette.
@@ -64,6 +64,7 @@ export async function reorderPalettePaints(
       position: index,
       paintId: slot.paintId,
       note: slot.note,
+      groupId: slot.groupId ?? null,
     })),
   )
 
