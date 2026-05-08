@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Refactor
-**Status:** Todo
+**Status:** Done
 **Branch:** `v1/refactor/title-and-subtitle-component`
 **Merge into:** `v1/main`
 
@@ -44,18 +44,18 @@ Quick survey of how other React component systems express the same idea, since t
 
 ## Acceptance Criteria
 
-- [ ] `src/components/page-header.tsx` exports three sibling components: `PageHeader`, `PageTitle`, `PageSubtitle`
-- [ ] `<PageHeader>` renders a `<header>` element by default; accepts a `className` prop merged via `cn()`; accepts an `actions` prop (ReactNode) for pages with title-row buttons
-- [ ] When `actions` is set, `<PageHeader>` switches to a `flex items-start justify-between gap-4` layout — title/subtitle on the left, actions on the right; otherwise it stays a `flex flex-col gap-1` column
-- [ ] `<PageTitle>` renders an `<h1>` by default; accepts a `level` prop (`1 | 2`) to switch the rendered tag, defaulting to `1`; accepts a `size` prop (`'lg' | 'md'`) where `'lg'` (default) = `text-3xl font-bold` and `'md'` = `text-2xl font-bold`
-- [ ] `<PageSubtitle>` renders a `<p>` element with `text-sm text-muted-foreground`; accepts a `className` prop merged via `cn()`; accepts arbitrary `children` (text or ReactNode — the `brands/[id]` website link case)
-- [ ] A daisyUI-style CSS file `src/styles/page-header.css` defines `.page-header`, `.page-header-row`, `.page-title`, `.page-title-md`, `.page-subtitle` — imported into `globals.css` with `@import '../styles/page-header.css' layer(components);`
-- [ ] All 17 `page.tsx` files listed in [Routes](#routes) are migrated; each page renders **exactly one** `<h1>` (the one inside `<PageTitle>`)
-- [ ] `(legal)/terms/page.tsx` is intentionally left as-is — its `<header>` block uses `text-3xl font-semibold tracking-tight` (different) and a "Last updated" sibling instead of a subtitle (different); migrating it would force the component API to grow to fit one outlier
-- [ ] No visual regression on the 11 pages that already use the canonical `mb-8` + `text-3xl font-bold` + `text-sm text-muted-foreground` shape; minor margin/gap drift on the 6 outlier pages is acceptable (specifically: `paints`, `collection/paints` go from `gap-4` to `gap-1`; `schemes` goes from `mb-2`/`mb-6` to `mb-8`; `user/palettes/[id]/edit` keeps `mb-8`)
-- [ ] All exports have JSDoc comments per `CLAUDE.md` conventions (summary, `@param`, cross-links via `{@link}`)
-- [ ] `npm run build` and `npm run lint` pass with no errors
-- [ ] No new module is created — `<PageHeader>` lives in `src/components/` because it's a cross-cutting UI primitive (matches `<Main>`, `<Navbar>`, `<Footer>`, `<Breadcrumbs>`)
+- [x] `src/components/page-header.tsx` exports three sibling components: `PageHeader`, `PageTitle`, `PageSubtitle`
+- [x] `<PageHeader>` renders a `<header>` element by default; accepts a `className` prop merged via `cn()`; accepts an `actions` prop (ReactNode) for pages with title-row buttons
+- [x] When `actions` is set, `<PageHeader>` switches to a `flex items-start justify-between gap-4` layout — title/subtitle on the left, actions on the right; otherwise it stays a `flex flex-col gap-1` column
+- [x] `<PageTitle>` renders an `<h1>` by default; accepts a `level` prop (`1 | 2`) to switch the rendered tag, defaulting to `1`; accepts a `size` prop (`'lg' | 'md'`) where `'lg'` (default) = `text-3xl font-bold` and `'md'` = `text-2xl font-bold`
+- [x] `<PageSubtitle>` renders a `<p>` element with `text-sm text-muted-foreground`; accepts a `className` prop merged via `cn()`; accepts arbitrary `children` (text or ReactNode — the `brands/[id]` website link case)
+- [x] A daisyUI-style CSS file `src/styles/page-header.css` defines `.page-header`, `.page-header-row`, `.page-title`, `.page-title-md`, `.page-subtitle` — imported into `globals.css` with `@import '../styles/page-header.css' layer(components);`
+- [x] All 17 `page.tsx` files listed in [Routes](#routes) are migrated; each page renders **exactly one** `<h1>` (the one inside `<PageTitle>`)
+- [x] `(legal)/terms/page.tsx` is intentionally left as-is — its `<header>` block uses `text-3xl font-semibold tracking-tight` (different) and a "Last updated" sibling instead of a subtitle (different); migrating it would force the component API to grow to fit one outlier
+- [x] No visual regression on the 11 pages that already use the canonical `mb-8` + `text-3xl font-bold` + `text-sm text-muted-foreground` shape; minor margin/gap drift on the 6 outlier pages is acceptable (specifically: `paints`, `collection/paints` go from `gap-4` to `gap-1`; `schemes` goes from `mb-2`/`mb-6` to `mb-8`; `user/palettes/[id]/edit` keeps `mb-8`)
+- [x] All exports have JSDoc comments per `CLAUDE.md` conventions (summary, `@param`, cross-links via `{@link}`)
+- [x] `npm run build` and `npm run lint` pass with no errors
+- [x] No new module is created — `<PageHeader>` lives in `src/components/` because it's a cross-cutting UI primitive (matches `<Main>`, `<Navbar>`, `<Footer>`, `<Breadcrumbs>`)
 
 ## Routes
 
