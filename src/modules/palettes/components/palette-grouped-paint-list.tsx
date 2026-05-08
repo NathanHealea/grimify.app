@@ -316,7 +316,7 @@ export function PaletteGroupedPaintList({
       onDragOver={canEdit ? handleDragOver : undefined}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 select-none">
         {/* Group headers share the outer SortableContext for group reorder */}
         <SortableContext
           items={draggableGroups.map((dg) => dg.dndId)}
