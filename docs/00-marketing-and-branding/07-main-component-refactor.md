@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Refactor
-**Status:** Todo
+**Status:** Completed
 **Branch:** `v1/refactor/main-component`
 **Merge into:** `v1/main`
 
@@ -16,19 +16,19 @@ This refactor introduces a single `<Main>` component (`src/components/main.tsx`)
 
 ## Acceptance Criteria
 
-- [ ] `src/components/main.tsx` exports a single `<Main>` component that renders an HTML `<main>` element by default
-- [ ] `<Main>` accepts a `width` prop with discriminated values (`'2xl' | '3xl' | '4xl' | '5xl' | '6xl' | 'md' | 'container' | 'full'`); default is `'6xl'`
-- [ ] `<Main>` accepts an optional `padding` prop (`'default' | 'compact' | 'none'`) — `default` = `px-4 py-12`, `compact` = `px-4 py-8`, `none` skips padding
-- [ ] `<Main>` accepts an `as` prop that lets callers render a `<div>` instead of `<main>` (used inside route groups whose layout already supplies `<main>`)
-- [ ] `<Main>` accepts a `className` prop merged via `cn()` so callers can extend (e.g. `space-y-10`)
-- [ ] A daisyUI-style CSS file `src/styles/main.css` defines `.main`, `.main-2xl`, `.main-3xl`, `.main-4xl`, `.main-5xl`, `.main-6xl`, `.main-md`, `.main-container`, `.main-full`, `.main-padding`, `.main-padding-compact` — imported into `globals.css` with `@import '../styles/main.css' layer(components);`
-- [ ] All 28 `page.tsx` files under `src/app/` have their top-level wrapper replaced with `<Main>` (or `<Main as="div">` where a parent layout already renders `<main>`)
-- [ ] Each rendered page produces **exactly one** `<main>` element in the DOM (no nested `<main>`s, no missing `<main>`s)
-- [ ] Route-group layouts that currently render `<main>` are reconciled with the per-page `<Main>`: see [Layout reconciliation](#layout-reconciliation)
-- [ ] No visual regression — every page renders at the same width, padding, and position as before
-- [ ] The Home page (`src/app/page.tsx`) and the Schemes page (`src/app/schemes/page.tsx`) — which already use `<main>` directly — are migrated to `<Main>` with appropriate variants (Home uses `width="full"` + a layout override; Schemes uses `width="container"` + `padding="compact"`)
-- [ ] `npm run build` and `npm run lint` pass with no errors
-- [ ] No new module is created — `<Main>` lives in `src/components/` because it's a cross-cutting UI primitive (matches `src/components/navbar.tsx`, `footer.tsx`, `breadcrumbs.tsx`)
+- [x] `src/components/main.tsx` exports a single `<Main>` component that renders an HTML `<main>` element by default
+- [x] `<Main>` accepts a `width` prop with discriminated values (`'2xl' | '3xl' | '4xl' | '5xl' | '6xl' | 'md' | 'container' | 'full'`); default is `'6xl'`
+- [x] `<Main>` accepts an optional `padding` prop (`'default' | 'compact' | 'none'`) — `default` = `px-4 py-12`, `compact` = `px-4 py-8`, `none` skips padding
+- [x] `<Main>` accepts an `as` prop that lets callers render a `<div>` instead of `<main>` (used inside route groups whose layout already supplies `<main>`)
+- [x] `<Main>` accepts a `className` prop merged via `cn()` so callers can extend (e.g. `space-y-10`)
+- [x] A daisyUI-style CSS file `src/styles/main.css` defines `.main`, `.main-2xl`, `.main-3xl`, `.main-4xl`, `.main-5xl`, `.main-6xl`, `.main-md`, `.main-container`, `.main-full`, `.main-padding`, `.main-padding-compact` — imported into `globals.css` with `@import '../styles/main.css' layer(components);`
+- [x] All 28 `page.tsx` files under `src/app/` have their top-level wrapper replaced with `<Main>` (or `<Main as="div">` where a parent layout already renders `<main>`)
+- [x] Each rendered page produces **exactly one** `<main>` element in the DOM (no nested `<main>`s, no missing `<main>`s)
+- [x] Route-group layouts that currently render `<main>` are reconciled with the per-page `<Main>`: see [Layout reconciliation](#layout-reconciliation)
+- [x] No visual regression — every page renders at the same width, padding, and position as before
+- [x] The Home page (`src/app/page.tsx`) and the Schemes page (`src/app/schemes/page.tsx`) — which already use `<main>` directly — are migrated to `<Main>` with appropriate variants (Home uses `width="full"` + a layout override; Schemes uses `width="container"` + `padding="compact"`)
+- [x] `npm run build` and `npm run lint` pass with no errors
+- [x] No new module is created — `<Main>` lives in `src/components/` because it's a cross-cutting UI primitive (matches `src/components/navbar.tsx`, `footer.tsx`, `breadcrumbs.tsx`)
 
 ## Routes
 
