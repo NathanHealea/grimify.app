@@ -10,7 +10,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import type { DragEndEvent } from '@dnd-kit/core'
+import type { DragEndEvent, DragOverEvent } from '@dnd-kit/core'
 import {
   SortableContext,
   sortableKeyboardCoordinates,
@@ -60,15 +60,16 @@ function seedGroups(groups: PaletteGroup[]): DraggableGroup[] {
 }
 
 /**
- * Grouped vertical paint list with separate DnD contexts for groups and paints.
+ * Grouped vertical paint list with a unified DnD context for cross-group paint moves
+ * and group reorder.
  *
- * Renders named group sections (each with its own `DndContext`) plus an
- * "Ungrouped" section below. Group headers are draggable via a top-level
- * `DndContext` separate from the per-group paint DnD.
+ * A single `DndContext` handles both group header reordering and paint dragging.
+ * Dragging a paint over a different group's section (or its header) moves it there
+ * optimistically via `onDragOver`; the final order is persisted on `onDragEnd` via
+ * {@link reorderPalettePaints}. Group reorder is persisted via
+ * {@link reorderPaletteGroups}. Paints within named groups are visually indented.
  *
- * In edit mode (`canEdit={true}`) both group reorder and per-group paint reorder
- * are enabled, and a {@link PaletteGroupForm} is rendered at the bottom. In read
- * mode only the structural layout is shown.
+ * In read mode (`canEdit={false}`) only the structural layout is shown.
  *
  * @param props.paletteId - UUID of the owning palette.
  * @param props.paints - Ordered paint slots from the server.
@@ -107,7 +108,7 @@ export function PaletteGroupedPaintList({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   )
 
-  /** Builds the full ordered slot list from current group + slot state. */
+  /** Builds the full ordered slot list grouped by current group + slot state. */
   function buildFullSlotList(
     currentSlots: DraggableSlot[],
     currentGroups: DraggableGroup[],
@@ -120,50 +121,100 @@ export function PaletteGroupedPaintList({
     return result
   }
 
-  function handleGroupDragEnd(event: DragEndEvent) {
+  /**
+   * Optimistically moves a paint to a different group when it hovers over that
+   * group's section or header during a drag. `SortableContext`s are scoped per
+   * group so only same-group items animate; this handler bridges the boundary.
+   */
+  function handleDragOver(event: DragOverEvent) {
     const { active, over } = event
     if (!over || active.id === over.id) return
 
-    const fromIndex = draggableGroups.findIndex((dg) => dg.dndId === active.id)
-    const toIndex = draggableGroups.findIndex((dg) => dg.dndId === over.id)
-    if (fromIndex === -1 || toIndex === -1) return
+    const activeSlot = slots.find((s) => s.dndId === active.id)
+    if (!activeSlot) return // dragging a group header, not a paint
 
-    const previousGroups = latestConfirmedGroupsRef.current
-    const newGroups = reorderArray(draggableGroups, fromIndex, toIndex)
-    setDraggableGroups(newGroups)
+    const overSlot = slots.find((s) => s.dndId === over.id)
+    const overGroup = draggableGroups.find((dg) => dg.dndId === over.id)
 
-    startTransition(async () => {
-      const result = await reorderPaletteGroups(
-        paletteId,
-        newGroups.map((dg, i) => ({ id: dg.group.id, position: i })),
-      )
-      if (result?.error) {
-        setDraggableGroups(previousGroups)
-        toast.error(result.error)
-      } else {
-        latestConfirmedGroupsRef.current = newGroups
-      }
-    })
+    let targetGroupId: string | null
+    if (overSlot) {
+      targetGroupId = overSlot.groupId
+    } else if (overGroup) {
+      targetGroupId = overGroup.group.id
+    } else {
+      return
+    }
+
+    if (activeSlot.groupId === targetGroupId) return
+
+    setSlots((prev) =>
+      prev.map((s) => (s.dndId === activeSlot.dndId ? { ...s, groupId: targetGroupId } : s)),
+    )
   }
 
-  function handlePaintDragEnd(groupId: string | null, event: DragEndEvent) {
+  function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
-    if (!over || active.id === over.id) return
 
-    const groupSlots = slots.filter((s) => s.groupId === groupId)
+    if (!over) {
+      // Drag cancelled — roll back any cross-group groupId changes from dragOver
+      setSlots(latestConfirmedSlotsRef.current)
+      return
+    }
+
+    // ── Group reorder ──────────────────────────────────────────────────────────
+    const activeGroupIndex = draggableGroups.findIndex((dg) => dg.dndId === active.id)
+    if (activeGroupIndex !== -1) {
+      if (active.id === over.id) return
+      const toIndex = draggableGroups.findIndex((dg) => dg.dndId === over.id)
+      if (toIndex === -1) return
+
+      const previousGroups = latestConfirmedGroupsRef.current
+      const newGroups = reorderArray(draggableGroups, activeGroupIndex, toIndex)
+      setDraggableGroups(newGroups)
+
+      startTransition(async () => {
+        const result = await reorderPaletteGroups(
+          paletteId,
+          newGroups.map((dg, i) => ({ id: dg.group.id, position: i })),
+        )
+        if (result?.error) {
+          setDraggableGroups(previousGroups)
+          toast.error(result.error)
+        } else {
+          latestConfirmedGroupsRef.current = newGroups
+        }
+      })
+      return
+    }
+
+    // ── Paint reorder (within-group or cross-group) ────────────────────────────
+    const activeSlot = slots.find((s) => s.dndId === active.id)
+    if (!activeSlot) return
+
+    // groupId may already be updated by handleDragOver (cross-group case)
+    const currentGroupId = activeSlot.groupId
+    const groupSlots = slots.filter((s) => s.groupId === currentGroupId)
     const fromIndex = groupSlots.findIndex((s) => s.dndId === active.id)
-    const toIndex = groupSlots.findIndex((s) => s.dndId === over.id)
-    if (fromIndex === -1 || toIndex === -1) return
 
-    const reorderedGroup = reorderArray(groupSlots, fromIndex, toIndex)
-    const newSlots = slots.map((s) => {
-      const idx = reorderedGroup.findIndex((rs) => rs.dndId === s.dndId)
-      return idx !== -1 ? reorderedGroup[idx] : s
-    })
+    // Only reorder within the group when the drop target is a paint in the same group
+    const overSlotInGroup = slots.find(
+      (s) => s.dndId === over.id && s.groupId === currentGroupId,
+    )
+    const toIndex = overSlotInGroup
+      ? groupSlots.findIndex((s) => s.dndId === over.id)
+      : fromIndex
+
+    let newSlots = slots
+    if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
+      const reorderedGroup = reorderArray(groupSlots, fromIndex, toIndex)
+      newSlots = slots.map((s) => {
+        const idx = reorderedGroup.findIndex((rs) => rs.dndId === s.dndId)
+        return idx !== -1 ? reorderedGroup[idx] : s
+      })
+      setSlots(newSlots)
+    }
 
     const previousSlots = latestConfirmedSlotsRef.current
-    setSlots(newSlots)
-
     const fullList = buildFullSlotList(newSlots, draggableGroups)
 
     startTransition(async () => {
@@ -180,63 +231,56 @@ export function PaletteGroupedPaintList({
     })
   }
 
-  function renderSection(
-    sectionSlots: DraggableSlot[],
-    groupId: string | null,
-  ) {
+  function renderSection(sectionSlots: DraggableSlot[], groupId: string | null) {
+    const isNamedGroup = groupId !== null
     if (sectionSlots.length === 0 && !canEdit) return null
 
     return (
-      <div key={groupId ?? 'ungrouped'} className="flex flex-col gap-1">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={(e) => handlePaintDragEnd(groupId, e)}
+      <div className={['flex flex-col gap-1', isNamedGroup ? 'pl-6' : ''].filter(Boolean).join(' ')}>
+        <SortableContext
+          items={sectionSlots.map((s) => s.dndId)}
+          strategy={verticalListSortingStrategy}
         >
-          <SortableContext
-            items={sectionSlots.map((s) => s.dndId)}
-            strategy={verticalListSortingStrategy}
-          >
-            {sectionSlots.map((slot) => {
-              const idx = slots.findIndex((s) => s.dndId === slot.dndId)
-              return slot.paint ? (
-                <PalettePaintRow
-                  key={slot.dndId}
-                  dndId={canEdit ? slot.dndId : undefined}
-                  paletteId={paletteId}
-                  position={idx}
-                  paint={slot.paint}
-                  note={slot.note}
-                  canEdit={canEdit}
-                  groups={canEdit ? groups : undefined}
-                  currentGroupId={slot.groupId}
-                />
-              ) : (
-                <div
-                  key={slot.dndId}
-                  className="flex items-center rounded-lg border border-border p-3 text-sm text-muted-foreground"
-                >
-                  Paint unavailable
-                </div>
-              )
-            })}
-          </SortableContext>
-        </DndContext>
+          {sectionSlots.map((slot) => {
+            const idx = slots.findIndex((s) => s.dndId === slot.dndId)
+            return slot.paint ? (
+              <PalettePaintRow
+                key={slot.dndId}
+                dndId={canEdit ? slot.dndId : undefined}
+                paletteId={paletteId}
+                position={idx}
+                paint={slot.paint}
+                note={slot.note}
+                canEdit={canEdit}
+                groups={canEdit ? groups : undefined}
+                currentGroupId={slot.groupId}
+              />
+            ) : (
+              <div
+                key={slot.dndId}
+                className="flex items-center rounded-lg border border-border p-3 text-sm text-muted-foreground"
+              >
+                Paint unavailable
+              </div>
+            )
+          })}
+        </SortableContext>
         {sectionSlots.length === 0 && canEdit && (
-          <p className="text-xs text-muted-foreground px-2 py-1 italic">No paints in this group</p>
+          <p className="px-2 py-1 text-xs italic text-muted-foreground">No paints in this group</p>
         )}
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* Group headers in their own DndContext */}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleGroupDragEnd}
-      >
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragOver={canEdit ? handleDragOver : undefined}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="flex flex-col gap-3">
+        {/* Group headers share the outer SortableContext for group reorder */}
         <SortableContext
           items={draggableGroups.map((dg) => dg.dndId)}
           strategy={verticalListSortingStrategy}
@@ -256,27 +300,27 @@ export function PaletteGroupedPaintList({
             )
           })}
         </SortableContext>
-      </DndContext>
 
-      {/* Ungrouped section */}
-      {(() => {
-        const ungrouped = slots.filter((s) => s.groupId === null)
-        if (ungrouped.length === 0 && !canEdit) return null
-        return (
-          <div className="flex flex-col gap-1">
-            {draggableGroups.length > 0 && (
-              <PaletteGroupHeader
-                paletteId={paletteId}
-                group={{ id: '', paletteId, name: 'Ungrouped', position: -1, createdAt: '' }}
-                canEdit={false}
-              />
-            )}
-            {renderSection(ungrouped, null)}
-          </div>
-        )
-      })()}
+        {/* Ungrouped section — not indented, no group-reorder drag handle */}
+        {(() => {
+          const ungrouped = slots.filter((s) => s.groupId === null)
+          if (ungrouped.length === 0 && !canEdit) return null
+          return (
+            <div className="flex flex-col gap-1">
+              {draggableGroups.length > 0 && (
+                <PaletteGroupHeader
+                  paletteId={paletteId}
+                  group={{ id: '', paletteId, name: 'Ungrouped', position: -1, createdAt: '' }}
+                  canEdit={false}
+                />
+              )}
+              {renderSection(ungrouped, null)}
+            </div>
+          )
+        })()}
 
-      {canEdit && <PaletteGroupForm paletteId={paletteId} />}
-    </div>
+        {canEdit && <PaletteGroupForm paletteId={paletteId} />}
+      </div>
+    </DndContext>
   )
 }
