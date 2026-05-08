@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { PaletteCardGrid } from '@/modules/palettes/components/palette-card-grid'
@@ -41,12 +42,12 @@ export default async function PalettesCatalogPage({
   return (
     <Main>
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Community palettes</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+        <PageHeader className="mb-0">
+          <PageTitle>Community palettes</PageTitle>
+          <PageSubtitle>
             Browse paint palettes shared by the Grimify community.
-          </p>
-        </div>
+          </PageSubtitle>
+        </PageHeader>
         {user ? (
           <Link href="/user/palettes" className="btn btn-primary btn-sm">
             My palettes →

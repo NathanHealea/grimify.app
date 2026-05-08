@@ -19,6 +19,7 @@
 @import '../styles/popover.css' layer(components);
 @import '../styles/skeleton.css' layer(components);
 @import '../styles/main.css' layer(components);
+@import '../styles/page-header.css' layer(components);
 
 @custom-variant dark (&:is(.dark *));
 

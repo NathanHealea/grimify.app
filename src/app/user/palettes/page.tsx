@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { PaletteCardGrid } from '@/modules/palettes/components/palette-card-grid'
@@ -26,14 +27,17 @@ export default async function UserPalettesPage() {
 
   return (
     <Main>
-      <div className="mb-8 flex items-center justify-between gap-4">
-        <h1 className="text-3xl font-bold">My palettes</h1>
-        <form action="/user/palettes/new" method="post">
-          <button type="submit" className="btn btn-primary btn-sm">
-            New palette
-          </button>
-        </form>
-      </div>
+      <PageHeader
+        actions={
+          <form action="/user/palettes/new" method="post">
+            <button type="submit" className="btn btn-primary btn-sm">
+              New palette
+            </button>
+          </form>
+        }
+      >
+        <PageTitle>My palettes</PageTitle>
+      </PageHeader>
 
       {summaries.length > 0 ? (
         <PaletteCardGrid summaries={summaries} canEditAll />

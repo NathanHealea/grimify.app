@@ -1,4 +1,5 @@
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { getHueService } from '@/modules/hues/services/hue-service.server'
 import { PaintExplorer } from '@/modules/paints/components/paint-explorer'
@@ -88,12 +89,10 @@ export default async function PaintsPage({
 
   return (
     <Main>
-      <div className="mb-8 flex flex-col gap-4">
-        <h1 className="text-3xl font-bold">Paints</h1>
-        <p className="text-sm text-muted-foreground">
-          Browse {initialTotalCount.toLocaleString()} paints.
-        </p>
-      </div>
+      <PageHeader>
+        <PageTitle>Paints</PageTitle>
+        <PageSubtitle>Browse {initialTotalCount.toLocaleString()} paints.</PageSubtitle>
+      </PageHeader>
 
       <PaintExplorer
         initialPaints={initialPaints}

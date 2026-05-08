@@ -1,4 +1,5 @@
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { CreateRoleForm } from '@/modules/admin/components/create-role-form'
 import { RoleListTable } from '@/modules/admin/components/role-list-table'
@@ -30,13 +31,13 @@ export default async function AdminRolesPage() {
 
   return (
     <Main as="div">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Role Management</h1>
-        <p className="text-sm text-muted-foreground">
+      <PageHeader>
+        <PageTitle>Role Management</PageTitle>
+        <PageSubtitle>
           Create, rename, and delete roles. Assign roles to users from the role
           detail page.
-        </p>
-      </div>
+        </PageSubtitle>
+      </PageHeader>
 
       <div className="mb-6">
         <CreateRoleForm />

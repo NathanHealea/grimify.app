@@ -1,0 +1,36 @@
+/*
+ * Page Header
+ *
+ * Heading row used by every route page that has a title (and optional subtitle
+ * or action). Sits inside <Main> and is independent of the page-shell wrapper.
+ *
+ * No daisyUI counterpart — this is a project-local layout primitive that
+ * follows the same `.component-variant` naming convention as the rest of
+ * the styles directory.
+ *
+ * Classes:
+ *   Wrapper:   .page-header        — Column layout (title above subtitle)
+ *              .page-header-row    — Row layout (title/subtitle on left, actions on right)
+ *   Title:     .page-title         — text-3xl font-bold (default)
+ *              .page-title-md      — text-2xl font-bold (smaller variant)
+ *   Subtitle:  .page-subtitle      — text-sm text-muted-foreground
+ */
+
+/* -------------------------------------------------------------------------
+ * Wrapper
+ * ----------------------------------------------------------------------- */
+.page-header { @apply mb-8 flex flex-col gap-1; }
+
+.page-header-row { @apply mb-8 flex items-start justify-between gap-4; }
+
+/* -------------------------------------------------------------------------
+ * Title
+ * ----------------------------------------------------------------------- */
+.page-title { @apply text-3xl font-bold; }
+
+.page-title-md { @apply text-2xl font-bold; }
+
+/* -------------------------------------------------------------------------
+ * Subtitle
+ * ----------------------------------------------------------------------- */
+.page-subtitle { @apply text-sm text-muted-foreground; }

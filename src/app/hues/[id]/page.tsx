@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { Main } from '@/components/main';
+import { Main } from '@/components/main'
+import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header';
 import { createClient } from '@/lib/supabase/server';
 import { getCollectionService } from '@/modules/collection/services/collection-service.server';
 import { ChildHueCard } from '@/modules/hues/components/child-hue-card';
@@ -96,12 +97,12 @@ export default async function HuePage({
             style={{ backgroundColor: hue.hex_code }}
             aria-hidden="true"
           />
-          <div>
-            <h1 className="text-3xl font-bold">{hue.name}</h1>
-            <p className="text-sm text-muted-foreground">
+          <PageHeader className="mb-0">
+            <PageTitle>{hue.name}</PageTitle>
+            <PageSubtitle>
               {totalCount} {totalCount === 1 ? 'paint' : 'paints'}
-            </p>
-          </div>
+            </PageSubtitle>
+          </PageHeader>
         </div>
 
         {childHues.length > 0 && (

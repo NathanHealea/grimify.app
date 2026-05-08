@@ -1,4 +1,5 @@
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
 import { getCollectionService } from '@/modules/collection/services/collection-service.server'
@@ -30,10 +31,12 @@ export default async function SchemesPage() {
 
   return (
     <Main>
-      <h1 className="mb-2 text-2xl font-bold">Color Scheme Explorer</h1>
-      <p className="mb-6 text-muted-foreground">
-        Select a base color to generate complementary, analogous, triadic, and more color schemes.
-      </p>
+      <PageHeader>
+        <PageTitle size="md">Color Scheme Explorer</PageTitle>
+        <PageSubtitle>
+          Select a base color to generate complementary, analogous, triadic, and more color schemes.
+        </PageSubtitle>
+      </PageHeader>
       <SchemeExplorer paints={paints} isAuthenticated={!!user} collectionPaintIds={collectionPaintIds} />
     </Main>
   )

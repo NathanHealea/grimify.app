@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { AssignRoleForm } from '@/modules/admin/components/assign-role-form'
 import { RoleDetailCard } from '@/modules/admin/components/role-detail-card'
@@ -73,9 +74,9 @@ export default async function AdminRoleDetailPage({
         </Link>
       </div>
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Role Detail</h1>
-      </div>
+      <PageHeader>
+        <PageTitle>Role Detail</PageTitle>
+      </PageHeader>
 
       <div className="space-y-8">
         <RoleDetailCard role={role} />

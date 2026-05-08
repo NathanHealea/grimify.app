@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { AdminCollectionClient } from '@/modules/admin/components/admin-collection-client'
 import { getAdminCollectionPageData } from '@/modules/admin/services/collection-service'
@@ -55,14 +56,14 @@ export default async function AdminUserCollectionPage({
         </Link>
       </div>
 
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">
+      <PageHeader>
+        <PageTitle size="md">
           {profile.display_name ?? profile.email ?? 'Unknown user'}
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        </PageTitle>
+        <PageSubtitle>
           {totalCount} {totalCount === 1 ? 'paint' : 'paints'} in collection
-        </p>
-      </div>
+        </PageSubtitle>
+      </PageHeader>
 
       <AdminCollectionClient
         userId={id}

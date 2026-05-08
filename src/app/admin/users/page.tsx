@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { Main } from '@/components/main'
+import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { AdminUsersTable } from '@/modules/user/components/admin-users-table'
 import { UserSearch } from '@/modules/user/components/user-search'
@@ -62,12 +63,12 @@ export default async function AdminUsersPage({
 
   return (
     <Main as="div">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">User Management</h1>
-        <p className="text-sm text-muted-foreground">
+      <PageHeader>
+        <PageTitle>User Management</PageTitle>
+        <PageSubtitle>
           Manage user accounts. Search, filter, view details, deactivate, or delete.
-        </p>
-      </div>
+        </PageSubtitle>
+      </PageHeader>
 
       {/* Search + filter bar */}
       <div className="mb-4 flex flex-wrap items-center gap-3">
