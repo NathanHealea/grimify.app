@@ -1,3 +1,4 @@
+import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import type { PalettePaint } from '@/modules/palettes/types/palette-paint'
 
 /**
@@ -22,6 +23,8 @@ export type Palette = {
   createdAt: string
   /** ISO timestamp of last update; maintained by the `set_updated_at` trigger. */
   updatedAt: string
+  /** Named groups ordered by `position` ascending; empty array for ungrouped palettes. */
+  groups: PaletteGroup[]
   /** Ordered paint slots, sorted by `position` ascending. */
   paints: PalettePaint[]
 }
