@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import {
   DndContext,
   KeyboardSensor,
@@ -51,14 +51,19 @@ export function RecipeSectionList({
   sections: RecipeSection[]
 }) {
   const [orderedSections, setOrderedSections] = useState<RecipeSection[]>(sections)
+  const [trackedSections, setTrackedSections] = useState<RecipeSection[]>(sections)
+  const [latestConfirmed, setLatestConfirmed] = useState<RecipeSection[]>(sections)
   const [isPending, startTransition] = useTransition()
 
-  const latestConfirmedRef = useRef<RecipeSection[]>(sections)
-
-  useEffect(() => {
+  // Re-seed local optimistic state when the server sends a fresh sections
+  // array (after revalidation). React 19 supports setting state during render
+  // when an external prop has changed; this avoids the effect-only state
+  // mirror anti-pattern.
+  if (sections !== trackedSections) {
+    setTrackedSections(sections)
     setOrderedSections(sections)
-    latestConfirmedRef.current = sections
-  }, [sections])
+    setLatestConfirmed(sections)
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -74,7 +79,7 @@ export function RecipeSectionList({
     const toIndex = orderedSections.findIndex((s) => s.id === over.id)
     if (fromIndex === -1 || toIndex === -1) return
 
-    const previousSections = latestConfirmedRef.current
+    const previousSections = latestConfirmed
     const newSections = reorderArray(orderedSections, fromIndex, toIndex)
     setOrderedSections(newSections)
 
@@ -87,7 +92,7 @@ export function RecipeSectionList({
         setOrderedSections(previousSections)
         toast.error(result.error)
       } else {
-        latestConfirmedRef.current = newSections
+        setLatestConfirmed(newSections)
       }
     })
   }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import {
   DndContext,
   KeyboardSensor,
@@ -50,14 +50,18 @@ export function RecipeStepList({
   steps: RecipeStep[]
 }) {
   const [orderedSteps, setOrderedSteps] = useState<RecipeStep[]>(steps)
+  const [trackedSteps, setTrackedSteps] = useState<RecipeStep[]>(steps)
+  const [latestConfirmed, setLatestConfirmed] = useState<RecipeStep[]>(steps)
   const [, startTransition] = useTransition()
 
-  const latestConfirmedRef = useRef<RecipeStep[]>(steps)
-
-  useEffect(() => {
+  // Re-seed local optimistic state when the server sends a fresh steps array
+  // (after revalidation). Setting state during render when an external prop
+  // has changed avoids the effect-only state mirror anti-pattern.
+  if (steps !== trackedSteps) {
+    setTrackedSteps(steps)
     setOrderedSteps(steps)
-    latestConfirmedRef.current = steps
-  }, [steps])
+    setLatestConfirmed(steps)
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
@@ -73,7 +77,7 @@ export function RecipeStepList({
     const toIndex = orderedSteps.findIndex((s) => s.id === over.id)
     if (fromIndex === -1 || toIndex === -1) return
 
-    const previousSteps = latestConfirmedRef.current
+    const previousSteps = latestConfirmed
     const newSteps = reorderArray(orderedSteps, fromIndex, toIndex)
     setOrderedSteps(newSteps)
 
@@ -86,7 +90,7 @@ export function RecipeStepList({
         setOrderedSteps(previousSteps)
         toast.error(result.error)
       } else {
-        latestConfirmedRef.current = newSteps
+        setLatestConfirmed(newSteps)
       }
     })
   }
