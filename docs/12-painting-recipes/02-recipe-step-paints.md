@@ -136,3 +136,66 @@ Same dnd-kit pattern as Epic 11. The row id is `recipe_step_paints.id` (uuid), a
 
 - The technique chip on a step is inherited; rows don't have their own technique. This matches the inspiration page (technique applies to a step, paints just describe what's used).
 - This feature supersedes the placeholder slot left by `01-recipe-builder` — `recipe-step-card.tsx` now mounts the real list.
+
+## Implementation Plan
+
+### Overview
+
+Depends on 00 (schema) and 01 (builder + read view) shipping first. This feature replaces the placeholder slot in `<RecipeStepCard>` with a real, ordered, editable paint list and adds a picker dialog with two modes (palette-default vs. all-paints search). The reorder pattern is a literal copy of `palette-paint-list.tsx` with the row id sourced from `recipe_step_paints.id`. The picker reuses the existing `use-paint-search` hook (shared with `BaseColorPicker` and admin search) for the all-paints mode and a simple in-memory filter for the palette mode. Live-join hydration of the current `paint_id` via `palette_slot_id` lives in `recipe-service.ts` so the builder and read view can never diverge.
+
+### Module changes
+
+| Path | Kind | Purpose |
+|------|------|---------|
+| `src/modules/recipes/actions/add-recipe-step-paint.ts` | new | Append a paint at `position = max + 1`; accepts optional `paletteSlotId` |
+| `src/modules/recipes/actions/update-recipe-step-paint.ts` | new | Patch `ratio` and/or `note` |
+| `src/modules/recipes/actions/remove-recipe-step-paint.ts` | new | Delete a row, normalize sibling positions via `normalize-recipe-positions` |
+| `src/modules/recipes/actions/reorder-recipe-step-paints.ts` | new | Two-phase reorder via `replace_recipe_step_paints` RPC (added in 00) |
+| `src/modules/recipes/components/recipe-step-paint-list.tsx` | new | DnD wrapper + rows; mirrors `palette-paint-list.tsx` |
+| `src/modules/recipes/components/recipe-step-paint-row.tsx` | new | Drag handle + swatch + name + brand + "From palette" chip + ratio input + note input + remove |
+| `src/modules/recipes/components/recipe-step-paint-picker.tsx` | new | Dialog with two modes; closed by default; opens on "Add paint" |
+| `src/modules/recipes/components/recipe-step-paint-mode-tabs.tsx` | new | "Palette" / "All paints" toggle (only when palette is linked) |
+| `src/modules/recipes/components/recipe-step-card.tsx` | modify | Replace `<RecipeStepPaintPlaceholder>` with `<RecipeStepPaintList>` |
+| `src/modules/recipes/components/recipe-detail.tsx` | modify | Read view renders step paints (no inputs, no drag handles) |
+| `src/modules/recipes/services/recipe-service.ts` | modify | `getRecipeById` hydrates `paint` for each step paint via the live `palette_slot_id` join when present, else falls back to denormalized `paint_id` |
+| `src/modules/recipes/utils/format-step-paint-source.ts` | new | Returns `"palette" | "library"` based on whether `paletteSlotId` is set; consumed by the chip |
+
+### Database changes
+
+None new — the table, indexes, RLS, and `replace_recipe_step_paints` RPC ship in 00. If 00's RPC is omitted in error, add a follow-up migration here that copies the `replace_palette_paints` body verbatim.
+
+### Route / page changes
+
+None. Mounts inside the existing builder and detail components.
+
+### Step-by-step ordering
+
+1. Implement the four actions; each verifies ownership via the service, then writes. Revalidate `/user/recipes/{id}/edit` and `/recipes/{id}`.
+2. Update `recipe-service.ts.getRecipeById` mapping: when a step paint row has `palette_slot_id`, prefer the joined `palette_paints.paint_id` (and the embedded paint shape) over the row's denormalized `paint_id`. Fall back to denormalized when the slot is missing.
+3. Build `<RecipeStepPaintRow>` with auto-save-on-blur for ratio + note (small debounced input pattern; track save state via `useTransition`).
+4. Build `<RecipeStepPaintList>` mirroring `palette-paint-list.tsx` — same `seedSlots`, `latestConfirmedRef`, optimistic update + rollback on failure.
+5. Build `<RecipeStepPaintModeTabs>` and `<RecipeStepPaintPicker>`. Picker:
+   - Opens with "Palette" mode when `recipe.paletteId` is set, else "All paints".
+   - Palette mode: render `recipe.palette.paints` as a card grid; in-memory filter input.
+   - All-paints mode: reuse `use-paint-search` hook from `@/modules/paints/hooks/use-paint-search`. Mirror how `BaseColorPicker` consumes it.
+   - Selecting a paint calls `addRecipeStepPaint({ stepId, paintId, paletteSlotId })` then closes the dialog.
+6. Modify `<RecipeStepCard>` to mount `<RecipeStepPaintList>`; pass `palettePaints` prop down so palette mode can render even when the recipe row's snapshot is stale.
+7. Modify `<RecipeDetail>` to render rows read-only (no drag handles, no inputs); link each paint to `/paints/{id}`.
+8. Manual QA per checklist; `npm run build` + `npm run lint`.
+
+### Risks & considerations
+
+- **Live join vs. denormalized read**: this is the load-bearing decision in this feature. The mapper lives in `recipe-service.ts`; both builder and read view consume the same hydrated `Recipe` so they always agree. Document the rule in JSDoc on `getRecipeById`.
+- **Recipe needs palette context**: when the builder or detail view renders, the `Palette` referenced via `recipes.palette_id` must be loaded too. Decide in 02: extend `getRecipeById` to also fetch the linked palette (one extra round-trip via the palette service), or denormalize palette-name onto the recipe. v1: extra round-trip; cache via revalidatePath when palette changes.
+- **Auto-save UX for ratio/note**: same risk as inline edits in 01. If QA pushes back, fold both fields into a small per-row save button.
+- **dnd-kit row id**: use `recipe_step_paints.id` directly (uuid). No synthetic dndId required because rows aren't reseeded across mutations as aggressively as palette slots.
+- **Picker performance**: `use-paint-search` is already proven; do not reimplement.
+- **Reorder RPC**: requires `replace_recipe_step_paints` RPC in 00. Confirm before implementing this doc.
+- **Detail view caching**: the read view's hydrated paint is "live" — when an Epic 11 hue-swap changes a slot's `paint_id`, the recipe's `revalidatePath('/recipes/{id}')` must be called. Coordinate with Epic 11's `swap-palette-paint.ts` action.
+
+### Out of scope
+
+- Bulk paste of paints into a step.
+- Reordering paints across step boundaries.
+- A separate technique field on individual paint rows (technique stays on the step).
+- Auto-suggesting paints from a hue-similar set.

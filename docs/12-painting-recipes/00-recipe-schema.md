@@ -246,3 +246,97 @@ The hydrated read is one query that joins the whole tree. Use Supabase's nested 
 
 - This feature ships data + plumbing only; user-visible recipe UI lands in `01-recipe-builder` and downstream features.
 - Migration timestamp must come after the most recent migration (latest in tree at time of writing: `20260424000000_admin_user_paints_policies.sql`) and after any palette-epic migration that ships first. The `palette_slot_id` FK requires `palette_paints.slot_id` to exist — sequence Epic 11's migrations before this one.
+
+## Implementation Plan
+
+### Overview
+
+This is the foundation for the entire Painting Recipes epic. We ship one Supabase migration that creates six tables (`recipes`, `recipe_sections`, `recipe_steps`, `recipe_step_paints`, `recipe_notes`, `recipe_photos`), associated indexes, RLS policies, the `set_updated_at` trigger on `recipes`, the `recipe-photos` Storage bucket and its policies, and a `replace_recipe_step_paints` RPC that mirrors the existing `replace_palette_paints` pattern for atomic position updates. We also scaffold `src/modules/recipes/` following the Domain Module pattern from `src/modules/palettes/` exactly — three-file service split (`recipe-service.ts` + `.server.ts` + `.client.ts`), one-action-per-file, one-type-per-file, and shared `validation.ts`. No UI ships in this doc; downstream docs depend on the schema and service surface.
+
+### Database changes
+
+Migration file: `supabase/migrations/<ts>_create_recipes_tables.sql` (timestamp must be after `20260425000000_create_palettes_tables.sql` and after Epic 11's `palette_paints.slot_id` migration if that ships separately).
+
+Tables to create (in dependency order):
+
+1. `recipes` — columns per the Database section above; `cover_photo_id` FK is added at the end of the migration to break the circular FK with `recipe_photos`.
+2. `recipe_sections` — unique `(recipe_id, position)`.
+3. `recipe_steps` — unique `(section_id, position)`.
+4. `recipe_step_paints` — unique `(step_id, position)`; FKs to `paints.id` and `palette_paints` (slot ref via composite or via a `slot_id` column on `palette_paints` that Epic 11 ships).
+5. `recipe_notes` — XOR check `(recipe_id IS NULL) <> (step_id IS NULL)`.
+6. `recipe_photos` — same XOR check; `storage_path` not null.
+
+After all tables exist:
+
+7. `ALTER TABLE recipes ADD CONSTRAINT recipes_cover_photo_id_fkey FOREIGN KEY (cover_photo_id) REFERENCES recipe_photos(id) ON DELETE SET NULL`.
+
+Indexes per the Database section. Trigger: reuse the existing `public.set_updated_at()` function defined in the palettes migration; just install `set_recipes_updated_at` on `UPDATE`. RLS policies follow the palettes migration pattern verbatim (`Owners can view`, `Anyone can view public`, `Users can create their X`, `Owners can update`, `Owners can delete` on the parent; child tables use a `EXISTS` subquery joining up to `recipes`). For deeply nested children (`recipe_step_paints`), introduce a `SECURITY DEFINER` SQL function `is_recipe_owner_via_step(step_id uuid)` so the policy bodies stay short.
+
+RPC: `replace_recipe_step_paints(p_step_id uuid, p_rows jsonb)` — mirror the `replace_palette_paints` body in the existing palettes migration; transactionally delete + reinsert all rows for a step.
+
+Storage:
+
+- `INSERT INTO storage.buckets(id, name, public) VALUES ('recipe-photos', 'recipe-photos', true)` — public so `getPublicUrl` works for public recipes; per-object visibility is enforced by the SELECT policy below.
+- Storage policies on `storage.objects` for the `recipe-photos` bucket: SELECT gated by joining `recipe_photos.storage_path` to find the parent recipe and checking `is_public OR auth.uid() = recipes.user_id`; INSERT/UPDATE/DELETE require the path's first segment equals `auth.uid()::text` and the parent recipe is owned by the caller.
+
+### Module changes
+
+| Path | Kind | Purpose |
+|------|------|---------|
+| `src/modules/recipes/types/recipe.ts` | new | Hydrated `Recipe` type with sections → steps → step-paints + notes + photos arrays |
+| `src/modules/recipes/types/recipe-section.ts` | new | `RecipeSection` with ordered `steps` array |
+| `src/modules/recipes/types/recipe-step.ts` | new | `RecipeStep` with `stepPaints`, `notes`, `photos` arrays |
+| `src/modules/recipes/types/recipe-step-paint.ts` | new | Mirrors `PalettePaint`: includes embedded `paint` (ColorWheelPaint-shaped) plus `paletteSlotId`, `ratio`, `note` |
+| `src/modules/recipes/types/recipe-note.ts` | new | `RecipeNote` with parent discriminator |
+| `src/modules/recipes/types/recipe-photo.ts` | new | `RecipePhoto` with `storagePath`, dimensions, caption |
+| `src/modules/recipes/types/recipe-summary.ts` | new | List-row shape: id, title, coverPhotoUrl, sectionCount, stepCount, paintCount, isPublic, updatedAt, ownerDisplayName? |
+| `src/modules/recipes/types/recipe-form-state.ts` | new | `useActionState` shape mirroring `PaletteFormState` |
+| `src/modules/recipes/validation.ts` | new | `validateRecipeTitle`, `validateRecipeSummary`, `validateRecipeForm` |
+| `src/modules/recipes/services/recipe-service.ts` | new | `createRecipeService(supabase)` factory; exposes `getRecipeById`, `listRecipesForUser`, `listPublicRecipes`, `countPublicRecipes`, `createRecipe`, `updateRecipe`, `deleteRecipe` |
+| `src/modules/recipes/services/recipe-service.server.ts` | new | Wrapper that builds the service with `createClient()` from `@/lib/supabase/server` |
+| `src/modules/recipes/services/recipe-service.client.ts` | new | Wrapper that builds the service with `createClient()` from `@/lib/supabase/client` |
+| `src/modules/recipes/actions/create-recipe.ts` | new | `useActionState`-compatible action; defaults title to "Untitled recipe"; redirects to `/user/recipes/{id}/edit` |
+| `src/modules/recipes/actions/update-recipe.ts` | new | Patches `title`, `summary`, `is_public`, `palette_id`, `cover_photo_id`; revalidates `/user/recipes`, `/recipes`, `/recipes/{id}`, `/user/recipes/{id}/edit` |
+| `src/modules/recipes/actions/delete-recipe.ts` | new | Deletes the recipe; redirects to `/user/recipes`. Storage cleanup pass is added in 03-recipe-photos. |
+| `src/modules/recipes/utils/normalize-recipe-positions.ts` | new | Generic `normalize<T extends { position: number }>(rows): T[]` — reuse for sections, steps, step-paints, notes, photos |
+| `src/types/database.types.ts` | modify | Regenerate via `supabase gen types typescript` so the new tables are picked up |
+
+### Route / page changes
+
+None. This doc ships data + service plumbing only.
+
+### Step-by-step ordering
+
+1. Write the migration: tables in dependency order, then circular FK alter, then indexes, then RLS, then `replace_recipe_step_paints` RPC, then Storage bucket + policies. Apply locally and verify with `mcp__supabase-local__list_tables`.
+2. Regenerate `src/types/database.types.ts` and confirm the new tables and RPC appear.
+3. Add `validation.ts` with `validateRecipeTitle` (1-120 chars), `validateRecipeSummary` (≤5000 chars), and `validateRecipeForm`.
+4. Add the eight type files under `types/`. Hydrated `Recipe` mirrors how `Palette` embeds its children but with one extra level of nesting (sections → steps).
+5. Add `services/recipe-service.ts` with the factory `createRecipeService(supabase)`. Implement methods one at a time, lifting the patterns from `palette-service.ts`:
+   - `getRecipeById(id)` — single nested select `recipes(*, recipe_sections(*, recipe_steps(*, recipe_step_paints(*, paints(*, product_lines(*, brands(*)))))), recipe_notes(*), recipe_photos(*))` then shape into `Recipe`. Sort children by `position` ascending in the mapper.
+   - `listRecipesForUser(userId)` — minimal columns, ordered `updated_at desc`.
+   - `listPublicRecipes({ limit, offset })` — joins `profiles(display_name)` and computes `paintCount` either via the join or a follow-up `count` RPC; for v1 select the nested chain and count client-side.
+   - `countPublicRecipes()` — `head: true` count query, mirroring `countPublicPalettes`.
+   - `createRecipe({ userId, title, summary?, isPublic?, paletteId? })` — single insert, returns the row mapped through `Recipe` with empty children arrays.
+   - `updateRecipe(id, patch)` — supports the same fields plus `coverPhotoId`.
+   - `deleteRecipe(id)` — DB delete only here; Storage cleanup hooks in via 03.
+6. Add `services/recipe-service.server.ts` and `recipe-service.client.ts` wrappers (literal copies of the palette equivalents).
+7. Add the three top-level recipe actions (`create-recipe.ts`, `update-recipe.ts`, `delete-recipe.ts`). Mirror the auth-check + validate + service-call + revalidate + redirect pattern in `create-palette.ts`.
+8. Add `utils/normalize-recipe-positions.ts` — single generic helper used everywhere positions matter.
+9. Run `npm run build` and `npm run lint`.
+
+### Risks & considerations
+
+- **Circular FK between `recipes.cover_photo_id` and `recipe_photos.recipe_id`**: must use deferred constraint or two-phase migration (create both tables, then `ALTER TABLE recipes ADD CONSTRAINT … FOREIGN KEY (cover_photo_id) …`). Manual QA: insert a recipe + photo, set cover, delete the photo, confirm `cover_photo_id` becomes null.
+- **Polymorphic notes/photos XOR**: schema-level CHECK keeps invalid rows out, but every server action that inserts must pass exactly one of `recipe_id` / `step_id`. The action signatures in 03 and 04 use a discriminated `parent` union to enforce this in TypeScript.
+- **RLS for nested children**: the `recipe_step_paints` policies require traversing two parent tables. The `is_recipe_owner_via_step(step_id)` SECURITY DEFINER helper keeps policy bodies readable and avoids subquery duplication.
+- **Storage SELECT policy reading from `recipe_photos`**: storage policies can `EXISTS` against application tables — verify with manual QA that the policy passes for public recipes when accessed anonymously.
+- **`paint_id` denormalized vs. `palette_slot_id` live join**: the read-path rule lives in the service layer (see 02-recipe-step-paints). Keep this single-source-of-truth in `recipe-service.ts` so the builder and read view never diverge.
+- **Hydrated read size**: a deep recipe is one round-trip but possibly 100+ rows. If response sizes exceed ~200KB in QA, split notes/photos into a follow-up query. Don't pre-optimize.
+- **Migration ordering with Epic 11**: `palette_slot_id` FK depends on Epic 11's `palette_paints.slot_id` column. If Epic 11 is not landing, drop the FK and keep `palette_slot_id` as a plain `uuid` — annotate that in the migration comment.
+
+### Out of scope
+
+- All recipe UI and routes (handled in 01).
+- Storage cleanup logic on cascade delete (handled in 03).
+- The `replace_recipe_steps` and `replace_recipe_sections` RPCs (added in 01 if needed; v1 reorder uses `setX` patterns inline).
+- Public browse filtering and search (handled in 05).

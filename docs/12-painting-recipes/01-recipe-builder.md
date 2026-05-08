@@ -213,3 +213,92 @@ Add "Recipes" to authenticated nav next to "Palettes" and "Collection".
 
 - Per-step paints, photos, and notes have empty placeholder states in this feature so the builder is usable end-to-end immediately. As the next features ship, those slots get real UIs.
 - The recipe URL `/recipes/{id}` is the canonical share URL once the recipe is public. The community feed and discovery page (Epic 7 follow-ups) consume this.
+
+## Implementation Plan
+
+### Overview
+
+Depends on `00-recipe-schema` landing first. This feature delivers the user-facing CRUD shell: a "My recipes" dashboard, an empty-recipe creator, a hydrated read view, and a builder that manages sections + steps with drag-and-drop. We follow the recently shipped palettes route split: private surfaces under `/user/recipes/*` and public detail/dashboard analogs under `/recipes/*`. The builder mirrors `PaletteBuilder` exactly — a single client component that composes `<RecipeForm>`, `<RecipeSectionList>`, `<RecipeNoteList>` placeholder slot, and `<DeleteRecipeButton>`. Drag/drop reuses `@dnd-kit` and the same two-phase optimistic-rollback pattern from `palette-paint-list.tsx` and `reorder-palette-paints.ts`. Per-step paint pickers, photos, and notes are stubbed here as placeholder components so the doc 02/03/04 implementations slot in without re-litigating layout.
+
+### Module changes
+
+| Path | Kind | Purpose |
+|------|------|---------|
+| `src/modules/recipes/actions/add-recipe-section.ts` | new | Append section at `position = max + 1` |
+| `src/modules/recipes/actions/update-recipe-section.ts` | new | Patch title only |
+| `src/modules/recipes/actions/delete-recipe-section.ts` | new | Delete + normalize sibling positions; cascades to steps |
+| `src/modules/recipes/actions/reorder-recipe-sections.ts` | new | Two-phase reorder (mirrors `reorder-palette-paints.ts`) |
+| `src/modules/recipes/actions/add-recipe-step.ts` | new | Append step at `position = max + 1` within section |
+| `src/modules/recipes/actions/update-recipe-step.ts` | new | Patch title, technique, instructions |
+| `src/modules/recipes/actions/delete-recipe-step.ts` | new | Delete + normalize sibling positions |
+| `src/modules/recipes/actions/reorder-recipe-steps.ts` | new | Two-phase reorder within section |
+| `src/modules/recipes/services/recipe-service.ts` | modify | Add helpers: `addSection`, `updateSection`, `deleteSection`, `setSections`, `addStep`, `updateStep`, `deleteStep`, `setSteps` (atomic position-replace pattern via inline transaction or new RPCs) |
+| `src/modules/recipes/components/recipe-card.tsx` | new | Dashboard tile — title, cover image fallback, section/step count, updated label, public chip |
+| `src/modules/recipes/components/recipe-card-grid.tsx` | new | Card grid; mirrors `palette-card-grid.tsx` |
+| `src/modules/recipes/components/recipe-detail.tsx` | new | Read-only render: header card + summary + sections + steps |
+| `src/modules/recipes/components/recipe-form.tsx` | new | Title + summary (`MarkdownEditor`) + isPublic checkbox + palette combobox; bound to `updateRecipe` via `useActionState` |
+| `src/modules/recipes/components/recipe-builder.tsx` | new | Orchestrates form + section list + delete button |
+| `src/modules/recipes/components/recipe-section-list.tsx` | new | Client component: dnd-kit `DndContext` + `SortableContext` for sections; mirrors `palette-paint-list.tsx` |
+| `src/modules/recipes/components/recipe-section-card.tsx` | new | One section: editable title (inline; saves on blur via `updateRecipeSection`), step list, "Add step" button, delete affordance |
+| `src/modules/recipes/components/recipe-step-list.tsx` | new | Per-section step DnD wrapper |
+| `src/modules/recipes/components/recipe-step-card.tsx` | new | Step body editor; placeholder mounts for `<RecipeStepPaintPlaceholder>`, photos, notes (filled in by docs 02/03/04) |
+| `src/modules/recipes/components/recipe-step-paint-placeholder.tsx` | new | "Add paints in step paints feature" stub |
+| `src/modules/recipes/components/delete-recipe-button.tsx` | new | Confirm dialog wrapper around `deleteRecipe` |
+| `src/modules/recipes/components/recipe-empty-state.tsx` | new | Owner / guest empty states (mirrors `palette-empty-state.tsx`) |
+| `src/modules/recipes/components/recipe-palette-combobox.tsx` | new | Lists user's palettes via the palette client service; updates `recipes.palette_id` |
+| `src/modules/recipes/utils/format-recipe-updated-label.ts` | new | "Updated 3 days ago" — copy of `format-palette-updated-label.ts` |
+| `src/modules/recipes/utils/reorder-array.ts` | new | Generic reorder; alternative: import from `@/modules/palettes/utils/reorder-array` (cross-module imports are allowed per `CLAUDE.md`). Plan: import from palettes; do not duplicate. |
+| `src/components/site-nav` (or equivalent) | modify | Add "Recipes" link to authenticated nav |
+| `package.json` | modify (maybe) | `@dnd-kit/core`, `@dnd-kit/sortable` already present (Epic 11 shipped them). `react-markdown` already covered by `src/modules/markdown/` — no new deps. |
+
+### Database changes
+
+None new in this doc — the schema and `set_updated_at` triggers ship in 00. If `setSections` / `setSteps` need an atomic position-replace RPC for parity with `replace_palette_paints`, add `replace_recipe_sections(p_recipe_id, p_rows)` and `replace_recipe_steps(p_section_id, p_rows)` migrations as a follow-on; otherwise the actions can do client-side renumber + per-row update inside a transaction via `supabase.rpc`. Recommend: include both RPCs in the 00 migration (note added there).
+
+### Route / page changes
+
+| Path | Kind | Purpose |
+|------|------|---------|
+| `src/app/user/recipes/page.tsx` | new | "My recipes" dashboard; redirects to `/sign-in?next=/user/recipes` for anon; renders `<RecipeCardGrid>` |
+| `src/app/user/recipes/new/route.ts` | new | POST → `createRecipe` → redirect to `/user/recipes/{id}/edit` (mirrors `palettes/new/route.ts`) |
+| `src/app/user/recipes/[id]/edit/page.tsx` | new | Builder; loads `getRecipeById`, 404 if not owner; renders `<RecipeBuilder>` |
+| `src/app/recipes/[id]/page.tsx` | new | Public read view; `notFound()` if not public and not owner; renders `<RecipeDetail>` |
+| `src/app/recipes/[id]/edit/page.tsx` | new | Owner-aware redirect to `/user/recipes/{id}/edit` (mirrors `palettes/[id]/edit/page.tsx`) for bookmark continuity |
+
+Per `CLAUDE.md`, all four pages are thin: auth check + service call + delegate to module components. `pageMetadata({ title, description, path, noindex })` is used for static metadata; OG tags land in 05.
+
+### Step-by-step ordering
+
+1. Add the eight section/step server actions; each loads via service, mutates, normalizes positions, revalidates `/user/recipes`, `/recipes`, `/user/recipes/{id}/edit`, `/recipes/{id}`.
+2. Extend `recipe-service.ts` with section + step CRUD helpers; if including `replace_recipe_sections` / `replace_recipe_steps` RPCs, wire them here.
+3. Build `<RecipeForm>` (form-only, no card chrome) and `<RecipePaletteCombobox>`. Form posts to `updateRecipe`.
+4. Build `<RecipeStepCard>` with placeholder slots for paints/photos/notes.
+5. Build `<RecipeStepList>` with dnd-kit; copy the seedSlots/latestConfirmedRef rollback pattern from `palette-paint-list.tsx`. Wire to `reorderRecipeSteps`.
+6. Build `<RecipeSectionCard>` with inline-edit title, "Add step" button, embedded `<RecipeStepList>`, delete affordance.
+7. Build `<RecipeSectionList>` with dnd-kit at the section level. Wire to `reorderRecipeSections`.
+8. Build `<RecipeBuilder>` composing form + section list + delete button.
+9. Build `<RecipeDetail>`: read-only render of header, summary (via `MarkdownRenderer`), sections + steps. Each step renders empty placeholder slots for paints/photos/notes.
+10. Build `<RecipeCard>` and `<RecipeCardGrid>` for the dashboard. Card prefers cover photo URL, falls back to a generated swatch / placeholder.
+11. Build `<DeleteRecipeButton>` with confirm dialog (reuse the same dialog primitive as `delete-palette-button.tsx`).
+12. Add the four route pages and the `/user/recipes/new` POST route.
+13. Update authenticated site nav to include "Recipes".
+14. Manual QA per the checklist; `npm run build` and `npm run lint`.
+
+### Risks & considerations
+
+- **Route convention drift**: existing palettes split is `/user/palettes` (private) + `/palettes` (public catalog + detail). The doc as written says `/recipes` for the dashboard. I am implementing the new convention (`/user/recipes` private; `/recipes` public detail). This deliberately diverges from the doc's `Routes` table — flag for review before implementing. Public browse lives at `/recipes/browse` per 05; until 05 ships, `/recipes` (no id) can either redirect to `/recipes/browse` or 404.
+- **Inline-edit save policy**: same risk as palettes — saving on blur is convenient but can surprise on slow networks. Keep actions small and idempotent; if QA pushes back, swap to an explicit per-card "Save" button without changing action signatures.
+- **DnD rollback isolation**: section reorder and step reorder run in separate `useTransition` queues so a failed step reorder doesn't roll back unrelated section edits.
+- **Palette combobox data path**: list uses the palettes client service (`@/modules/palettes/services/palette-service.client`). Cross-module import per `CLAUDE.md` is allowed.
+- **Step-numbering display**: `1.1`, `1.2` etc. computed client-side from section+step `position`. Recompute after every reorder.
+- **`/recipes/[id]/edit` legacy URL**: keep as an owner-aware redirect (matches the palettes pattern in `src/app/palettes/[id]/edit/page.tsx`).
+- **Markdown XSS**: use the existing `<MarkdownRenderer>` and `<MarkdownEditor>` from `@/modules/markdown/` — no `rehype-raw`, no new sanitization story.
+- **Dashboard cover photo**: until 03 ships, `coverPhotoUrl` is always null and the card renders a fallback. Don't block on 03.
+
+### Out of scope
+
+- Per-step paint picker UI (02).
+- Photo upload + cover selection (03).
+- Note authoring + display (04).
+- Public browse, search, OG tags, share UI (05).
+- Drag-to-move steps **between** sections — out of scope; v1 reorders only within a section.

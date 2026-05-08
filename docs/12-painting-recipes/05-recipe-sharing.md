@@ -172,3 +172,79 @@ The feed page in `07-community-social/02-community-feed.md` will mix recipes and
 
 - This feature is the recipe epic's bridge into the community surfaces in Epic 7. Once both ship, recipes integrate with the community feed and user profile pages without further work in this epic.
 - Palette sharing (the parallel feature in Epic 11) follows the same pattern — if both epics ship, consider extracting a shared `share-panel` and `browse-filters` component in a follow-up. Don't pre-extract here.
+
+## Implementation Plan
+
+### Overview
+
+Depends on 00–04 shipping first. This feature exposes public recipes to discovery: a paginated browse page at `/recipes/browse`, OG/Twitter metadata on the recipe detail page (with a dynamic OG image route), and a "Copy share link" affordance on both the builder and the read view. Browse-page filtering and sorting are URL-driven (search params), matching the Next.js App Router pattern already used by `/palettes` (numbered pagination via `?page=`). The detail page already exists from 01; this doc adds `generateMetadata` exporting OG + Twitter tags. The OG image uses the existing `buildOgUrl('recipe', id)` helper pattern from `@/modules/seo/utils/build-og-url.ts`, which requires adding `'recipe'` to the `OgEntity` union plus a new `/api/og/recipe/[id]/route.ts` endpoint.
+
+### Module changes
+
+| Path | Kind | Purpose |
+|------|------|---------|
+| `src/modules/recipes/services/recipe-service.ts` | modify | Replace simple `listPublicRecipes({ limit, offset })` with filtered/sorted version; add `countPublicRecipes(opts)` to honor filters; add `listRecentPublicRecipes(limit)` thin wrapper for the community feed in Epic 7 |
+| `src/modules/recipes/types/recipe-summary.ts` | modify | Add `paintCount: number` and `author: { id, handle, displayName } \| null` |
+| `src/modules/recipes/components/recipe-browse-page.tsx` | new | Layout: header + `<RecipeBrowseFilters>` + `<RecipeBrowseGrid>` + pagination |
+| `src/modules/recipes/components/recipe-browse-filters.tsx` | new | Client component: search input + sort selector + filter chips; updates `router.replace` with new search params |
+| `src/modules/recipes/components/recipe-browse-grid.tsx` | new | Renders `RecipeCard` from 01 with paginated data |
+| `src/modules/recipes/components/recipe-share-panel.tsx` | new | Builder-only; visible when `is_public`; URL field + "Copy link" + "Copy as markdown" buttons |
+| `src/modules/recipes/components/recipe-share-button.tsx` | new | Read-view icon button; popover with the same URL + copy |
+| `src/modules/recipes/components/recipe-detail.tsx` | modify | Renders `<RecipeShareButton>` (when public) |
+| `src/modules/recipes/components/recipe-builder.tsx` | modify | Renders `<RecipeSharePanel>` when `recipe.isPublic` |
+| `src/modules/seo/utils/build-og-url.ts` | modify | Extend `OgEntity` union with `'recipe'` |
+
+### Database changes
+
+None for v1 — search uses `ilike` on `title`, paint filter uses a join through `recipe_step_paints`, and `most_paints` sort uses a count + group-by. If performance lags in QA, add a denormalized `paint_count` integer column on `recipes` (updated by trigger on `recipe_step_paints` insert/delete) — that's a follow-up migration, not a 05 deliverable. Same story for `pg_trgm` index on `title`.
+
+### Route / page changes
+
+| Path | Kind | Purpose |
+|------|------|---------|
+| `src/app/recipes/browse/page.tsx` | new | Server component: reads `q`, `paintId`, `sort`, `page` from `searchParams`; calls `listPublicRecipes`; renders `<RecipeBrowsePage>`. Applies `pageMetadata({ title: 'Browse recipes', path: '/recipes/browse' })`. |
+| `src/app/recipes/[id]/page.tsx` | modify | Add `generateMetadata` exporting OG + Twitter tags; private/missing recipes return generic noindex metadata so the title isn't leaked |
+| `src/app/api/og/recipe/[id]/route.ts` | new | Dynamic OG image endpoint — uses `next/og` `ImageResponse`; reads recipe via the server service; returns a 1200x630 image with title + cover photo + paint swatches. Mirrors the existing `/api/og/palette/[id]` pattern. |
+| `src/app/recipes/page.tsx` | new (or redirect) | Coexists with `/recipes/browse`. Recommend: redirect `/recipes` → `/recipes/browse` for discoverability, since 01's per-doc plan reuses `/recipes` for the detail-only namespace. |
+
+### Step-by-step ordering
+
+1. Extend `RecipeSummary` with `paintCount` and `author`.
+2. Modify `recipe-service.ts.listPublicRecipes` to accept `{ q?, paintId?, sort?, page?, pageSize? }` and return `{ recipes, total }`. Implement:
+   - Base query: `recipes(*, profiles(handle, display_name), recipe_sections(recipe_steps(recipe_step_paints(paint_id))))` with `is_public=true`.
+   - `q`: `.ilike('title', '%' + q + '%')`.
+   - `paintId`: nested filter via `recipe_sections.recipe_steps.recipe_step_paints.paint_id`.
+   - `sort`: `'newest' → created_at desc`, `'recently_updated' → updated_at desc`, `'most_paints' → joined count desc` (compute in JS post-fetch for v1 if PostgREST joins are awkward; revisit with a DB view if needed).
+   - Pagination: `.range(offset, offset + limit - 1)` and a separate `count: 'exact', head: true` query for `total`.
+3. Add `listRecentPublicRecipes(limit)` thin wrapper for Epic 7's feed.
+4. Add `'recipe'` to `OgEntity` in `build-og-url.ts`.
+5. Build `/api/og/recipe/[id]/route.ts` based on the existing `/api/og/palette/[id]` pattern. Output: 1200x630 image with title, optional cover, swatch strip from up to 8 step paints.
+6. Modify `/recipes/[id]/page.tsx` to export `generateMetadata` — mirror the existing palette `generateMetadata` block. For private/missing: return `pageMetadata({ title: 'Recipe not found', noindex: true })`.
+7. Build `<RecipeBrowseFilters>` (client) — text input (debounced), sort `<select>`, "filter by paint" chip popover (uses `use-paint-search`). Each change calls `router.replace('/recipes/browse?…')`.
+8. Build `<RecipeBrowseGrid>` and `<RecipeBrowsePage>` (server). 24 cards per page; numbered pagination (Prev / Page X / Next).
+9. Build `/recipes/browse/page.tsx` and (optionally) `/recipes/page.tsx` redirect.
+10. Build `<RecipeSharePanel>` and `<RecipeShareButton>`. Use `navigator.clipboard.writeText` (client component) and toast on success. The "Copy as markdown" button copies `[Title](https://grimify.app/recipes/{id})`.
+11. Modify `<RecipeBuilder>` and `<RecipeDetail>` to mount the share UI.
+12. Manual QA per checklist; `npm run build` + `npm run lint`.
+
+### Risks & considerations
+
+- **OG image absolute URLs**: `metadataBase` in the root layout already promotes relative URLs to absolute when Next.js renders the meta tags. Use `buildOgUrl('recipe', id)` and trust the promotion. Verified pattern in `/palettes/[id]/page.tsx`.
+- **Privacy in metadata**: `generateMetadata` must return generic metadata for private or missing recipes — never leak the title via `<title>` to URL-probing bots.
+- **Search performance**: `ilike '%q%'` doesn't use B-tree indexes. Fine for v1 dataset; if results slow, add a `pg_trgm` GIN index on `title`.
+- **`most_paints` sort cost**: nested join + count is fine at v1 scale. Add a denormalized `paint_count` column with triggers if hot.
+- **Author profile dependency**: `author.handle` comes from `profiles.handle`. If the handle column doesn't exist yet (Epic 7 may add it), fall back to `display_name` and skip the link.
+- **Numbered pagination**: URL-stable, easier to share. Skip "Load more" infinite scroll for v1.
+- **Filter chip UX**: paint-id filter requires showing the resolved paint name (not the UUID) in the chip. Resolve via a side `getPaintById` lookup at page render time.
+- **Bot indexing**: `is_public = true` recipes should be indexable — `noindex` only when private. The global metadata setup in `00-marketing-and-branding/01-metadata-and-opengraph` covers robots.txt; no extra rules needed.
+- **Deferred**: like / view counts and "popular this week" sort are out of scope; revisit when a likes table ships.
+- **Coexistence with 01's `/recipes` namespace**: 01 may use `/recipes/[id]` for detail. Make sure `/recipes/browse/page.tsx` is created before any catch-all route is added that would shadow it.
+
+### Out of scope
+
+- "Popular this week" / like-based sorting (needs likes; deferred until Epic 7).
+- View counts / analytics tracking.
+- Tag-based filtering (needs a tags schema; future).
+- Author profile page (`/users/[handle]`) — Epic 7 owns it; this doc only exposes the data shape.
+- Embeddable recipe cards / oEmbed.
+- Atom/RSS feeds for new public recipes.

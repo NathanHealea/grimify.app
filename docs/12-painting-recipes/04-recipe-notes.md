@@ -124,3 +124,61 @@ A small "Edit" / "Preview" toggle in the corner switches between modes. Auto-sav
 
 - Schema and indexes ship in `00-recipe-schema`. This feature is purely UI + actions on top.
 - This is the smallest feature in the recipe epic — keep it tight.
+
+## Implementation Plan
+
+### Overview
+
+Depends on 00 (schema) and 01 (builder + read view). Smallest feature in the epic — adds four server actions, a list component, a card component (with edit/preview toggle), and a read-only display component, then mounts them inside `<RecipeBuilder>` (recipe-level) and `<RecipeStepCard>` (step-level). Reuses the same `MarkdownEditor` and `MarkdownRenderer` components from `@/modules/markdown/` that the palette description and recipe summary already use. Reorder uses the same dnd-kit pattern as everywhere else. The XOR parent (recipe-or-step) is enforced via a discriminated `parent` union in action signatures and the schema-level CHECK from 00.
+
+### Module changes
+
+| Path | Kind | Purpose |
+|------|------|---------|
+| `src/modules/recipes/actions/add-recipe-note.ts` | new | Inserts at `position = max + 1`; accepts `parent: { kind: 'recipe', recipeId } \| { kind: 'step', stepId }` and `body` |
+| `src/modules/recipes/actions/update-recipe-note.ts` | new | Patches body; rejects empty (caller should call delete instead) |
+| `src/modules/recipes/actions/delete-recipe-note.ts` | new | Deletes + normalizes sibling positions |
+| `src/modules/recipes/actions/reorder-recipe-notes.ts` | new | Two-phase reorder; mirrors `reorder-palette-paints` exactly, scoped by parent |
+| `src/modules/recipes/components/recipe-note-list.tsx` | new | DnD wrapper around `RecipeNoteCard`s; mounts in builder + step card |
+| `src/modules/recipes/components/recipe-note-card.tsx` | new | Single editable note with Edit/Preview toggle; auto-saves on blur |
+| `src/modules/recipes/components/recipe-note-display.tsx` | new | Read-only render for the detail view; left-border accent style |
+| `src/modules/recipes/components/recipe-builder.tsx` | modify | Mounts recipe-level `<RecipeNoteList parent={{ kind: 'recipe', recipeId }} />` between form and section list |
+| `src/modules/recipes/components/recipe-step-card.tsx` | modify | Mounts step-level `<RecipeNoteList>` below the step body, above photos |
+| `src/modules/recipes/components/recipe-detail.tsx` | modify | Renders `<RecipeNoteDisplay>` blocks at recipe level (after summary) and at step level (after instructions) |
+
+No new types are required — `RecipeNote` ships in 00. No service-layer changes required if action bodies query/mutate directly via the Supabase client; alternatively expose `noteService.add/update/delete/list` helpers in `recipe-service.ts` for parity. Recommend exposing them for consistency with palettes patterns.
+
+### Database changes
+
+None. Schema, RLS, and indexes ship in 00.
+
+### Route / page changes
+
+None.
+
+### Step-by-step ordering
+
+1. Implement the four actions; each verifies ownership via the service, mutates, revalidates `/user/recipes/{id}/edit` and `/recipes/{id}`. Validation: body 1–5000 chars after trimming.
+2. Build `<RecipeNoteCard>` with two modes — `<MarkdownEditor>` in edit mode, `<MarkdownRenderer>` in preview. Toggle button in the corner. Auto-save on textarea blur via `updateRecipeNote`.
+3. Build `<RecipeNoteList>` — dnd-kit `DndContext` + `SortableContext`; two-phase optimistic reorder with rollback. "Add note" button below the list creates a new note in edit mode (blank body, calls `addRecipeNote` only when first blur saves with content; or pre-create with empty body and let validation gate the save).
+4. Build `<RecipeNoteDisplay>` — read-only markdown render with `border-l-4 border-primary pl-4` for distinction.
+5. Modify `<RecipeBuilder>` and `<RecipeStepCard>` to mount `<RecipeNoteList>`.
+6. Modify `<RecipeDetail>` to render note blocks at the appropriate spots.
+7. Manual QA per checklist; `npm run build` + `npm run lint`.
+
+### Risks & considerations
+
+- **Markdown XSS**: reuse `<MarkdownRenderer>` from `@/modules/markdown/` — it already enforces no raw HTML. Don't duplicate sanitization logic. Open external links in a new tab.
+- **Auto-save UX**: same trade-off as recipe step inline edits. Show "Saving…" inline; on failure roll back to the previously saved body and toast the error.
+- **Empty notes**: reject empty bodies on save. If a user clears a note's text, treat it as a delete (with confirm). Implementation: client checks for empty before calling `updateRecipeNote`; if empty, prompts a confirm to delete instead.
+- **Confusion with three text fields per step**: step has `instructions`, `notes[]`, and `step_paints[].note`. The labels in the UI must distinguish them clearly: instructions = "what to do," notes = "additional commentary," paint note = "context about this paint." Visual styling already differs (instructions is the main step text; notes have the left-border accent; paint notes are inline tiny muted text).
+- **Reorder**: dnd-kit pattern is identical to palette/section/step reorder — copy from those.
+- **Cross-parent reorder**: out of scope for v1.
+- **Optimistic add UX**: when a user clicks "Add note," show the new card immediately in edit mode with a placeholder id; only `addRecipeNote` runs on first save. If the user clicks "Add note" multiple times without saving, allow it but cap at e.g. 5 unsaved drafts.
+
+### Out of scope
+
+- Cross-parent move (recipe-level note → step-level note).
+- Tagging / categorizing notes.
+- Pinning a note to the top of a step.
+- Per-note visibility (all notes inherit the recipe's `is_public`).
