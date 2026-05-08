@@ -45,7 +45,7 @@ export default async function AdminUserCollectionPage({
   const isSelf = currentUser.id === id
 
   return (
-    <Main as="div" width="5xl">
+    <Main as="div">
       <div className="mb-6">
         <Link
           href={`/admin/users/${id}`}

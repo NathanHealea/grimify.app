@@ -63,7 +63,7 @@ export default async function ProfileSetupPage() {
   const displayName = suggestedName ?? profile?.display_name ?? ''
 
   return (
-    <Main width="full" padding="none" className="flex min-h-screen items-center justify-center px-4 py-24">
+    <Main>
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Complete your profile</CardTitle>

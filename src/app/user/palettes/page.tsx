@@ -25,7 +25,7 @@ export default async function UserPalettesPage() {
   const summaries = await service.listPalettesForUser(user.id)
 
   return (
-    <Main width="6xl">
+    <Main>
       <div className="mb-8 flex items-center justify-between gap-4">
         <h1 className="text-3xl font-bold">My palettes</h1>
         <form action="/user/palettes/new" method="post">

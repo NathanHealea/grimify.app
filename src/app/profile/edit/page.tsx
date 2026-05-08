@@ -22,7 +22,7 @@ export default async function ProfileEditPage() {
   const hasEmailIdentity = user?.identities?.some((identity) => identity.provider === 'email') ?? false
 
   return (
-    <Main width="full" padding="none" className="flex min-h-screen justify-center px-4 py-24">
+    <Main>
       <div className="w-full max-w-md space-y-6">
         <h1 className="text-2xl font-bold">Edit Profile</h1>
 

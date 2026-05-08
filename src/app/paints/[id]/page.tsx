@@ -65,7 +65,7 @@ export default async function PaintDetailPage({ params }: { params: Promise<{ id
   ])
 
   return (
-    <Main width="4xl">
+    <Main>
       <Breadcrumbs items={[{ label: 'Paints', href: '/paints' }, { label: paint.name }]} />
       <PaintDetail
         paint={paint}

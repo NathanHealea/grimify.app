@@ -35,7 +35,7 @@ export default async function UserPaletteEditPage({
   if (!palette || palette.userId !== user.id) notFound()
 
   return (
-    <Main width="3xl">
+    <Main>
       <Link
         href={`/palettes/${id}`}
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"

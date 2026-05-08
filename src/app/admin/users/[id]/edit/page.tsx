@@ -60,7 +60,7 @@ export default async function AdminEditUserPage({
   }
 
   return (
-    <Main as="div" width="2xl">
+    <Main as="div">
       <div className="mb-6">
         <Link
           href={`/admin/users/${id}`}

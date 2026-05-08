@@ -19,7 +19,7 @@ export default async function Home() {
   } = await supabase.auth.getUser()
 
   return (
-    <Main width="full" padding="none" className="flex flex-1 flex-col">
+    <Main>
       <Hero />
       <FeatureGrid />
       <CtaSection isAuthenticated={!!user} />

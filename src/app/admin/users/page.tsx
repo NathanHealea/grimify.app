@@ -61,7 +61,7 @@ export default async function AdminUsersPage({
   }
 
   return (
-    <Main as="div" width="5xl">
+    <Main as="div">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">User Management</h1>
         <p className="text-sm text-muted-foreground">

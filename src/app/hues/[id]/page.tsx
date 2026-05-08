@@ -87,7 +87,7 @@ export default async function HuePage({
     )
 
     return (
-      <Main width="6xl">
+      <Main>
         <Breadcrumbs items={[{ label: 'Paints', href: '/paints' }, { label: hue.name }]} />
 
         <div className="mb-8 flex items-center gap-4">
@@ -135,7 +135,7 @@ export default async function HuePage({
   const paints = await paintService.getPaintsByHueId(id, { limit: pageSize, offset })
 
   return (
-    <Main width="6xl">
+    <Main>
       <Breadcrumbs
         items={[
           { label: 'Paints', href: '/paints' },

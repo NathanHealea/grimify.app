@@ -41,7 +41,7 @@ export default async function CollectionPaintsPage({
   ])
 
   return (
-    <Main width="6xl">
+    <Main>
       <div className="mb-8 flex flex-col gap-4">
         <h1 className="text-3xl font-bold">My Collection</h1>
         <p className="text-sm text-muted-foreground">

@@ -29,7 +29,7 @@ export default async function SchemesPage() {
   }
 
   return (
-    <Main width="container" padding="compact">
+    <Main>
       <h1 className="mb-2 text-2xl font-bold">Color Scheme Explorer</h1>
       <p className="mb-6 text-muted-foreground">
         Select a base color to generate complementary, analogous, triadic, and more color schemes.

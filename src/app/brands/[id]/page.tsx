@@ -75,7 +75,7 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ id
   }
 
   return (
-    <Main width="6xl">
+    <Main>
       <Breadcrumbs items={[{ label: 'Brands', href: '/brands' }, { label: brand.name }]} />
       <div className="mb-8 flex flex-col gap-2">
         <h1 className="text-3xl font-bold">{brand.name}</h1>

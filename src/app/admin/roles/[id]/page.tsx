@@ -63,7 +63,7 @@ export default async function AdminRoleDetailPage({
   )
 
   return (
-    <Main as="div" width="4xl">
+    <Main as="div">
       <div className="mb-6">
         <Link
           href="/admin/roles"

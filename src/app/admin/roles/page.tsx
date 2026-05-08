@@ -29,7 +29,7 @@ export default async function AdminRolesPage() {
   }))
 
   return (
-    <Main as="div" width="4xl">
+    <Main as="div">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Role Management</h1>
         <p className="text-sm text-muted-foreground">

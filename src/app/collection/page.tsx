@@ -28,7 +28,7 @@ export default async function CollectionPage() {
   ])
 
   return (
-    <Main width="6xl" className="space-y-10">
+    <Main>
       <h1 className="text-3xl font-bold">My Collection</h1>
       <CollectionStats stats={stats} />
       <CollectionSearch initialPaints={recentPaints} />

@@ -72,7 +72,7 @@ export default async function UserProfilePage({
     : null
 
   return (
-    <Main width="2xl">
+    <Main>
       <Card>
         <CardHeader className="flex flex-row items-center gap-4">
           {profile.avatar_url ? (

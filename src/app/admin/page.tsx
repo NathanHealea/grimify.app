@@ -56,7 +56,7 @@ export default async function AdminDashboardPage() {
     .limit(5)
 
   return (
-    <Main as="div" width="4xl" padding="none">
+    <Main as="div">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
         <p className="text-sm text-muted-foreground">

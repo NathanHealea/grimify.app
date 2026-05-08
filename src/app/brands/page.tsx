@@ -14,7 +14,7 @@ export default async function BrandsPage() {
   const brands = await brandService.getAllBrands()
 
   return (
-    <Main width="6xl">
+    <Main>
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Brands</h1>
         <p className="mt-2 text-sm text-muted-foreground">

@@ -57,7 +57,7 @@ export default async function AdminUserDetailPage({
     : null
 
   return (
-    <Main as="div" width="3xl">
+    <Main as="div">
       <div className="mb-6 flex items-center justify-between">
         <Link
           href="/admin/users"

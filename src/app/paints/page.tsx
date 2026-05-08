@@ -87,7 +87,7 @@ export default async function PaintsPage({
   const huePaintCounts = Object.fromEntries(hueCountEntries)
 
   return (
-    <Main width="6xl">
+    <Main>
       <div className="mb-8 flex flex-col gap-4">
         <h1 className="text-3xl font-bold">Paints</h1>
         <p className="text-sm text-muted-foreground">

@@ -39,7 +39,7 @@ export default async function PalettesCatalogPage({
   const hasNext = pageNum < totalPages
 
   return (
-    <Main width="6xl">
+    <Main>
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Community palettes</h1>

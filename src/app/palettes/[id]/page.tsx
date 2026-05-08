@@ -68,7 +68,7 @@ export default async function PaletteDetailPage({
     .single()
 
   return (
-    <Main width="4xl">
+    <Main>
       <PaletteDetail
         palette={palette}
         viewer={user ? { id: user.id } : null}
