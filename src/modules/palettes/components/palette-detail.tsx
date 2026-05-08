@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { Palette } from '@/modules/palettes/types/palette'
 import { PaletteSwatchStrip } from '@/modules/palettes/components/palette-swatch-strip'
 import { PalettePaintList } from '@/modules/palettes/components/palette-paint-list'
+import { PaletteGroupedPaintList } from '@/modules/palettes/components/palette-grouped-paint-list'
 import { PaletteEmptyState } from '@/modules/palettes/components/palette-empty-state'
 import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
 
@@ -69,11 +70,20 @@ export function PaletteDetail({
       )}
 
       {palette.paints.length > 0 ? (
-        <PalettePaintList
-          paletteId={palette.id}
-          paints={palette.paints}
-          canEdit={false}
-        />
+        palette.groups.length > 0 ? (
+          <PaletteGroupedPaintList
+            paletteId={palette.id}
+            paints={palette.paints}
+            groups={palette.groups}
+            canEdit={false}
+          />
+        ) : (
+          <PalettePaintList
+            paletteId={palette.id}
+            paints={palette.paints}
+            canEdit={false}
+          />
+        )
       ) : (
         <PaletteEmptyState variant="guest" />
       )}
