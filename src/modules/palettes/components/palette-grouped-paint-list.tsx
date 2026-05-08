@@ -94,6 +94,14 @@ export function PaletteGroupedPaintList({
   const latestConfirmedSlotsRef = useRef<DraggableSlot[]>(slots)
   const latestConfirmedGroupsRef = useRef<DraggableGroup[]>(draggableGroups)
 
+  // Always holds the latest slots value — kept in sync via useEffect and also
+  // updated synchronously within handleDragOver so handleDragEnd never reads a stale closure.
+  const slotsRef = useRef<DraggableSlot[]>(slots)
+
+  useEffect(() => {
+    slotsRef.current = slots
+  }, [slots])
+
   useEffect(() => {
     setSlots(seedSlots(paints))
   }, [paints])
@@ -122,18 +130,40 @@ export function PaletteGroupedPaintList({
   }
 
   /**
-   * Optimistically moves a paint to a different group when it hovers over that
-   * group's section or header during a drag. `SortableContext`s are scoped per
-   * group so only same-group items animate; this handler bridges the boundary.
+   * Reorders `group`'s slots within the flat `currentSlots` array by replacing
+   * the slots at their original array positions with the reordered sequence.
+   * Other groups' slots are untouched.
+   */
+  function applyGroupReorder(
+    currentSlots: DraggableSlot[],
+    groupId: string | null,
+    reorderedGroup: DraggableSlot[],
+  ): DraggableSlot[] {
+    const groupIndices: number[] = []
+    currentSlots.forEach((s, i) => {
+      if (s.groupId === groupId) groupIndices.push(i)
+    })
+    const next = [...currentSlots]
+    groupIndices.forEach((arrIdx, i) => {
+      next[arrIdx] = reorderedGroup[i]
+    })
+    return next
+  }
+
+  /**
+   * Optimistically moves a paint to a different group while dragging.
+   * Updates `slotsRef` synchronously so `handleDragEnd` always reads
+   * the latest group assignment regardless of React render timing.
    */
   function handleDragOver(event: DragOverEvent) {
     const { active, over } = event
     if (!over || active.id === over.id) return
 
-    const activeSlot = slots.find((s) => s.dndId === active.id)
+    const currentSlots = slotsRef.current
+    const activeSlot = currentSlots.find((s) => s.dndId === active.id)
     if (!activeSlot) return // dragging a group header, not a paint
 
-    const overSlot = slots.find((s) => s.dndId === over.id)
+    const overSlot = currentSlots.find((s) => s.dndId === over.id)
     const overGroup = draggableGroups.find((dg) => dg.dndId === over.id)
 
     let targetGroupId: string | null
@@ -147,9 +177,11 @@ export function PaletteGroupedPaintList({
 
     if (activeSlot.groupId === targetGroupId) return
 
-    setSlots((prev) =>
-      prev.map((s) => (s.dndId === activeSlot.dndId ? { ...s, groupId: targetGroupId } : s)),
+    const updated = currentSlots.map((s) =>
+      s.dndId === activeSlot.dndId ? { ...s, groupId: targetGroupId } : s,
     )
+    slotsRef.current = updated // synchronous update for handleDragEnd
+    setSlots(updated)
   }
 
   function handleDragEnd(event: DragEndEvent) {
@@ -157,6 +189,7 @@ export function PaletteGroupedPaintList({
 
     if (!over) {
       // Drag cancelled — roll back any cross-group groupId changes from dragOver
+      slotsRef.current = latestConfirmedSlotsRef.current
       setSlots(latestConfirmedSlotsRef.current)
       return
     }
@@ -188,29 +221,32 @@ export function PaletteGroupedPaintList({
     }
 
     // ── Paint reorder (within-group or cross-group) ────────────────────────────
-    const activeSlot = slots.find((s) => s.dndId === active.id)
+    // Read from slotsRef so we always have the groupId updated by handleDragOver,
+    // even if React hasn't committed the setSlots call yet.
+    const currentSlots = slotsRef.current
+    const activeSlot = currentSlots.find((s) => s.dndId === active.id)
     if (!activeSlot) return
 
-    // groupId may already be updated by handleDragOver (cross-group case)
     const currentGroupId = activeSlot.groupId
-    const groupSlots = slots.filter((s) => s.groupId === currentGroupId)
+    const groupSlots = currentSlots.filter((s) => s.groupId === currentGroupId)
     const fromIndex = groupSlots.findIndex((s) => s.dndId === active.id)
 
     // Only reorder within the group when the drop target is a paint in the same group
-    const overSlotInGroup = slots.find(
+    const overSlotInGroup = currentSlots.find(
       (s) => s.dndId === over.id && s.groupId === currentGroupId,
     )
     const toIndex = overSlotInGroup
       ? groupSlots.findIndex((s) => s.dndId === over.id)
       : fromIndex
 
-    let newSlots = slots
+    let newSlots = currentSlots
     if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
       const reorderedGroup = reorderArray(groupSlots, fromIndex, toIndex)
-      newSlots = slots.map((s) => {
-        const idx = reorderedGroup.findIndex((rs) => rs.dndId === s.dndId)
-        return idx !== -1 ? reorderedGroup[idx] : s
-      })
+      // Replace slots at their original array positions with the reordered sequence.
+      // Using slots.map() would not change array order — it only replaces values
+      // at existing positions with the same objects, leaving the order intact.
+      newSlots = applyGroupReorder(currentSlots, currentGroupId, reorderedGroup)
+      slotsRef.current = newSlots
       setSlots(newSlots)
     }
 
@@ -223,6 +259,7 @@ export function PaletteGroupedPaintList({
         fullList.map((s) => ({ paintId: s.paintId, note: s.note, groupId: s.groupId })),
       )
       if (result?.error) {
+        slotsRef.current = previousSlots
         setSlots(previousSlots)
         toast.error(result.error)
       } else {
