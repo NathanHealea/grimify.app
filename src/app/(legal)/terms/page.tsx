@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { Main } from '@/components/main'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
@@ -13,8 +14,9 @@ const lastUpdated = 'May 6, 2026'
 
 export default function TermsOfUsePage() {
   return (
-    <article className="space-y-6">
-      <header className="space-y-2">
+    <Main width="3xl" className="px-6">
+      <article className="space-y-6">
+        <header className="space-y-2">
         <h1 className="text-3xl font-semibold tracking-tight">Terms of Use</h1>
         <p className="text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
       </header>
@@ -144,5 +146,6 @@ export default function TermsOfUsePage() {
         </p>
       </section>
     </article>
+    </Main>
   )
 }
