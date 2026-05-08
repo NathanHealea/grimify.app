@@ -68,6 +68,7 @@ Core functionality:
 - [ ] [Code of Conduct](./00-marketing-and-branding/04-code-of-conduct.md)
 - [x] [Homepage marketing landing page](./00-marketing-and-branding/05-homepage-marketing.md)
 - [x] [Per-page skeleton loading screens](./00-marketing-and-branding/06-new-loading-screen.md)
+- [ ] [Shared `<Main>` page wrapper component](./00-marketing-and-branding/07-main-component-refactor.md)
 
 ### Epic: Authentication & User Accounts
 
