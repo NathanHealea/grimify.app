@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 
+import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { createCollectionService } from '@/modules/collection/services/collection-service'
 import { CollectionStats } from '@/modules/collection/components/collection-stats'
@@ -27,11 +28,11 @@ export default async function CollectionPage() {
   ])
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-10 px-4 py-12">
+    <Main>
       <h1 className="text-3xl font-bold">My Collection</h1>
       <CollectionStats stats={stats} />
       <CollectionSearch initialPaints={recentPaints} />
       <RecentPalettesPlaceholder />
-    </div>
+    </Main>
   )
 }

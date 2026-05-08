@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { AssignRoleForm } from '@/modules/admin/components/assign-role-form'
 import { RoleDetailCard } from '@/modules/admin/components/role-detail-card'
@@ -62,7 +63,7 @@ export default async function AdminRoleDetailPage({
   )
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-12">
+    <Main as="div">
       <div className="mb-6">
         <Link
           href="/admin/roles"
@@ -93,6 +94,6 @@ export default async function AdminRoleDetailPage({
           <AssignRoleForm roleId={role.id} availableUsers={availableUsers} />
         </div>
       </div>
-    </div>
+    </Main>
   )
 }

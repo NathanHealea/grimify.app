@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
+import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { PaletteDetail } from '@/modules/palettes/components/palette-detail'
@@ -67,12 +68,12 @@ export default async function PaletteDetailPage({
     .single()
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-12">
+    <Main>
       <PaletteDetail
         palette={palette}
         viewer={user ? { id: user.id } : null}
         ownerDisplayName={ownerProfile?.display_name ?? null}
       />
-    </div>
+    </Main>
   )
 }

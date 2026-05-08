@@ -1,3 +1,4 @@
+import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { CtaSection } from '@/modules/marketing/components/cta-section'
 import { FeatureGrid } from '@/modules/marketing/components/feature-grid'
@@ -18,10 +19,10 @@ export default async function Home() {
   } = await supabase.auth.getUser()
 
   return (
-    <main className="flex flex-1 flex-col">
+    <Main>
       <Hero />
       <FeatureGrid />
       <CtaSection isAuthenticated={!!user} />
-    </main>
+    </Main>
   )
 }

@@ -1,3 +1,4 @@
+import { Main } from '@/components/main'
 import { BrandCard } from '@/modules/brands/components/brand-card'
 import { getBrandService } from '@/modules/brands/services/brand-service.server'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
@@ -13,7 +14,7 @@ export default async function BrandsPage() {
   const brands = await brandService.getAllBrands()
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-12">
+    <Main>
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Brands</h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -30,6 +31,6 @@ export default async function BrandsPage() {
       ) : (
         <p className="text-sm text-muted-foreground">No brands yet.</p>
       )}
-    </div>
+    </Main>
   )
 }

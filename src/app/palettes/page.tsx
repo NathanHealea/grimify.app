@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { PaletteCardGrid } from '@/modules/palettes/components/palette-card-grid'
@@ -38,7 +39,7 @@ export default async function PalettesCatalogPage({
   const hasNext = pageNum < totalPages
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-12">
+    <Main>
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Community palettes</h1>
@@ -98,6 +99,6 @@ export default async function PalettesCatalogPage({
           </Link>
         </div>
       )}
-    </div>
+    </Main>
   )
 }

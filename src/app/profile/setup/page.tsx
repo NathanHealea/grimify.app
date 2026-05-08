@@ -1,3 +1,4 @@
+import { Main } from '@/components/main'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
 import { ProfileForm } from '@/modules/user/components/profile-form'
@@ -62,7 +63,7 @@ export default async function ProfileSetupPage() {
   const displayName = suggestedName ?? profile?.display_name ?? ''
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center px-4 py-24">
+    <Main>
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Complete your profile</CardTitle>
@@ -77,6 +78,6 @@ export default async function ProfileSetupPage() {
           />
         </CardContent>
       </Card>
-    </div>
+    </Main>
   )
 }

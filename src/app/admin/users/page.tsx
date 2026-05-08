@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { AdminUsersTable } from '@/modules/user/components/admin-users-table'
 import { UserSearch } from '@/modules/user/components/user-search'
@@ -60,7 +61,7 @@ export default async function AdminUsersPage({
   }
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-12">
+    <Main as="div">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">User Management</h1>
         <p className="text-sm text-muted-foreground">
@@ -117,6 +118,6 @@ export default async function AdminUsersPage({
           )}
         </div>
       )}
-    </div>
+    </Main>
   )
 }

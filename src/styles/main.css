@@ -1,0 +1,76 @@
+/*
+ * Main
+ *
+ * Centered page-shell wrapper used by every route page in the app.
+ * Provides consistent width, padding, and semantic <main> element.
+ *
+ * No daisyUI counterpart — this is a project-local layout primitive that
+ * follows the same `.component-variant` naming convention as the rest of
+ * the styles directory.
+ *
+ * Classes:
+ *   Base:    .main                  — Centered, full-width container
+ *   Widths:  .main-2xl              — max-w-2xl
+ *            .main-3xl              — max-w-3xl
+ *            .main-4xl              — max-w-4xl
+ *            .main-5xl              — max-w-5xl
+ *            .main-6xl              — max-w-6xl
+ *            .main-md               — max-w-md
+ *            .main-container        — Tailwind container utility
+ *            .main-full             — No max-width
+ *   Padding: .main-padding          — px-4 py-12 (default)
+ *            .main-padding-compact  — px-4 py-8
+ */
+
+/* -------------------------------------------------------------------------
+ * Base
+ * ----------------------------------------------------------------------- */
+.main {
+  @apply mx-auto w-full;
+}
+
+/* -------------------------------------------------------------------------
+ * Widths
+ * ----------------------------------------------------------------------- */
+.main-2xl {
+  @apply max-w-2xl;
+}
+
+.main-3xl {
+  @apply max-w-3xl;
+}
+
+.main-4xl {
+  @apply max-w-4xl;
+}
+
+.main-5xl {
+  @apply max-w-5xl;
+}
+
+.main-6xl {
+  @apply max-w-6xl;
+}
+
+.main-md {
+  @apply max-w-md;
+}
+
+.main-container {
+  @apply container;
+}
+
+.main-full {
+  /* no max-width */
+}
+
+/* -------------------------------------------------------------------------
+ * Padding
+ * ----------------------------------------------------------------------- */
+.main-padding {
+  @apply px-4 py-12;
+}
+
+.main-padding-compact {
+  @apply px-4 py-8;
+}

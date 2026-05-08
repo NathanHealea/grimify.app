@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { AdminCollectionClient } from '@/modules/admin/components/admin-collection-client'
 import { getAdminCollectionPageData } from '@/modules/admin/services/collection-service'
@@ -44,7 +45,7 @@ export default async function AdminUserCollectionPage({
   const isSelf = currentUser.id === id
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-12">
+    <Main as="div">
       <div className="mb-6">
         <Link
           href={`/admin/users/${id}`}
@@ -72,6 +73,6 @@ export default async function AdminUserCollectionPage({
         initialPage={page}
         initialSize={size}
       />
-    </div>
+    </Main>
   )
 }

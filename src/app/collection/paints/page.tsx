@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { CollectionPaintGrid } from '@/modules/collection/components/collection-paint-grid'
 import { getCollectionService } from '@/modules/collection/services/collection-service.server'
@@ -40,7 +41,7 @@ export default async function CollectionPaintsPage({
   ])
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-12">
+    <Main>
       <div className="mb-8 flex flex-col gap-4">
         <h1 className="text-3xl font-bold">My Collection</h1>
         <p className="text-sm text-muted-foreground">
@@ -61,6 +62,6 @@ export default async function CollectionPaintsPage({
           userPaintIds={userPaintIds}
         />
       )}
-    </div>
+    </Main>
   )
 }
