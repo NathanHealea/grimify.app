@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { CSS } from '@dnd-kit/utilities'
 import { useSortable } from '@dnd-kit/sortable'
 import { toast } from 'sonner'
@@ -57,13 +57,22 @@ export function RecipeStepPaintRow({
 
   const [ratio, setRatio] = useState(paint.ratio ?? '')
   const [note, setNote] = useState(paint.note ?? '')
+  const [trackedRatio, setTrackedRatio] = useState(paint.ratio ?? '')
+  const [trackedNote, setTrackedNote] = useState(paint.note ?? '')
 
-  useEffect(() => {
-    setRatio(paint.ratio ?? '')
-  }, [paint.ratio])
-  useEffect(() => {
-    setNote(paint.note ?? '')
-  }, [paint.note])
+  // Re-seed local input state when the server sends fresh paint values.
+  // Setting state during render when an external prop has changed avoids the
+  // effect-only state mirror anti-pattern.
+  const incomingRatio = paint.ratio ?? ''
+  if (incomingRatio !== trackedRatio) {
+    setTrackedRatio(incomingRatio)
+    setRatio(incomingRatio)
+  }
+  const incomingNote = paint.note ?? ''
+  if (incomingNote !== trackedNote) {
+    setTrackedNote(incomingNote)
+    setNote(incomingNote)
+  }
 
   const data = paint.paint
   const brandLine = data
