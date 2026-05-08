@@ -1,8 +1,9 @@
+import { Main } from '@/components/main'
 import { Skeleton, SkeletonCircle } from '@/components/ui/skeleton'
 
 export default function WheelLoading() {
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-8 lg:flex-row">
+    <Main width="full" padding="compact" className="flex flex-col gap-4 lg:flex-row max-w-7xl">
       <div className="flex flex-1 flex-col items-center gap-4 p-4">
         <div className="flex gap-1 rounded-lg border border-border p-1">
           <Skeleton className="h-9 w-24" />
@@ -25,6 +26,6 @@ export default function WheelLoading() {
           ))}
         </div>
       </aside>
-    </div>
+    </Main>
   )
 }

@@ -1,8 +1,9 @@
+import { Main } from '@/components/main'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function PaintsLoading() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-12">
+    <Main width="6xl">
       <div className="mb-8 flex flex-col gap-4">
         <Skeleton className="h-9 w-32" />
         <Skeleton className="h-5 w-48" />
@@ -27,6 +28,6 @@ export default function PaintsLoading() {
           ))}
         </div>
       </div>
-    </div>
+    </Main>
   )
 }
