@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/color-palette-sorting`
 **Merge into:** `v1/main`
 
@@ -14,23 +14,23 @@ Add sort controls to the palette builder so owners can order their paints by nam
 
 ### Reusable sort module
 
-- [ ] `sortPaints` utility accepts any array of paint-shaped objects and returns a new sorted array — the function is pure and decoupled from palettes
-- [ ] `sortPaints` supports five fields: `name`, `paint_type`, `hue`, `saturation`, `lightness`
-- [ ] `sortPaints` supports `asc` and `desc` direction
-- [ ] Sort is **stable** — equal keys keep their original relative order
-- [ ] Nulls/undefined paint metadata sort last in both directions
-- [ ] `PaintSortBar` UI component is reusable and emits a single `onChange(field, direction)` event — it does not own persistence
+- [x] `sortPaints` utility accepts any array of paint-shaped objects and returns a new sorted array — the function is pure and decoupled from palettes
+- [x] `sortPaints` supports five fields: `name`, `paint_type`, `hue`, `saturation`, `lightness`
+- [x] `sortPaints` supports `asc` and `desc` direction
+- [x] Sort is **stable** — equal keys keep their original relative order
+- [x] Nulls/undefined paint metadata sort last in both directions
+- [x] `PaintSortBar` UI component is reusable and emits a single `onChange(field, direction)` event — it does not own persistence
 
 ### Palette integration
 
-- [ ] The palette builder shows the `PaintSortBar` in edit mode, plus an "Apply sort" button
-- [ ] Clicking "Apply sort" opens a confirmation dialog warning the user that the current paint order will be replaced
-- [ ] On confirmation, paints are reordered by the chosen field and direction, positions are persisted via `reorderPalettePaints`, and the list re-renders in the new order
-- [ ] On cancel, no changes are made and the dialog closes
-- [ ] After applying a sort, drag-and-drop reorder continues to work normally on the sorted list
-- [ ] When palette groups are present, sorting applies within each group independently (ungrouped paints are sorted among themselves)
-- [ ] The sort toolbar is only shown in edit mode — it does not appear on the read-only palette detail view
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] The palette builder shows the `PaintSortBar` in edit mode, plus an "Apply sort" button
+- [x] Clicking "Apply sort" opens a confirmation dialog warning the user that the current paint order will be replaced
+- [x] On confirmation, paints are reordered by the chosen field and direction, positions are persisted via `reorderPalettePaints`, and the list re-renders in the new order
+- [x] On cancel, no changes are made and the dialog closes
+- [x] After applying a sort, drag-and-drop reorder continues to work normally on the sorted list
+- [x] When palette groups are present, sorting applies within each group independently (ungrouped paints are sorted among themselves)
+- [x] The sort toolbar is only shown in edit mode — it does not appear on the read-only palette detail view
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Implementation Plan
 
