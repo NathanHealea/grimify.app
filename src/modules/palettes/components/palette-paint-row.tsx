@@ -6,8 +6,10 @@ import { useSortable } from '@dnd-kit/sortable'
 import { toast } from 'sonner'
 
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import { removePalettePaint } from '@/modules/palettes/actions/remove-palette-paint'
 import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
+import { PalettePaintGroupSelect } from '@/modules/palettes/components/palette-paint-group-select'
 import { PaletteSwapButton } from '@/modules/palettes/components/palette-swap-button'
 
 /**
@@ -29,6 +31,8 @@ import { PaletteSwapButton } from '@/modules/palettes/components/palette-swap-bu
  * @param props.note - Optional per-slot painter note.
  * @param props.canEdit - When true, renders the remove button and drag handle.
  * @param props.dndId - Mount-stable DnD id assigned by `PalettePaintList`; required when `canEdit` is true.
+ * @param props.groups - Named groups for this palette; when present and non-empty in edit mode, renders a group selector.
+ * @param props.currentGroupId - UUID of the group this slot belongs to; `null` for ungrouped.
  */
 export function PalettePaintRow({
   paletteId,
@@ -37,6 +41,8 @@ export function PalettePaintRow({
   note,
   canEdit,
   dndId,
+  groups,
+  currentGroupId,
 }: {
   paletteId: string
   position: number
@@ -44,6 +50,8 @@ export function PalettePaintRow({
   note: string | null
   canEdit: boolean
   dndId?: string
+  groups?: PaletteGroup[]
+  currentGroupId?: string | null
 }) {
   const {
     attributes,
@@ -109,7 +117,15 @@ export function PalettePaintRow({
         )}
       </div>
       {canEdit && (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 flex-wrap justify-end">
+          {groups && groups.length > 0 && (
+            <PalettePaintGroupSelect
+              paletteId={paletteId}
+              position={position}
+              currentGroupId={currentGroupId ?? null}
+              groups={groups}
+            />
+          )}
           <PaletteSwapButton paletteId={paletteId} position={position} paint={paint} />
           <button
             type="button"
