@@ -10,6 +10,7 @@ import { addRecipeStep } from '@/modules/recipes/actions/add-recipe-step'
 import { deleteRecipeSection } from '@/modules/recipes/actions/delete-recipe-section'
 import { updateRecipeSection } from '@/modules/recipes/actions/update-recipe-section'
 import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
+import type { Palette } from '@/modules/palettes/types/palette'
 import { RecipeStepList } from '@/modules/recipes/components/recipe-step-list'
 import type { RecipeSection } from '@/modules/recipes/types/recipe-section'
 
@@ -32,15 +33,19 @@ import type { RecipeSection } from '@/modules/recipes/types/recipe-section'
  * @param props.section - Section row being edited; seeds title and steps.
  * @param props.label - 1-based section number used in step labels (e.g. `"1"`).
  * @param props.dndId - Mount-stable DnD id assigned by the parent section list.
+ * @param props.palette - Hydrated linked palette (or `null`); forwarded to each
+ *   step so its paint picker can render palette-mode candidates.
  */
 export function RecipeSectionCard({
   section,
   label,
   dndId,
+  palette,
 }: {
   section: RecipeSection
   label: string
   dndId: string
+  palette: Palette | null
 }) {
   const {
     attributes,
@@ -152,6 +157,7 @@ export function RecipeSectionCard({
         sectionId={section.id}
         sectionLabel={label}
         steps={section.steps}
+        palette={palette}
       />
 
       <div>
