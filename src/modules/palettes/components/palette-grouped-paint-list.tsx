@@ -94,15 +94,11 @@ export function PaletteGroupedPaintList({
   const latestConfirmedGroupsRef = useRef<DraggableGroup[]>(draggableGroups)
 
   useEffect(() => {
-    const next = seedSlots(paints)
-    setSlots(next)
-    latestConfirmedSlotsRef.current = next
+    setSlots(seedSlots(paints))
   }, [paints])
 
   useEffect(() => {
-    const next = seedGroups(groups)
-    setDraggableGroups(next)
-    latestConfirmedGroupsRef.current = next
+    setDraggableGroups(seedGroups(groups))
   }, [groups])
 
   const sensors = useSensors(
@@ -187,7 +183,6 @@ export function PaletteGroupedPaintList({
   function renderSection(
     sectionSlots: DraggableSlot[],
     groupId: string | null,
-    position: number,
   ) {
     if (sectionSlots.length === 0 && !canEdit) return null
 
@@ -246,7 +241,7 @@ export function PaletteGroupedPaintList({
           items={draggableGroups.map((dg) => dg.dndId)}
           strategy={verticalListSortingStrategy}
         >
-          {draggableGroups.map((dg, i) => {
+          {draggableGroups.map((dg) => {
             const groupSlots = slots.filter((s) => s.groupId === dg.group.id)
             return (
               <div key={dg.dndId} className="flex flex-col gap-1">
@@ -256,7 +251,7 @@ export function PaletteGroupedPaintList({
                   canEdit={canEdit}
                   dndId={canEdit ? dg.dndId : undefined}
                 />
-                {renderSection(groupSlots, dg.group.id, i)}
+                {renderSection(groupSlots, dg.group.id)}
               </div>
             )
           })}
@@ -276,7 +271,7 @@ export function PaletteGroupedPaintList({
                 canEdit={false}
               />
             )}
-            {renderSection(ungrouped, null, draggableGroups.length)}
+            {renderSection(ungrouped, null)}
           </div>
         )
       })()}
