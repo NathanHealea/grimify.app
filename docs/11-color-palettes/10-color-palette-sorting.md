@@ -8,15 +8,15 @@
 
 ## Summary
 
-Add sort controls to the palette builder so owners can order their paints by name, type, hue, saturation, or lightness in ascending or descending order. Sorting is a one-time reorder operation — it updates the underlying paint positions (via the existing `reorderPalettePaints` path) and then the user retains full drag-and-drop control over the resulting order. A confirmation dialog is shown before applying the sort to prevent accidental reordering. When palette groups are present (see `09-color-palette-groups.md`), sorting applies within each group independently rather than across the whole palette.
+Add sort controls to the palette builder so owners can order their paints by name, type, hue, saturation, or lightness in ascending or descending order. Sorting is a one-time reorder operation — it builds the desired order client-side, then persists via the existing `reorderPalettePaints` action (same path as drag-and-drop). After applying a sort the user retains full drag-and-drop control. A confirmation dialog is shown before applying so a click does not silently overwrite hand-tuned ordering. When palette groups are present (see `09-color-palette-groups.md`), sorting applies within each group independently rather than across the whole palette.
 
 ## Acceptance Criteria
 
 - [ ] The palette builder shows a sort toolbar in edit mode with a sort-field dropdown and an ascending/descending direction toggle
 - [ ] Sort fields: Name (alphabetical), Type (paint_type alphabetical), Hue (numeric), Saturation (numeric), Lightness (numeric)
-- [ ] Clicking "Apply Sort" shows a confirmation dialog warning the user that their current paint order will be replaced
-- [ ] On confirmation, paints are reordered by the chosen field and direction, positions are persisted, and the list re-renders in the new order
-- [ ] On cancel, no changes are made
+- [ ] Clicking "Apply sort" opens a confirmation dialog warning the user that the current paint order will be replaced
+- [ ] On confirmation, paints are reordered by the chosen field and direction, positions are persisted via `reorderPalettePaints`, and the list re-renders in the new order
+- [ ] On cancel, no changes are made and the dialog closes
 - [ ] After applying a sort, drag-and-drop reorder continues to work normally on the sorted list
 - [ ] When palette groups are present, sorting applies within each group independently (ungrouped paints are sorted among themselves)
 - [ ] The sort toolbar is only shown in edit mode — it does not appear on the read-only palette detail view
@@ -24,102 +24,154 @@ Add sort controls to the palette builder so owners can order their paints by nam
 
 ## Implementation Plan
 
+This feature is **client-only** — no migrations, no new server actions, no new service methods. The whole feature lives in `src/modules/palettes/` (utils + components) and reuses the existing `reorderPalettePaints` action exactly as drag-and-drop does today (`src/modules/palettes/components/palette-paint-list.tsx:106–118`).
+
 ### Step 1 — Sort utility
 
-Create `src/modules/palettes/utils/sort-palette-paints.ts`.
-
-This is a pure function that takes an array of paint slots and returns a new sorted array. It has no side effects.
+Create `src/modules/palettes/utils/sort-palette-paints.ts`. Pure function, no side effects.
 
 ```ts
-export type PaletteSortField = 'name' | 'paint_type' | 'hue' | 'saturation' | 'lightness'
+export type PaletteSortField =
+  | 'name'
+  | 'paint_type'
+  | 'hue'
+  | 'saturation'
+  | 'lightness'
+
 export type PaletteSortDirection = 'asc' | 'desc'
 ```
 
-Sort logic per field:
-- `name` — case-insensitive string compare on `paint.name`
-- `paint_type` — case-insensitive string compare on `paint.paint_type` (nulls sort last)
-- `hue` — numeric compare on `paint.hue`
-- `saturation` — numeric compare on `paint.saturation`
-- `lightness` — numeric compare on `paint.lightness`
+The function signature is generic so it works against `DraggableSlot` from `palette-paint-list.tsx` (which is the structure the sort actually operates on at the UI layer):
 
-**Group-aware behaviour** (forward-compatible with `09-color-palette-groups`): if any slot in the array has a `groupId` property, partition slots by `groupId`, sort each partition independently, then concatenate (preserving group order). Ungrouped slots (`groupId === null` or absent) are sorted among themselves as a final group.
+```ts
+type SortableSlot = {
+  paint?: {
+    name: string
+    paint_type: string | null
+    hue: number
+    saturation: number
+    lightness: number
+  }
+  groupId?: string | null
+}
 
-The function signature must stay generic enough to accept `DraggableSlot` from `palette-paint-list.tsx` (or any future equivalent in `palette-grouped-paint-list.tsx`). Keep the slot type parameter as a generic constrained to `{ paint?: { name: string; paint_type: string | null; hue: number; saturation: number; lightness: number }; groupId?: string | null }`.
+export function sortPaletteSlots<T extends SortableSlot>(
+  slots: T[],
+  field: PaletteSortField,
+  direction: PaletteSortDirection,
+): T[]
+```
+
+Sort rules per field:
+
+- `name` — case-insensitive `localeCompare` on `paint.name`
+- `paint_type` — case-insensitive `localeCompare` on `paint.paint_type` (nullable)
+- `hue`, `saturation`, `lightness` — numeric subtraction on the field
+
+Edge cases (must be deterministic):
+
+- **Slots with `paint` undefined** ("Paint unavailable" rows) sort **last** in both directions; relative order preserved.
+- **`paint_type` is `null`** sorts **last** in both directions.
+- **Stable sort** — equal keys keep their original index order. Use `Array.prototype.sort` with explicit tiebreaker on original index, or use a `[index, slot]` zip pattern.
+
+**Group-aware behavior** (forward-compatible with `09-color-palette-groups.md`): if any slot in the input has a `groupId` property defined (not `undefined`), partition slots into groups keyed by `groupId` (preserving first-seen group order). Sort each group's slice independently. Concatenate in the original group order. The `groupId === null` ("ungrouped") slice is sorted as its own partition. If no slot has a `groupId` field, fall back to flat sort.
 
 ### Step 2 — `PaletteSortBar` component
 
-Create `src/modules/palettes/components/palette-sort-bar.tsx` — a client component (no server state needed).
+Create `src/modules/palettes/components/palette-sort-bar.tsx` — client component, local state only.
 
 Props:
-- `onApply: (field: PaletteSortField, direction: PaletteSortDirection) => void`
 
-Renders:
-1. A `<select>` (or daisyUI `select` class) for the sort field with labels:
+```ts
+{
+  onApply: (field: PaletteSortField, direction: PaletteSortDirection) => void
+  disabled?: boolean
+}
+```
+
+Local state: `field` (default `'name'`), `direction` (default `'asc'`).
+
+Rendering:
+1. A `<select className="select select-sm">` for the sort field with options:
    - `name` → "Name"
    - `paint_type` → "Type"
    - `hue` → "Hue"
    - `saturation` → "Saturation"
    - `lightness` → "Lightness"
-2. A direction toggle button (↑ Asc / ↓ Desc) that flips between `'asc'` and `'desc'`
-3. An "Apply Sort" button that calls `onApply(field, direction)`
+2. A direction toggle `<button className="btn btn-sm btn-outline">` showing `↑ Asc` or `↓ Desc`; clicking flips between `'asc'` and `'desc'`.
+3. An "Apply sort" `<button className="btn btn-sm btn-primary">` that calls `onApply(field, direction)`.
 
-Local state: `field` (default `'name'`) and `direction` (default `'asc'`).
+The whole bar is wrapped in a row with daisyUI-style classes consistent with the rest of the palette builder.
 
 ### Step 3 — `PaletteSortConfirmDialog` component
 
-Create `src/modules/palettes/components/palette-sort-confirm-dialog.tsx`.
+Create `src/modules/palettes/components/palette-sort-confirm-dialog.tsx`. Pattern mirrors `delete-palette-button.tsx`:
 
-Uses the existing `Dialog` / `DialogContent` / `DialogHeader` / `DialogFooter` primitives from `@/components/ui/dialog`.
+- `Dialog`, `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogFooter` from `@/components/ui/dialog`
+- State-controlled `open` from parent (`PalettePaintList`)
+- No type-to-confirm — sort is reversible (the user can drag rows back), so a single confirm click is enough
+- Uses `useTransition` (the parent owns the action call, so `isPending` here is the parent's transition state passed in as a prop — or a small internal `useTransition` if we move the action call inside the dialog)
 
 Props:
-- `open: boolean`
-- `onConfirm: () => void`
-- `onCancel: () => void`
 
-Renders a dialog with:
+```ts
+{
+  open: boolean
+  onConfirm: () => void
+  onCancel: () => void
+  isPending?: boolean
+}
+```
+
+Body content:
 - Title: "Reorder paints?"
-- Body: "Applying this sort will replace your current paint order. You can still drag and drop paints after sorting."
-- Cancel button (calls `onCancel`)
-- Confirm button (calls `onConfirm`)
+- Description: "Applying this sort will replace your current paint order. You can still drag and drop paints after sorting."
+- Cancel button (`btn btn-sm btn-ghost`, disabled when `isPending`)
+- Confirm button (`btn btn-sm btn-primary`, label "Apply sort" / "Sorting…" while pending)
 
 ### Step 4 — Integrate into `PalettePaintList`
 
-`src/modules/palettes/components/palette-paint-list.tsx` changes:
+`src/modules/palettes/components/palette-paint-list.tsx`. Edit-mode-only changes — read-mode rendering stays untouched.
 
-1. Import `PaletteSortBar`, `PaletteSortConfirmDialog`, and `sortPaletteSlots` + types.
-2. Add local state: `pendingSort: { field: PaletteSortField; direction: PaletteSortDirection } | null` (controls dialog visibility).
-3. When `PaletteSortBar.onApply` fires: set `pendingSort` to open the dialog.
-4. On dialog confirm:
-   - Compute `sortedSlots = sortPaletteSlots(slots, pendingSort.field, pendingSort.direction)`
-   - Update `slots` state with the new order
-   - Update `latestConfirmedRef`
-   - Call `reorderPalettePaints` via `startTransition` with the new positions (same path as drag-and-drop)
-   - Clear `pendingSort`
-5. On dialog cancel: clear `pendingSort`.
-6. Render `<PaletteSortBar>` above the DnD list (inside the edit-mode branch only).
-7. Render `<PaletteSortConfirmDialog>` controlled by `pendingSort !== null`.
+1. **Imports:** add `PaletteSortBar`, `PaletteSortConfirmDialog`, `sortPaletteSlots`, and the two type aliases.
+2. **State:** add `pendingSort: { field: PaletteSortField; direction: PaletteSortDirection } | null` (controls dialog open).
+3. **`handleApplySort(field, direction)`:** sets `pendingSort` to open the dialog. Wired to `<PaletteSortBar onApply={handleApplySort} />`.
+4. **`handleConfirmSort`:**
+   - `const sortedSlots = sortPaletteSlots(slots, pendingSort.field, pendingSort.direction)`
+   - `const previousSlots = latestConfirmedRef.current` (existing rollback ref at line 81)
+   - `setSlots(sortedSlots)`
+   - Inside `startTransition`: call `reorderPalettePaints(paletteId, sortedSlots.map((s) => ({ paintId: s.paintId, note: s.note })))`. On error: `setSlots(previousSlots)` + `toast.error(result.error)`. On success: `latestConfirmedRef.current = sortedSlots`.
+   - Set `pendingSort` to `null`.
+5. **`handleCancelSort`:** set `pendingSort` to `null`.
+6. **Render:** in the edit branch (after the `if (!canEdit)` early return), render `<PaletteSortBar>` above the existing `<DndContext>`, and render `<PaletteSortConfirmDialog open={pendingSort !== null} ... />` alongside.
 
-The optimistic update + rollback pattern already in `handleDragEnd` applies here too — if `reorderPalettePaints` errors, roll back slots to `latestConfirmedRef.current` and show a toast.
+The optimistic-update + rollback pattern is identical to `handleDragEnd` (lines 94–119) — sort is just a different way to compute `newSlots`. Reuse `latestConfirmedRef` as-is.
 
-### Step 5 — Group-aware follow-up (deferred to groups feature)
+The `reorderPalettePaints` action's existing **multiset validation** (`actions/reorder-palette-paints.ts:49–60`) accepts any permutation of the current slot list. Since `sortPaletteSlots` only reorders existing entries (never adds or removes), the action will accept the sort result without any server-side changes.
 
-When `09-color-palette-groups` is implemented and `PaletteGroupedPaintList` is introduced, that component's sort integration can reuse `PaletteSortBar`, `PaletteSortConfirmDialog`, and `sortPaletteSlots` unchanged. The `groupId` property on `DraggableSlot` will activate the group-partitioned sort path in `sortPaletteSlots` automatically.
+### Step 5 — Group-aware integration (deferred to groups feature)
 
-No changes are needed to `palette-paint-list.tsx` at that point — it remains the flat-list path (used in the read view and any non-grouped palette).
+When `09-color-palette-groups` ships and `PaletteGroupedPaintList` is introduced:
+
+- `PaletteGroupedPaintList` reuses `PaletteSortBar`, `PaletteSortConfirmDialog`, and `sortPaletteSlots` unchanged.
+- The slot type used by `PaletteGroupedPaintList` will include `groupId`; `sortPaletteSlots` automatically activates the group-partitioned path.
+- `palette-paint-list.tsx` remains the flat-list path (read view, plus any palette with no groups). Its slots have no `groupId`, so the same utility falls back to flat sort. No coupling between the two features beyond the shared utility.
 
 ### Affected Files
 
 | File | Changes |
 |------|---------|
-| `src/modules/palettes/utils/sort-palette-paints.ts` | New — sort utility |
+| `src/modules/palettes/utils/sort-palette-paints.ts` | New — pure sort utility with group-aware partitioning |
 | `src/modules/palettes/components/palette-sort-bar.tsx` | New — sort field + direction controls |
-| `src/modules/palettes/components/palette-sort-confirm-dialog.tsx` | New — confirmation dialog |
-| `src/modules/palettes/components/palette-paint-list.tsx` | Add sort bar + dialog + sort-on-confirm logic |
+| `src/modules/palettes/components/palette-sort-confirm-dialog.tsx` | New — confirmation dialog (mirrors `delete-palette-button.tsx` dialog usage) |
+| `src/modules/palettes/components/palette-paint-list.tsx` | Add sort bar + confirm dialog + sort-on-confirm logic; reuse existing `latestConfirmedRef` rollback |
 
 ### Risks & Considerations
 
-- No schema migration required — sort is a client-side reorder using the existing `reorderPalettePaints` action.
-- The `paint_type` field is nullable (`string | null`). Nulls must sort consistently (last in both `asc` and `desc`) to avoid unexpected ordering.
-- Paints with `paint?.paint` undefined (the "Paint unavailable" rows) must be handled gracefully — sort them last or maintain their relative position.
-- The `reorderPalettePaints` action currently accepts `Array<{ paintId: string; note: string | null }>`. The sort simply re-orders the same set, so this is a safe call.
-- When the groups feature ships, `PaletteGroupedPaintList` will need its own sort integration using the same utilities. Document this dependency in the groups feature doc so it doesn't get missed.
+- **No schema migration** — the entire feature is a different way to compute the input to `reorderPalettePaints`. Zero DB impact.
+- **Nullable `paint_type`** — must sort consistently last in both directions to avoid jarring placement.
+- **`paint` undefined ("Paint unavailable") rows** — must also sort last; do not crash on missing fields.
+- **Stable sort guarantee** — modern V8 `Array.prototype.sort` is stable, but the explicit tiebreaker on original index makes the contract obvious to future readers and bulletproof against engine differences (matters for tests if we ever add them).
+- **Confirm dialog reversibility** — sort is destructive to manual ordering but recoverable (the user can drag back). A single confirm click is appropriate; no type-to-confirm needed.
+- **Forward compatibility with groups** — the `SortableSlot` generic constraint with optional `groupId` is the entire integration surface. When the groups feature lands, `PaletteGroupedPaintList` calls the same `sortPaletteSlots` and gets per-group sorting for free.
+- **`reorderPalettePaints` already handles** auth, ownership, multiset validation, position normalization, atomic replace via `replace_palette_paints` RPC, and 4-path revalidation. The sort path adds zero new server-side surface.
