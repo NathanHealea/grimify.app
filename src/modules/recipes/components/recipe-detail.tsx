@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
+import { RecipeStepPaintList } from '@/modules/recipes/components/recipe-step-paint-list'
 import type { Recipe } from '@/modules/recipes/types/recipe'
 
 /**
@@ -9,11 +10,13 @@ import type { Recipe } from '@/modules/recipes/types/recipe'
  * Lays out the recipe top-to-bottom: title header (with an optional "Edit"
  * link for the owner), summary (markdown), then each section as a heading
  * followed by its numbered steps. Each step shows its title, a technique
- * chip, the instructions block (markdown), and placeholder slots for paints
- * and notes — those are filled in by docs 02 and 04.
+ * chip, the instructions block (markdown), and the read-only paint list.
+ * Notes is filled in by doc 04.
  *
- * The component is a server component (no `'use client'`) so it composes the
- * existing {@link MarkdownRenderer} without unnecessary client boundaries.
+ * Step paints render via the shared {@link RecipeStepPaintList} in read mode
+ * (`canEdit={false}`) so the builder and the detail view always agree on
+ * shape and ordering. The list is itself a client component, but the rest
+ * of `RecipeDetail` stays a server component.
  *
  * @param props.recipe - Fully hydrated recipe to render.
  * @param props.canEdit - When true, renders the "Edit" link to the builder.
@@ -106,32 +109,11 @@ export function RecipeDetail({
                             No paints recorded for this step.
                           </p>
                         ) : (
-                          <ul className="flex flex-col gap-1">
-                            {step.paints.map((stepPaint) => (
-                              <li
-                                key={stepPaint.id}
-                                className="flex items-center gap-2 text-xs"
-                              >
-                                {stepPaint.paint && (
-                                  <span
-                                    className="size-4 shrink-0 rounded-sm border border-border"
-                                    style={{
-                                      backgroundColor: stepPaint.paint.hex,
-                                    }}
-                                    aria-hidden
-                                  />
-                                )}
-                                <span className="font-medium">
-                                  {stepPaint.paint?.name ?? 'Paint unavailable'}
-                                </span>
-                                {stepPaint.ratio && (
-                                  <span className="text-muted-foreground">
-                                    — {stepPaint.ratio}
-                                  </span>
-                                )}
-                              </li>
-                            ))}
-                          </ul>
+                          <RecipeStepPaintList
+                            stepId={step.id}
+                            paints={step.paints}
+                            canEdit={false}
+                          />
                         )}
                       </li>
                     )
