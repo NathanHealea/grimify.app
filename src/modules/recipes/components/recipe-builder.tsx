@@ -33,7 +33,11 @@ export function RecipeBuilder({
 
       <div>
         <h2 className="mb-4 text-lg font-semibold">Sections &amp; steps</h2>
-        <RecipeSectionList recipeId={recipe.id} sections={recipe.sections} />
+        <RecipeSectionList
+          recipeId={recipe.id}
+          sections={recipe.sections}
+          palette={recipe.palette}
+        />
       </div>
 
       <div className="flex justify-end border-t border-border pt-4">

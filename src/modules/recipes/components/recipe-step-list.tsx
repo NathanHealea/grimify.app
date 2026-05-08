@@ -18,6 +18,7 @@ import {
 } from '@dnd-kit/sortable'
 import { toast } from 'sonner'
 
+import type { Palette } from '@/modules/palettes/types/palette'
 import { reorderRecipeSteps } from '@/modules/recipes/actions/reorder-recipe-steps'
 import { RecipeStepCard } from '@/modules/recipes/components/recipe-step-card'
 import type { RecipeStep } from '@/modules/recipes/types/recipe-step'
@@ -39,15 +40,19 @@ import { reorderArray } from '@/modules/palettes/utils/reorder-array'
  * @param props.sectionLabel - Section number used to compose step labels
  *   (e.g. `"1"` → `"1.1"`, `"1.2"`).
  * @param props.steps - Ordered array of steps from the server.
+ * @param props.palette - Hydrated linked palette (or `null`); forwarded to each
+ *   step card's paint picker.
  */
 export function RecipeStepList({
   sectionId,
   sectionLabel,
   steps,
+  palette,
 }: {
   sectionId: string
   sectionLabel: string
   steps: RecipeStep[]
+  palette: Palette | null
 }) {
   const [orderedSteps, setOrderedSteps] = useState<RecipeStep[]>(steps)
   const [trackedSteps, setTrackedSteps] = useState<RecipeStep[]>(steps)
@@ -120,6 +125,7 @@ export function RecipeStepList({
               step={step}
               dndId={step.id}
               label={`${sectionLabel}.${index + 1}`}
+              palette={palette}
             />
           ))}
         </SortableContext>
