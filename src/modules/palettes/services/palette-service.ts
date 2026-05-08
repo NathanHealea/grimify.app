@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 import type { Palette } from '@/modules/palettes/types/palette'
+import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import type { PalettePaint } from '@/modules/palettes/types/palette-paint'
 import type { PaletteSummary } from '@/modules/palettes/types/palette-summary'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
@@ -30,17 +31,25 @@ export function createPaletteService(supabase: SupabaseClient) {
     async getPaletteById(id: string): Promise<Palette | null> {
       const { data, error } = await supabase
         .from('palettes')
-        .select('*, palette_paints(position, paint_id, note, added_at, paints(*, product_lines(*, brands(*))))')
+        .select('*, palette_groups(id, name, position, created_at), palette_paints(position, paint_id, note, added_at, group_id, paints(*, product_lines(*, brands(*))))')
         .eq('id', id)
         .maybeSingle()
 
       if (error || !data) return null
+
+      type RawPaletteGroup = {
+        id: string
+        name: string
+        position: number
+        created_at: string
+      }
 
       type RawPalettePaint = {
         position: number
         paint_id: string
         note: string | null
         added_at: string
+        group_id: string | null
         paints: {
           id: string
           name: string
@@ -59,7 +68,18 @@ export function createPaletteService(supabase: SupabaseClient) {
         } | null
       }
 
+      const rawGroups = (data.palette_groups as unknown as RawPaletteGroup[]) ?? []
       const rawPaints = (data.palette_paints as unknown as RawPalettePaint[]) ?? []
+
+      const groups: PaletteGroup[] = rawGroups
+        .sort((a, b) => a.position - b.position)
+        .map((row) => ({
+          id: row.id,
+          paletteId: id,
+          name: row.name,
+          position: row.position,
+          createdAt: row.created_at,
+        }))
 
       const paints: PalettePaint[] = rawPaints
         .sort((a, b) => a.position - b.position)
@@ -88,6 +108,7 @@ export function createPaletteService(supabase: SupabaseClient) {
             paintId: row.paint_id,
             note: row.note,
             addedAt: row.added_at,
+            groupId: row.group_id,
             paint,
           }
         })
@@ -100,6 +121,7 @@ export function createPaletteService(supabase: SupabaseClient) {
         isPublic: data.is_public,
         createdAt: data.created_at,
         updatedAt: data.updated_at,
+        groups,
         paints,
       }
     },
@@ -243,6 +265,7 @@ export function createPaletteService(supabase: SupabaseClient) {
         isPublic: data.is_public,
         createdAt: data.created_at,
         updatedAt: data.updated_at,
+        groups: [],
         paints: [],
       }
     },
@@ -282,6 +305,7 @@ export function createPaletteService(supabase: SupabaseClient) {
         isPublic: data.is_public,
         createdAt: data.created_at,
         updatedAt: data.updated_at,
+        groups: [],
         paints: [],
       }
     },
@@ -311,12 +335,13 @@ export function createPaletteService(supabase: SupabaseClient) {
      */
     async setPalettePaints(
       id: string,
-      paints: Array<{ position: number; paintId: string; note?: string | null }>,
+      paints: Array<{ position: number; paintId: string; note?: string | null; groupId?: string | null }>,
     ): Promise<{ error?: string }> {
       const rows = paints.map((p) => ({
         position: p.position,
         paint_id: p.paintId,
         note: p.note ?? null,
+        group_id: p.groupId ?? null,
       }))
 
       const { error } = await supabase.rpc('replace_palette_paints', {
@@ -412,6 +437,140 @@ export function createPaletteService(supabase: SupabaseClient) {
       const next = normalizePalettePositions([...palette.paints, ...additions])
 
       return this.setPalettePaints(paletteId, next)
+    },
+
+    /**
+     * Creates a new group at the end of the palette's group list.
+     *
+     * The `position` is set to `(current max + 1)` so the group appends last.
+     *
+     * @param paletteId - UUID of the parent palette.
+     * @param name - Display name for the group (1–100 characters).
+     * @returns The created {@link PaletteGroup}, or an `error` string on failure.
+     */
+    async createPaletteGroup(
+      paletteId: string,
+      name: string,
+    ): Promise<{ group?: PaletteGroup; error?: string }> {
+      const { data: existing } = await supabase
+        .from('palette_groups')
+        .select('position')
+        .eq('palette_id', paletteId)
+        .order('position', { ascending: false })
+        .limit(1)
+
+      const maxPosition = existing && existing.length > 0 ? existing[0].position : -1
+
+      const { data, error } = await supabase
+        .from('palette_groups')
+        .insert({ palette_id: paletteId, name, position: maxPosition + 1 })
+        .select()
+        .single()
+
+      if (error || !data) return { error: error?.message ?? 'Failed to create group' }
+
+      return {
+        group: {
+          id: data.id,
+          paletteId: data.palette_id,
+          name: data.name,
+          position: data.position,
+          createdAt: data.created_at,
+        },
+      }
+    },
+
+    /**
+     * Updates a group's name.
+     *
+     * @param groupId - UUID of the group to update.
+     * @param patch.name - New display name.
+     * @returns The updated {@link PaletteGroup}, or an `error` string on failure.
+     */
+    async updatePaletteGroup(
+      groupId: string,
+      patch: { name?: string },
+    ): Promise<{ group?: PaletteGroup; error?: string }> {
+      const { data, error } = await supabase
+        .from('palette_groups')
+        .update({ ...(patch.name !== undefined && { name: patch.name }) })
+        .eq('id', groupId)
+        .select()
+        .single()
+
+      if (error || !data) return { error: error?.message ?? 'Failed to update group' }
+
+      return {
+        group: {
+          id: data.id,
+          paletteId: data.palette_id,
+          name: data.name,
+          position: data.position,
+          createdAt: data.created_at,
+        },
+      }
+    },
+
+    /**
+     * Deletes a group. Member paints become ungrouped (`group_id = NULL`) via
+     * the `ON DELETE SET NULL` FK constraint — no paints are removed.
+     *
+     * @param groupId - UUID of the group to delete.
+     * @returns An object with an optional `error` string on failure.
+     */
+    async deletePaletteGroup(groupId: string): Promise<{ error?: string }> {
+      const { error } = await supabase.from('palette_groups').delete().eq('id', groupId)
+      if (error) return { error: error.message }
+      return {}
+    },
+
+    /**
+     * Batch-updates the `position` of each group in the supplied ordered list.
+     *
+     * Group counts are small, so a sequence of single-row UPDATEs is used
+     * rather than a dedicated RPC.
+     *
+     * @param paletteId - UUID of the parent palette (unused in query but kept for
+     *   action-layer ownership checks).
+     * @param ordered - Array of `{ id, position }` pairs reflecting the new order.
+     * @returns An object with an optional `error` string on first failure.
+     */
+    async reorderPaletteGroups(
+      _paletteId: string,
+      ordered: Array<{ id: string; position: number }>,
+    ): Promise<{ error?: string }> {
+      for (const entry of ordered) {
+        const { error } = await supabase
+          .from('palette_groups')
+          .update({ position: entry.position })
+          .eq('id', entry.id)
+        if (error) return { error: error.message }
+      }
+      return {}
+    },
+
+    /**
+     * Assigns (or clears) the group for a single paint slot identified by
+     * `(palette_id, position)`.
+     *
+     * @param paletteId - UUID of the parent palette.
+     * @param position - 0-based slot index of the paint.
+     * @param groupId - UUID of the target group, or `null` to make the paint ungrouped.
+     * @returns An object with an optional `error` string on failure.
+     */
+    async assignPaintToGroup(
+      paletteId: string,
+      position: number,
+      groupId: string | null,
+    ): Promise<{ error?: string }> {
+      const { error } = await supabase
+        .from('palette_paints')
+        .update({ group_id: groupId })
+        .eq('palette_id', paletteId)
+        .eq('position', position)
+
+      if (error) return { error: error.message }
+      return {}
     },
   }
 }
