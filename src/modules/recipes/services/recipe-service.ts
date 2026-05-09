@@ -152,10 +152,11 @@ export function createRecipeService(supabase: SupabaseClient) {
                 id, step_id, position, paint_id, palette_slot_id, ratio, note,
                 paints(*, product_lines(*, brands(*)))
               ),
-              recipe_photos!recipe_photos_step_id_fkey(id, recipe_id, step_id, position, storage_path, width_px, height_px, caption, created_at)
+              recipe_photos!recipe_photos_step_id_fkey(id, recipe_id, step_id, position, storage_path, width_px, height_px, caption, created_at),
+              recipe_notes!recipe_notes_step_id_fkey(id, recipe_id, step_id, position, body, created_at)
             )
           ),
-          recipe_notes(id, recipe_id, step_id, position, body, created_at),
+          recipe_notes!recipe_notes_recipe_id_fkey(id, recipe_id, step_id, position, body, created_at),
           recipe_photos!recipe_photos_recipe_id_fkey(id, recipe_id, step_id, position, storage_path, width_px, height_px, caption, created_at)
         `,
         )
@@ -204,6 +205,15 @@ export function createRecipeService(supabase: SupabaseClient) {
         created_at: string
       }
 
+      type RawNote = {
+        id: string
+        recipe_id: string | null
+        step_id: string | null
+        position: number
+        body: string
+        created_at: string
+      }
+
       type RawStep = {
         id: string
         section_id: string
@@ -213,6 +223,7 @@ export function createRecipeService(supabase: SupabaseClient) {
         instructions: string | null
         recipe_step_paints: RawStepPaint[]
         recipe_photos: RawPhoto[]
+        recipe_notes: RawNote[]
       }
 
       type RawSection = {
@@ -221,15 +232,6 @@ export function createRecipeService(supabase: SupabaseClient) {
         position: number
         title: string
         recipe_steps: RawStep[]
-      }
-
-      type RawNote = {
-        id: string
-        recipe_id: string | null
-        step_id: string | null
-        position: number
-        body: string
-        created_at: string
       }
 
       type RawRecipe = {
@@ -294,6 +296,15 @@ export function createRecipeService(supabase: SupabaseClient) {
         createdAt: row.created_at,
       })
 
+      const mapNote = (row: RawNote): RecipeNote => ({
+        id: row.id,
+        recipeId: row.recipe_id,
+        stepId: row.step_id,
+        position: row.position,
+        body: row.body,
+        createdAt: row.created_at,
+      })
+
       const mapStep = (row: RawStep): RecipeStep => ({
         id: row.id,
         sectionId: row.section_id,
@@ -309,6 +320,10 @@ export function createRecipeService(supabase: SupabaseClient) {
           .slice()
           .sort((a, b) => a.position - b.position)
           .map(mapPhoto),
+        notes: (row.recipe_notes ?? [])
+          .slice()
+          .sort((a, b) => a.position - b.position)
+          .map(mapNote),
       })
 
       const mapSection = (row: RawSection): RecipeSection => ({
@@ -320,15 +335,6 @@ export function createRecipeService(supabase: SupabaseClient) {
           .slice()
           .sort((a, b) => a.position - b.position)
           .map(mapStep),
-      })
-
-      const mapNote = (row: RawNote): RecipeNote => ({
-        id: row.id,
-        recipeId: row.recipe_id,
-        stepId: row.step_id,
-        position: row.position,
-        body: row.body,
-        createdAt: row.created_at,
       })
 
       const sections = (raw.recipe_sections ?? [])
@@ -807,6 +813,7 @@ export function createRecipeService(supabase: SupabaseClient) {
         instructions: data.instructions,
         paints: [],
         photos: [],
+        notes: [],
       }
     },
 
@@ -851,6 +858,7 @@ export function createRecipeService(supabase: SupabaseClient) {
         instructions: data.instructions,
         paints: [],
         photos: [],
+        notes: [],
       }
     },
 
