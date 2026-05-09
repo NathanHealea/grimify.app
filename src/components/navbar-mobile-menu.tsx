@@ -34,12 +34,11 @@ type Viewer =
     }
 
 /**
- * Mobile/tablet navbar menu — hamburger button + side-sheet drawer.
+ * Mobile/tablet navbar menu — hamburger button + full-screen side-sheet drawer.
  *
  * Renders only below the `lg` breakpoint (the parent `<Navbar>` gates this
- * component with `lg:hidden`). The drawer slides in from the right and
- * contains the same navigation links as the desktop navbar plus an auth
- * section.
+ * component with `lg:hidden`). The drawer covers the full viewport and slides
+ * in from the right with all links right-aligned.
  *
  * Auto-closes when the user taps any link (via {@link SheetClose} wrappers).
  *
@@ -55,7 +54,7 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
       <SheetTrigger className="navbar-mobile-trigger" aria-label="Open navigation menu">
         <Menu className="size-5" aria-hidden />
       </SheetTrigger>
-      <SheetContent side="right">
+      <SheetContent side="right" className="w-full max-w-none">
         <SheetHeader>
           <SheetTitle>
             <Logo size="sm" />
@@ -63,40 +62,40 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
         </SheetHeader>
         <SheetBody>
           <SheetClose asChild>
-            <Link href="/paints" className="btn btn-ghost justify-start">
+            <Link href="/paints" className="btn btn-ghost w-full justify-end">
               Paints
             </Link>
           </SheetClose>
           <SheetClose asChild>
-            <Link href="/brands" className="btn btn-ghost justify-start">
+            <Link href="/brands" className="btn btn-ghost w-full justify-end">
               Brands
             </Link>
           </SheetClose>
           <SheetClose asChild>
-            <Link href="/schemes" className="btn btn-ghost justify-start">
+            <Link href="/schemes" className="btn btn-ghost w-full justify-end">
               Schemes
             </Link>
           </SheetClose>
           <SheetClose asChild>
-            <Link href="/palettes" className="btn btn-ghost justify-start">
+            <Link href="/palettes" className="btn btn-ghost w-full justify-end">
               Palettes
             </Link>
           </SheetClose>
           {viewer.kind === 'user' && (
             <>
               <SheetClose asChild>
-                <Link href="/collection" className="btn btn-ghost justify-start">
+                <Link href="/collection" className="btn btn-ghost w-full justify-end">
                   Collection
                 </Link>
               </SheetClose>
               <SheetClose asChild>
-                <Link href="/user/palettes" className="btn btn-ghost justify-start">
+                <Link href="/user/palettes" className="btn btn-ghost w-full justify-end">
                   My palettes
                 </Link>
               </SheetClose>
               {viewer.isAdmin && (
                 <SheetClose asChild>
-                  <Link href="/admin" className="btn btn-ghost justify-start">
+                  <Link href="/admin" className="btn btn-ghost w-full justify-end">
                     Admin
                   </Link>
                 </SheetClose>
@@ -108,7 +107,8 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
           {viewer.kind === 'user' ? (
             <>
               <SheetClose asChild>
-                <Link href={`/users/${viewer.userId}`} className="btn btn-ghost justify-start">
+                <Link href={`/users/${viewer.userId}`} className="btn btn-ghost w-full justify-end">
+                  <span className="mr-2">{viewer.displayName}</span>
                   {viewer.avatarUrl ? (
                     <Image
                       src={viewer.avatarUrl}
@@ -119,13 +119,12 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
                       referrerPolicy="no-referrer"
                     />
                   ) : null}
-                  <span className="ml-2">{viewer.displayName}</span>
                 </Link>
               </SheetClose>
               <form action={signOut}>
                 <button
                   type="submit"
-                  className="btn btn-ghost btn-destructive w-full justify-start"
+                  className="btn btn-ghost btn-destructive w-full justify-end"
                 >
                   Sign out
                 </button>
@@ -134,12 +133,12 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
           ) : (
             <>
               <SheetClose asChild>
-                <Link href="/sign-in" className="btn btn-ghost justify-start">
+                <Link href="/sign-in" className="btn btn-ghost w-full justify-end">
                   Sign In
                 </Link>
               </SheetClose>
               <SheetClose asChild>
-                <Link href="/sign-up" className="btn btn-primary justify-start">
+                <Link href="/sign-up" className="btn btn-primary w-full justify-end">
                   Sign Up
                 </Link>
               </SheetClose>

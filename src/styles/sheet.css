@@ -25,7 +25,7 @@
  * Overlay (backdrop)
  * ----------------------------------------------------------------------- */
 .sheet-overlay {
-  @apply fixed inset-0 z-50 bg-black/50 backdrop-blur-sm
+  @apply fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm
     data-[state=open]:animate-in data-[state=closed]:animate-out
     data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0;
 }
@@ -36,7 +36,7 @@
  * Content (side panel)
  * ----------------------------------------------------------------------- */
 .sheet-content {
-  @apply fixed z-50 flex h-full w-3/4 max-w-sm flex-col gap-4
+  @apply fixed z-[60] flex h-full w-3/4 max-w-sm flex-col gap-4
     border-border bg-background p-6 shadow-lg
     transition ease-in-out
     data-[state=open]:animate-in data-[state=closed]:animate-out
