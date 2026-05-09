@@ -71,16 +71,6 @@ export async function Navbar() {
         <Link href="/palettes" className="btn btn-ghost btn-sm">
           Palettes
         </Link>
-        {user && (
-          <Link href="/collection" className="btn btn-ghost btn-sm">
-            Collection
-          </Link>
-        )}
-        {user && (
-          <Link href="/user/palettes" className="btn btn-ghost btn-sm">
-            My palettes
-          </Link>
-        )}
       </div>
       <div className="navbar-end hidden gap-2 lg:flex">
         {isAdmin && (
