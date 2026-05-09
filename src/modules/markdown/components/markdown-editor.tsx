@@ -1,19 +1,19 @@
 'use client'
 
-import { useRef, useState, type KeyboardEvent } from 'react'
-import {
-  Bold,
-  Code,
-  Eye,
-  Heading2,
-  Heading3,
-  Italic,
-  List,
-  ListOrdered,
-} from 'lucide-react'
+import { useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { Eye } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
+import { MarkdownToolbarButton } from '@/modules/markdown/components/markdown-toolbar-button'
+import { MarkdownToolbarDropdown } from '@/modules/markdown/components/markdown-toolbar-dropdown'
+import {
+  markdownToolbarPresets,
+  type MarkdownToolbarPreset,
+} from '@/modules/markdown/toolbar-actions/markdown-toolbar-presets'
+import type { MarkdownAction } from '@/modules/markdown/types/markdown-action'
+import type { MarkdownToolbarAction } from '@/modules/markdown/types/markdown-toolbar-action'
+import type { MarkdownToolbarItem } from '@/modules/markdown/types/markdown-toolbar-item'
 
 /**
  * Props accepted by {@link MarkdownEditor}.
@@ -36,26 +36,34 @@ export type MarkdownEditorProps = {
   error?: string
   /** Optional placeholder for the textarea. */
   placeholder?: string
+  /**
+   * Toolbar layout. Pass a custom array of {@link MarkdownToolbarItem}s or the
+   * name of a registered preset (see {@link markdownToolbarPresets}).
+   * Defaults to the `'default'` preset.
+   */
+  toolbar?: MarkdownToolbarItem[] | MarkdownToolbarPreset
 }
 
-type Action =
-  | 'bold'
-  | 'italic'
-  | 'code'
-  | 'h2'
-  | 'h3'
-  | 'bullet'
-  | 'numbered'
+/** Type guard — toolbar items with an `items` array are dropdown groups. */
+function isGroup(
+  item: MarkdownToolbarItem,
+): item is Extract<MarkdownToolbarItem, { items: MarkdownToolbarAction[] }> {
+  return 'items' in item
+}
 
 /**
- * Lightweight WYSIWYG-style markdown editor — a toolbar above an uncontrolled
- * textarea, with a Preview button that swaps the textarea for a
+ * Lightweight WYSIWYG-style markdown editor — a configurable toolbar above an
+ * uncontrolled textarea, with a Preview button that swaps the textarea for a
  * {@link MarkdownRenderer}.
  *
- * Supports bold, italic, bullet lists, and numbered lists. The textarea stays
+ * Toolbar entries can be standalone {@link MarkdownToolbarAction}s or
+ * dropdown-grouped via {@link MarkdownToolbarGroup}. The textarea stays
  * uncontrolled so its value is read by `<form action>` via FormData on submit.
  *
  * @remarks
+ * - Each toolbar action is a pure function under `src/modules/markdown/actions/`
+ *   that maps a textarea snapshot to a new snapshot. The editor wires those
+ *   pure functions to a single DOM-mutation helper ({@link runAction}).
  * - The component does not call `setState` on every keystroke; toolbar actions
  *   mutate the textarea value directly via the DOM and dispatch an `input`
  *   event so any framework-level listeners run.
@@ -65,8 +73,8 @@ type Action =
  *   value remains in the form's submission payload. The preview snapshot is
  *   captured into local state on toggle, then rendered through
  *   {@link MarkdownRenderer}.
- * - Keyboard shortcuts: `Ctrl/Cmd+B` toggles bold and `Ctrl/Cmd+I` toggles
- *   italic on the focused textarea.
+ * - Keyboard shortcuts are derived from toolbar actions' `shortcut` metadata
+ *   and always require Ctrl (Windows/Linux) or Cmd (macOS).
  *
  * @param props - See {@link MarkdownEditorProps}.
  */
@@ -77,11 +85,33 @@ export function MarkdownEditor({
   maxLength,
   error,
   placeholder,
+  toolbar = 'default',
 }: MarkdownEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [previewMode, setPreviewMode] = useState(false)
   const [previewContent, setPreviewContent] = useState('')
   const [count, setCount] = useState(defaultValue?.length ?? 0)
+
+  const items = useMemo<MarkdownToolbarItem[]>(
+    () =>
+      typeof toolbar === 'string'
+        ? markdownToolbarPresets[toolbar]
+        : toolbar,
+    [toolbar],
+  )
+
+  const shortcuts = useMemo(() => {
+    const map = new Map<string, MarkdownAction>()
+    for (const item of items) {
+      const entries = isGroup(item) ? item.items : [item]
+      for (const entry of entries) {
+        if (entry.shortcut) {
+          map.set(entry.shortcut.key.toLowerCase(), entry.action)
+        }
+      }
+    }
+    return map
+  }, [items])
 
   function togglePreview() {
     if (!previewMode) {
@@ -90,102 +120,27 @@ export function MarkdownEditor({
     setPreviewMode((p) => !p)
   }
 
-  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if (!(e.ctrlKey || e.metaKey)) return
-    const key = e.key.toLowerCase()
-    if (key === 'b') {
-      e.preventDefault()
-      insertMarkdown('bold')
-    } else if (key === 'i') {
-      e.preventDefault()
-      insertMarkdown('italic')
-    }
-  }
-
-  function insertMarkdown(action: Action) {
+  function runAction(action: MarkdownAction) {
     const ta = textareaRef.current
     if (!ta) return
-    const { selectionStart: start, selectionEnd: end, value } = ta
-    const selected = value.slice(start, end)
-
-    let next: string
-    let cursorStart: number
-    let cursorEnd: number
-
-    if (action === 'bold' || action === 'italic' || action === 'code') {
-      const wrap = action === 'bold' ? '**' : action === 'italic' ? '*' : '`'
-      if (selected.length > 0) {
-        next = value.slice(0, start) + wrap + selected + wrap + value.slice(end)
-        cursorStart = start + wrap.length
-        cursorEnd = cursorStart + selected.length
-      } else {
-        const placeholderText = action
-        next =
-          value.slice(0, start) +
-          wrap +
-          placeholderText +
-          wrap +
-          value.slice(end)
-        cursorStart = start + wrap.length
-        cursorEnd = cursorStart + placeholderText.length
-      }
-    } else if (action === 'h2' || action === 'h3') {
-      const prefix = action === 'h2' ? '## ' : '### '
-      const lineStart = value.lastIndexOf('\n', start - 1) + 1
-      if (selected.length > 0) {
-        const nextNewline = value.indexOf('\n', end)
-        const lineEnd = nextNewline === -1 ? value.length : nextNewline
-        const block = value.slice(lineStart, lineEnd)
-        const lines = block.split('\n')
-        const transformed = lines
-          .map((line) => (line.length > 0 ? prefix + line : line))
-          .join('\n')
-        next = value.slice(0, lineStart) + transformed + value.slice(lineEnd)
-        cursorStart = lineStart
-        cursorEnd = lineStart + transformed.length
-      } else {
-        const currentLineEndIndex = value.indexOf('\n', start)
-        const currentLineEnd =
-          currentLineEndIndex === -1 ? value.length : currentLineEndIndex
-        const currentLine = value.slice(lineStart, currentLineEnd)
-        if (currentLine.length === 0) {
-          const placeholderText = 'Heading'
-          next =
-            value.slice(0, lineStart) +
-            prefix +
-            placeholderText +
-            value.slice(lineStart)
-          cursorStart = lineStart + prefix.length
-          cursorEnd = cursorStart + placeholderText.length
-        } else {
-          next = value.slice(0, lineStart) + prefix + value.slice(lineStart)
-          cursorStart = start + prefix.length
-          cursorEnd = cursorStart
-        }
-      }
-    } else {
-      const lineStart = value.lastIndexOf('\n', start - 1) + 1
-      const nextNewline = value.indexOf('\n', end)
-      const lineEnd = nextNewline === -1 ? value.length : nextNewline
-      const block = value.slice(lineStart, lineEnd)
-      const lines = block.split('\n')
-      const transformed =
-        action === 'bullet'
-          ? lines.map((line) => (line.length > 0 ? `- ${line}` : line)).join('\n')
-          : lines
-              .map((line, i) =>
-                line.length > 0 ? `${i + 1}. ${line}` : line
-              )
-              .join('\n')
-      next = value.slice(0, lineStart) + transformed + value.slice(lineEnd)
-      cursorStart = lineStart
-      cursorEnd = lineStart + transformed.length
-    }
-
-    ta.value = next
-    ta.setSelectionRange(cursorStart, cursorEnd)
+    const result = action({
+      value: ta.value,
+      selectionStart: ta.selectionStart,
+      selectionEnd: ta.selectionEnd,
+    })
+    ta.value = result.value
+    ta.setSelectionRange(result.selectionStart, result.selectionEnd)
     ta.focus()
     ta.dispatchEvent(new Event('input', { bubbles: true }))
+  }
+
+  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (!(e.ctrlKey || e.metaKey)) return
+    const action = shortcuts.get(e.key.toLowerCase())
+    if (action) {
+      e.preventDefault()
+      runAction(action)
+    }
   }
 
   return (
@@ -195,69 +150,24 @@ export function MarkdownEditor({
         aria-label="Formatting"
         className="flex flex-wrap gap-1 mb-2"
       >
-        <button
-          type="button"
-          aria-label="Bold"
-          disabled={previewMode}
-          className="btn btn-ghost btn-sm btn-square"
-          onClick={() => insertMarkdown('bold')}
-        >
-          <Bold className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          aria-label="Italic"
-          disabled={previewMode}
-          className="btn btn-ghost btn-sm btn-square"
-          onClick={() => insertMarkdown('italic')}
-        >
-          <Italic className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          aria-label="Inline code"
-          disabled={previewMode}
-          className="btn btn-ghost btn-sm btn-square"
-          onClick={() => insertMarkdown('code')}
-        >
-          <Code className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          aria-label="Heading 2"
-          disabled={previewMode}
-          className="btn btn-ghost btn-sm btn-square"
-          onClick={() => insertMarkdown('h2')}
-        >
-          <Heading2 className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          aria-label="Heading 3"
-          disabled={previewMode}
-          className="btn btn-ghost btn-sm btn-square"
-          onClick={() => insertMarkdown('h3')}
-        >
-          <Heading3 className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          aria-label="Bulleted list"
-          disabled={previewMode}
-          className="btn btn-ghost btn-sm btn-square"
-          onClick={() => insertMarkdown('bullet')}
-        >
-          <List className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          aria-label="Numbered list"
-          disabled={previewMode}
-          className="btn btn-ghost btn-sm btn-square"
-          onClick={() => insertMarkdown('numbered')}
-        >
-          <ListOrdered className="h-4 w-4" />
-        </button>
+        {items.map((item) =>
+          isGroup(item) ? (
+            <MarkdownToolbarDropdown
+              key={item.label}
+              group={item}
+              disabled={previewMode}
+              onSelect={(selected) => runAction(selected.action)}
+            />
+          ) : (
+            <MarkdownToolbarButton
+              key={item.label}
+              label={item.label}
+              icon={item.icon}
+              disabled={previewMode}
+              onClick={() => runAction(item.action)}
+            />
+          ),
+        )}
         <button
           type="button"
           aria-label={previewMode ? 'Show editor' : 'Show preview'}
