@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/navbar-user-menu`
 **Merge into:** `v1/main`
 
@@ -16,17 +16,17 @@ The same reorganization carries through to the mobile drawer (`<NavbarMobileMenu
 
 ## Acceptance Criteria
 
-- [ ] On the desktop navbar (`≥ lg`), the center cluster contains only social/public destinations: `Paints`, `Brands`, `Schemes`, `Palettes` — no `Collection` or `My palettes` link inline.
-- [ ] On the desktop navbar (`≥ lg`), the avatar dropdown contains, in order: profile link (display name → `/users/{userId}`), separator, owned-content group (`My collection` → `/collection`, `My palettes` → `/user/palettes`, `My recipes` → disabled "Coming soon" placeholder), separator, sign-out button.
-- [ ] The `My collection` and `My palettes` items in the dropdown are full-width interactive `<Link>`s that close the dropdown on click and navigate as expected.
-- [ ] The `My recipes` item renders as a disabled menu row (greyed text, no link wrapper, `aria-disabled="true"`) until the `12-painting-recipes` epic ships a `/user/recipes` route.
-- [ ] The dropdown groups are visually separated by `<DropdownMenuSeparator />` so the user can scan profile → owned items → sign-out.
-- [ ] On the mobile drawer (`< lg`), the body contains only public/social links (`Paints`, `Brands`, `Schemes`, `Palettes`); the footer contains a `Mine` group (user identity row, `My collection`, `My palettes`, disabled `My recipes`) and the sign-out form, in that order.
-- [ ] `Admin` link continues to render exactly where it does today: in the desktop `navbar-end` cluster (above the avatar dropdown) when `isAdmin === true`, and inside the mobile drawer body for admin users. It is **not** moved into the dropdown — it's a role-gated app surface, not a personal collection.
-- [ ] Authenticated-only items are hidden for guests on every breakpoint (no "My …" entries appear unless `viewer.kind === 'user'`).
-- [ ] All dropdown items support keyboard navigation (Tab/Shift+Tab, Enter to activate, Escape to close) — inherited from Radix `DropdownMenu`, no additional handlers.
-- [ ] No new routes are added or removed. The doc explicitly defers the `/user/recipes` page to the recipes epic.
-- [ ] `npm run build` and `npm run lint` pass with no new errors.
+- [x] On the desktop navbar (`≥ lg`), the center cluster contains only social/public destinations: `Paints`, `Brands`, `Schemes`, `Palettes` — no `Collection` or `My palettes` link inline.
+- [x] On the desktop navbar (`≥ lg`), the avatar dropdown contains, in order: profile link (display name → `/users/{userId}`), separator, owned-content group (`My collection` → `/collection`, `My palettes` → `/user/palettes`, `My recipes` → disabled "Coming soon" placeholder), separator, sign-out button.
+- [x] The `My collection` and `My palettes` items in the dropdown are full-width interactive `<Link>`s that close the dropdown on click and navigate as expected.
+- [x] The `My recipes` item renders as a disabled menu row (greyed text, no link wrapper, `aria-disabled="true"`) until the `12-painting-recipes` epic ships a `/user/recipes` route.
+- [x] The dropdown groups are visually separated by `<DropdownMenuSeparator />` so the user can scan profile → owned items → sign-out.
+- [x] On the mobile drawer (`< lg`), the body contains only public/social links (`Paints`, `Brands`, `Schemes`, `Palettes`); the footer contains a `Mine` group (user identity row, `My collection`, `My palettes`, disabled `My recipes`) and the sign-out form, in that order.
+- [x] `Admin` link continues to render exactly where it does today: in the desktop `navbar-end` cluster (above the avatar dropdown) when `isAdmin === true`, and inside the mobile drawer body for admin users. It is **not** moved into the dropdown — it's a role-gated app surface, not a personal collection.
+- [x] Authenticated-only items are hidden for guests on every breakpoint (no "My …" entries appear unless `viewer.kind === 'user'`).
+- [x] All dropdown items support keyboard navigation (Tab/Shift+Tab, Enter to activate, Escape to close) — inherited from Radix `DropdownMenu`, no additional handlers.
+- [x] No new routes are added or removed. The doc explicitly defers the `/user/recipes` page to the recipes epic.
+- [x] `npm run build` and `npm run lint` pass with no new errors.
 
 ## Non-Goals
 
