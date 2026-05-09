@@ -11,6 +11,7 @@ import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-ha
 import type { Palette } from '@/modules/palettes/types/palette'
 import { deleteRecipeStep } from '@/modules/recipes/actions/delete-recipe-step'
 import { updateRecipeStep } from '@/modules/recipes/actions/update-recipe-step'
+import { RecipeNoteList } from '@/modules/recipes/components/recipe-note-list'
 import { RecipePhotoGrid } from '@/modules/recipes/components/recipe-photo-grid'
 import { RecipeStepPaintList } from '@/modules/recipes/components/recipe-step-paint-list'
 import { RecipeStepPaintPicker } from '@/modules/recipes/components/recipe-step-paint-picker'
@@ -210,6 +211,12 @@ export function RecipeStepCard({
           canEdit={true}
         />
       </div>
+
+      <RecipeNoteList
+        parent={{ kind: 'step', stepId: step.id }}
+        notes={step.notes}
+        compact
+      />
 
       <div className="flex flex-col gap-2">
         <span className="text-xs font-medium text-muted-foreground">Photos</span>
