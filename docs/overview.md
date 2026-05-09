@@ -70,6 +70,7 @@ Core functionality:
 - [x] [Per-page skeleton loading screens](./00-marketing-and-branding/06-new-loading-screen.md)
 - [x] [Shared `<Main>` page wrapper component](./00-marketing-and-branding/07-main-component-refactor.md)
 - [x] [Shared `<PageHeader>` title and subtitle component](./00-marketing-and-branding/08-title-and-subtitle-component-refactor.md)
+- [x] [Mobile-friendly navbar](./00-marketing-and-branding/09-mobile-friendly-navbar.md)
 
 ### Epic: Authentication & User Accounts
 
@@ -100,6 +101,7 @@ Core functionality:
 - [x] [Munsell hue system refactor](./02-paint-data-search/04-munsell-hue-refactor.md)
 - [ ] [Paint database data improvement](./02-paint-data-search/05-paint-database-data-improvement.md)
 - [x] [Paint search v2 (rearchitecture)](./02-paint-data-search/06-paint-search-v2.md)
+- [ ] [Paint details mobile action buttons](./02-paint-data-search/07-paint-details-mobile-buttons.md)
 
 ### Epic: Interactive Color Wheel
 
@@ -214,6 +216,7 @@ Core functionality:
 - [x] [Public palettes catalog & user routes move](./11-color-palettes/08-public-palettes-page.md)
 - [x] [Color palette groups](./11-color-palettes/09-color-palette-groups.md)
 - [x] [Color palette paint sorting](./11-color-palettes/10-color-palette-sorting.md)
+- [ ] [Paint group references (multi-group memberships)](./11-color-palettes/11-paint-group-references.md)
 
 ### Epic: Painting Recipes
 
