@@ -33,6 +33,85 @@ export function createRecipeService(supabase: SupabaseClient) {
   const publicUrlFor = (storagePath: string): string =>
     supabase.storage.from(RECIPE_PHOTOS_BUCKET).getPublicUrl(storagePath).data.publicUrl
 
+  /**
+   * Best-effort batch delete of objects in the `recipe-photos` bucket.
+   *
+   * Storage failures are logged via console.warn rather than thrown —
+   * deletion paths in this service have already removed the parent rows
+   * by the time this runs, so propagating the error would leave the
+   * caller in a half-state. Orphaned blobs can be reclaimed later.
+   */
+  const deleteStorageObjects = async (paths: string[]): Promise<void> => {
+    if (paths.length === 0) return
+    const { error } = await supabase.storage.from(RECIPE_PHOTOS_BUCKET).remove(paths)
+    if (error) {
+      console.warn('[recipe-service] failed to remove storage objects', {
+        count: paths.length,
+        error: error.message,
+      })
+    }
+  }
+
+  /**
+   * Reads every `storage_path` under a recipe — direct recipe-level
+   * photos plus all step-level photos for steps in any of the recipe's
+   * sections. Used by {@link deleteRecipe} to capture the cleanup set
+   * before the SQL cascade runs.
+   */
+  const collectStoragePathsForRecipe = async (recipeId: string): Promise<string[]> => {
+    const [recipeLevel, stepLevel] = await Promise.all([
+      supabase.from('recipe_photos').select('storage_path').eq('recipe_id', recipeId),
+      supabase
+        .from('recipe_photos')
+        .select('storage_path, recipe_steps!inner(section_id, recipe_sections!inner(recipe_id))')
+        .eq('recipe_steps.recipe_sections.recipe_id', recipeId),
+    ])
+
+    const paths = new Set<string>()
+    for (const row of recipeLevel.data ?? []) {
+      const path = (row as { storage_path: string }).storage_path
+      if (path) paths.add(path)
+    }
+    for (const row of stepLevel.data ?? []) {
+      const path = (row as { storage_path: string }).storage_path
+      if (path) paths.add(path)
+    }
+    return Array.from(paths)
+  }
+
+  /**
+   * Reads every `storage_path` for photos attached to steps in a
+   * given section. Used by {@link deleteSection} so cascade deletes
+   * leave no orphaned blobs.
+   */
+  const collectStoragePathsForSection = async (sectionId: string): Promise<string[]> => {
+    const { data } = await supabase
+      .from('recipe_photos')
+      .select('storage_path, recipe_steps!inner(section_id)')
+      .eq('recipe_steps.section_id', sectionId)
+
+    const paths = new Set<string>()
+    for (const row of data ?? []) {
+      const path = (row as { storage_path: string }).storage_path
+      if (path) paths.add(path)
+    }
+    return Array.from(paths)
+  }
+
+  /**
+   * Reads every `storage_path` for photos attached to a single step.
+   */
+  const collectStoragePathsForStep = async (stepId: string): Promise<string[]> => {
+    const { data } = await supabase
+      .from('recipe_photos')
+      .select('storage_path')
+      .eq('step_id', stepId)
+
+    return (data ?? [])
+      .map((row) => (row as { storage_path: string }).storage_path)
+      .filter((path): path is string => Boolean(path))
+  }
+
   return {
     /**
      * Fetches a single recipe by ID, fully hydrated with sections, steps,
@@ -502,17 +581,26 @@ export function createRecipeService(supabase: SupabaseClient) {
 
     /**
      * Hard-deletes a recipe. Cascades to all sections, steps, step paints,
-     * notes, and photo rows.
+     * notes, and photo rows, then removes every Storage object that backed
+     * those photos.
      *
-     * Storage objects in the `recipe-photos` bucket are not removed here —
-     * cleanup is the responsibility of the photo-management feature
-     * (see `03-recipe-photos`).
+     * Postgres `ON DELETE CASCADE` only deletes DB rows — Storage objects
+     * have to be cleaned up explicitly. We capture every `storage_path`
+     * under the recipe (recipe-level photos plus all step-level photos)
+     * before issuing the SQL delete, then batch-remove them from the
+     * `recipe-photos` bucket after the cascade. A best-effort Storage
+     * remove failure is swallowed so the DB delete still succeeds — the
+     * orphaned blobs can be reclaimed by a follow-up sweep if needed.
      *
      * @param id - The recipe UUID.
      */
     async deleteRecipe(id: string): Promise<void> {
+      const paths = await collectStoragePathsForRecipe(id)
+
       const { error } = await supabase.from('recipes').delete().eq('id', id)
       if (error) throw new Error(error.message)
+
+      await deleteStorageObjects(paths)
     },
 
     /**
@@ -593,7 +681,8 @@ export function createRecipeService(supabase: SupabaseClient) {
 
     /**
      * Hard-deletes a section. Cascades to all steps, step paints, and any
-     * notes/photos attached to those steps.
+     * notes/photos attached to those steps. Storage objects backing those
+     * step-level photos are removed after the cascade.
      *
      * Caller is responsible for renumbering remaining sibling sections via
      * {@link setSections} after deletion to close the position gap.
@@ -601,8 +690,12 @@ export function createRecipeService(supabase: SupabaseClient) {
      * @param id - The section UUID.
      */
     async deleteSection(id: string): Promise<void> {
+      const paths = await collectStoragePathsForSection(id)
+
       const { error } = await supabase.from('recipe_sections').delete().eq('id', id)
       if (error) throw new Error(error.message)
+
+      await deleteStorageObjects(paths)
     },
 
     /**
@@ -755,7 +848,8 @@ export function createRecipeService(supabase: SupabaseClient) {
 
     /**
      * Hard-deletes a step. Cascades to all `recipe_step_paints` rows and any
-     * notes/photos attached to the step.
+     * notes/photos attached to the step. Storage objects backing the
+     * step-level photos are removed after the cascade.
      *
      * Caller is responsible for renumbering remaining sibling steps via
      * {@link setSteps} after deletion to close the position gap.
@@ -763,8 +857,12 @@ export function createRecipeService(supabase: SupabaseClient) {
      * @param id - The step UUID.
      */
     async deleteStep(id: string): Promise<void> {
+      const paths = await collectStoragePathsForStep(id)
+
       const { error } = await supabase.from('recipe_steps').delete().eq('id', id)
       if (error) throw new Error(error.message)
+
+      await deleteStorageObjects(paths)
     },
 
     /**
@@ -999,6 +1097,227 @@ export function createRecipeService(supabase: SupabaseClient) {
         p_step_id: stepId,
         p_rows: payload,
       })
+
+      if (error) throw new Error(error.message)
+    },
+
+    /**
+     * Inserts a new `recipe_photos` row for an already-uploaded Storage
+     * object.
+     *
+     * The XOR `(recipe_id, step_id)` invariant is enforced by setting
+     * exactly one of the two foreign keys based on the discriminated
+     * `parent` union. The row's `position` is appended to the end of the
+     * parent's existing photos.
+     *
+     * The Storage upload itself happens client-side; this helper only
+     * writes the metadata row. Callers are responsible for removing the
+     * Storage object if this insert fails.
+     *
+     * @param input.parent - Either a `recipe` or `step` parent reference.
+     * @param input.storagePath - The object key under the `recipe-photos` bucket.
+     * @param input.widthPx - Decoded image width, or `null` if unknown.
+     * @param input.heightPx - Decoded image height, or `null` if unknown.
+     * @param input.caption - Optional initial caption (≤200 chars).
+     * @returns The hydrated {@link RecipePhoto} with a public URL.
+     */
+    async addRecipePhoto(input: {
+      parent: { kind: 'recipe'; recipeId: string } | { kind: 'step'; stepId: string }
+      storagePath: string
+      widthPx?: number | null
+      heightPx?: number | null
+      caption?: string | null
+    }): Promise<RecipePhoto> {
+      const recipeId = input.parent.kind === 'recipe' ? input.parent.recipeId : null
+      const stepId = input.parent.kind === 'step' ? input.parent.stepId : null
+
+      const positionFilter = supabase
+        .from('recipe_photos')
+        .select('position')
+        .order('position', { ascending: false })
+        .limit(1)
+      const positionQuery =
+        input.parent.kind === 'recipe'
+          ? positionFilter.eq('recipe_id', input.parent.recipeId)
+          : positionFilter.eq('step_id', input.parent.stepId)
+
+      const { data: existing, error: existingError } = await positionQuery.maybeSingle()
+      if (existingError) throw new Error(existingError.message)
+
+      const nextPosition = existing ? existing.position + 1 : 0
+
+      const { data, error } = await supabase
+        .from('recipe_photos')
+        .insert({
+          recipe_id: recipeId,
+          step_id: stepId,
+          position: nextPosition,
+          storage_path: input.storagePath,
+          width_px: input.widthPx ?? null,
+          height_px: input.heightPx ?? null,
+          caption: input.caption ?? null,
+        })
+        .select()
+        .single()
+
+      if (error || !data) throw new Error(error?.message ?? 'Failed to add photo.')
+
+      return {
+        id: data.id,
+        recipeId: data.recipe_id,
+        stepId: data.step_id,
+        position: data.position,
+        storagePath: data.storage_path,
+        url: publicUrlFor(data.storage_path),
+        widthPx: data.width_px,
+        heightPx: data.height_px,
+        caption: data.caption,
+        createdAt: data.created_at,
+      }
+    },
+
+    /**
+     * Patches a photo's mutable fields. Currently only `caption` is
+     * editable here (≤200 chars; pass `null` to clear). Position changes
+     * route through {@link setRecipePhotos}.
+     *
+     * @param id - The photo UUID.
+     * @param patch - Fields to update.
+     * @returns The updated {@link RecipePhoto} with a public URL.
+     */
+    async updateRecipePhoto(
+      id: string,
+      patch: { caption?: string | null },
+    ): Promise<RecipePhoto> {
+      const { data, error } = await supabase
+        .from('recipe_photos')
+        .update({
+          ...(patch.caption !== undefined && { caption: patch.caption }),
+        })
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error || !data) throw new Error(error?.message ?? 'Failed to update photo.')
+
+      return {
+        id: data.id,
+        recipeId: data.recipe_id,
+        stepId: data.step_id,
+        position: data.position,
+        storagePath: data.storage_path,
+        url: publicUrlFor(data.storage_path),
+        widthPx: data.width_px,
+        heightPx: data.height_px,
+        caption: data.caption,
+        createdAt: data.created_at,
+      }
+    },
+
+    /**
+     * Hard-deletes a photo row and removes its Storage object.
+     *
+     * Reads the row first so the caller does not need to provide the
+     * `storage_path`, then deletes the row, then removes the Storage
+     * blob (best-effort — see {@link deleteStorageObjects}). Callers
+     * should renumber the remaining sibling photos via
+     * {@link setRecipePhotos} afterwards if a contiguous order matters.
+     *
+     * @param id - The photo UUID.
+     * @returns Metadata about the removed row (storage path + parent ids)
+     *   so the caller can renumber siblings.
+     */
+    async deleteRecipePhoto(id: string): Promise<{
+      storagePath: string
+      recipeId: string | null
+      stepId: string | null
+    }> {
+      const { data: row, error: readError } = await supabase
+        .from('recipe_photos')
+        .select('storage_path, recipe_id, step_id')
+        .eq('id', id)
+        .maybeSingle()
+
+      if (readError) throw new Error(readError.message)
+      if (!row) throw new Error('Photo not found.')
+
+      const { error } = await supabase.from('recipe_photos').delete().eq('id', id)
+      if (error) throw new Error(error.message)
+
+      await deleteStorageObjects([row.storage_path as string])
+
+      return {
+        storagePath: row.storage_path as string,
+        recipeId: (row.recipe_id as string | null) ?? null,
+        stepId: (row.step_id as string | null) ?? null,
+      }
+    },
+
+    /**
+     * Renumbers photos within a recipe-level or step-level parent.
+     *
+     * `recipe_photos` does not enforce a `(parent_id, position)` unique
+     * constraint, so a single-phase update is safe. Updates are still
+     * dispatched in parallel for one round-trip per row.
+     *
+     * @param parent - The parent scope (recipe or step).
+     * @param ordered - Complete `(id, position)` mapping for every photo
+     *   in the parent. Positions should be normalized to `0..N-1`.
+     * @throws When any update fails.
+     */
+    async setRecipePhotos(
+      parent: { kind: 'recipe'; recipeId: string } | { kind: 'step'; stepId: string },
+      ordered: Array<{ id: string; position: number }>,
+    ): Promise<void> {
+      if (ordered.length === 0) return
+
+      const parentColumn = parent.kind === 'recipe' ? 'recipe_id' : 'step_id'
+      const parentValue = parent.kind === 'recipe' ? parent.recipeId : parent.stepId
+
+      const results = await Promise.all(
+        ordered.map((row) =>
+          supabase
+            .from('recipe_photos')
+            .update({ position: row.position })
+            .eq('id', row.id)
+            .eq(parentColumn, parentValue),
+        ),
+      )
+
+      const failed = results.find((res) => res.error)?.error
+      if (failed) throw new Error(failed.message)
+    },
+
+    /**
+     * Sets (or clears) the cover photo on a recipe.
+     *
+     * Validates that `photoId` (when not null) references a photo whose
+     * `recipe_id` equals the target recipe — step-level photos cannot
+     * be covers. Updating the FK to a step-photo is rejected with
+     * `'Invalid cover photo for this recipe.'`.
+     *
+     * @param recipeId - The recipe UUID.
+     * @param photoId - Photo UUID to use as cover, or `null` to clear.
+     * @throws When the photo does not belong to the recipe at the recipe level.
+     */
+    async setCoverPhoto(recipeId: string, photoId: string | null): Promise<void> {
+      if (photoId) {
+        const { data, error } = await supabase
+          .from('recipe_photos')
+          .select('recipe_id, step_id')
+          .eq('id', photoId)
+          .maybeSingle()
+
+        if (error) throw new Error(error.message)
+        if (!data || data.recipe_id !== recipeId || data.step_id !== null) {
+          throw new Error('Invalid cover photo for this recipe.')
+        }
+      }
+
+      const { error } = await supabase
+        .from('recipes')
+        .update({ cover_photo_id: photoId })
+        .eq('id', recipeId)
 
       if (error) throw new Error(error.message)
     },

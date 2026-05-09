@@ -10,9 +10,9 @@ import { createRecipeService } from '@/modules/recipes/services/recipe-service'
  * Server action that hard-deletes a recipe and all its child rows.
  *
  * Cascades through `recipe_sections`, `recipe_steps`, `recipe_step_paints`,
- * `recipe_notes`, and `recipe_photos`. Storage objects in the `recipe-photos`
- * bucket are not removed here — that cleanup ships with the photo-management
- * feature (see `03-recipe-photos`).
+ * `recipe_notes`, and `recipe_photos`. The service collects every
+ * `storage_path` under the recipe before the cascade runs and batch-removes
+ * the Storage objects after, so no orphaned blobs are left behind.
  *
  * On success, revalidates `/user/recipes` and `/recipes` and redirects to
  * `/user/recipes`. On auth failure or a missing ID, returns an error object
