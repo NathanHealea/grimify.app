@@ -35,17 +35,22 @@ import type { RecipeSection } from '@/modules/recipes/types/recipe-section'
  * @param props.dndId - Mount-stable DnD id assigned by the parent section list.
  * @param props.palette - Hydrated linked palette (or `null`); forwarded to each
  *   step so its paint picker can render palette-mode candidates.
+ * @param props.recipeId - UUID of the parent recipe; threaded down to each step
+ *   so the step-level photo grid can compose Storage paths under
+ *   `{user_id}/{recipe_id}/...`.
  */
 export function RecipeSectionCard({
   section,
   label,
   dndId,
   palette,
+  recipeId,
 }: {
   section: RecipeSection
   label: string
   dndId: string
   palette: Palette | null
+  recipeId: string
 }) {
   const {
     attributes,
@@ -158,6 +163,7 @@ export function RecipeSectionCard({
         sectionLabel={label}
         steps={section.steps}
         palette={palette}
+        recipeId={recipeId}
       />
 
       <div>
