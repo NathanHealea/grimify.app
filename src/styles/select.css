@@ -1,0 +1,175 @@
+/*
+ * Select Component
+ *
+ * Based on the daisyUI Select component API.
+ * https://daisyui.com/components/select/
+ *
+ * Styled for use with Radix UI Select primitives. The trigger mirrors the
+ * .input styling (border, focus ring, disabled state) with a chevron caret
+ * rendered via an inline icon inside the trigger. The content panel uses
+ * Radix data-state attributes for open/close transitions, mirroring
+ * dropdown.css.
+ *
+ * Classes:
+ *   Trigger:   .select-trigger          — Default trigger styling (h-9, text-sm)
+ *   Sizes:     .select-trigger-xs       — Extra-small (h-6, text-xs)
+ *              .select-trigger-sm       — Small (h-7, text-xs)
+ *              .select-trigger-md       — Medium / default (h-9, text-sm)
+ *              .select-trigger-lg       — Large (h-11, text-base)
+ *   Colors:    .select-trigger-primary  — Primary border & ring color
+ *              .select-trigger-secondary — Secondary border & ring color
+ *              .select-trigger-accent   — Accent border & ring color
+ *              .select-trigger-error    — Destructive/error border & ring color
+ *   States:    .select-trigger-ghost    — Borderless/transparent style
+ *   Content:   .select-content          — The floating panel
+ *   Viewport:  .select-viewport         — Inner scrollable container
+ *   Items:     .select-item             — Individual option row
+ *   Label:     .select-label            — Non-interactive group label
+ *   Separator: .select-separator        — Divider line between groups
+ *   Indicator: .select-item-indicator   — Check icon shown next to selected item
+ *   Scroll:    .select-scroll-button    — Up/down scroll-affordance buttons
+ */
+
+/* -------------------------------------------------------------------------
+ * Trigger — Base
+ * ----------------------------------------------------------------------- */
+.select-trigger {
+  @apply flex h-9 w-full min-w-0 cursor-pointer items-center justify-between gap-2
+    rounded-lg border border-input bg-transparent
+    py-1.5 pr-2.5 pl-3 text-sm transition-colors outline-none
+    focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50
+    disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50
+    aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20
+    data-[placeholder]:text-muted-foreground;
+}
+
+.select-trigger > span:first-child {
+  @apply line-clamp-1 flex-1 text-left;
+}
+
+.select-trigger-icon {
+  @apply size-4 shrink-0 opacity-50;
+}
+
+/* -------------------------------------------------------------------------
+ * Trigger — Sizes
+ * ----------------------------------------------------------------------- */
+.select-trigger-xs {
+  @apply h-6 gap-1.5 py-0.5 pr-1.5 pl-2 text-xs;
+}
+
+.select-trigger-xs .select-trigger-icon {
+  @apply size-3;
+}
+
+.select-trigger-sm {
+  @apply h-7 gap-1.5 py-1 pr-2 pl-2.5 text-xs;
+}
+
+.select-trigger-sm .select-trigger-icon {
+  @apply size-3.5;
+}
+
+.select-trigger-md {
+  @apply h-9 gap-2 py-1.5 pr-2.5 pl-3 text-sm;
+}
+
+.select-trigger-md .select-trigger-icon {
+  @apply size-4;
+}
+
+.select-trigger-lg {
+  @apply h-11 gap-2.5 py-2.5 pr-3 pl-4 text-base;
+}
+
+.select-trigger-lg .select-trigger-icon {
+  @apply size-5;
+}
+
+/* -------------------------------------------------------------------------
+ * Trigger — Colors
+ * ----------------------------------------------------------------------- */
+.select-trigger-primary {
+  @apply border-primary focus-visible:border-primary focus-visible:ring-primary/50;
+}
+
+.select-trigger-secondary {
+  @apply border-secondary focus-visible:border-secondary focus-visible:ring-secondary/50;
+}
+
+.select-trigger-accent {
+  @apply border-accent focus-visible:border-accent focus-visible:ring-accent/50;
+}
+
+.select-trigger-error {
+  @apply border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20;
+}
+
+/* -------------------------------------------------------------------------
+ * Trigger — States
+ * ----------------------------------------------------------------------- */
+.select-trigger-ghost {
+  @apply border-transparent bg-transparent
+    focus-visible:border-ring focus-visible:bg-transparent;
+}
+
+/* -------------------------------------------------------------------------
+ * Content panel
+ * ----------------------------------------------------------------------- */
+.select-content {
+  @apply relative z-50 max-h-(--radix-select-content-available-height) min-w-(--radix-select-trigger-width)
+    overflow-hidden rounded-lg border border-border bg-popover text-popover-foreground shadow-md;
+
+  /* open/close animations */
+  @apply data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95
+    data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95;
+
+  /* slide direction based on Radix side */
+  @apply data-[side=top]:slide-in-from-bottom-2
+    data-[side=right]:slide-in-from-left-2
+    data-[side=bottom]:slide-in-from-top-2
+    data-[side=left]:slide-in-from-right-2;
+}
+
+.select-viewport {
+  @apply p-1;
+}
+
+.select-content[data-side='bottom'] .select-viewport {
+  @apply scroll-my-1;
+}
+
+/* -------------------------------------------------------------------------
+ * Item
+ * ----------------------------------------------------------------------- */
+.select-item {
+  @apply relative flex w-full cursor-pointer items-center gap-2 rounded-md py-1.5 pr-8 pl-2
+    text-sm text-foreground outline-none transition-colors select-none
+    focus:bg-muted
+    data-[disabled]:pointer-events-none data-[disabled]:opacity-50;
+}
+
+.select-item-indicator {
+  @apply absolute right-2 flex size-3.5 items-center justify-center;
+}
+
+/* -------------------------------------------------------------------------
+ * Label
+ * ----------------------------------------------------------------------- */
+.select-label {
+  @apply px-2 py-1.5 text-xs font-medium text-muted-foreground;
+}
+
+/* -------------------------------------------------------------------------
+ * Separator
+ * ----------------------------------------------------------------------- */
+.select-separator {
+  @apply -mx-1 my-1 h-px bg-border;
+}
+
+/* -------------------------------------------------------------------------
+ * Scroll buttons
+ * ----------------------------------------------------------------------- */
+.select-scroll-button {
+  @apply flex h-6 cursor-default items-center justify-center text-muted-foreground;
+}
