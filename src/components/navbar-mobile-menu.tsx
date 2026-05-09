@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
 import { Menu } from 'lucide-react'
 
 import { Logo } from '@/components/logo'
@@ -42,7 +41,7 @@ type Viewer =
  * contains the same navigation links as the desktop navbar plus an auth
  * section.
  *
- * Auto-closes on route change so a tap-then-navigate flow feels like one step.
+ * Auto-closes when the user taps any link (via {@link SheetClose} wrappers).
  *
  * @param props.viewer - Either `{ kind: 'guest' }` or a fully resolved user
  *   descriptor with display name, avatar URL, and admin flag. The parent
@@ -50,13 +49,6 @@ type Viewer =
  */
 export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
   const [open, setOpen] = useState(false)
-  const pathname = usePathname()
-
-  // Defensive: programmatic navigation also closes the drawer.
-  // SheetClose wrapping link clicks handles user clicks; this covers redirects.
-  useEffect(() => {
-    setOpen(false)
-  }, [pathname])
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
