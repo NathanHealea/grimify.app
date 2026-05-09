@@ -135,6 +135,7 @@ export function RecipeSectionList({
                   dndId={section.id}
                   label={String(index + 1)}
                   palette={palette}
+                  recipeId={recipeId}
                 />
               ))}
             </div>

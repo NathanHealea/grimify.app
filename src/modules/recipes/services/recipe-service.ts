@@ -151,7 +151,8 @@ export function createRecipeService(supabase: SupabaseClient) {
               recipe_step_paints(
                 id, step_id, position, paint_id, palette_slot_id, ratio, note,
                 paints(*, product_lines(*, brands(*)))
-              )
+              ),
+              recipe_photos!recipe_photos_step_id_fkey(id, recipe_id, step_id, position, storage_path, width_px, height_px, caption, created_at)
             )
           ),
           recipe_notes(id, recipe_id, step_id, position, body, created_at),
@@ -191,6 +192,18 @@ export function createRecipeService(supabase: SupabaseClient) {
         paints: RawPaintJoin
       }
 
+      type RawPhoto = {
+        id: string
+        recipe_id: string | null
+        step_id: string | null
+        position: number
+        storage_path: string
+        width_px: number | null
+        height_px: number | null
+        caption: string | null
+        created_at: string
+      }
+
       type RawStep = {
         id: string
         section_id: string
@@ -199,6 +212,7 @@ export function createRecipeService(supabase: SupabaseClient) {
         technique: string | null
         instructions: string | null
         recipe_step_paints: RawStepPaint[]
+        recipe_photos: RawPhoto[]
       }
 
       type RawSection = {
@@ -215,18 +229,6 @@ export function createRecipeService(supabase: SupabaseClient) {
         step_id: string | null
         position: number
         body: string
-        created_at: string
-      }
-
-      type RawPhoto = {
-        id: string
-        recipe_id: string | null
-        step_id: string | null
-        position: number
-        storage_path: string
-        width_px: number | null
-        height_px: number | null
-        caption: string | null
         created_at: string
       }
 
@@ -279,6 +281,19 @@ export function createRecipeService(supabase: SupabaseClient) {
         }
       }
 
+      const mapPhoto = (row: RawPhoto): RecipePhoto => ({
+        id: row.id,
+        recipeId: row.recipe_id,
+        stepId: row.step_id,
+        position: row.position,
+        storagePath: row.storage_path,
+        url: publicUrlFor(row.storage_path),
+        widthPx: row.width_px,
+        heightPx: row.height_px,
+        caption: row.caption,
+        createdAt: row.created_at,
+      })
+
       const mapStep = (row: RawStep): RecipeStep => ({
         id: row.id,
         sectionId: row.section_id,
@@ -290,6 +305,10 @@ export function createRecipeService(supabase: SupabaseClient) {
           .slice()
           .sort((a, b) => a.position - b.position)
           .map(mapStepPaint),
+        photos: (row.recipe_photos ?? [])
+          .slice()
+          .sort((a, b) => a.position - b.position)
+          .map(mapPhoto),
       })
 
       const mapSection = (row: RawSection): RecipeSection => ({
@@ -309,19 +328,6 @@ export function createRecipeService(supabase: SupabaseClient) {
         stepId: row.step_id,
         position: row.position,
         body: row.body,
-        createdAt: row.created_at,
-      })
-
-      const mapPhoto = (row: RawPhoto): RecipePhoto => ({
-        id: row.id,
-        recipeId: row.recipe_id,
-        stepId: row.step_id,
-        position: row.position,
-        storagePath: row.storage_path,
-        url: publicUrlFor(row.storage_path),
-        widthPx: row.width_px,
-        heightPx: row.height_px,
-        caption: row.caption,
         createdAt: row.created_at,
       })
 
@@ -756,7 +762,7 @@ export function createRecipeService(supabase: SupabaseClient) {
      *
      * @param sectionId - UUID of the parent section.
      * @param init - Optional initial fields for the step.
-     * @returns The newly created step with an empty `paints` array.
+     * @returns The newly created step with empty `paints` and `photos` arrays.
      */
     async addStep(
       sectionId: string,
@@ -800,6 +806,7 @@ export function createRecipeService(supabase: SupabaseClient) {
         technique: data.technique,
         instructions: data.instructions,
         paints: [],
+        photos: [],
       }
     },
 
@@ -812,7 +819,7 @@ export function createRecipeService(supabase: SupabaseClient) {
      * @param id - The step UUID.
      * @param patch - Fields to update. Pass `null` to clear an optional
      *   field; omit a key to leave it unchanged.
-     * @returns The updated step with an empty `paints` array.
+     * @returns The updated step with empty `paints` and `photos` arrays.
      */
     async updateStep(
       id: string,
@@ -843,6 +850,7 @@ export function createRecipeService(supabase: SupabaseClient) {
         technique: data.technique,
         instructions: data.instructions,
         paints: [],
+        photos: [],
       }
     },
 
