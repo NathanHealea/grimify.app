@@ -3,6 +3,13 @@
 import { useState } from 'react'
 
 import type { PaintSortDirection, PaintSortField } from '@/modules/paints/utils/sort-paints'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 
 /** Display labels for each sort field. */
@@ -66,19 +73,22 @@ export function PaintSortBar({
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      <select
+      <Select
         value={field}
-        onChange={(e) => handleFieldChange(e.target.value as PaintSortField)}
+        onValueChange={(v) => handleFieldChange(v as PaintSortField)}
         disabled={disabled}
-        className="select select-sm"
-        aria-label="Sort by"
       >
-        {FIELDS.map((f) => (
-          <option key={f} value={f}>
-            {FIELD_LABELS[f]}
-          </option>
-        ))}
-      </select>
+        <SelectTrigger className="select-trigger-sm" aria-label="Sort by">
+          <SelectValue>{FIELD_LABELS[field]}</SelectValue>
+        </SelectTrigger>
+        <SelectContent>
+          {FIELDS.map((f) => (
+            <SelectItem key={f} value={f}>
+              {FIELD_LABELS[f]}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
       <button
         type="button"

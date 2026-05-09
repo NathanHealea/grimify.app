@@ -3,6 +3,13 @@
 import { useActionState } from 'react'
 import { toast } from 'sonner'
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { assignRole } from '@/modules/admin/actions/assign-role'
 
 /** A user available for role assignment. */
@@ -61,22 +68,18 @@ export function AssignRoleForm({
   return (
     <form action={formAction} className="flex items-start gap-3">
       <div className="flex flex-col gap-1">
-        <select
-          name="userId"
-          required
-          className="select select-sm w-60"
-          disabled={isPending}
-          defaultValue=""
-        >
-          <option value="" disabled>
-            Select a user...
-          </option>
-          {availableUsers.map((user) => (
-            <option key={user.id} value={user.id}>
-              {user.display_name ?? 'Unnamed user'}
-            </option>
-          ))}
-        </select>
+        <Select name="userId" required disabled={isPending}>
+          <SelectTrigger className="select-trigger-sm w-60">
+            <SelectValue placeholder="Select a user..." />
+          </SelectTrigger>
+          <SelectContent>
+            {availableUsers.map((user) => (
+              <SelectItem key={user.id} value={user.id}>
+                {user.display_name ?? 'Unnamed user'}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <button
         type="submit"

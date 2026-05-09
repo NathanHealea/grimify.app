@@ -3,6 +3,13 @@
 import { useCallback, useMemo, useState, useTransition } from 'react'
 import { useSearchParams } from 'next/navigation'
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { CollectionPaintCard } from '@/modules/collection/components/collection-paint-card'
 import { PaintCard } from '@/modules/paints/components/paint-card'
 import { getPaintService } from '@/modules/paints/services/paint-service.client'
@@ -160,19 +167,22 @@ export function PaginatedPaintGrid({
           <label htmlFor="page-size" className="text-sm text-muted-foreground">
             Per page:
           </label>
-          <select
-            id="page-size"
-            value={pageSize}
-            onChange={(e) => handleSizeChange(Number(e.target.value))}
+          <Select
+            value={String(pageSize)}
+            onValueChange={(v) => handleSizeChange(Number(v))}
             disabled={isPending}
-            className="input input-sm w-20"
           >
-            {PAGE_SIZE_OPTIONS.map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger id="page-size" className="select-trigger-sm w-20">
+              <SelectValue>{pageSize}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {PAGE_SIZE_OPTIONS.map((size) => (
+                <SelectItem key={size} value={String(size)}>
+                  {size}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

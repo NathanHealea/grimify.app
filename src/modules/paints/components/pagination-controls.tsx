@@ -1,3 +1,11 @@
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+
 /** Maximum number of page buttons to show at once (includes first + last). */
 const MAX_VISIBLE_PAGES = 7
 
@@ -51,19 +59,25 @@ export function PaginationControls({
           <label htmlFor="page-size-select" className="text-sm text-muted-foreground">
             Per page:
           </label>
-          <select
-            id="page-size-select"
-            value={pageSize}
-            onChange={(e) => onSizeChange(Number(e.target.value))}
+          <Select
+            value={String(pageSize)}
+            onValueChange={(v) => onSizeChange(Number(v))}
             disabled={isPending}
-            className="input input-sm w-20"
           >
-            {pageSizeOptions.map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger
+              id="page-size-select"
+              className="select-trigger-sm w-20"
+            >
+              <SelectValue>{pageSize}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {pageSizeOptions.map((size) => (
+                <SelectItem key={size} value={String(size)}>
+                  {size}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
