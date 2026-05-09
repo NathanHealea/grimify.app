@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/mobile-friendly-navbar`
 **Merge into:** `v1/main`
 
@@ -14,21 +14,21 @@ This feature adds a mobile-friendly navbar that, below the `lg` breakpoint (≤ 
 
 ## Acceptance Criteria
 
-- [ ] Below the `lg` breakpoint (`< 1024px`), the navbar shows: brand link on the left, hamburger trigger on the right — and nothing else
-- [ ] At the `lg` breakpoint and above (`≥ 1024px`), the navbar continues to render its current desktop layout: brand, center link cluster, auth cluster — no visual change vs. today
-- [ ] Tapping the hamburger opens a side-sheet drawer that slides in from the right edge, with a translucent overlay over the rest of the page
-- [ ] The drawer contains, in order: a header row (brand or "Menu" label + close button), the full navigation link list, a separator, and an auth section (Sign In / Sign Up for guests, user identity + sign-out for authenticated users)
-- [ ] The drawer is keyboard-accessible: Escape closes it, focus is trapped inside while open, focus returns to the hamburger trigger on close
-- [ ] The drawer auto-closes when the user clicks any link inside it (so route changes feel one-step)
-- [ ] The drawer auto-closes on route change (defensive, in case a child component navigates programmatically)
-- [ ] The hamburger trigger has `aria-label="Open navigation menu"` and the drawer panel uses Radix Dialog semantics (`role="dialog"`, `aria-modal="true"`)
-- [ ] Admin users see the `Admin` link inside the drawer (mirrors the desktop admin badge), gated by the same `isAdmin` check
-- [ ] Authenticated-only links (`Collection`, `My palettes`) are present in the drawer only for signed-in users — same gating as the desktop center cluster
-- [ ] A new `<Sheet>` UI primitive lives at `src/components/ui/sheet.tsx` with daisyUI-style classes in `src/styles/sheet.css`, supporting `side="right"` (and `side="left"` so it can host other drawers later)
-- [ ] The sheet primitive is built on `@radix-ui/react-dialog` so it inherits focus-trap, scroll-lock, and Escape handling for free (matches the existing `dialog.tsx` approach)
-- [ ] The `<Sheet>` CSS file follows the project's style-file header convention (component name, daisyUI reference link, class inventory, section dividers)
-- [ ] No layout shift on the existing desktop layout — desktop-breakpoint screenshots match pre-feature
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Below the `lg` breakpoint (`< 1024px`), the navbar shows: brand link on the left, hamburger trigger on the right — and nothing else
+- [x] At the `lg` breakpoint and above (`≥ 1024px`), the navbar continues to render its current desktop layout: brand, center link cluster, auth cluster — no visual change vs. today
+- [x] Tapping the hamburger opens a side-sheet drawer that slides in from the right edge, with a translucent overlay over the rest of the page
+- [x] The drawer contains, in order: a header row (brand or "Menu" label + close button), the full navigation link list, a separator, and an auth section (Sign In / Sign Up for guests, user identity + sign-out for authenticated users)
+- [x] The drawer is keyboard-accessible: Escape closes it, focus is trapped inside while open, focus returns to the hamburger trigger on close
+- [x] The drawer auto-closes when the user clicks any link inside it (so route changes feel one-step)
+- [x] The drawer auto-closes on route change (defensive, in case a child component navigates programmatically)
+- [x] The hamburger trigger has `aria-label="Open navigation menu"` and the drawer panel uses Radix Dialog semantics (`role="dialog"`, `aria-modal="true"`)
+- [x] Admin users see the `Admin` link inside the drawer (mirrors the desktop admin badge), gated by the same `isAdmin` check
+- [x] Authenticated-only links (`Collection`, `My palettes`) are present in the drawer only for signed-in users — same gating as the desktop center cluster
+- [x] A new `<Sheet>` UI primitive lives at `src/components/ui/sheet.tsx` with daisyUI-style classes in `src/styles/sheet.css`, supporting `side="right"` (and `side="left"` so it can host other drawers later)
+- [x] The sheet primitive is built on `@radix-ui/react-dialog` so it inherits focus-trap, scroll-lock, and Escape handling for free (matches the existing `dialog.tsx` approach)
+- [x] The `<Sheet>` CSS file follows the project's style-file header convention (component name, daisyUI reference link, class inventory, section dividers)
+- [x] No layout shift on the existing desktop layout — desktop-breakpoint screenshots match pre-feature
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Non-Goals
 
