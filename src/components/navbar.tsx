@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { Logo } from '@/components/logo'
+import { NavbarMobileMenu } from '@/components/navbar-mobile-menu'
 import { createClient } from '@/lib/supabase/server'
 import { UserMenu } from '@/modules/user/components/user-menu'
 import { getUserRoles } from '@/modules/user/utils/roles'
@@ -8,8 +9,12 @@ import { getUserRoles } from '@/modules/user/utils/roles'
 /**
  * Top-level navigation bar (server component).
  *
- * Shows the brand link and auth-state-dependent actions:
- * sign-in/sign-up links for guests, user avatar dropdown for authenticated users.
+ * Above the `lg` breakpoint, renders the brand link, center navigation
+ * cluster, and auth-state-dependent right cluster (sign-in/up for guests,
+ * avatar dropdown for authenticated users).
+ *
+ * Below `lg`, renders the brand link plus a hamburger trigger that opens
+ * a side-sheet drawer containing every navigation link and the auth section.
  */
 export async function Navbar() {
   const supabase = await createClient()
@@ -35,6 +40,17 @@ export async function Navbar() {
     isAdmin = roles.includes('admin')
   }
 
+  const viewer =
+    user && displayName
+      ? ({
+          kind: 'user' as const,
+          userId: user.id,
+          displayName,
+          avatarUrl,
+          isAdmin,
+        })
+      : ({ kind: 'guest' as const })
+
   return (
     <nav className="navbar sticky top-0 z-50 gap-2 bg-background">
       <div className="navbar-start gap-2">
@@ -42,7 +58,7 @@ export async function Navbar() {
           <Logo size="md" />
         </Link>
       </div>
-      <div className="navbar-center grow justify-center align-center gap-2">
+      <div className="navbar-center hidden grow justify-center align-center gap-2 lg:flex">
         <Link href="/paints" className="btn btn-ghost btn-sm">
           Paints
         </Link>
@@ -66,7 +82,7 @@ export async function Navbar() {
           </Link>
         )}
       </div>
-      <div className="navbar-end gap-2">
+      <div className="navbar-end hidden gap-2 lg:flex">
         {isAdmin && (
           <Link href="/admin" className="btn btn-ghost btn-sm">
             Admin
@@ -84,6 +100,9 @@ export async function Navbar() {
             </Link>
           </>
         )}
+      </div>
+      <div className="ml-auto flex items-center lg:hidden">
+        <NavbarMobileMenu viewer={viewer} />
       </div>
     </nav>
   )
