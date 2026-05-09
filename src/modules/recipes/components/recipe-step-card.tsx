@@ -212,13 +212,11 @@ export function RecipeStepCard({
         />
       </div>
 
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium text-muted-foreground">Notes</span>
-        <RecipeNoteList
-          parent={{ kind: 'step', stepId: step.id }}
-          notes={step.notes}
-        />
-      </div>
+      <RecipeNoteList
+        parent={{ kind: 'step', stepId: step.id }}
+        notes={step.notes}
+        compact
+      />
 
       <div className="flex flex-col gap-2">
         <span className="text-xs font-medium text-muted-foreground">Photos</span>

@@ -3,39 +3,42 @@
 import { useEffect, useRef, useState, useTransition } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Eye, Pencil, Trash2 } from 'lucide-react'
+import { GripVertical, Save, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { cn } from '@/lib/utils'
-import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
 import { addRecipeNote } from '@/modules/recipes/actions/add-recipe-note'
 import { deleteRecipeNote } from '@/modules/recipes/actions/delete-recipe-note'
 import { updateRecipeNote } from '@/modules/recipes/actions/update-recipe-note'
 import type { RecipeNote } from '@/modules/recipes/types/recipe-note'
 import type { RecipeNoteParent } from '@/modules/recipes/types/recipe-note-parent'
-import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
 
 const NOTE_BODY_MAX = 5000
 
 /**
- * Single editable note card with Edit/Preview toggle and auto-save on blur.
+ * Single editable note card with a body region and footer toolbar.
  *
  * Used inside {@link RecipeNoteList} for both recipe-level and step-level
- * note grids. Backed by a controlled `<textarea>` whose value commits via
- * {@link updateRecipeNote} when blurred (or {@link addRecipeNote} when
- * the card is a draft — i.e. `noteId === null`). Empty bodies on blur
- * are treated as a delete request: existing notes prompt a confirm and
- * call {@link deleteRecipeNote}; drafts are silently removed via
- * {@link onDraftRemove}.
+ * note grids. The body region pairs a narrow drag gutter with a
+ * borderless `<textarea>` so the card itself frames the editor; the
+ * footer toolbar holds the Save and Delete actions on the left and the
+ * character counter on the right. Saves are explicit — drafts
+ * (`noteId === null`) call {@link addRecipeNote}, persisted notes call
+ * {@link updateRecipeNote}. Note bodies are plain text; the read-only
+ * detail view preserves newlines but does not interpret markdown.
  *
- * Drafts (no server id yet) display the same UI as a saved note but
- * skip drag-reorder until the first save returns a real id.
+ * The Save button is disabled while a save is in flight, while the
+ * trimmed body matches what is already on the server, or while a fresh
+ * draft is empty. Deleting a saved note prompts a `confirm()`; deleting
+ * a draft drops it via {@link onDraftRemove} with no server call.
+ *
+ * Drafts skip drag-reorder until the first save returns a real id.
  *
  * @param props.dndId - Mount-stable id for dnd-kit's `useSortable`.
  * @param props.noteId - Server UUID. `null` means this is an unsaved draft.
  * @param props.parent - Discriminated union for the owning recipe or step.
  * @param props.initialBody - Starting body text (empty for fresh drafts).
- * @param props.startInEdit - When true, mounts in edit mode and focuses the textarea.
+ * @param props.startInEdit - When true, focuses the textarea on mount.
  * @param props.onSaved - Called after a successful create/update with the persisted note.
  * @param props.onDeleted - Called after a successful delete with the removed note's id.
  * @param props.onDraftRemove - Called when an empty draft should be discarded.
@@ -61,7 +64,6 @@ export function RecipeNoteCard({
 }) {
   const [body, setBody] = useState(initialBody)
   const [lastSaved, setLastSaved] = useState(initialBody)
-  const [isPreview, setIsPreview] = useState(!startInEdit)
   const [isPending, startTransition] = useTransition()
   const [isDeleting, startDelete] = useTransition()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -90,31 +92,18 @@ export function RecipeNoteCard({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function commit() {
-    const next = body.trim()
-    if (next === lastSaved.trim()) return
+  const trimmedBody = body.trim()
+  const hasChanges = trimmedBody !== lastSaved.trim()
+  const canSave =
+    !isPending &&
+    !isDeleting &&
+    hasChanges &&
+    trimmedBody.length > 0 &&
+    trimmedBody.length <= NOTE_BODY_MAX
 
-    if (next.length > NOTE_BODY_MAX) {
-      toast.error(`Note body must be ${NOTE_BODY_MAX} characters or fewer.`)
-      setBody(lastSaved)
-      return
-    }
-
-    if (next.length === 0) {
-      if (isDraft) {
-        onDraftRemove?.()
-        return
-      }
-      const ok =
-        typeof window === 'undefined' ||
-        window.confirm('Empty notes are deleted. Remove this note?')
-      if (!ok) {
-        setBody(lastSaved)
-        return
-      }
-      handleDelete()
-      return
-    }
+  function handleSave() {
+    if (!canSave) return
+    const next = trimmedBody
 
     if (isDraft) {
       startTransition(async () => {
@@ -166,98 +155,76 @@ export function RecipeNoteCard({
     })
   }
 
-  function togglePreview() {
-    if (!isPreview) {
-      commit()
-    }
-    setIsPreview((p) => !p)
-  }
-
   return (
     <div
       ref={setNodeRef}
       style={style}
       className={cn(
-        'rounded-md border border-border bg-base-100',
-        'border-l-4 border-l-primary',
+        'flex flex-col overflow-hidden rounded-md border border-border bg-base-100',
+        'focus-within:border-primary',
         isDragging && 'shadow-lg',
       )}
     >
-      <div className="flex items-start gap-1 p-2">
+      <div className="flex">
         {!isDraft ? (
-          <PaletteDragHandle
+          <button
             ref={setActivatorNodeRef}
+            type="button"
             aria-label="Reorder note"
+            className="flex w-7 shrink-0 cursor-grab touch-none items-center justify-center border-r border-border/50 text-muted-foreground hover:bg-muted active:cursor-grabbing"
             {...attributes}
             {...listeners}
-          />
+          >
+            <GripVertical className="size-4" aria-hidden />
+          </button>
         ) : (
-          <span className="w-6" aria-hidden />
-        )}
-        <div className="min-w-0 flex-1">
-          {isPreview ? (
-            <button
-              type="button"
-              onClick={() => setIsPreview(false)}
-              className="block w-full cursor-text text-left"
-              aria-label="Edit note"
-            >
-              {body.trim().length > 0 ? (
-                <MarkdownRenderer content={body} className="text-sm" />
-              ) : (
-                <p className="text-sm italic text-muted-foreground">
-                  Empty note — click to edit
-                </p>
-              )}
-            </button>
-          ) : (
-            <textarea
-              ref={textareaRef}
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              onBlur={commit}
-              maxLength={NOTE_BODY_MAX}
-              rows={4}
-              placeholder="Add a note (markdown supported)…"
-              aria-label="Note body"
-              className="textarea w-full text-sm"
-              disabled={isPending || isDeleting}
-            />
-          )}
-          <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
-            <span aria-live="polite">
-              {isPending ? 'Saving…' : isDeleting ? 'Deleting…' : ''}
-            </span>
-            <span className="tabular-nums">
-              {body.length} / {NOTE_BODY_MAX}
-            </span>
+          <div
+            className="flex w-7 shrink-0 items-center justify-center border-r border-border/50 text-muted-foreground/30"
+            aria-hidden
+          >
+            <GripVertical className="size-4" />
           </div>
-        </div>
-        <div className="flex flex-col gap-1">
+        )}
+        <textarea
+          ref={textareaRef}
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          maxLength={NOTE_BODY_MAX}
+          rows={4}
+          placeholder="Add a note…"
+          aria-label="Note body"
+          className="block w-full resize-y border-0 bg-transparent px-3 py-2 text-sm leading-relaxed focus:outline-none"
+          disabled={isPending || isDeleting}
+        />
+      </div>
+      <div className="flex items-center justify-between gap-2 border-t border-border/50 bg-base-200/40 px-2 py-1">
+        <div className="flex items-center gap-1">
           <button
             type="button"
-            onClick={togglePreview}
-            className="btn btn-xs btn-square btn-ghost"
-            aria-label={isPreview ? 'Edit note' : 'Preview note'}
-            aria-pressed={!isPreview}
-            title={isPreview ? 'Edit' : 'Preview'}
+            onClick={handleSave}
+            disabled={!canSave}
+            className="inline-flex h-[26px] items-center gap-1 rounded px-2 text-xs font-medium text-foreground hover:bg-muted disabled:opacity-50 disabled:hover:bg-transparent"
           >
-            {isPreview ? (
-              <Pencil className="size-4" aria-hidden />
-            ) : (
-              <Eye className="size-4" aria-hidden />
-            )}
+            <Save className="size-3.5" aria-hidden />
+            <span>Save</span>
           </button>
           <button
             type="button"
             onClick={handleDelete}
             disabled={isDeleting}
-            className="btn btn-xs btn-square btn-ghost text-destructive hover:text-destructive"
-            aria-label="Delete note"
-            title="Delete note"
+            className="inline-flex h-[26px] items-center gap-1 rounded px-2 text-xs font-medium text-destructive hover:bg-muted disabled:opacity-50 disabled:hover:bg-transparent"
           >
-            <Trash2 className="size-4" aria-hidden />
+            <Trash2 className="size-3.5" aria-hidden />
+            <span>Delete</span>
           </button>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span aria-live="polite">
+            {isPending ? 'Saving…' : isDeleting ? 'Deleting…' : ''}
+          </span>
+          <span className="tabular-nums">
+            {body.length} / {NOTE_BODY_MAX}
+          </span>
         </div>
       </div>
     </div>
