@@ -2,6 +2,7 @@ import { Heading } from 'lucide-react'
 
 import { boldToolbarAction } from '@/modules/markdown/toolbar-actions/bold'
 import { bulletListToolbarAction } from '@/modules/markdown/toolbar-actions/bullet-list'
+import { clearFormattingToolbarAction } from '@/modules/markdown/toolbar-actions/clear-formatting'
 import { heading2ToolbarAction } from '@/modules/markdown/toolbar-actions/heading-2'
 import { heading3ToolbarAction } from '@/modules/markdown/toolbar-actions/heading-3'
 import { heading4ToolbarAction } from '@/modules/markdown/toolbar-actions/heading-4'
@@ -41,4 +42,5 @@ export const defaultMarkdownToolbar: MarkdownToolbarItem[] = [
   },
   bulletListToolbarAction,
   numberedListToolbarAction,
+  clearFormattingToolbarAction,
 ]
