@@ -81,26 +81,12 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
               Palettes
             </Link>
           </SheetClose>
-          {viewer.kind === 'user' && (
-            <>
-              <SheetClose asChild>
-                <Link href="/collection" className="btn btn-ghost w-full justify-center md:justify-start">
-                  Collection
-                </Link>
-              </SheetClose>
-              <SheetClose asChild>
-                <Link href="/user/palettes" className="btn btn-ghost w-full justify-center md:justify-start">
-                  My palettes
-                </Link>
-              </SheetClose>
-              {viewer.isAdmin && (
-                <SheetClose asChild>
-                  <Link href="/admin" className="btn btn-ghost w-full justify-center md:justify-start">
-                    Admin
-                  </Link>
-                </SheetClose>
-              )}
-            </>
+          {viewer.kind === 'user' && viewer.isAdmin && (
+            <SheetClose asChild>
+              <Link href="/admin" className="btn btn-ghost w-full justify-center md:justify-start">
+                Admin
+              </Link>
+            </SheetClose>
           )}
         </SheetBody>
         <SheetFooter>
@@ -124,6 +110,27 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
                   <span className="ml-2">{viewer.displayName}</span>
                 </Link>
               </SheetClose>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground px-3 pt-2">
+                Mine
+              </p>
+              <SheetClose asChild>
+                <Link href="/collection" className="btn btn-ghost w-full justify-center md:justify-start">
+                  My collection
+                </Link>
+              </SheetClose>
+              <SheetClose asChild>
+                <Link href="/user/palettes" className="btn btn-ghost w-full justify-center md:justify-start">
+                  My palettes
+                </Link>
+              </SheetClose>
+              <button
+                type="button"
+                disabled
+                aria-disabled="true"
+                className="btn btn-ghost w-full justify-center md:justify-start opacity-60 cursor-not-allowed"
+              >
+                My recipes <span className="ml-auto text-xs">Coming soon</span>
+              </button>
               <form action={signOut}>
                 <button
                   type="submit"
