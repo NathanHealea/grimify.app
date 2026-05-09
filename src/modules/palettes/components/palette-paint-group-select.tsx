@@ -4,12 +4,21 @@ import { useTransition } from 'react'
 import { toast } from 'sonner'
 
 import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { assignPaintToGroup } from '@/modules/palettes/actions/assign-paint-to-group'
+
+const UNGROUPED_VALUE = '__ungrouped__'
 
 /**
  * Per-row group selector rendered inside a palette paint row in edit mode.
  *
- * Renders a `<select>` with an "Ungrouped" option and one option per group.
+ * Renders a Radix select with an "Ungrouped" option and one option per group.
  * On change, calls {@link assignPaintToGroup} inside `useTransition` and
  * surfaces any failure via a Sonner toast.
  *
@@ -31,9 +40,12 @@ export function PalettePaintGroupSelect({
 }) {
   const [isPending, startTransition] = useTransition()
 
-  function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const value = e.target.value
-    const groupId = value === '' ? null : value
+  const currentLabel = currentGroupId
+    ? (groups.find((g) => g.id === currentGroupId)?.name ?? 'Ungrouped')
+    : 'Ungrouped'
+
+  function handleChange(value: string) {
+    const groupId = value === UNGROUPED_VALUE ? null : value
 
     startTransition(async () => {
       const result = await assignPaintToGroup(paletteId, position, groupId)
@@ -44,19 +56,22 @@ export function PalettePaintGroupSelect({
   }
 
   return (
-    <select
-      value={currentGroupId ?? ''}
-      onChange={handleChange}
+    <Select
+      value={currentGroupId ?? UNGROUPED_VALUE}
+      onValueChange={handleChange}
       disabled={isPending}
-      className="select select-sm"
-      aria-label="Assign to group"
     >
-      <option value="">Ungrouped</option>
-      {groups.map((g) => (
-        <option key={g.id} value={g.id}>
-          {g.name}
-        </option>
-      ))}
-    </select>
+      <SelectTrigger className="select-trigger-sm" aria-label="Assign to group">
+        <SelectValue>{currentLabel}</SelectValue>
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value={UNGROUPED_VALUE}>Ungrouped</SelectItem>
+        {groups.map((g) => (
+          <SelectItem key={g.id} value={g.id}>
+            {g.name}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   )
 }

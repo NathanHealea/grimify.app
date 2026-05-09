@@ -3,6 +3,13 @@
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { assignRole } from '@/modules/admin/actions/assign-role'
 import { revokeRole } from '@/modules/admin/actions/revoke-role'
 
@@ -112,20 +119,25 @@ export function AdminUserRolesEditor({
       {/* Assign new role */}
       {unassigned.length > 0 && (
         <div className="flex items-center gap-2">
-          <select
-            value={selectedRoleId}
-            onChange={(e) => setSelectedRoleId(e.target.value)}
+          <Select
+            value={selectedRoleId || undefined}
+            onValueChange={setSelectedRoleId}
             disabled={isPending}
-            className="input input-sm"
-            aria-label="Select role to assign"
           >
-            <option value="">Add a role…</option>
-            {unassigned.map((role) => (
-              <option key={role.id} value={role.id}>
-                {role.name}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger
+              className="select-trigger-sm"
+              aria-label="Select role to assign"
+            >
+              <SelectValue placeholder="Add a role…" />
+            </SelectTrigger>
+            <SelectContent>
+              {unassigned.map((role) => (
+                <SelectItem key={role.id} value={role.id}>
+                  {role.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <button
             type="button"
             onClick={handleAssign}

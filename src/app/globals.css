@@ -6,6 +6,7 @@
 @import '../styles/card.css' layer(components);
 @import '../styles/input.css' layer(components);
 @import '../styles/input-group.css' layer(components);
+@import '../styles/select.css' layer(components);
 @import '../styles/label.css' layer(components);
 @import '../styles/textarea.css' layer(components);
 @import '../styles/form.css' layer(components);

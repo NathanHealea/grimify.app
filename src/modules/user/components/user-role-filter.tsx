@@ -2,6 +2,16 @@
 
 import { useRouter } from 'next/navigation'
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+
+const ALL_ROLES_VALUE = '__all__'
+
 /**
  * Role filter dropdown that syncs the selected role to the `?role=` URL param.
  *
@@ -20,10 +30,10 @@ export function UserRoleFilter({
 }) {
   const router = useRouter()
 
-  function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
+  function handleChange(value: string) {
     const params = new URLSearchParams(window.location.search)
-    if (e.target.value) {
-      params.set('role', e.target.value)
+    if (value && value !== ALL_ROLES_VALUE) {
+      params.set('role', value)
     } else {
       params.delete('role')
     }
@@ -31,19 +41,24 @@ export function UserRoleFilter({
     router.replace(`?${params.toString()}`)
   }
 
+  const currentLabel = initialValue || 'All roles'
+
   return (
-    <select
-      defaultValue={initialValue}
-      onChange={handleChange}
-      className="input input-sm"
-      aria-label="Filter by role"
+    <Select
+      defaultValue={initialValue || ALL_ROLES_VALUE}
+      onValueChange={handleChange}
     >
-      <option value="">All roles</option>
-      {roles.map((r) => (
-        <option key={r.id} value={r.name}>
-          {r.name}
-        </option>
-      ))}
-    </select>
+      <SelectTrigger aria-label="Filter by role">
+        <SelectValue>{currentLabel}</SelectValue>
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value={ALL_ROLES_VALUE}>All roles</SelectItem>
+        {roles.map((r) => (
+          <SelectItem key={r.id} value={r.name}>
+            {r.name}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   )
 }
