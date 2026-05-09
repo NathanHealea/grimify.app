@@ -2,7 +2,7 @@
 
 **Epic:** Painting Recipes
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/recipe-photos`
 **Merge into:** `v1/feature/paint-recipes`
 
@@ -12,17 +12,17 @@ Let users upload an arbitrary number of photos to a recipe — both at the recip
 
 ## Acceptance Criteria
 
-- [ ] The builder has a "Photos" panel at the recipe level: upload, drag/drop reorder, delete, choose cover
-- [ ] Each step in the builder has a "Photos" panel: upload, reorder, delete
-- [ ] Uploads accept JPEG, PNG, and WebP up to 10 MB
-- [ ] Uploads show progress, succeed atomically, and fail with a clear error toast
-- [ ] Photos render as a thumbnail grid; clicking opens a lightbox with arrow navigation
-- [ ] The recipe-level cover photo is selectable from any recipe-level photo (not step photos); it shows on the dashboard card and at the top of the read view
-- [ ] Each photo can have a caption (≤200 chars) edited inline
-- [ ] Read view renders recipe-level photos as a gallery near the top and step photos inline within each step
-- [ ] If a recipe is public, its photos are publicly readable; if private, only the owner can see them
-- [ ] Deleting a photo removes both the DB row and the Storage object; deleting a recipe/step cascades and cleans Storage
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] The builder has a "Photos" panel at the recipe level: upload, drag/drop reorder, delete, choose cover
+- [x] Each step in the builder has a "Photos" panel: upload, reorder, delete
+- [x] Uploads accept JPEG, PNG, and WebP up to 10 MB
+- [x] Uploads show progress, succeed atomically, and fail with a clear error toast
+- [x] Photos render as a thumbnail grid; clicking opens a lightbox with arrow navigation
+- [x] The recipe-level cover photo is selectable from any recipe-level photo (not step photos); it shows on the dashboard card and at the top of the read view
+- [x] Each photo can have a caption (≤200 chars) edited inline
+- [x] Read view renders recipe-level photos as a gallery near the top and step photos inline within each step
+- [x] If a recipe is public, its photos are publicly readable; if private, only the owner can see them
+- [x] Deleting a photo removes both the DB row and the Storage object; deleting a recipe/step cascades and cleans Storage
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Module additions
 
