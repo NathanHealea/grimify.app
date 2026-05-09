@@ -1,0 +1,77 @@
+/*
+ * Sheet Component
+ *
+ * Side-anchored modal panel that slides in from a screen edge. Built on
+ * Radix Dialog, so it inherits focus-trap, scroll-lock, overlay click,
+ * and Escape-to-close behavior.
+ *
+ * Loosely modeled on the daisyUI Drawer component.
+ * https://daisyui.com/components/drawer/
+ *
+ * Implements daisyUI's class naming conventions using this project's
+ * Tailwind CSS theme tokens instead of daisyUI's built-in theme system.
+ *
+ * Classes:
+ *   Overlay:   .sheet-overlay              — Fixed translucent backdrop
+ *   Content:   .sheet-content              — Base side panel (fixed, full viewport height)
+ *   Sides:     .sheet-content-right        — Anchored to right edge, slides in from right
+ *              .sheet-content-left         — Anchored to left edge, slides in from left
+ *   Header:    .sheet-header               — Top row inside the panel (title + close button)
+ *   Body:      .sheet-body                 — Scrollable content area
+ *   Footer:    .sheet-footer               — Bottom row inside the panel
+ */
+
+/* -------------------------------------------------------------------------
+ * Overlay (backdrop)
+ * ----------------------------------------------------------------------- */
+.sheet-overlay {
+  @apply fixed inset-0 z-50 bg-black/50 backdrop-blur-sm
+    data-[state=open]:animate-in data-[state=closed]:animate-out
+    data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0;
+}
+
+/* --- */
+
+/* -------------------------------------------------------------------------
+ * Content (side panel)
+ * ----------------------------------------------------------------------- */
+.sheet-content {
+  @apply fixed z-50 flex h-full w-3/4 max-w-sm flex-col gap-4
+    border-border bg-background p-6 shadow-lg
+    transition ease-in-out
+    data-[state=open]:animate-in data-[state=closed]:animate-out
+    data-[state=closed]:duration-200 data-[state=open]:duration-300;
+}
+
+.sheet-content-right {
+  @apply inset-y-0 right-0 border-l
+    data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right;
+}
+
+.sheet-content-left {
+  @apply inset-y-0 left-0 border-r
+    data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left;
+}
+
+/* --- */
+
+/* -------------------------------------------------------------------------
+ * Header
+ * ----------------------------------------------------------------------- */
+.sheet-header {
+  @apply flex items-center justify-between gap-4;
+}
+
+/* -------------------------------------------------------------------------
+ * Body
+ * ----------------------------------------------------------------------- */
+.sheet-body {
+  @apply flex flex-1 flex-col gap-2 overflow-y-auto;
+}
+
+/* -------------------------------------------------------------------------
+ * Footer
+ * ----------------------------------------------------------------------- */
+.sheet-footer {
+  @apply mt-auto flex flex-col gap-2;
+}
