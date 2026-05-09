@@ -1329,6 +1329,165 @@ export function createRecipeService(supabase: SupabaseClient) {
 
       if (error) throw new Error(error.message)
     },
+
+    /**
+     * Appends a new note at the end of a recipe-level or step-level parent.
+     *
+     * The XOR `(recipe_id, step_id)` invariant is enforced by setting
+     * exactly one of the two foreign keys based on the discriminated
+     * `parent` union. Reads the current max `position` for that parent
+     * and inserts at `max + 1` (or `0` when the parent has no notes).
+     *
+     * @param parent - Either a `recipe` or `step` parent reference.
+     * @param body - Markdown body (1–5000 chars after trimming).
+     * @returns The newly created {@link RecipeNote}.
+     */
+    async addNote(
+      parent: { kind: 'recipe'; recipeId: string } | { kind: 'step'; stepId: string },
+      body: string,
+    ): Promise<RecipeNote> {
+      const positionFilter = supabase
+        .from('recipe_notes')
+        .select('position')
+        .order('position', { ascending: false })
+        .limit(1)
+      const positionQuery =
+        parent.kind === 'recipe'
+          ? positionFilter.eq('recipe_id', parent.recipeId)
+          : positionFilter.eq('step_id', parent.stepId)
+
+      const { data: existing, error: existingError } = await positionQuery.maybeSingle()
+      if (existingError) throw new Error(existingError.message)
+
+      const nextPosition = existing ? existing.position + 1 : 0
+
+      const recipeId = parent.kind === 'recipe' ? parent.recipeId : null
+      const stepId = parent.kind === 'step' ? parent.stepId : null
+
+      const { data, error } = await supabase
+        .from('recipe_notes')
+        .insert({
+          recipe_id: recipeId,
+          step_id: stepId,
+          position: nextPosition,
+          body,
+        })
+        .select()
+        .single()
+
+      if (error || !data) throw new Error(error?.message ?? 'Failed to add note.')
+
+      return {
+        id: data.id,
+        recipeId: data.recipe_id,
+        stepId: data.step_id,
+        position: data.position,
+        body: data.body,
+        createdAt: data.created_at,
+      }
+    },
+
+    /**
+     * Patches a note's mutable fields. Currently only `body` is editable.
+     *
+     * Body must be 1–5000 chars; empty bodies should be sent as a
+     * {@link deleteNote} instead.
+     *
+     * @param id - The note UUID.
+     * @param patch - Fields to update.
+     * @returns The updated {@link RecipeNote}.
+     */
+    async updateNote(
+      id: string,
+      patch: { body?: string },
+    ): Promise<RecipeNote> {
+      const { data, error } = await supabase
+        .from('recipe_notes')
+        .update({
+          ...(patch.body !== undefined && { body: patch.body }),
+        })
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error || !data) throw new Error(error?.message ?? 'Failed to update note.')
+
+      return {
+        id: data.id,
+        recipeId: data.recipe_id,
+        stepId: data.step_id,
+        position: data.position,
+        body: data.body,
+        createdAt: data.created_at,
+      }
+    },
+
+    /**
+     * Hard-deletes a note row.
+     *
+     * Returns the parent ids so the caller can renumber the remaining
+     * sibling notes via {@link setRecipeNotes} if a contiguous order
+     * matters.
+     *
+     * @param id - The note UUID.
+     * @returns Metadata about the removed row's parent.
+     */
+    async deleteNote(id: string): Promise<{
+      recipeId: string | null
+      stepId: string | null
+    }> {
+      const { data: row, error: readError } = await supabase
+        .from('recipe_notes')
+        .select('recipe_id, step_id')
+        .eq('id', id)
+        .maybeSingle()
+
+      if (readError) throw new Error(readError.message)
+      if (!row) throw new Error('Note not found.')
+
+      const { error } = await supabase.from('recipe_notes').delete().eq('id', id)
+      if (error) throw new Error(error.message)
+
+      return {
+        recipeId: (row.recipe_id as string | null) ?? null,
+        stepId: (row.step_id as string | null) ?? null,
+      }
+    },
+
+    /**
+     * Renumbers notes within a recipe-level or step-level parent.
+     *
+     * `recipe_notes` does not enforce a `(parent_id, position)` unique
+     * constraint, so a single-phase update is safe. Mirrors
+     * {@link setRecipePhotos} exactly.
+     *
+     * @param parent - The parent scope (recipe or step).
+     * @param ordered - Complete `(id, position)` mapping for every note
+     *   in the parent. Positions should be normalized to `0..N-1`.
+     * @throws When any update fails.
+     */
+    async setRecipeNotes(
+      parent: { kind: 'recipe'; recipeId: string } | { kind: 'step'; stepId: string },
+      ordered: Array<{ id: string; position: number }>,
+    ): Promise<void> {
+      if (ordered.length === 0) return
+
+      const parentColumn = parent.kind === 'recipe' ? 'recipe_id' : 'step_id'
+      const parentValue = parent.kind === 'recipe' ? parent.recipeId : parent.stepId
+
+      const results = await Promise.all(
+        ordered.map((row) =>
+          supabase
+            .from('recipe_notes')
+            .update({ position: row.position })
+            .eq('id', row.id)
+            .eq(parentColumn, parentValue),
+        ),
+      )
+
+      const failed = results.find((res) => res.error)?.error
+      if (failed) throw new Error(failed.message)
+    },
   }
 }
 
