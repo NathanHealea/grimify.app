@@ -37,8 +37,8 @@ type Viewer =
  * Mobile/tablet navbar menu — hamburger button + full-screen side-sheet drawer.
  *
  * Renders only below the `lg` breakpoint (the parent `<Navbar>` gates this
- * component with `lg:hidden`). The drawer covers the full viewport and slides
- * in from the right with all links right-aligned.
+ * component with `lg:hidden`). The drawer covers the full viewport. Links are
+ * center-aligned on phones and left-aligned on tablets (`md` breakpoint).
  *
  * Auto-closes when the user taps any link (via {@link SheetClose} wrappers).
  *
@@ -62,40 +62,40 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
         </SheetHeader>
         <SheetBody>
           <SheetClose asChild>
-            <Link href="/paints" className="btn btn-ghost w-full justify-end">
+            <Link href="/paints" className="btn btn-ghost w-full justify-center md:justify-start">
               Paints
             </Link>
           </SheetClose>
           <SheetClose asChild>
-            <Link href="/brands" className="btn btn-ghost w-full justify-end">
+            <Link href="/brands" className="btn btn-ghost w-full justify-center md:justify-start">
               Brands
             </Link>
           </SheetClose>
           <SheetClose asChild>
-            <Link href="/schemes" className="btn btn-ghost w-full justify-end">
+            <Link href="/schemes" className="btn btn-ghost w-full justify-center md:justify-start">
               Schemes
             </Link>
           </SheetClose>
           <SheetClose asChild>
-            <Link href="/palettes" className="btn btn-ghost w-full justify-end">
+            <Link href="/palettes" className="btn btn-ghost w-full justify-center md:justify-start">
               Palettes
             </Link>
           </SheetClose>
           {viewer.kind === 'user' && (
             <>
               <SheetClose asChild>
-                <Link href="/collection" className="btn btn-ghost w-full justify-end">
+                <Link href="/collection" className="btn btn-ghost w-full justify-center md:justify-start">
                   Collection
                 </Link>
               </SheetClose>
               <SheetClose asChild>
-                <Link href="/user/palettes" className="btn btn-ghost w-full justify-end">
+                <Link href="/user/palettes" className="btn btn-ghost w-full justify-center md:justify-start">
                   My palettes
                 </Link>
               </SheetClose>
               {viewer.isAdmin && (
                 <SheetClose asChild>
-                  <Link href="/admin" className="btn btn-ghost w-full justify-end">
+                  <Link href="/admin" className="btn btn-ghost w-full justify-center md:justify-start">
                     Admin
                   </Link>
                 </SheetClose>
@@ -107,8 +107,10 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
           {viewer.kind === 'user' ? (
             <>
               <SheetClose asChild>
-                <Link href={`/users/${viewer.userId}`} className="btn btn-ghost w-full justify-end">
-                  <span className="mr-2">{viewer.displayName}</span>
+                <Link
+                  href={`/users/${viewer.userId}`}
+                  className="btn btn-ghost w-full justify-center md:justify-start"
+                >
                   {viewer.avatarUrl ? (
                     <Image
                       src={viewer.avatarUrl}
@@ -119,12 +121,13 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
                       referrerPolicy="no-referrer"
                     />
                   ) : null}
+                  <span className="ml-2">{viewer.displayName}</span>
                 </Link>
               </SheetClose>
               <form action={signOut}>
                 <button
                   type="submit"
-                  className="btn btn-ghost btn-destructive w-full justify-end"
+                  className="btn btn-ghost btn-destructive w-full justify-center md:justify-start"
                 >
                   Sign out
                 </button>
@@ -133,12 +136,12 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
           ) : (
             <>
               <SheetClose asChild>
-                <Link href="/sign-in" className="btn btn-ghost w-full justify-end">
+                <Link href="/sign-in" className="btn btn-ghost w-full justify-center md:justify-start">
                   Sign In
                 </Link>
               </SheetClose>
               <SheetClose asChild>
-                <Link href="/sign-up" className="btn btn-primary w-full justify-end">
+                <Link href="/sign-up" className="btn btn-primary w-full justify-center md:justify-start">
                   Sign Up
                 </Link>
               </SheetClose>
