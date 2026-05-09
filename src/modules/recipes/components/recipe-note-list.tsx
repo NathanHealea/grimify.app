@@ -152,7 +152,7 @@ export function RecipeNoteList({
     <div className="flex flex-col gap-2">
       {slots.length === 0 && (
         <p className="text-xs text-muted-foreground">
-          No notes yet. Click "Add note" to capture a tip or callout.
+          No notes yet. Click &ldquo;Add note&rdquo; to capture a tip or callout.
         </p>
       )}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
