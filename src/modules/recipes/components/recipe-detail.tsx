@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
+import { RecipeNoteDisplay } from '@/modules/recipes/components/recipe-note-display'
 import { RecipePhotoGrid } from '@/modules/recipes/components/recipe-photo-grid'
 import { RecipeStepPaintList } from '@/modules/recipes/components/recipe-step-paint-list'
 import type { Recipe } from '@/modules/recipes/types/recipe'
@@ -9,10 +10,11 @@ import type { Recipe } from '@/modules/recipes/types/recipe'
  * Read-only render of a fully hydrated {@link Recipe}.
  *
  * Lays out the recipe top-to-bottom: title header (with an optional "Edit"
- * link for the owner), summary (markdown), then each section as a heading
- * followed by its numbered steps. Each step shows its title, a technique
- * chip, the instructions block (markdown), and the read-only paint list.
- * Notes is filled in by doc 04.
+ * link for the owner), summary (markdown), recipe-level notes via
+ * {@link RecipeNoteDisplay}, then each section as a heading followed by its
+ * numbered steps. Each step shows its title, a technique chip, the
+ * instructions block (markdown), step-level notes (compact), and the
+ * read-only paint list.
  *
  * Step paints render via the shared {@link RecipeStepPaintList} in read mode
  * (`canEdit={false}`) so the builder and the detail view always agree on
@@ -55,6 +57,8 @@ export function RecipeDetail({
           />
         )}
       </header>
+
+      <RecipeNoteDisplay notes={recipe.notes} />
 
       {recipe.photos.length > 0 && (
         <section className="flex flex-col gap-3">
@@ -116,6 +120,8 @@ export function RecipeDetail({
                             className="text-sm leading-relaxed"
                           />
                         )}
+
+                        <RecipeNoteDisplay notes={step.notes} compact />
 
                         {step.paints.length === 0 ? (
                           <p className="text-xs italic text-muted-foreground">
