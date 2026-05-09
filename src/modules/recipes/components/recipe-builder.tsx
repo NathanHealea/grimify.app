@@ -33,13 +33,10 @@ export function RecipeBuilder({
         <RecipeForm recipe={recipe} palettes={palettes} />
       </div>
 
-      <div>
-        <h2 className="mb-4 text-lg font-semibold">Notes</h2>
-        <RecipeNoteList
-          parent={{ kind: 'recipe', recipeId: recipe.id }}
-          notes={recipe.notes}
-        />
-      </div>
+      <RecipeNoteList
+        parent={{ kind: 'recipe', recipeId: recipe.id }}
+        notes={recipe.notes}
+      />
 
       <div>
         <h2 className="mb-4 text-lg font-semibold">Sections &amp; steps</h2>

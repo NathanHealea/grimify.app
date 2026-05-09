@@ -51,12 +51,12 @@ function seedSlots(notes: RecipeNote[]): NoteSlot[] {
 /**
  * List of notes for a recipe-level or step-level parent.
  *
- * In edit mode (`canEdit={true}`) renders each note inside a dnd-kit
- * `<SortableContext>` (vertical list strategy) and exposes an "Add note"
- * button below the list. New notes are added as **drafts** — their
- * server row is created on the first blur with non-empty content via
- * {@link addRecipeNote}. Empty drafts are silently discarded so the
- * user can click "Add note" without committing to a save.
+ * Renders a section header with a "Notes" label and an "Add note"
+ * button on the right, then each note inside a dnd-kit
+ * `<SortableContext>` (vertical list strategy). New notes are added
+ * as **drafts** — their server row is created on the first explicit
+ * Save with non-empty content via {@link addRecipeNote}. Empty drafts
+ * are silently discarded if the user deletes them before saving.
  *
  * Reorder persists optimistically via {@link reorderRecipeNotes} and
  * rolls back on failure with a Sonner toast.
@@ -65,13 +65,18 @@ function seedSlots(notes: RecipeNote[]): NoteSlot[] {
  *
  * @param props.parent - Discriminated union for which entity owns these notes.
  * @param props.notes - Server-loaded notes (head first, ordered by `position`).
+ * @param props.compact - When true, renders a compact muted label
+ *   appropriate for nesting inside a step card; otherwise renders an
+ *   `h2` matching peer sections in the recipe builder.
  */
 export function RecipeNoteList({
   parent,
   notes,
+  compact = false,
 }: {
   parent: RecipeNoteParent
   notes: RecipeNote[]
+  compact?: boolean
 }) {
   const [slots, setSlots] = useState<NoteSlot[]>(() => seedSlots(notes))
   const [trackedNotes, setTrackedNotes] = useState<RecipeNote[]>(notes)
@@ -150,9 +155,24 @@ export function RecipeNoteList({
 
   return (
     <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between gap-2">
+        {compact ? (
+          <span className="text-xs font-medium text-muted-foreground">Notes</span>
+        ) : (
+          <h2 className="text-lg font-semibold">Notes</h2>
+        )}
+        <button
+          type="button"
+          onClick={handleAdd}
+          className="btn btn-ghost btn-sm"
+        >
+          <Plus className="size-4" aria-hidden />
+          <span>Add note</span>
+        </button>
+      </div>
       {slots.length === 0 && (
         <p className="text-xs text-muted-foreground">
-          No notes yet. Click &ldquo;Add note&rdquo; to capture a tip or callout.
+          No notes yet. Click &ldquo;Add note&rdquo; above to capture a tip or callout.
         </p>
       )}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -177,14 +197,6 @@ export function RecipeNoteList({
           </div>
         </SortableContext>
       </DndContext>
-      <button
-        type="button"
-        onClick={handleAdd}
-        className="btn btn-ghost btn-sm self-start"
-      >
-        <Plus className="size-4" aria-hidden />
-        <span>Add note</span>
-      </button>
     </div>
   )
 }

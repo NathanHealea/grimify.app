@@ -1,5 +1,4 @@
 import { cn } from '@/lib/utils'
-import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
 import type { RecipeNote } from '@/modules/recipes/types/recipe-note'
 
 /**
@@ -9,8 +8,8 @@ import type { RecipeNote } from '@/modules/recipes/types/recipe-note'
  * component unconditionally. Each note becomes its own callout block
  * with a left primary border accent (`border-l-4 border-primary`) so
  * notes are visually distinct from step instructions and the recipe
- * summary. Markdown is rendered through {@link MarkdownRenderer},
- * which already enforces a safe element allow-list.
+ * summary. Note bodies are plain text — newlines are preserved via
+ * `whitespace-pre-wrap`, but no markdown is interpreted.
  *
  * @param props.notes - Notes ordered by `position`, head first.
  * @param props.className - Optional class for the wrapping `<div>`.
@@ -38,10 +37,14 @@ export function RecipeNoteDisplay({
             compact ? 'px-3 py-2' : 'px-4 py-3',
           )}
         >
-          <MarkdownRenderer
-            content={note.body}
-            className={compact ? 'text-sm' : ''}
-          />
+          <p
+            className={cn(
+              'whitespace-pre-wrap leading-relaxed',
+              compact ? 'text-sm' : '',
+            )}
+          >
+            {note.body}
+          </p>
         </div>
       ))}
     </div>
