@@ -3,6 +3,7 @@
 import type { PaletteSummary } from '@/modules/palettes/types/palette-summary'
 import { DeleteRecipeButton } from '@/modules/recipes/components/delete-recipe-button'
 import { RecipeForm } from '@/modules/recipes/components/recipe-form'
+import { RecipeNoteList } from '@/modules/recipes/components/recipe-note-list'
 import { RecipePhotoGrid } from '@/modules/recipes/components/recipe-photo-grid'
 import { RecipeSectionList } from '@/modules/recipes/components/recipe-section-list'
 import type { Recipe } from '@/modules/recipes/types/recipe'
@@ -30,6 +31,14 @@ export function RecipeBuilder({
       <div>
         <h2 className="mb-4 text-lg font-semibold">Details</h2>
         <RecipeForm recipe={recipe} palettes={palettes} />
+      </div>
+
+      <div>
+        <h2 className="mb-4 text-lg font-semibold">Notes</h2>
+        <RecipeNoteList
+          parent={{ kind: 'recipe', recipeId: recipe.id }}
+          notes={recipe.notes}
+        />
       </div>
 
       <div>

@@ -1,3 +1,4 @@
+import type { RecipeNote } from '@/modules/recipes/types/recipe-note'
 import type { RecipePhoto } from '@/modules/recipes/types/recipe-photo'
 import type { RecipeStepPaint } from '@/modules/recipes/types/recipe-step-paint'
 
@@ -14,6 +15,9 @@ import type { RecipeStepPaint } from '@/modules/recipes/types/recipe-step-paint'
  *
  * `photos` is an ordered list of {@link RecipePhoto} attached to this step,
  * populated by hydrated reads; it is empty when no step photos exist.
+ *
+ * `notes` is an ordered list of {@link RecipeNote} attached to this step,
+ * populated by hydrated reads; it is empty when no step notes exist.
  */
 export type RecipeStep = {
   /** UUID primary key. */
@@ -32,4 +36,6 @@ export type RecipeStep = {
   paints: RecipeStepPaint[]
   /** Ordered photos attached to this step, sorted by `position` ascending. */
   photos: RecipePhoto[]
+  /** Ordered notes attached to this step, sorted by `position` ascending. */
+  notes: RecipeNote[]
 }
