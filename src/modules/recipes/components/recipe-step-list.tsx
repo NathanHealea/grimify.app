@@ -42,17 +42,21 @@ import { reorderArray } from '@/modules/palettes/utils/reorder-array'
  * @param props.steps - Ordered array of steps from the server.
  * @param props.palette - Hydrated linked palette (or `null`); forwarded to each
  *   step card's paint picker.
+ * @param props.recipeId - UUID of the parent recipe; forwarded so each step's
+ *   photo grid can compose its Storage path.
  */
 export function RecipeStepList({
   sectionId,
   sectionLabel,
   steps,
   palette,
+  recipeId,
 }: {
   sectionId: string
   sectionLabel: string
   steps: RecipeStep[]
   palette: Palette | null
+  recipeId: string
 }) {
   const [orderedSteps, setOrderedSteps] = useState<RecipeStep[]>(steps)
   const [trackedSteps, setTrackedSteps] = useState<RecipeStep[]>(steps)
@@ -126,6 +130,7 @@ export function RecipeStepList({
               dndId={step.id}
               label={`${sectionLabel}.${index + 1}`}
               palette={palette}
+              recipeId={recipeId}
             />
           ))}
         </SortableContext>

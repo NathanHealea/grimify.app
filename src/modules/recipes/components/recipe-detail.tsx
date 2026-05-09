@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
+import { RecipePhotoGrid } from '@/modules/recipes/components/recipe-photo-grid'
 import { RecipeStepPaintList } from '@/modules/recipes/components/recipe-step-paint-list'
 import type { Recipe } from '@/modules/recipes/types/recipe'
 
@@ -54,6 +55,18 @@ export function RecipeDetail({
           />
         )}
       </header>
+
+      {recipe.photos.length > 0 && (
+        <section className="flex flex-col gap-3">
+          <h2 className="text-lg font-semibold">Photos</h2>
+          <RecipePhotoGrid
+            parent={{ kind: 'recipe', recipeId: recipe.id }}
+            recipeId={recipe.id}
+            photos={recipe.photos}
+            canEdit={false}
+          />
+        </section>
+      )}
 
       {recipe.sections.length === 0 ? (
         <p className="rounded-md border border-dashed border-border p-4 text-sm text-muted-foreground">
@@ -113,6 +126,16 @@ export function RecipeDetail({
                             stepId={step.id}
                             paints={step.paints}
                             canEdit={false}
+                          />
+                        )}
+
+                        {step.photos.length > 0 && (
+                          <RecipePhotoGrid
+                            parent={{ kind: 'step', stepId: step.id }}
+                            recipeId={recipe.id}
+                            photos={step.photos}
+                            canEdit={false}
+                            compact
                           />
                         )}
                       </li>

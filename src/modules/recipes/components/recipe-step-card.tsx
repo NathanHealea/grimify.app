@@ -11,6 +11,7 @@ import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-ha
 import type { Palette } from '@/modules/palettes/types/palette'
 import { deleteRecipeStep } from '@/modules/recipes/actions/delete-recipe-step'
 import { updateRecipeStep } from '@/modules/recipes/actions/update-recipe-step'
+import { RecipePhotoGrid } from '@/modules/recipes/components/recipe-photo-grid'
 import { RecipeStepPaintList } from '@/modules/recipes/components/recipe-step-paint-list'
 import { RecipeStepPaintPicker } from '@/modules/recipes/components/recipe-step-paint-picker'
 import type { RecipeStep } from '@/modules/recipes/types/recipe-step'
@@ -35,17 +36,21 @@ import type { RecipeStep } from '@/modules/recipes/types/recipe-step'
  * @param props.palette - The recipe's linked palette, or `null` when none.
  *   Forwarded to {@link RecipeStepPaintPicker} so palette-mode is the default
  *   when the recipe has a pinned palette.
+ * @param props.recipeId - UUID of the parent recipe; required by
+ *   {@link RecipePhotoGrid} so step-photo Storage paths nest under the recipe.
  */
 export function RecipeStepCard({
   step,
   label,
   dndId,
   palette,
+  recipeId,
 }: {
   step: RecipeStep
   label: string
   dndId: string
   palette: Palette | null
+  recipeId: string
 }) {
   const {
     attributes,
@@ -203,6 +208,17 @@ export function RecipeStepCard({
           stepId={step.id}
           paints={step.paints}
           canEdit={true}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-medium text-muted-foreground">Photos</span>
+        <RecipePhotoGrid
+          parent={{ kind: 'step', stepId: step.id }}
+          recipeId={recipeId}
+          photos={step.photos}
+          canEdit
+          compact
         />
       </div>
     </div>
