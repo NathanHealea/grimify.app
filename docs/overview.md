@@ -71,6 +71,7 @@ Core functionality:
 - [x] [Shared `<Main>` page wrapper component](./00-marketing-and-branding/07-main-component-refactor.md)
 - [x] [Shared `<PageHeader>` title and subtitle component](./00-marketing-and-branding/08-title-and-subtitle-component-refactor.md)
 - [x] [Mobile-friendly navbar](./00-marketing-and-branding/09-mobile-friendly-navbar.md)
+- [ ] [Navbar user menu](./00-marketing-and-branding/10-navbar-user-menu.md)
 
 ### Epic: Authentication & User Accounts
 
