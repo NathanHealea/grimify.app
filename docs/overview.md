@@ -225,9 +225,9 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Recipe database schema and module scaffold](./12-painting-recipes/00-recipe-schema.md)
-- [ ] [Recipe builder (sections, steps, instructions)](./12-painting-recipes/01-recipe-builder.md)
-- [ ] [Recipe step paints (palette-aware picker, ratios)](./12-painting-recipes/02-recipe-step-paints.md)
-- [ ] [Recipe photos (upload, cover, lightbox)](./12-painting-recipes/03-recipe-photos.md)
-- [ ] [Recipe notes (multiple notes per recipe and per step)](./12-painting-recipes/04-recipe-notes.md)
+- [x] [Recipe database schema and module scaffold](./12-painting-recipes/00-recipe-schema.md)
+- [x] [Recipe builder (sections, steps, instructions)](./12-painting-recipes/01-recipe-builder.md)
+- [x] [Recipe step paints (palette-aware picker, ratios)](./12-painting-recipes/02-recipe-step-paints.md)
+- [x] [Recipe photos (upload, cover, lightbox)](./12-painting-recipes/03-recipe-photos.md)
+- [x] [Recipe notes (multiple notes per recipe and per step)](./12-painting-recipes/04-recipe-notes.md)
 - [ ] [Public recipe sharing, browse, and OG previews](./12-painting-recipes/05-recipe-sharing.md)

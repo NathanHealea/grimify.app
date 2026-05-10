@@ -2835,3 +2835,147 @@ SELECT '1afe2a76-52d3-472f-bd83-401f34846974', id
 FROM public.roles
 WHERE name = 'admin'
 ON CONFLICT DO NOTHING;
+
+-- ----------------------------------------------------------
+-- Seed palettes (owned by admin@grimify.app)
+-- ----------------------------------------------------------
+
+-- "Vahalla - Adepta Sororitas" — frozen death-world Sisters of Battle palette
+INSERT INTO public.palettes (id, user_id, name, description, is_public) VALUES (
+  '8e2c5a91-3a4d-4b7e-9c1f-2d6e8a0b1c3f',
+  '1afe2a76-52d3-472f-bd83-401f34846974',
+  'Vahalla - Adepta Sororitas',
+  'A pallete built to evoke the forzen death world of Valhalla. A place where faith endures in the coldest dark.',
+  false
+) ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO public.palette_paints (palette_id, position, paint_id, note)
+SELECT
+  '8e2c5a91-3a4d-4b7e-9c1f-2d6e8a0b1c3f'::uuid,
+  e.position,
+  pa.id,
+  e.note
+FROM (VALUES
+  ( 0, 'citadel',      'base',             'corvus-black',        NULL::text),
+  ( 1, 'citadel',      'base',             'night-lords-blue',    NULL),
+  ( 2, 'citadel',      'base',             'the-fang',            NULL),
+  ( 3, 'citadel',      'edge',             'blue-horror',         NULL),
+  ( 4, 'citadel',      'layer',            'ulthuan-grey',        NULL),
+  ( 5, 'citadel',      'base',             'macragge-blue',       NULL),
+  ( 6, 'citadel',      'shade',            'agrax-earthshade',    NULL),
+  ( 7, 'citadel',      'shade',            'nuln-oil',            NULL),
+  ( 8, 'citadel',      'shade',            'reikland-fleshshade', NULL),
+  ( 9, 'citadel',      'shade',            'agrax-earthshade',    NULL),
+  (10, 'citadel',      'shade',            'targor-rageshade',    NULL),
+  (11, 'citadel',      'base',             'morghast-bone',       NULL),
+  (12, 'citadel',      'layer',            'screaming-skull',     NULL),
+  (13, 'citadel',      'base',             'rakarth-flesh',       NULL),
+  (14, 'citadel',      'base',             'rhinox-hide',         NULL),
+  (15, 'citadel',      'base',             'barak-nar-burgundy',  NULL),
+  (16, 'citadel',      'base',             'screamer-pink',       NULL),
+  (17, 'army-painter', 'fanatic',          'matt-white',          NULL),
+  (18, 'army-painter', 'fanatic-metallic', 'gun-metal',           NULL),
+  (19, 'army-painter', 'fanatic',          'urban-buff',          NULL)
+) AS e(position, brand_slug, product_line_slug, paint_slug, note)
+JOIN public.brands        b  ON b.slug  = e.brand_slug
+JOIN public.product_lines pl ON pl.brand_id = b.id AND pl.slug = e.product_line_slug
+JOIN public.paints        pa ON pa.product_line_id = pl.id AND pa.slug = e.paint_slug
+ON CONFLICT (palette_id, position) DO NOTHING;
+
+-- ----------------------------------------------------------
+-- Seed recipes (owned by admin@grimify.app)
+-- ----------------------------------------------------------
+
+-- "Sister Superior — Adepta Sororitas" linked to the Vahalla palette
+INSERT INTO public.recipes (id, user_id, palette_id, title, summary, is_public) VALUES (
+  'aaaaaaaa-0000-4000-8000-000000000001',
+  '1afe2a76-52d3-472f-bd83-401f34846974',
+  '8e2c5a91-3a4d-4b7e-9c1f-2d6e8a0b1c3f',
+  'Sister Superior — Adepta Sororitas',
+  'A Valhallan-themed Sister Superior of the Adepta Sororitas. Cold black plate against a deep blue cloak, with pale bone hair and pale Valhallan skin. Built around the **Vahalla - Adepta Sororitas** palette.',
+  true
+) ON CONFLICT (id) DO NOTHING;
+
+-- Sections (armour, cloak, hair, face/skin)
+INSERT INTO public.recipe_sections (id, recipe_id, position, title) VALUES
+  ('bbbbbbbb-0000-4000-8000-000000000001', 'aaaaaaaa-0000-4000-8000-000000000001', 0, 'Armour'),
+  ('bbbbbbbb-0000-4000-8000-000000000002', 'aaaaaaaa-0000-4000-8000-000000000001', 1, 'Cloak'),
+  ('bbbbbbbb-0000-4000-8000-000000000003', 'aaaaaaaa-0000-4000-8000-000000000001', 2, 'Hair'),
+  ('bbbbbbbb-0000-4000-8000-000000000004', 'aaaaaaaa-0000-4000-8000-000000000001', 3, 'Face & skin')
+ON CONFLICT (id) DO NOTHING;
+
+-- Steps
+INSERT INTO public.recipe_steps (id, section_id, position, title, technique, instructions) VALUES
+  -- Armour
+  ('cccccccc-0001-4000-8000-000000000001', 'bbbbbbbb-0000-4000-8000-000000000001', 0, 'Basecoat',              'Basecoat',       'Two thin coats of Corvus Black over a black primer, leaving the panel recesses untouched.'),
+  ('cccccccc-0001-4000-8000-000000000002', 'bbbbbbbb-0000-4000-8000-000000000001', 1, 'Edge highlight',        'Layer',          'Apply Night Lords Blue along the upper edges of every armour plate. Keep strokes thin to suggest cold reflected light.'),
+  ('cccccccc-0001-4000-8000-000000000003', 'bbbbbbbb-0000-4000-8000-000000000001', 2, 'Sharp edge highlight',  'Edge highlight', 'Pick out the sharpest corners and rivets with The Fang for a final cool highlight.'),
+  ('cccccccc-0001-4000-8000-000000000004', 'bbbbbbbb-0000-4000-8000-000000000001', 3, 'Recess shading',        'Wash',           'Wash Nuln Oil into the rivets and panel lines to deepen the shadows.'),
+  ('cccccccc-0001-4000-8000-000000000005', 'bbbbbbbb-0000-4000-8000-000000000001', 4, 'Trim & bolter',         'Layer',          'Pick out bolter, ammo casings and small armour trim with Gun Metal.'),
+  -- Cloak
+  ('cccccccc-0002-4000-8000-000000000001', 'bbbbbbbb-0000-4000-8000-000000000002', 0, 'Basecoat',              'Basecoat',       'Two thin coats of Macragge Blue across the entire cloak.'),
+  ('cccccccc-0002-4000-8000-000000000002', 'bbbbbbbb-0000-4000-8000-000000000002', 1, 'Recess wash',           'Wash',           'Apply Nuln Oil into the deep folds. Let it pool naturally.'),
+  ('cccccccc-0002-4000-8000-000000000003', 'bbbbbbbb-0000-4000-8000-000000000002', 2, 'Reapply midtone',       'Layer',          'Re-layer the raised folds with Macragge Blue to clean up and re-establish the midtone.'),
+  ('cccccccc-0002-4000-8000-000000000004', 'bbbbbbbb-0000-4000-8000-000000000002', 3, 'Highlight',             'Layer',          'Layer The Fang along the raised folds, leaving Macragge Blue visible underneath.'),
+  ('cccccccc-0002-4000-8000-000000000005', 'bbbbbbbb-0000-4000-8000-000000000002', 4, 'Edge highlight',        'Edge highlight', 'Final fine edge highlights of Blue Horror on the sharpest fold edges.'),
+  -- Hair
+  ('cccccccc-0003-4000-8000-000000000001', 'bbbbbbbb-0000-4000-8000-000000000003', 0, 'Basecoat',              'Basecoat',       'Two thin coats of Rakarth Flesh.'),
+  ('cccccccc-0003-4000-8000-000000000002', 'bbbbbbbb-0000-4000-8000-000000000003', 1, 'Wash',                  'Wash',           'Apply Agrax Earthshade across the whole area, allowing it to settle into the strands.'),
+  ('cccccccc-0003-4000-8000-000000000003', 'bbbbbbbb-0000-4000-8000-000000000003', 2, 'Reapply midtone',       'Layer',          'Layer Morghast Bone over the raised hair, leaving the shaded strands recessed.'),
+  ('cccccccc-0003-4000-8000-000000000004', 'bbbbbbbb-0000-4000-8000-000000000003', 3, 'Highlight',             'Edge highlight', 'Pick out the topmost strands with Screaming Skull.'),
+  -- Face & skin
+  ('cccccccc-0004-4000-8000-000000000001', 'bbbbbbbb-0000-4000-8000-000000000004', 0, 'Basecoat',              'Basecoat',       'Two thin coats of Rakarth Flesh across the face, neck and any exposed skin.'),
+  ('cccccccc-0004-4000-8000-000000000002', 'bbbbbbbb-0000-4000-8000-000000000004', 1, 'Wash',                  'Wash',           'Lightly apply Reikland Fleshshade — keep it thin; Valhallans should look pale, not warm.'),
+  ('cccccccc-0004-4000-8000-000000000003', 'bbbbbbbb-0000-4000-8000-000000000004', 2, 'Reapply skin tone',     'Layer',          'Re-layer Rakarth Flesh over the raised areas of the face to push the wash back into the recesses.'),
+  ('cccccccc-0004-4000-8000-000000000004', 'bbbbbbbb-0000-4000-8000-000000000004', 3, 'Highlight',             'Layer',          'Mix Rakarth Flesh with Urban Buff (1:1) and highlight the brow, nose, cheekbones and chin.'),
+  ('cccccccc-0004-4000-8000-000000000005', 'bbbbbbbb-0000-4000-8000-000000000004', 4, 'Eyes & lips',           'Detail',         'Paint the whites of the eyes with Matt White, then add tiny Corvus Black pupils. Glaze the lips with thinned Screamer Pink.')
+ON CONFLICT (id) DO NOTHING;
+
+-- Step paints — looked up by (brand.slug, product_line.slug, paint.slug)
+INSERT INTO public.recipe_step_paints (step_id, position, paint_id, ratio, note)
+SELECT
+  e.step_id::uuid,
+  e.position,
+  pa.id,
+  e.ratio,
+  e.note
+FROM (VALUES
+  -- Armour
+  ('cccccccc-0001-4000-8000-000000000001', 0, 'citadel',      'base',             'corvus-black',         NULL::text, NULL::text),
+  ('cccccccc-0001-4000-8000-000000000002', 0, 'citadel',      'base',             'night-lords-blue',     NULL,       NULL),
+  ('cccccccc-0001-4000-8000-000000000003', 0, 'citadel',      'base',             'the-fang',             NULL,       NULL),
+  ('cccccccc-0001-4000-8000-000000000004', 0, 'citadel',      'shade',            'nuln-oil',             NULL,       NULL),
+  ('cccccccc-0001-4000-8000-000000000005', 0, 'army-painter', 'fanatic-metallic', 'gun-metal',            NULL,       NULL),
+  -- Cloak
+  ('cccccccc-0002-4000-8000-000000000001', 0, 'citadel',      'base',             'macragge-blue',        NULL,       NULL),
+  ('cccccccc-0002-4000-8000-000000000002', 0, 'citadel',      'shade',            'nuln-oil',             NULL,       NULL),
+  ('cccccccc-0002-4000-8000-000000000003', 0, 'citadel',      'base',             'macragge-blue',        NULL,       NULL),
+  ('cccccccc-0002-4000-8000-000000000004', 0, 'citadel',      'base',             'the-fang',             NULL,       NULL),
+  ('cccccccc-0002-4000-8000-000000000005', 0, 'citadel',      'edge',             'blue-horror',          NULL,       NULL),
+  -- Hair
+  ('cccccccc-0003-4000-8000-000000000001', 0, 'citadel',      'base',             'rakarth-flesh',        NULL,       NULL),
+  ('cccccccc-0003-4000-8000-000000000002', 0, 'citadel',      'shade',            'agrax-earthshade',     NULL,       NULL),
+  ('cccccccc-0003-4000-8000-000000000003', 0, 'citadel',      'base',             'morghast-bone',        NULL,       NULL),
+  ('cccccccc-0003-4000-8000-000000000004', 0, 'citadel',      'layer',            'screaming-skull',      NULL,       NULL),
+  -- Face & skin
+  ('cccccccc-0004-4000-8000-000000000001', 0, 'citadel',      'base',             'rakarth-flesh',        NULL,       NULL),
+  ('cccccccc-0004-4000-8000-000000000002', 0, 'citadel',      'shade',            'reikland-fleshshade',  NULL,       'Apply lightly — keep skin pale.'),
+  ('cccccccc-0004-4000-8000-000000000003', 0, 'citadel',      'base',             'rakarth-flesh',        NULL,       NULL),
+  ('cccccccc-0004-4000-8000-000000000004', 0, 'citadel',      'base',             'rakarth-flesh',        '1:1',      'Mix with Urban Buff for the highlight tone.'),
+  ('cccccccc-0004-4000-8000-000000000004', 1, 'army-painter', 'fanatic',          'urban-buff',           '1:1',      NULL),
+  ('cccccccc-0004-4000-8000-000000000005', 0, 'army-painter', 'fanatic',          'matt-white',           NULL,       'Whites of the eyes.'),
+  ('cccccccc-0004-4000-8000-000000000005', 1, 'citadel',      'base',             'corvus-black',         NULL,       'Pupils — small dot, slightly off-centre.'),
+  ('cccccccc-0004-4000-8000-000000000005', 2, 'citadel',      'base',             'screamer-pink',        NULL,       'Lips — thinned, like a glaze.')
+) AS e(step_id, position, brand_slug, line_slug, paint_slug, ratio, note)
+JOIN public.brands        b  ON b.slug  = e.brand_slug
+JOIN public.product_lines pl ON pl.brand_id = b.id AND pl.slug = e.line_slug
+JOIN public.paints        pa ON pa.product_line_id = pl.id AND pa.slug = e.paint_slug
+ON CONFLICT (step_id, position) DO NOTHING;
+
+-- Recipe-level note
+INSERT INTO public.recipe_notes (id, recipe_id, position, body) VALUES (
+  'dddddddd-0000-4000-8000-000000000001',
+  'aaaaaaaa-0000-4000-8000-000000000001',
+  0,
+  'Patience with the shade washes does most of the heavy lifting on this one. Keep the skin and hair cool — Valhallans look like they have ice in their veins.'
+) ON CONFLICT (id) DO NOTHING;
