@@ -6,6 +6,8 @@
 **Branch:** `feature/color-palette-groups`
 **Merge into:** `v1/main`
 
+> **Superseded by [11-paint-group-references.md](./11-paint-group-references.md):** the single-`group_id` column on `palette_paints` collapses master-list and group membership into one row, blocking the same paint from belonging to multiple groups. The follow-up feature splits the model into a master list plus a `palette_group_paints` join table.
+
 ## Summary
 
 Allow palette owners to create named groups within a palette to organize paints by model part (e.g., "Basecoat", "Highlights", "Metallics"). Groups are reorderable and have a free-text name. Deleting a group removes only the group label — the paints remain in the palette as ungrouped entries. Group membership is stored on the `palette_paints` row as a nullable `group_id` so it survives drag-to-reorder via the existing `replace_palette_paints` RPC.
