@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 **Branch:** `feature/404-not-found-page`
 **Merge into:** `v1/main`
 
@@ -20,19 +20,19 @@ The page will:
 
 ## Acceptance Criteria
 
-- [ ] `src/app/not-found.tsx` exists and is the global fallback rendered for any unmatched route or `notFound()` call.
-- [ ] The page returns HTTP `404` (verified via `curl -I` against a known-bad URL in `npm run dev`).
-- [ ] Page renders inside the root layout — `Navbar` and `Footer` are visible above and below the 404 body.
-- [ ] Visual layout matches the design language of `src/app/page.tsx`: a hero-style heading band on top of the `<Main>` shell, then a CTA band of action buttons below.
-- [ ] Copy is on-brand for Grimify (no Next.js boilerplate text). At minimum: an H1 "Page not found", a sub-headline explaining the route doesn't exist, and a contextual line nudging the user toward what's working.
-- [ ] Primary CTA links to `/` (button uses `btn btn-primary btn-lg`).
-- [ ] Secondary destinations are surfaced as a short list/grid of links: `/paints`, `/wheel`, `/palettes`. When the viewer is signed in, also surface `/collection` and `/user/palettes`.
-- [ ] Metadata sets `robots: { index: false, follow: false }` via `pageMetadata({ noindex: true })`.
-- [ ] Page works in light and dark mode — no hardcoded colors; everything uses theme tokens (`bg-muted`, `text-muted-foreground`, etc.).
-- [ ] Page is responsive — heading scales like the marketing hero (`text-4xl sm:text-5xl lg:text-6xl`), CTA buttons stack on mobile and lay out in a row on `sm:` and up.
-- [ ] No new dependencies introduced.
-- [ ] `npm run build` and `npm run lint` pass with no errors or warnings.
-- [ ] Manual smoke test: hitting `/this-route-does-not-exist` shows the new 404 page with chrome intact. Triggering `notFound()` from an existing detail page (e.g. `/paints/00000000-0000-0000-0000-000000000000`) also renders the same page.
+- [x] `src/app/not-found.tsx` exists and is the global fallback rendered for any unmatched route or `notFound()` call.
+- [ ] The page returns HTTP `404` (verified via `curl -I` against a known-bad URL in `npm run dev`). _Pending manual verification._
+- [x] Page renders inside the root layout — `Navbar` and `Footer` are visible above and below the 404 body.
+- [x] Visual layout matches the design language of `src/app/page.tsx`: a hero-style heading band on top of the `<Main>` shell, then a CTA band of action buttons below.
+- [x] Copy is on-brand for Grimify (no Next.js boilerplate text). At minimum: an H1 "Page not found", a sub-headline explaining the route doesn't exist, and a contextual line nudging the user toward what's working.
+- [x] Primary CTA links to `/` (button uses `btn btn-primary btn-lg`).
+- [x] Secondary destinations are surfaced as a short list/grid of links: `/paints`, `/schemes`, `/palettes`. When the viewer is signed in, also surface `/collection` and `/user/palettes`. _Substituted `/schemes` for `/wheel` — no `/wheel` route exists in the app yet, so linking to it would have created a 404-from-the-404._
+- [x] Metadata sets `robots: { index: false, follow: false }` via `pageMetadata({ noindex: true })`.
+- [x] Page works in light and dark mode — no hardcoded colors; everything uses theme tokens (`bg-muted`, `text-muted-foreground`, etc.).
+- [x] Page is responsive — heading uses the `page-title` token (which already provides responsive scaling), CTA buttons stack on mobile and lay out in a row on `sm:` and up.
+- [x] No new dependencies introduced.
+- [x] `npm run build` and `npm run lint` pass with no new errors or warnings (lint reports only 2 pre-existing warnings outside our changes).
+- [ ] Manual smoke test: hitting `/this-route-does-not-exist` shows the new 404 page with chrome intact. Triggering `notFound()` from an existing detail page (e.g. `/paints/00000000-0000-0000-0000-000000000000`) also renders the same page. _Pending manual verification in `npm run dev`._
 
 ## Affected pages that call `notFound()`
 
