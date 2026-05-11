@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Input } from '@/components/ui/input';
 
 /**
  * Debounced search input that syncs query state to URL search params.
@@ -42,12 +43,11 @@ export function UserSearch({ initialValue }: { initialValue: string }) {
   }, [value, router])
 
   return (
-    <input
+    <Input
       type="search"
       value={value}
       onChange={(e) => setValue(e.target.value)}
       placeholder="Search by display name…"
-      className="input input-sm w-full max-w-xs"
       aria-label="Search users"
     />
   )
