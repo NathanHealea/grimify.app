@@ -22,11 +22,11 @@ Feature docs created by `/plan` must include these metadata fields at the top:
 **Type:** Feature
 **Status:** Todo
 **Branch:** `feature/paint-search`
-**Merge into:** `v1/main`
+**Merge into:** `main`
 ```
 
-- **Branch** — The git branch for this feature. Can be explicitly set in the `/plan` input; if not provided, derived from the doc file name (e.g., `paint-search.md` → `feature/paint-search`).
-- **Merge into** — The target branch for the PR created by `/stage`. Can be explicitly set; defaults to `main` if not provided.
+- **Branch** — The git branch for this feature, branched off `main`. Can be explicitly set in the `/plan` input; if not provided, derived from the doc file name (e.g., `paint-search.md` → `feature/paint-search`).
+- **Merge into** — The target branch for the PR created by `/stage`. Always `main` unless explicitly overridden.
 
 ## Project Structure — Domain Module Approach
 
@@ -149,4 +149,5 @@ Example header format:
 - **Docs directory**: `docs/`
 - **Remote type**: `github`
 - **PR template**: `github-default`
-- **Default merge target**: `v1/main`
+- **Default merge target**: `main`
+- **Branching**: All feature branches are based off `main`. PRs target `main`.
