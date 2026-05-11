@@ -24,7 +24,7 @@ type OwnedItem = {
 const OWNED_ITEMS: OwnedItem[] = [
   { label: 'My collection', href: '/collection' },
   { label: 'My palettes', href: '/user/palettes' },
-  { label: 'My recipes', href: null, disabledReason: 'Coming soon' },
+  { label: 'My recipes', href: '/user/recipes'},
 ]
 
 /**
