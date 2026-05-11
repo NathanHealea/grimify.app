@@ -43,10 +43,10 @@ Create a Code of Conduct page that sets community expectations for behavior with
 
 The Terms of Use PR landed the shared infrastructure. As of planning, all of these already exist and reference `/code-of-conduct` — we just need to make the link resolve:
 
-- **`(legal)` layout** at `src/app/(legal)/layout.tsx` — centered, readable column (`max-w-3xl px-6 py-12`)
+- **`(legal)` layout** at `src/app/(legal)/layout.tsx` — transparent passthrough (`<>{children}</>`). Pages in this group own their `<main>` via the shared {@link Main} component, so the layout intentionally does **not** apply a width or padding wrapper. Use `<Main width="3xl" className="px-6">` on the page itself to inherit the legal column.
 - **Footer** at `src/components/footer.tsx` — already includes a `/code-of-conduct` link
 - **Sign-up notice** at `src/app/(auth)/sign-up/page.tsx` — already says "By signing up, you agree to our Terms of Use and Code of Conduct"
-- **Middleware** at `src/middleware.ts` — already allows `/code-of-conduct` as a public legal route
+- **Middleware** at `src/middleware.ts` — already allows `/code-of-conduct` as a public legal route (in the `LEGAL_ROUTES` array)
 - **Terms page** at `src/app/(legal)/terms/page.tsx` — section 1 already links to `/code-of-conduct` for cross-reference
 
 This feature is therefore **page creation only** — no layout, footer, sign-up, or middleware changes required.
@@ -61,10 +61,12 @@ Create `src/app/(legal)/code-of-conduct/page.tsx` as a server component. Mirror 
 
 - `metadata` exported via `pageMetadata({ title, description, path: '/code-of-conduct' })`
 - A `lastUpdated` constant at module scope
-- An `<article className="space-y-6">` root
-- A `<header>` with `<h1>` and the "Last updated: …" line
-- An intro paragraph that frames the doc in plain language
-- Numbered `<section className="space-y-2">` blocks, each with an `<h2 className="text-xl font-semibold tracking-tight">` and one or more `<p>` / `<ul>` children
+- Wrap the body in `<Main width="3xl" className="px-6">` — the `(legal)` layout is a passthrough, so the page is responsible for the readable-column width (identical to how `/terms` does it)
+- An `<article className="space-y-6">` root inside `<Main>`
+- A `<header className="space-y-2">` with `<h1 className="text-3xl font-semibold tracking-tight">` and a "Last updated: …" `<p className="text-sm text-muted-foreground">` line
+- An intro paragraph (`<p className="text-muted-foreground">`) that frames the doc in plain language
+- Numbered `<section className="space-y-2">` blocks, each with an `<h2 className="text-xl font-semibold tracking-tight">` and one or more `<p>` / `<ul className="list-disc space-y-1 pl-6">` children
+- Internal links (e.g. the Contributor Covenant attribution) use `className="text-primary underline-offset-4 hover:underline"` and `target="_blank" rel="noreferrer"` for external URLs — same pattern as the GitHub link in `/terms` section 11
 
 Sections, in order:
 
