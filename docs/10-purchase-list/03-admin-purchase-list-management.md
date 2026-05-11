@@ -4,7 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `feature/admin-purchase-list-management`
-**Merge into:** `v1/main`
+**Merge into:** `main`
 
 ## Summary
 

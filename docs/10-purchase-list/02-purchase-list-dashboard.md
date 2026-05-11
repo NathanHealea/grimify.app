@@ -4,7 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `feature/purchase-list-dashboard`
-**Merge into:** `v1/main`
+**Merge into:** `main`
 
 ## Summary
 

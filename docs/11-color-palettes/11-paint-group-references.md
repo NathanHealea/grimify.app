@@ -4,7 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `feature/paint-group-references`
-**Merge into:** `v1/main`
+**Merge into:** `main`
 
 ## Summary
 

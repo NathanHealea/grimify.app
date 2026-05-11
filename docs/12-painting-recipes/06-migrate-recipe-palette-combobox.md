@@ -4,7 +4,7 @@
 **Type:** Refactor
 **Status:** Todo
 **Branch:** `refactor/migrate-recipe-palette-combobox`
-**Merge into:** `v1/main`
+**Merge into:** `main`
 
 ## Summary
 

@@ -4,7 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `v1/feature/code-of-conduct`
-**Merge into:** `v1/main`
+**Merge into:** `main`
 
 ## Summary
 

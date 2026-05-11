@@ -4,7 +4,7 @@
 **Type:** Bug
 **Status:** Todo
 **Branch:** `bug/paint-details-mobile-buttons`
-**Merge into:** `v1/main`
+**Merge into:** `main`
 
 ## Summary
 

@@ -4,7 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `feature/404-not-found-page`
-**Merge into:** `v1/main`
+**Merge into:** `main`
 
 ## Summary
 

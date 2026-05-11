@@ -4,7 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `feature/wheel-collection-emphasis`
-**Merge into:** `v1/main`
+**Merge into:** `main`
 
 ## Summary
 

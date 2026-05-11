@@ -4,7 +4,7 @@
 **Type:** Enhancement
 **Status:** Todo
 **Branch:** `v1/enhancement/public-schema-page`
-**Merge into:** `v1/main`
+**Merge into:** `main`
 
 ## Summary
 
