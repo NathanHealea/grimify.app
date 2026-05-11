@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `v1/feature/code-of-conduct`
 **Merge into:** `main`
 
@@ -12,14 +12,14 @@ Create a Code of Conduct page that sets community expectations for behavior with
 
 ## Acceptance Criteria
 
-- [ ] A `/code-of-conduct` route exists and is publicly accessible
-- [ ] Code of Conduct covers: our pledge, expected behavior, unacceptable behavior, content guidelines, reporting, enforcement, scope, and contact
-- [ ] Content is written in a welcoming, inclusive tone (Contributor Covenant–inspired, adapted for a user community)
-- [ ] Page metadata uses `pageMetadata` from the `seo` module
-- [ ] Page mirrors the visual structure of `/terms` (numbered `<section>` blocks, "Last updated" line, semantic headings)
-- [ ] Footer link to `/code-of-conduct` resolves (currently links to a placeholder — verify it goes live)
-- [ ] Sign-up notice link to `/code-of-conduct` resolves
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] A `/code-of-conduct` route exists and is publicly accessible
+- [x] Code of Conduct covers: our pledge, expected behavior, unacceptable behavior, content guidelines, reporting, enforcement, scope, and contact
+- [x] Content is written in a welcoming, inclusive tone (Contributor Covenant–inspired, adapted for a user community)
+- [x] Page metadata uses `pageMetadata` from the `seo` module
+- [x] Page mirrors the visual structure of `/terms` (numbered `<section>` blocks, "Last updated" line, semantic headings)
+- [x] Footer link to `/code-of-conduct` resolves (currently links to a placeholder — verify it goes live)
+- [x] Sign-up notice link to `/code-of-conduct` resolves
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
