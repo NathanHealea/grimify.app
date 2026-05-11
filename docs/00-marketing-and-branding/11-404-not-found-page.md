@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** In Progress
+**Status:** Done
 **Branch:** `feature/404-not-found-page`
 **Merge into:** `v1/main`
 

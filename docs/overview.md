@@ -72,7 +72,7 @@ Core functionality:
 - [x] [Shared `<PageHeader>` title and subtitle component](./00-marketing-and-branding/08-title-and-subtitle-component-refactor.md)
 - [x] [Mobile-friendly navbar](./00-marketing-and-branding/09-mobile-friendly-navbar.md)
 - [x] [Navbar user menu](./00-marketing-and-branding/10-navbar-user-menu.md)
-- [ ] [404 not-found page](./00-marketing-and-branding/11-404-not-found-page.md)
+- [x] [404 not-found page](./00-marketing-and-branding/11-404-not-found-page.md)
 
 ### Epic: Authentication & User Accounts
 
