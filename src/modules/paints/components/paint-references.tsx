@@ -36,7 +36,7 @@ export function PaintReferences({ references }: { references: PaintReferenceWith
           <h2 className="mb-4 text-xl font-semibold">{relationshipLabels[relationship]}</h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {refs.map((ref) => (
-              <PaintCard key={ref.id} id={ref.related_paint.id} name={ref.related_paint.name} hex={ref.related_paint.hex} brand={ref.related_paint.product_lines.brands.name} paintType={ref.related_paint.paint_type} />
+              <PaintCard key={ref.id} id={ref.related_paint.id} name={ref.related_paint.name} hex={ref.related_paint.hex} brand={ref.related_paint.product_lines.brands.name} paintType={ref.related_paint.paint_type} isDiscontinued={ref.related_paint.is_discontinued} />
             ))}
           </div>
         </section>
