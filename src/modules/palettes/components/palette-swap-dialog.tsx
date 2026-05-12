@@ -18,7 +18,7 @@ import { swapPalettePaint } from '@/modules/palettes/actions/swap-palette-paint'
 import { PaletteSwapCandidateCard } from '@/modules/palettes/components/palette-swap-candidate-card'
 import { PaletteSwapSliders } from '@/modules/palettes/components/palette-swap-sliders'
 import { filterPaintsByHslRange } from '@/modules/palettes/utils/filter-paints-by-hsl-range'
-import { rankPaintsByDeltaE } from '@/modules/palettes/utils/rank-paints-by-delta-e'
+import { rankPaintsByDeltaE } from '@/modules/paints/utils/rank-paints-by-delta-e'
 
 type FetchState =
   | { status: 'loading' }
