@@ -4,7 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `feature/paint-details-color-schemes`
-**Merge into:** `main`
+**Merge into:** `epic/color-schema-explorer`
 
 ## Summary
 

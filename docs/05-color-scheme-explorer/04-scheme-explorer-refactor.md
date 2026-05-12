@@ -4,7 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `feature/scheme-explorer-refactor`
-**Merge into:** `main`
+**Merge into:** `epic/color-schema-explorer`
 
 ## Summary
 
