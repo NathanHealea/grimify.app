@@ -174,6 +174,7 @@ export function createRecipeService(supabase: SupabaseClient) {
         lightness: number
         hue_id: string | null
         is_metallic: boolean
+        is_discontinued: boolean
         paint_type: string | null
         product_lines: {
           id: number
@@ -263,6 +264,7 @@ export function createRecipeService(supabase: SupabaseClient) {
               lightness: p.lightness,
               hue_id: p.hue_id,
               is_metallic: p.is_metallic,
+              is_discontinued: p.is_discontinued ?? false,
               paint_type: p.paint_type,
               brand_name: p.product_lines.brands.name,
               product_line_name: p.product_lines.name,
@@ -990,6 +992,7 @@ export function createRecipeService(supabase: SupabaseClient) {
         lightness: number
         hue_id: string | null
         is_metallic: boolean
+        is_discontinued: boolean
         paint_type: string | null
         product_lines: {
           id: number
@@ -1021,6 +1024,7 @@ export function createRecipeService(supabase: SupabaseClient) {
             lightness: p.lightness,
             hue_id: p.hue_id,
             is_metallic: p.is_metallic,
+            is_discontinued: p.is_discontinued ?? false,
             paint_type: p.paint_type,
             brand_name: p.product_lines.brands.name,
             product_line_name: p.product_lines.name,
