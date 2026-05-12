@@ -11,15 +11,18 @@ import type { SchemeColor } from '@/modules/color-schemes/types/scheme-color'
  * @param props.color - The computed {@link SchemeColor} to display.
  * @param props.isAuthenticated - Whether the current user is signed in.
  * @param props.ownedIds - Set of paint IDs in the user's collection.
+ * @param props.revalidatePath - Path passed to `CollectionPaintCard` for revalidation after collection toggles. Defaults to `'/schemes'`.
  */
 export function SchemeSwatch({
   color,
   isAuthenticated,
   ownedIds,
+  revalidatePath = '/schemes',
 }: {
   color: SchemeColor
   isAuthenticated: boolean
   ownedIds: Set<string>
+  revalidatePath?: string
 }) {
   return (
     <div className="flex flex-1 flex-col gap-2 min-w-40">
@@ -44,7 +47,7 @@ export function SchemeSwatch({
               paintType={paint.paint_type}
               isInCollection={ownedIds.has(paint.id)}
               isAuthenticated={isAuthenticated}
-              revalidatePath="/schemes"
+              revalidatePath={revalidatePath}
             />
           ))}
         </div>
