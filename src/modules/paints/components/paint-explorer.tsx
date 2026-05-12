@@ -251,6 +251,7 @@ export function PaintExplorer({
                 hex={paint.hex}
                 brand={paint.product_lines?.brands?.name}
                 paintType={paint.paint_type}
+                isDiscontinued={paint.is_discontinued}
               />
             )
           }

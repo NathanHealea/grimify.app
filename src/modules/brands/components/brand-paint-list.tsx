@@ -65,7 +65,7 @@ export function BrandPaintList({
                       isAuthenticated={isAuthenticated}
                     />
                   ) : (
-                    <PaintCard key={paint.id} id={paint.id} name={paint.name} hex={paint.hex} brand={brandName} paintType={paint.paint_type} />
+                    <PaintCard key={paint.id} id={paint.id} name={paint.name} hex={paint.hex} brand={brandName} paintType={paint.paint_type} isDiscontinued={paint.is_discontinued} />
                   )
                 )}
               </div>

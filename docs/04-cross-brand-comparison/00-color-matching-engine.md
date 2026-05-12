@@ -2,7 +2,7 @@
 
 **Epic:** Cross-Brand Comparison
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/color-matching-engine`
 **Merge into:** `epic/cross-brand-comparison`
 
@@ -12,18 +12,18 @@ Promote and extend the existing CIE76 ΔE utilities (`hexToLab`, `deltaE76`, `ra
 
 ## Acceptance Criteria
 
-- [ ] A color distance function computes perceptual similarity between two paints in CIE L\*a\*b\* space (reuses the existing `deltaE76` / `hexToLab` utilities — no new color-space math).
-- [ ] Given a paint ID, a server action returns the N closest matches from the catalog as `RankedPaint[]` (paint + deltaE).
-- [ ] Matching can be scoped:
+- [x] A color distance function computes perceptual similarity between two paints in CIE L\*a\*b\* space (reuses the existing `deltaE76` / `hexToLab` utilities — no new color-space math).
+- [x] Given a paint ID, a server action returns the N closest matches from the catalog as `RankedPaint[]` (paint + deltaE).
+- [x] Matching can be scoped:
   - `excludeDiscontinued: boolean` — drop discontinued paints from results (default `true`).
   - `excludeSamePaint: boolean` — drop the source paint from results (default `true`).
   - `excludeSameBrand: boolean` — drop paints from the source paint's brand (default `true` — cross-brand is the headline use case).
   - `brandIds?: string[]` — when present, restrict candidates to those brands.
   - `limit: number` — number of results (default 10, max 50).
-- [ ] Results are ranked by ΔE ascending and include the ΔE score for display.
-- [ ] Engine is exposed via a server action so the comparison page and substitute section can call it without shipping the catalog to the browser.
-- [ ] JSDoc on every exported type, function, and action per `CLAUDE.md`.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] Results are ranked by ΔE ascending and include the ΔE score for display.
+- [x] Engine is exposed via a server action so the comparison page and substitute section can call it without shipping the catalog to the browser.
+- [x] JSDoc on every exported type, function, and action per `CLAUDE.md`.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Domain Module
 

@@ -203,7 +203,7 @@ export function PaginatedPaintGrid({
                   revalidatePath={basePath}
                 />
               ) : (
-                <PaintCard key={paint.id} id={paint.id} name={paint.name} hex={paint.hex} brand={paint.product_lines.brands.name} paintType={paint.paint_type} />
+                <PaintCard key={paint.id} id={paint.id} name={paint.name} hex={paint.hex} brand={paint.product_lines.brands.name} paintType={paint.paint_type} isDiscontinued={paint.is_discontinued} />
               )
             )}
           </div>

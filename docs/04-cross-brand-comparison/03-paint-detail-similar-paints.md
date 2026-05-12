@@ -2,7 +2,7 @@
 
 **Epic:** Cross-Brand Comparison
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/paint-detail-similar-paints`
 **Merge into:** `epic/cross-brand-comparison`
 
@@ -12,16 +12,16 @@ Add a "Similar Paints" section to every `/paints/[id]` page that surfaces percep
 
 ## Acceptance Criteria
 
-- [ ] On `/paints/[id]` for any paint (discontinued or not), a "Similar Paints" section renders below the existing color-values grid and hue classification block.
-- [ ] The section shows the top 12 matches by default, ranked by CIE76 ΔE ascending, with the ΔE score displayed on each card.
-- [ ] Matches exclude the source paint and discontinued paints by default.
-- [ ] The section includes a **brand** multi-select filter and a **paint type** multi-select filter (both populated from the catalog, with `null` paint types grouped under "Untyped").
-- [ ] A "Same brand only" toggle is available — when on, the engine's `excludeSameBrand` flag is set to `false` and `brandIds` is restricted to the source paint's brand. When off (default), cross-brand matches are surfaced (engine default).
-- [ ] Active filters render as removable chips above the grid, matching the chip styling already used in `WheelFiltersPanel` (`badge badge-soft badge-sm`), with a "Clear all" affordance when at least one filter is active.
-- [ ] When the active filter combination eliminates every candidate, a muted empty-state line reads: "No similar paints with the current filters." (mirrors the empty state from `02-scheme-to-paints.md`).
-- [ ] On discontinued paints the section still renders. The discontinued-specific "Substitutes" block from feature 02 is **not** removed by this feature — they can coexist (Substitutes is opinionated about *replacing* a discontinued paint; Similar Paints is a general browse aid). See "Coexistence with feature 02" below.
-- [ ] JSDoc on every exported type, function, component, and action per `CLAUDE.md`.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] On `/paints/[id]` for any paint (discontinued or not), a "Similar Paints" section renders below the existing color-values grid and hue classification block.
+- [x] The section shows the top 12 matches by default, ranked by CIE76 ΔE ascending, with the ΔE score displayed on each card.
+- [x] Matches exclude the source paint and discontinued paints by default.
+- [x] The section includes a **brand** multi-select filter and a **paint type** multi-select filter (both populated from the catalog, with `null` paint types grouped under "Untyped").
+- [x] A "Same brand only" toggle is available — when on, the engine's `excludeSameBrand` flag is set to `false` and `brandIds` is restricted to the source paint's brand. When off (default), cross-brand matches are surfaced (engine default).
+- [x] Active filters render as removable chips above the grid, matching the chip styling already used in `WheelFiltersPanel` (`badge badge-soft badge-sm`), with a "Clear all" affordance when at least one filter is active.
+- [x] When the active filter combination eliminates every candidate, a muted empty-state line reads: "No similar paints with the current filters." (mirrors the empty state from `02-scheme-to-paints.md`).
+- [x] On discontinued paints the section still renders. The discontinued-specific "Substitutes" block from feature 02 is **not** removed by this feature — they can coexist (Substitutes is opinionated about *replacing* a discontinued paint; Similar Paints is a general browse aid). See "Coexistence with feature 02" below.
+- [x] JSDoc on every exported type, function, component, and action per `CLAUDE.md`.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Dependencies
 

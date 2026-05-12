@@ -1,13 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { useActionState, useEffect } from 'react'
+import { useActionState, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { signIn } from '@/modules/auth/actions/sign-in'
+import { TurnstileWidget, type TurnstileWidgetHandle } from '@/modules/auth/components/turnstile-widget'
 import type { AuthState } from '@/modules/auth/types/auth-state'
 
 /**
@@ -15,16 +16,20 @@ import type { AuthState } from '@/modules/auth/types/auth-state'
  *
  * Uses the {@link signIn} server action via `useActionState`.
  * Surfaces server-returned errors as a Sonner toast; successful sign-in
- * redirects server-side, so no success toast fires here.
+ * redirects server-side, so no success toast fires here. The Cloudflare
+ * Turnstile widget is reset after each submission so retries get a fresh
+ * single-use token.
  */
 export function SignInForm() {
   const [state, formAction, pending] = useActionState<AuthState, FormData>(signIn, null)
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null)
 
   useEffect(() => {
     if (!state) return
     if (state.error) {
       toast.error(state.error)
     }
+    turnstileRef.current?.reset()
   }, [state])
 
   return (
@@ -49,6 +54,7 @@ export function SignInForm() {
           Forgot your password?
         </Link>
       </div>
+      <TurnstileWidget ref={turnstileRef} />
       <Button type="submit" disabled={pending}>
         {pending ? 'Signing in...' : 'Sign in'}
       </Button>

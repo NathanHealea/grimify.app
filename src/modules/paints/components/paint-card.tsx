@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { cn } from '@/lib/utils';
+import { DiscontinuedBadge } from '@/modules/paints/components/discontinued-badge'
 
 /**
  * A compact paint card showing a color swatch, paint name, brand, and type.
@@ -13,6 +14,8 @@ import { cn } from '@/lib/utils';
  * @param props.hex - The hex color value for the swatch background.
  * @param props.brand - The brand name (e.g., "Citadel").
  * @param props.paintType - The paint type (e.g., "base", "layer").
+ * @param props.isDiscontinued - When `true`, overlays a `DiscontinuedBadge`
+ *   on the swatch. Defaults to `false` so existing call-sites compile.
  * @param props.className - Optional additional CSS classes for the wrapper.
  */
 export function PaintCard({
@@ -21,6 +24,7 @@ export function PaintCard({
   hex,
   brand,
   paintType,
+  isDiscontinued = false,
   className,
 }: {
   id: string
@@ -28,6 +32,7 @@ export function PaintCard({
   hex: string
   brand?: string
   paintType?: string | null
+  isDiscontinued?: boolean
   className?: string
 }) {
   return (
@@ -38,11 +43,18 @@ export function PaintCard({
         className,
       )}
     >
-      <div
-        className="size-16 rounded-lg border border-border"
-        style={{ backgroundColor: hex }}
-        aria-hidden="true"
-      />
+      <div className="relative">
+        <div
+          className="size-16 rounded-lg border border-border"
+          style={{ backgroundColor: hex }}
+          aria-hidden="true"
+        />
+        {isDiscontinued && (
+          <div className="absolute -right-1 -top-1">
+            <DiscontinuedBadge size="sm" />
+          </div>
+        )}
+      </div>
       <p className="text-center text-sm font-medium leading-tight">{name}</p>
       {(brand || paintType) && (
         <p className="text-center text-xs text-muted-foreground leading-tight">

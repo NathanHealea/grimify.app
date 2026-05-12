@@ -423,28 +423,38 @@ export function createPaintService(supabase: SupabaseClient) {
     },
 
     /**
-     * Fetches all non-discontinued paints with the fields needed to render the
-     * color wheel: position data (hue, saturation, lightness), display data
-     * (hex, is_metallic), and tooltip data (brand name, product line name).
+     * Fetches paints with the fields needed to render the color wheel and
+     * power cross-brand matching: position data (hue, saturation, lightness),
+     * display data (hex, is_metallic), classification (is_discontinued), and
+     * tooltip data (brand name, product line name).
      *
      * Paginates through results in batches of {@link COLOR_WHEEL_PAGE_SIZE} to
      * bypass PostgREST's default 1000-row response cap, which would otherwise
      * silently truncate the wheel when the catalog grows past that threshold.
      *
+     * @param options.includeDiscontinued - When `true`, include discontinued
+     *   paints in the result. Defaults to `false` — the standard color-wheel
+     *   render and the match engine's default scoping both exclude them.
      * @returns Array of {@link ColorWheelPaint} ordered by hue ascending.
      */
-    async getColorWheelPaints(): Promise<ColorWheelPaint[]> {
+    async getColorWheelPaints(options?: { includeDiscontinued?: boolean }): Promise<ColorWheelPaint[]> {
+      const includeDiscontinued = options?.includeDiscontinued ?? false
       const all: ColorWheelPaint[] = []
       let offset = 0
 
       while (true) {
-        const { data } = await supabase
+        let query = supabase
           .from('paints')
-          .select('id, name, hex, hue, saturation, lightness, hue_id, is_metallic, paint_type, product_line_id, product_lines!inner(id, name, brands!inner(id, name))')
-          .eq('is_discontinued', false)
+          .select('id, name, hex, hue, saturation, lightness, hue_id, is_metallic, is_discontinued, paint_type, product_line_id, product_lines!inner(id, name, brands!inner(id, name))')
           .order('hue', { ascending: true })
           .order('id', { ascending: true })
           .range(offset, offset + COLOR_WHEEL_PAGE_SIZE - 1)
+
+        if (!includeDiscontinued) {
+          query = query.eq('is_discontinued', false)
+        }
+
+        const { data } = await query
 
         if (!data || data.length === 0) break
 
@@ -459,6 +469,7 @@ export function createPaintService(supabase: SupabaseClient) {
             lightness: row.lightness,
             hue_id: row.hue_id,
             is_metallic: row.is_metallic,
+            is_discontinued: row.is_discontinued ?? false,
             paint_type: row.paint_type,
             product_line_id: row.product_line_id,
             brand_name: line.brands.name,
@@ -493,7 +504,7 @@ export function createPaintService(supabase: SupabaseClient) {
 
       const { data } = await supabase
         .from('paints')
-        .select('id, name, hex, hue, saturation, lightness, hue_id, is_metallic, paint_type, product_line_id, product_lines!inner(id, name, brands!inner(id, name))')
+        .select('id, name, hex, hue, saturation, lightness, hue_id, is_metallic, is_discontinued, paint_type, product_line_id, product_lines!inner(id, name, brands!inner(id, name))')
         .in('hue_id', hueIds)
         .eq('is_discontinued', false)
         .order('name', { ascending: true })
@@ -511,6 +522,7 @@ export function createPaintService(supabase: SupabaseClient) {
           lightness: row.lightness,
           hue_id: row.hue_id,
           is_metallic: row.is_metallic,
+          is_discontinued: row.is_discontinued ?? false,
           paint_type: row.paint_type,
           product_line_id: row.product_line_id,
           brand_name: line.brands.name,
@@ -518,6 +530,47 @@ export function createPaintService(supabase: SupabaseClient) {
           brand_id: line.brands.id,
         }
       })
+    },
+
+    /**
+     * Fetches the distinct, non-null `paint_type` strings across the catalog.
+     *
+     * Used to populate the paint-type multi-select on the Similar Paints
+     * section of the paint detail page. Paginates defensively so the result
+     * is not truncated by PostgREST's default response cap, then dedupes and
+     * sorts alphabetically.
+     *
+     * @returns Distinct paint-type strings, sorted alphabetically. Excludes
+     *   `null` and empty strings.
+     */
+    async listDistinctPaintTypes(): Promise<string[]> {
+      const seen = new Set<string>()
+      const pageSize = COLOR_WHEEL_PAGE_SIZE
+      let offset = 0
+
+      while (true) {
+        const { data } = await supabase
+          .from('paints')
+          .select('paint_type')
+          .not('paint_type', 'is', null)
+          .order('paint_type', { ascending: true })
+          .range(offset, offset + pageSize - 1)
+
+        if (!data || data.length === 0) break
+
+        for (const row of data) {
+          const raw = (row as { paint_type: string | null }).paint_type
+          if (raw == null) continue
+          const trimmed = raw.trim()
+          if (trimmed.length === 0) continue
+          seen.add(trimmed)
+        }
+
+        if (data.length < pageSize) break
+        offset += pageSize
+      }
+
+      return Array.from(seen).sort((a, b) => a.localeCompare(b))
     },
 
     /**

@@ -3,7 +3,12 @@ import Link from 'next/link'
 import type { Hue } from '@/types/color'
 import { CollectionToggle } from '@/modules/collection/components/collection-toggle'
 import { AddToPaletteButton } from '@/modules/palettes/components/add-to-palette-button'
+import { DiscontinuedBadge } from '@/modules/paints/components/discontinued-badge'
+import { FindSimilarButton } from '@/modules/paints/components/find-similar-button'
+import { PaintSimilarSection } from '@/modules/paints/components/paint-similar-section'
+import { PaintSubstitutes } from '@/modules/paints/components/paint-substitutes'
 import type { PaintWithRelationsAndHue } from '@/modules/paints/services/paint-service'
+import type { Brand } from '@/types/paint'
 
 /**
  * Full detail view for a single paint.
@@ -19,17 +24,26 @@ import type { PaintWithRelationsAndHue } from '@/modules/paints/services/paint-s
  * @param props.parentHue - The parent Munsell principal hue, if the paint has a sub-hue.
  * @param props.isInCollection - Whether the paint is in the user's collection.
  * @param props.isAuthenticated - Whether the current user is signed in.
+ * @param props.brands - All brands, used by the substitutes brand filter when
+ *   the paint is discontinued and by the {@link PaintSimilarSection} brand
+ *   filter. Always required now that Similar Paints renders for every paint.
+ * @param props.paintTypes - Distinct paint-type strings for the
+ *   {@link PaintSimilarSection} paint-type filter dropdown.
  */
 export function PaintDetail({
   paint,
   parentHue,
   isInCollection = false,
   isAuthenticated = false,
+  brands = [],
+  paintTypes = [],
 }: {
   paint: PaintWithRelationsAndHue
   parentHue: Hue | null
   isInCollection?: boolean
   isAuthenticated?: boolean
+  brands?: Brand[]
+  paintTypes?: string[]
 }) {
   const brand = paint.product_lines.brands
   const productLine = paint.product_lines
@@ -61,6 +75,7 @@ export function PaintDetail({
               variant="full"
               isAuthenticated={isAuthenticated}
             />
+            <FindSimilarButton paintId={paint.id} />
           </div>
           <p className="text-muted-foreground">
             <Link href={`/brands/${brand.id}`} className="underline hover:text-foreground">
@@ -80,11 +95,7 @@ export function PaintDetail({
                 Metallic
               </span>
             )}
-            {paint.is_discontinued && (
-              <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">
-                Discontinued
-              </span>
-            )}
+            {paint.is_discontinued && <DiscontinuedBadge />}
           </div>
         </div>
       </div>
@@ -143,6 +154,18 @@ export function PaintDetail({
             </Link>
           </div>
         </div>
+      )}
+
+      <PaintSimilarSection
+        sourcePaintId={paint.id}
+        sourceBrandId={String(brand.id)}
+        sourcePaintType={paint.paint_type}
+        brands={brands}
+        paintTypes={paintTypes}
+      />
+
+      {paint.is_discontinued && (
+        <PaintSubstitutes sourcePaintId={paint.id} brands={brands} />
       )}
     </div>
   )
