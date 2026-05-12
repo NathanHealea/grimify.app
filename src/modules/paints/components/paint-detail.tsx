@@ -5,6 +5,7 @@ import { CollectionToggle } from '@/modules/collection/components/collection-tog
 import { AddToPaletteButton } from '@/modules/palettes/components/add-to-palette-button'
 import { DiscontinuedBadge } from '@/modules/paints/components/discontinued-badge'
 import { FindSimilarButton } from '@/modules/paints/components/find-similar-button'
+import { PaintSimilarSection } from '@/modules/paints/components/paint-similar-section'
 import { PaintSubstitutes } from '@/modules/paints/components/paint-substitutes'
 import type { PaintWithRelationsAndHue } from '@/modules/paints/services/paint-service'
 import type { Brand } from '@/types/paint'
@@ -24,8 +25,10 @@ import type { Brand } from '@/types/paint'
  * @param props.isInCollection - Whether the paint is in the user's collection.
  * @param props.isAuthenticated - Whether the current user is signed in.
  * @param props.brands - All brands, used by the substitutes brand filter when
- *   the paint is discontinued. Only required for discontinued paints; the
- *   substitutes section is hidden otherwise.
+ *   the paint is discontinued and by the {@link PaintSimilarSection} brand
+ *   filter. Always required now that Similar Paints renders for every paint.
+ * @param props.paintTypes - Distinct paint-type strings for the
+ *   {@link PaintSimilarSection} paint-type filter dropdown.
  */
 export function PaintDetail({
   paint,
@@ -33,12 +36,14 @@ export function PaintDetail({
   isInCollection = false,
   isAuthenticated = false,
   brands = [],
+  paintTypes = [],
 }: {
   paint: PaintWithRelationsAndHue
   parentHue: Hue | null
   isInCollection?: boolean
   isAuthenticated?: boolean
   brands?: Brand[]
+  paintTypes?: string[]
 }) {
   const brand = paint.product_lines.brands
   const productLine = paint.product_lines
@@ -150,6 +155,14 @@ export function PaintDetail({
           </div>
         </div>
       )}
+
+      <PaintSimilarSection
+        sourcePaintId={paint.id}
+        sourceBrandId={String(brand.id)}
+        sourcePaintType={paint.paint_type}
+        brands={brands}
+        paintTypes={paintTypes}
+      />
 
       {paint.is_discontinued && (
         <PaintSubstitutes sourcePaintId={paint.id} brands={brands} />
