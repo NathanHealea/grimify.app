@@ -55,7 +55,7 @@ export default async function PaintDetailPage({ params }: { params: Promise<{ id
     data: { user },
   } = await supabase.auth.getUser()
 
-  const [references, parentHue, isInCollection, brands, paintTypes] = await Promise.all([
+  const [references, parentHue, isInCollection, brands, paintTypes, paints, collectionPaintIdsSet] = await Promise.all([
     paintService.getPaintReferences(id),
     paint.hues?.parent_id
       ? (await getHueService()).getHueById(paint.hues.parent_id)
@@ -65,7 +65,13 @@ export default async function PaintDetailPage({ params }: { params: Promise<{ id
       : false,
     (await getBrandService()).getAllBrands(),
     paintService.listDistinctPaintTypes(),
+    paintService.getColorWheelPaints(),
+    user
+      ? (await getCollectionService()).getUserPaintIds(user.id)
+      : new Set<string>(),
   ])
+
+  const collectionPaintIds = [...collectionPaintIdsSet]
 
   return (
     <Main>
@@ -77,6 +83,8 @@ export default async function PaintDetailPage({ params }: { params: Promise<{ id
         isAuthenticated={user !== null}
         brands={brands}
         paintTypes={paintTypes}
+        paints={paints}
+        collectionPaintIds={collectionPaintIds}
       />
 
       {references.length > 0 && (
