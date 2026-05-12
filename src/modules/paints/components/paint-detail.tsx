@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { Hue } from '@/types/color'
 import { CollectionToggle } from '@/modules/collection/components/collection-toggle'
 import { AddToPaletteButton } from '@/modules/palettes/components/add-to-palette-button'
+import { FindSimilarButton } from '@/modules/paints/components/find-similar-button'
 import type { PaintWithRelationsAndHue } from '@/modules/paints/services/paint-service'
 
 /**
@@ -61,6 +62,7 @@ export function PaintDetail({
               variant="full"
               isAuthenticated={isAuthenticated}
             />
+            <FindSimilarButton paintId={paint.id} />
           </div>
           <p className="text-muted-foreground">
             <Link href={`/brands/${brand.id}`} className="underline hover:text-foreground">

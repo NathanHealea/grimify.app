@@ -2,7 +2,7 @@
 
 **Epic:** Cross-Brand Comparison
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/comparison-ui`
 **Merge into:** `epic/cross-brand-comparison`
 
@@ -12,16 +12,16 @@ Add a `/compare` page that displays up to 6 paints side by side with large swatc
 
 ## Acceptance Criteria
 
-- [ ] Users can land on `/compare` and add paints via a search-driven combobox (reuses `PaintCombobox`).
-- [ ] Up to 6 paints can be compared at once. Adding past the cap is disabled with a clear message.
-- [ ] Selected paints render in a horizontally-scrolling row (mobile: stacked) with large color swatches, paint name, brand, product line, paint type, and hex.
-- [ ] A pairwise ΔE matrix renders below the swatches (small grid showing the ΔE between each pair).
-- [ ] Each comparison card has a Remove button.
-- [ ] The selected paint IDs are reflected in `?paints=id1,id2,id3` and re-hydrate on reload. `replaceState` is used for add/remove so the URL is shareable without flooding history.
-- [ ] Paint detail page (`/paints/[id]`) gains a "Find similar" link/button that navigates to `/compare?paints=<sourceId>,<match1>,<match2>,...` pre-populated with the top 5 cross-brand matches from `findPaintMatches`.
-- [ ] Empty state shows a paint picker plus a brief explainer.
-- [ ] JSDoc on every exported type, function, component, and action per `CLAUDE.md`.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] Users can land on `/compare` and add paints via a search-driven combobox (reuses `PaintCombobox`).
+- [x] Up to 6 paints can be compared at once. Adding past the cap is disabled with a clear message.
+- [x] Selected paints render in a horizontally-scrolling row (mobile: stacked) with large color swatches, paint name, brand, product line, paint type, and hex.
+- [x] A pairwise ΔE matrix renders below the swatches (small grid showing the ΔE between each pair).
+- [x] Each comparison card has a Remove button.
+- [x] The selected paint IDs are reflected in `?paints=id1,id2,id3` and re-hydrate on reload. `replaceState` is used for add/remove so the URL is shareable without flooding history.
+- [x] Paint detail page (`/paints/[id]`) gains a "Find similar" link/button that navigates to `/compare?paints=<sourceId>,<match1>,<match2>,...` pre-populated with the top 5 cross-brand matches from `findPaintMatches`.
+- [x] Empty state shows a paint picker plus a brief explainer.
+- [x] JSDoc on every exported type, function, component, and action per `CLAUDE.md`.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Dependencies
 
