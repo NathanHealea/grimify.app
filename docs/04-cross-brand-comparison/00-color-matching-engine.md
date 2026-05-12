@@ -4,7 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `feature/color-matching-engine`
-**Merge into:** `main`
+**Merge into:** `epic/cross-brand-comparison`
 
 ## Summary
 

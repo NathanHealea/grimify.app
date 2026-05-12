@@ -4,7 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `feature/comparison-ui`
-**Merge into:** `main`
+**Merge into:** `epic/cross-brand-comparison`
 
 ## Summary
 
