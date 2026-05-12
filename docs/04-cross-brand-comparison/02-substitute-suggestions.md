@@ -2,7 +2,7 @@
 
 **Epic:** Cross-Brand Comparison
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/substitute-suggestions`
 **Merge into:** `epic/cross-brand-comparison`
 
@@ -12,12 +12,12 @@ Surface substitute paints for discontinued paints. The `paints.is_discontinued` 
 
 ## Acceptance Criteria
 
-- [ ] A `Discontinued` badge already renders on `PaintDetail` (existing). Add the same badge to `PaintCard` so discontinued paints are visually marked in search results too.
-- [ ] On `/paints/[id]` for any paint where `is_discontinued = true`, a "Substitutes" section renders the top 5 non-discontinued matches with ΔE scores, ranked across all brands by default.
-- [ ] The substitutes section has a brand filter (Radix `Select`, multi-brand via chips or a simple dropdown — multi is preferred but a single-brand dropdown is acceptable for v1).
-- [ ] A `/discontinued` route lists every discontinued paint paginated; each row shows the discontinued paint and its top 3 substitutes inline.
-- [ ] JSDoc on every exported type, function, component, and action per `CLAUDE.md`.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] A `Discontinued` badge already renders on `PaintDetail` (existing). Add the same badge to `PaintCard` so discontinued paints are visually marked in search results too.
+- [x] On `/paints/[id]` for any paint where `is_discontinued = true`, a "Substitutes" section renders the top 5 non-discontinued matches with ΔE scores, ranked across all brands by default.
+- [x] The substitutes section has a brand filter (Radix `Select`, multi-brand via chips or a simple dropdown — multi is preferred but a single-brand dropdown is acceptable for v1).
+- [x] A `/discontinued` route lists every discontinued paint paginated; each row shows the discontinued paint and its top 3 substitutes inline.
+- [x] JSDoc on every exported type, function, component, and action per `CLAUDE.md`.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Dependencies
 

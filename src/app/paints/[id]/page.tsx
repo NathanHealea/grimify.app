@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { Breadcrumbs } from '@/components/breadcrumbs'
 import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
+import { getBrandService } from '@/modules/brands/services/brand-service.server'
 import { getCollectionService } from '@/modules/collection/services/collection-service.server'
 import { getHueService } from '@/modules/hues/services/hue-service.server'
 import { PaintDetail } from '@/modules/paints/components/paint-detail'
@@ -54,7 +55,7 @@ export default async function PaintDetailPage({ params }: { params: Promise<{ id
     data: { user },
   } = await supabase.auth.getUser()
 
-  const [references, parentHue, isInCollection] = await Promise.all([
+  const [references, parentHue, isInCollection, brands] = await Promise.all([
     paintService.getPaintReferences(id),
     paint.hues?.parent_id
       ? (await getHueService()).getHueById(paint.hues.parent_id)
@@ -62,6 +63,9 @@ export default async function PaintDetailPage({ params }: { params: Promise<{ id
     user
       ? (await getCollectionService()).isInCollection(user.id, paint.id)
       : false,
+    paint.is_discontinued
+      ? (await getBrandService()).getAllBrands()
+      : [],
   ])
 
   return (
@@ -72,6 +76,7 @@ export default async function PaintDetailPage({ params }: { params: Promise<{ id
         parentHue={parentHue}
         isInCollection={isInCollection}
         isAuthenticated={user !== null}
+        brands={brands}
       />
 
       {references.length > 0 && (
