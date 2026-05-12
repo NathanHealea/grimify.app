@@ -533,6 +533,47 @@ export function createPaintService(supabase: SupabaseClient) {
     },
 
     /**
+     * Fetches the distinct, non-null `paint_type` strings across the catalog.
+     *
+     * Used to populate the paint-type multi-select on the Similar Paints
+     * section of the paint detail page. Paginates defensively so the result
+     * is not truncated by PostgREST's default response cap, then dedupes and
+     * sorts alphabetically.
+     *
+     * @returns Distinct paint-type strings, sorted alphabetically. Excludes
+     *   `null` and empty strings.
+     */
+    async listDistinctPaintTypes(): Promise<string[]> {
+      const seen = new Set<string>()
+      const pageSize = COLOR_WHEEL_PAGE_SIZE
+      let offset = 0
+
+      while (true) {
+        const { data } = await supabase
+          .from('paints')
+          .select('paint_type')
+          .not('paint_type', 'is', null)
+          .order('paint_type', { ascending: true })
+          .range(offset, offset + pageSize - 1)
+
+        if (!data || data.length === 0) break
+
+        for (const row of data) {
+          const raw = (row as { paint_type: string | null }).paint_type
+          if (raw == null) continue
+          const trimmed = raw.trim()
+          if (trimmed.length === 0) continue
+          seen.add(trimmed)
+        }
+
+        if (data.length < pageSize) break
+        offset += pageSize
+      }
+
+      return Array.from(seen).sort((a, b) => a.localeCompare(b))
+    },
+
+    /**
      * Fetches all paint references for a given paint, with the related paint
      * data joined (including product line and brand).
      *
