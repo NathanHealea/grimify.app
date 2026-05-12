@@ -129,6 +129,7 @@ Core functionality:
 - [ ] [Color distance algorithm and matching engine](./04-cross-brand-comparison/00-color-matching-engine.md)
 - [ ] [Side-by-side paint comparison UI](./04-cross-brand-comparison/01-comparison-ui.md)
 - [ ] [Substitute suggestions for discontinued paints](./04-cross-brand-comparison/02-substitute-suggestions.md)
+- [ ] [Similar paints on the paint detail page](./04-cross-brand-comparison/03-paint-detail-similar-paints.md)
 
 ### Epic: Color Scheme Explorer
 
