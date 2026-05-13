@@ -22,18 +22,36 @@ const ADMIN_ROUTES = ['/admin']
  *
  * @remarks
  * Route handling order:
- * 1. Auth routes — return immediately (no checks at all).
- * 2. Get user via `supabase.auth.getUser()`.
- * 3. No user + public route — allow (unauthenticated browsing).
- * 4. No user + protected route — redirect to `/sign-in?next={pathname}`.
- * 5. User exists — check `has_setup_profile`:
+ * 1. Stray OAuth code — if `?code=` arrives outside `/auth/*`, forward to
+ *    `/auth/callback` so the session still establishes when Supabase falls
+ *    back to the Site URL instead of honoring `redirectTo`.
+ * 2. Auth routes — return immediately (no checks at all).
+ * 3. Get user via `supabase.auth.getUser()`.
+ * 4. No user + public route — allow (unauthenticated browsing).
+ * 5. No user + protected route — redirect to `/sign-in?next={pathname}`.
+ * 6. User exists — check `has_setup_profile`:
  *    - If `false` and not on `/profile/setup` — redirect to `/profile/setup`.
  *    - If `true` and on `/profile/setup` — redirect to `/`.
- * 6. Admin route — check roles via `get_user_roles` RPC.
- * 7. Return response.
+ * 7. Admin route — check roles via `get_user_roles` RPC.
+ * 8. Return response.
  */
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const { pathname, searchParams } = request.nextUrl
+
+  // OAuth code recovery — if Supabase falls back to its Site URL (because the
+  // requested redirectTo isn't in the Redirect URLs allow-list), the auth code
+  // ends up at the root with `?code=...` instead of at `/auth/callback`.
+  // Forward any such request to the callback handler so the session still
+  // establishes. Skip when already under `/auth/` — both `/auth/callback`
+  // (OAuth) and `/auth/confirm` (email flows) legitimately receive `?code=`.
+  const code = searchParams.get('code')
+  if (code && !pathname.startsWith('/auth/')) {
+    const callbackUrl = request.nextUrl.clone()
+    callbackUrl.pathname = '/auth/callback'
+    callbackUrl.searchParams.set('code', code)
+    callbackUrl.searchParams.set('next', pathname)
+    return NextResponse.redirect(callbackUrl)
+  }
 
   let supabaseResponse = NextResponse.next({ request })
 
