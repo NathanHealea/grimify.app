@@ -177,7 +177,6 @@ export function PaintDetail({
           hex: paint.hex,
         }}
         paints={paints}
-        isAuthenticated={isAuthenticated}
         collectionPaintIds={collectionPaintIds}
       />
 
