@@ -1,36 +1,38 @@
 'use client'
 
 import Link from 'next/link'
-import { useActionState, useEffect, useRef } from 'react'
+import { useActionState, useEffect } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { signIn } from '@/modules/auth/actions/sign-in'
-import { TurnstileWidget, type TurnstileWidgetHandle } from '@/modules/auth/components/turnstile-widget'
+import { useTurnstile } from '@/modules/auth/components/turnstile-provider'
+import { TurnstileWidget } from '@/modules/auth/components/turnstile-widget'
 import type { AuthState } from '@/modules/auth/types/auth-state'
 
 /**
  * Email and password sign-in form.
  *
- * Uses the {@link signIn} server action via `useActionState`.
- * Surfaces server-returned errors as a Sonner toast; successful sign-in
- * redirects server-side, so no success toast fires here. The Cloudflare
- * Turnstile widget is reset after each submission so retries get a fresh
- * single-use token.
+ * Uses the {@link signIn} server action via `useActionState`. The Cloudflare
+ * Turnstile token is provided by the surrounding `TurnstileProvider` so it
+ * can also be consumed by the OAuth buttons on the same page. Surfaces
+ * server-returned errors as a Sonner toast; successful sign-in redirects
+ * server-side, so no success toast fires here. The widget is reset after each
+ * submission so retries get a fresh single-use token.
  */
 export function SignInForm() {
   const [state, formAction, pending] = useActionState<AuthState, FormData>(signIn, null)
-  const turnstileRef = useRef<TurnstileWidgetHandle>(null)
+  const { token, reset } = useTurnstile()
 
   useEffect(() => {
     if (!state) return
     if (state.error) {
       toast.error(state.error)
     }
-    turnstileRef.current?.reset()
-  }, [state])
+    reset()
+  }, [state, reset])
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
@@ -54,7 +56,8 @@ export function SignInForm() {
           Forgot your password?
         </Link>
       </div>
-      <TurnstileWidget ref={turnstileRef} />
+      <TurnstileWidget />
+      <input type="hidden" name="cf-turnstile-response" value={token} />
       <Button type="submit" disabled={pending}>
         {pending ? 'Signing in...' : 'Sign in'}
       </Button>

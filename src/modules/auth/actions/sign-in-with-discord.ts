@@ -11,6 +11,12 @@ import { redirect } from 'next/navigation'
  * Calls `signInWithOAuth` to obtain a redirect URL from Supabase,
  * then performs a server-side redirect. On failure, redirects to
  * `/sign-in` with an encoded error message.
+ *
+ * @remarks
+ * `signInWithOAuth` does not accept a captcha token because the Supabase
+ * `/authorize` endpoint only constructs an OAuth provider URL — actual
+ * authentication happens in the callback handler. Supabase's Captcha
+ * Protection does not gate the OAuth flow.
  */
 export async function signInWithDiscord() {
   const supabase = await createClient()

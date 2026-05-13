@@ -1,26 +1,28 @@
 'use client'
 
-import { useActionState, useEffect, useRef } from 'react'
+import { useActionState, useEffect } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { signUp } from '@/modules/auth/actions/sign-up'
-import { TurnstileWidget, type TurnstileWidgetHandle } from '@/modules/auth/components/turnstile-widget'
+import { useTurnstile } from '@/modules/auth/components/turnstile-provider'
+import { TurnstileWidget } from '@/modules/auth/components/turnstile-widget'
 import type { AuthState } from '@/modules/auth/types/auth-state'
 
 /**
  * Email and password sign-up form.
  *
- * Uses the {@link signUp} server action via `useActionState`.
- * Surfaces server-returned success and error messages as Sonner toasts.
- * The Cloudflare Turnstile widget is reset after each submission so retries
- * get a fresh single-use token.
+ * Uses the {@link signUp} server action via `useActionState`. The Cloudflare
+ * Turnstile token is provided by the surrounding `TurnstileProvider` so it
+ * can also be consumed by the OAuth buttons on the same page. Surfaces
+ * server-returned success and error messages as Sonner toasts. The widget is
+ * reset after each submission so retries get a fresh single-use token.
  */
 export function SignUpForm() {
   const [state, formAction, pending] = useActionState<AuthState, FormData>(signUp, null)
-  const turnstileRef = useRef<TurnstileWidgetHandle>(null)
+  const { token, reset } = useTurnstile()
 
   useEffect(() => {
     if (!state) return
@@ -29,8 +31,8 @@ export function SignUpForm() {
     } else if (state.success) {
       toast.success(state.success)
     }
-    turnstileRef.current?.reset()
-  }, [state])
+    reset()
+  }, [state, reset])
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
@@ -50,7 +52,8 @@ export function SignUpForm() {
           autoComplete="new-password"
         />
       </div>
-      <TurnstileWidget ref={turnstileRef} />
+      <TurnstileWidget />
+      <input type="hidden" name="cf-turnstile-response" value={token} />
       <Button type="submit" disabled={pending}>
         {pending ? 'Creating account...' : 'Sign up'}
       </Button>
