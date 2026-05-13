@@ -1,10 +1,12 @@
 import Link from 'next/link'
 
 import type { Hue } from '@/types/color'
+import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { CollectionToggle } from '@/modules/collection/components/collection-toggle'
 import { AddToPaletteButton } from '@/modules/palettes/components/add-to-palette-button'
 import { DiscontinuedBadge } from '@/modules/paints/components/discontinued-badge'
 import { FindSimilarButton } from '@/modules/paints/components/find-similar-button'
+import { PaintColorSchemesSection } from '@/modules/paints/components/paint-color-schemes-section'
 import { PaintSimilarSection } from '@/modules/paints/components/paint-similar-section'
 import { PaintSubstitutes } from '@/modules/paints/components/paint-substitutes'
 import type { PaintWithRelationsAndHue } from '@/modules/paints/services/paint-service'
@@ -29,6 +31,11 @@ import type { Brand } from '@/types/paint'
  *   filter. Always required now that Similar Paints renders for every paint.
  * @param props.paintTypes - Distinct paint-type strings for the
  *   {@link PaintSimilarSection} paint-type filter dropdown.
+ * @param props.paints - Full color-wheel paint list forwarded to the
+ *   {@link PaintColorSchemesSection} for nearest-paint matching.
+ * @param props.collectionPaintIds - IDs of paints in the current user's
+ *   collection, forwarded to {@link PaintColorSchemesSection}. Empty array
+ *   for anonymous users.
  */
 export function PaintDetail({
   paint,
@@ -37,6 +44,8 @@ export function PaintDetail({
   isAuthenticated = false,
   brands = [],
   paintTypes = [],
+  paints = [],
+  collectionPaintIds = [],
 }: {
   paint: PaintWithRelationsAndHue
   parentHue: Hue | null
@@ -44,6 +53,8 @@ export function PaintDetail({
   isAuthenticated?: boolean
   brands?: Brand[]
   paintTypes?: string[]
+  paints?: ColorWheelPaint[]
+  collectionPaintIds?: string[]
 }) {
   const brand = paint.product_lines.brands
   const productLine = paint.product_lines
@@ -155,6 +166,20 @@ export function PaintDetail({
           </div>
         </div>
       )}
+
+      <PaintColorSchemesSection
+        paint={{
+          id: paint.id,
+          name: paint.name,
+          hue: paint.hue,
+          saturation: paint.saturation,
+          lightness: paint.lightness,
+          hex: paint.hex,
+        }}
+        paints={paints}
+        isAuthenticated={isAuthenticated}
+        collectionPaintIds={collectionPaintIds}
+      />
 
       <PaintSimilarSection
         sourcePaintId={paint.id}
