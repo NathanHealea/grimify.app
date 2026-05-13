@@ -2,7 +2,7 @@
 
 **Epic:** Color Scheme Explorer
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/paint-details-color-schemes-compact`
 **Merge into:** `epic/color-schema-explorer`
 

@@ -141,8 +141,8 @@ Core functionality:
 - [ ] [Scheme visualization on the color wheel](./05-color-scheme-explorer/01-scheme-visualization.md)
 - [ ] [Map schemes to available paints](./05-color-scheme-explorer/02-scheme-to-paints.md)
 - [ ] [Public schemes catalog & user explorer move](./05-color-scheme-explorer/03-public-schema-page.md)
-- [ ] [Scheme explorer refactor — hooks, services, and reusable components](./05-color-scheme-explorer/04-scheme-explorer-refactor.md)
-- [ ] [Paint details color schemes section](./05-color-scheme-explorer/05-paint-details-color-schemes.md)
+- [x] [Scheme explorer refactor — hooks, services, and reusable components](./05-color-scheme-explorer/04-scheme-explorer-refactor.md)
+- [x] [Paint details color schemes section](./05-color-scheme-explorer/05-paint-details-color-schemes.md)
 
 ### Epic: Collection Tracking
 

@@ -2,7 +2,7 @@
 
 **Epic:** Color Scheme Explorer
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/scheme-explorer-refactor`
 **Merge into:** `epic/color-schema-explorer`
 
