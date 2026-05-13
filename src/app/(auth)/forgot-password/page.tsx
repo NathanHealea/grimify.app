@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ForgotPasswordForm } from '@/modules/auth/components/forgot-password-form'
+import { TurnstileProvider } from '@/modules/auth/components/turnstile-provider'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
@@ -19,7 +20,9 @@ export default function ForgotPasswordPage() {
         <CardDescription>Enter your email address and we&apos;ll send you a link to reset your password.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ForgotPasswordForm />
+        <TurnstileProvider>
+          <ForgotPasswordForm />
+        </TurnstileProvider>
       </CardContent>
       <CardFooter className="justify-center">
         <p className="text-sm text-muted-foreground">

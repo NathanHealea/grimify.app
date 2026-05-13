@@ -1,7 +1,9 @@
 'use client'
 
 import Script from 'next/script'
-import { useEffect, useImperativeHandle, useRef, useState, type Ref } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+import { useTurnstileInternal } from '@/modules/auth/components/turnstile-provider'
 
 /**
  * Subset of the Cloudflare Turnstile JS API surface this component uses.
@@ -28,50 +30,28 @@ declare global {
 }
 
 /**
- * Imperative handle exposed by {@link TurnstileWidget} so parent forms can
- * reset the challenge after a submission (Turnstile tokens are single-use).
- */
-export interface TurnstileWidgetHandle {
-  reset: () => void
-}
-
-interface TurnstileWidgetProps {
-  ref?: Ref<TurnstileWidgetHandle>
-}
-
-/**
  * Cloudflare Turnstile human-verification widget.
  *
- * Loads the Turnstile script, renders the widget into a container, and
- * exposes the resulting token through a hidden form field named
- * `cf-turnstile-response`. If `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is unset the
- * component renders nothing so local development without a site key still
- * works; server-side verification handles the matching secret-key case.
+ * Loads the Turnstile script and renders the widget into a container. The
+ * resulting token is published to the surrounding {@link TurnstileProvider},
+ * which exposes it to every form and OAuth button on the page so a single
+ * solved challenge can authorize any of them.
+ *
+ * If `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is unset the component renders nothing
+ * so local development without a site key still works.
  *
  * @remarks
- * Tokens are single-use. Parent forms should call `reset()` on the ref after
- * each submission so the next attempt receives a fresh token.
+ * Tokens are single-use. Callers should invoke `reset()` from
+ * {@link useTurnstile} after each submission so the next attempt gets a
+ * fresh token.
  */
-export function TurnstileWidget({ ref }: TurnstileWidgetProps) {
+export function TurnstileWidget() {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+  const { setToken, resetRequest } = useTurnstileInternal()
 
   const containerRef = useRef<HTMLDivElement>(null)
   const widgetIdRef = useRef<string | null>(null)
-  const [token, setToken] = useState('')
   const [ready, setReady] = useState(false)
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      reset: () => {
-        setToken('')
-        if (widgetIdRef.current && window.turnstile) {
-          window.turnstile.reset(widgetIdRef.current)
-        }
-      },
-    }),
-    [],
-  )
 
   useEffect(() => {
     if (!ready || !siteKey || !containerRef.current) return
@@ -92,7 +72,14 @@ export function TurnstileWidget({ ref }: TurnstileWidgetProps) {
       }
       widgetIdRef.current = null
     }
-  }, [ready, siteKey])
+  }, [ready, siteKey, setToken])
+
+  useEffect(() => {
+    if (resetRequest === 0) return
+    if (widgetIdRef.current && window.turnstile) {
+      window.turnstile.reset(widgetIdRef.current)
+    }
+  }, [resetRequest])
 
   if (!siteKey) return null
 
@@ -104,7 +91,6 @@ export function TurnstileWidget({ ref }: TurnstileWidgetProps) {
         onReady={() => setReady(true)}
       />
       <div ref={containerRef} />
-      <input type="hidden" name="cf-turnstile-response" value={token} />
     </>
   )
 }

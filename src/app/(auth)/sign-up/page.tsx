@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { OAuthButtons } from '@/modules/auth/components/oauth-buttons'
 import { SignUpForm } from '@/modules/auth/components/sign-up-form'
+import { TurnstileProvider } from '@/modules/auth/components/turnstile-provider'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
@@ -19,7 +20,9 @@ export default function SignUpPage() {
         <CardDescription>Enter your email and password to get started.</CardDescription>
       </CardHeader>
       <CardContent>
-        <SignUpForm />
+        <TurnstileProvider>
+          <SignUpForm />
+        </TurnstileProvider>
         <OAuthButtons />
         <p className="mt-4 text-center text-xs text-muted-foreground">
           By signing up, you agree to our{' '}
