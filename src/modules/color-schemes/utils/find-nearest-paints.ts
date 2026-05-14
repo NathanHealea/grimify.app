@@ -1,3 +1,4 @@
+import { circularHueDistance } from '@/modules/color-schemes/utils/circular-hue-distance'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 
 /**
@@ -9,7 +10,7 @@ import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-pa
  * @returns Up to `limit` paints nearest to `targetHue` by hue proximity.
  *
  * @remarks
- * Uses circular distance so the gap between 350° and 10° is 20°, not 340°.
+ * Uses {@link circularHueDistance} so the gap between 350° and 10° is 20°, not 340°.
  * Full RGB color-distance matching is not needed for v1.
  */
 export function findNearestPaints(
@@ -17,10 +18,10 @@ export function findNearestPaints(
   paints: ColorWheelPaint[],
   limit = 5,
 ): ColorWheelPaint[] {
-  const hueDist = (a: number, b: number) =>
-    Math.min(Math.abs(a - b), 360 - Math.abs(a - b))
-
   return [...paints]
-    .sort((a, b) => hueDist(a.hue, targetHue) - hueDist(b.hue, targetHue))
+    .sort(
+      (a, b) =>
+        circularHueDistance(a.hue, targetHue) - circularHueDistance(b.hue, targetHue),
+    )
     .slice(0, limit)
 }
