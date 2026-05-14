@@ -4,6 +4,7 @@
 **Type:** Feature
 **Status:** Completed
 **Branch:** `feature/paint-details-color-schemes-compact`
+**Released:** v1.51.0
 **Merge into:** `epic/color-schema-explorer`
 
 ## Summary
