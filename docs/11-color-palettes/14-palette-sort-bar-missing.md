@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Bug
-**Status:** Done
+**Status:** Completed
 **Branch:** `bug/palette-sort-bar-missing`
 **Merge into:** `main`
 
