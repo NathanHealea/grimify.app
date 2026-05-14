@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/paint-detail-sections-toggle`
 **Merge into:** `main`
 
@@ -12,17 +12,17 @@ Replace the stacked `PaintColorSchemesSection` + `PaintSimilarSection` layout on
 
 ## Acceptance Criteria
 
-- [ ] Two side-by-side toggle buttons — **Similar** and **Color Schemes** — appear above the panel area on every paint detail page.
-- [ ] The **Similar** tab is active by default on page load.
-- [ ] Clicking a button activates that tab; the previously active tab becomes inactive.
-- [ ] Only the active section is mounted (not CSS-hidden — the inactive component is not rendered).
-- [ ] Active button uses primary styling; inactive uses ghost styling (consistent with existing button patterns).
-- [ ] `PaintSubstitutes` continues to render below the toggle for discontinued paints and is not part of the toggle.
-- [ ] `paint-detail.tsx` remains a server component; the toggle is a client component.
-- [ ] No new UI library primitives (no Tabs component from shadcn/ui) — plain styled buttons only.
-- [ ] All exports have JSDoc per `CLAUDE.md`.
-- [ ] No barrel/index re-exports.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] Two side-by-side toggle buttons — **Similar** and **Color Schemes** — appear above the panel area on every paint detail page.
+- [x] The **Similar** tab is active by default on page load.
+- [x] Clicking a button activates that tab; the previously active tab becomes inactive.
+- [x] Only the active section is mounted (not CSS-hidden — the inactive component is not rendered).
+- [x] Active button uses primary styling; inactive uses ghost styling (consistent with existing button patterns).
+- [x] `PaintSubstitutes` continues to render below the toggle for discontinued paints and is not part of the toggle.
+- [x] `paint-detail.tsx` remains a server component; the toggle is a client component.
+- [x] No new UI library primitives (no Tabs component from shadcn/ui) — plain styled buttons only.
+- [x] All exports have JSDoc per `CLAUDE.md`.
+- [x] No barrel/index re-exports.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Implementation
 
