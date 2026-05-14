@@ -6,8 +6,7 @@ import { CollectionToggle } from '@/modules/collection/components/collection-tog
 import { AddToPaletteButton } from '@/modules/palettes/components/add-to-palette-button'
 import { DiscontinuedBadge } from '@/modules/paints/components/discontinued-badge'
 import { FindSimilarButton } from '@/modules/paints/components/find-similar-button'
-import { PaintColorSchemesSection } from '@/modules/paints/components/paint-color-schemes-section'
-import { PaintSimilarSection } from '@/modules/paints/components/paint-similar-section'
+import { PaintSectionsToggle } from '@/modules/paints/components/paint-sections-toggle'
 import { PaintSubstitutes } from '@/modules/paints/components/paint-substitutes'
 import type { PaintWithRelationsAndHue } from '@/modules/paints/services/paint-service'
 import type { Brand } from '@/types/paint'
@@ -27,14 +26,14 @@ import type { Brand } from '@/types/paint'
  * @param props.isInCollection - Whether the paint is in the user's collection.
  * @param props.isAuthenticated - Whether the current user is signed in.
  * @param props.brands - All brands, used by the substitutes brand filter when
- *   the paint is discontinued and by the {@link PaintSimilarSection} brand
+ *   the paint is discontinued and by the {@link PaintSectionsToggle} similar
  *   filter. Always required now that Similar Paints renders for every paint.
  * @param props.paintTypes - Distinct paint-type strings for the
- *   {@link PaintSimilarSection} paint-type filter dropdown.
+ *   {@link PaintSectionsToggle} similar paint-type filter dropdown.
  * @param props.paints - Full color-wheel paint list forwarded to the
- *   {@link PaintColorSchemesSection} for nearest-paint matching.
+ *   {@link PaintSectionsToggle} color schemes panel for nearest-paint matching.
  * @param props.collectionPaintIds - IDs of paints in the current user's
- *   collection, forwarded to {@link PaintColorSchemesSection}. Empty array
+ *   collection, forwarded to {@link PaintSectionsToggle}. Empty array
  *   for anonymous users.
  */
 export function PaintDetail({
@@ -167,7 +166,7 @@ export function PaintDetail({
         </div>
       )}
 
-      <PaintColorSchemesSection
+      <PaintSectionsToggle
         paint={{
           id: paint.id,
           name: paint.name,
@@ -178,10 +177,6 @@ export function PaintDetail({
         }}
         paints={paints}
         collectionPaintIds={collectionPaintIds}
-      />
-
-      <PaintSimilarSection
-        sourcePaintId={paint.id}
         sourceBrandId={String(brand.id)}
         sourcePaintType={paint.paint_type}
         brands={brands}
