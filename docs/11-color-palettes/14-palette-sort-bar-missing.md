@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Bug
-**Status:** Todo
+**Status:** Done
 **Branch:** `bug/palette-sort-bar-missing`
 **Merge into:** `main`
 
@@ -52,14 +52,14 @@ The two lists also share the same persistence call (`reorderPalettePaints` accep
 
 ## Acceptance Criteria
 
-- [ ] On `/user/palettes/[id]/edit`, the `PaintSortBar` and "Apply sort" button are visible above the paint list for the owner.
-- [ ] Clicking "Apply sort" opens `PaletteSortConfirmDialog`; confirm persists the new order; cancel does nothing.
-- [ ] Sorting a palette with groups sorts each group's paints independently; ungrouped paints sort among themselves; group order is preserved.
-- [ ] Sorting a palette with **no** groups sorts the flat list of paints end-to-end.
-- [ ] Drag-and-drop reorder keeps working after a sort.
-- [ ] On `/palettes/[id]` (read-only), no sort UI is shown — `canEdit={false}` is honored.
-- [ ] `PalettePaintList` is deleted; `PaletteDetail` renders `PaletteGroupedPaintList` for both the grouped and ungrouped cases.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] On `/user/palettes/[id]/edit`, the `PaintSortBar` and "Apply sort" button are visible above the paint list for the owner.
+- [x] Clicking "Apply sort" opens `PaletteSortConfirmDialog`; confirm persists the new order; cancel does nothing.
+- [x] Sorting a palette with groups sorts each group's paints independently; ungrouped paints sort among themselves; group order is preserved.
+- [x] Sorting a palette with **no** groups sorts the flat list of paints end-to-end.
+- [x] Drag-and-drop reorder keeps working after a sort.
+- [x] On `/palettes/[id]` (read-only), no sort UI is shown — `canEdit={false}` is honored.
+- [x] `PalettePaintList` is deleted; `PaletteDetail` renders `PaletteGroupedPaintList` for both the grouped and ungrouped cases.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Out of Scope
 
