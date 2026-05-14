@@ -104,6 +104,7 @@ Core functionality:
 - [ ] [Paint database data improvement](./02-paint-data-search/05-paint-database-data-improvement.md)
 - [x] [Paint search v2 (rearchitecture)](./02-paint-data-search/06-paint-search-v2.md)
 - [ ] [Paint details mobile action buttons](./02-paint-data-search/07-paint-details-mobile-buttons.md)
+- [ ] [Paint detail sections toggle](./02-paint-data-search/08-paint-detail-sections-toggle.md)
 
 ### Epic: Interactive Color Wheel
 
