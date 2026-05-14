@@ -223,7 +223,7 @@ Core functionality:
 - [x] [Color palette paint sorting](./11-color-palettes/10-color-palette-sorting.md)
 - [ ] [Paint group references (multi-group memberships)](./11-color-palettes/11-paint-group-references.md)
 - [ ] [Edit palette — paint combobox](./11-color-palettes/13-edit-palette-paint-combobox.md)
-- [ ] [Palette sort bar missing from edit page](./11-color-palettes/14-palette-sort-bar-missing.md)
+- [x] [Palette sort bar missing from edit page](./11-color-palettes/14-palette-sort-bar-missing.md)
 
 ### Epic: Painting Recipes
 
