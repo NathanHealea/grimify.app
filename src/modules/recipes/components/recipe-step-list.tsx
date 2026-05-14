@@ -33,8 +33,8 @@ import { reorderArray } from '@/modules/palettes/utils/reorder-array'
  * Sonner toast.
  *
  * Step ids are already mount-stable uuids, so no synthetic dnd id is needed
- * (cf. `palette-paint-list.tsx`, which uses synthetic ids because palettes
- * may contain duplicate paint ids).
+ * (cf. `palette-grouped-paint-list.tsx`, which uses synthetic ids because
+ * palettes may contain duplicate paint ids).
  *
  * @param props.sectionId - UUID of the parent section.
  * @param props.sectionLabel - Section number used to compose step labels

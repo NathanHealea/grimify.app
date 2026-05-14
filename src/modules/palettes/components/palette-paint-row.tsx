@@ -30,7 +30,7 @@ import { PaletteSwapButton } from '@/modules/palettes/components/palette-swap-bu
  * @param props.paint - Full paint data for display.
  * @param props.note - Optional per-slot painter note.
  * @param props.canEdit - When true, renders the remove button and drag handle.
- * @param props.dndId - Mount-stable DnD id assigned by `PalettePaintList`; required when `canEdit` is true.
+ * @param props.dndId - Mount-stable DnD id assigned by the parent list; required when `canEdit` is true.
  * @param props.groups - Named groups for this palette; when present and non-empty in edit mode, renders a group selector.
  * @param props.currentGroupId - UUID of the group this slot belongs to; `null` for ungrouped.
  */
