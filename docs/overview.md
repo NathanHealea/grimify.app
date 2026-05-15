@@ -240,4 +240,4 @@ Core functionality:
 - [x] [Recipe notes (multiple notes per recipe and per step)](./12-painting-recipes/04-recipe-notes.md)
 - [ ] [Public recipe sharing, browse, and OG previews](./12-painting-recipes/05-recipe-sharing.md)
 - [ ] [Migrate `RecipePaletteCombobox` to Radix Select](./12-painting-recipes/06-migrate-recipe-palette-combobox.md)
-- [ ] [Recipe browse page — public paginated listing](./12-painting-recipes/07-recipe-browse-page.md)
+- [x] [Recipe browse page — public paginated listing](./12-painting-recipes/07-recipe-browse-page.md)
