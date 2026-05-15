@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 
 import type { Palette } from '@/modules/palettes/types/palette'
 import type { PaintSortDirection, PaintSortField } from '@/modules/paints/utils/sort-paints'
+import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { PaintSortBar } from '@/modules/paints/components/paint-sort-bar'
 import { reorderPalettePaints } from '@/modules/palettes/actions/reorder-palette-paints'
 import { sortPaletteSlots } from '@/modules/palettes/utils/sort-palette-slots'
@@ -13,10 +14,11 @@ import { PaletteGroupedPaintList } from '@/modules/palettes/components/palette-g
 import { PaletteSortConfirmDialog } from '@/modules/palettes/components/palette-sort-confirm-dialog'
 import { PaletteEmptyState } from '@/modules/palettes/components/palette-empty-state'
 import { DeletePaletteButton } from '@/modules/palettes/components/delete-palette-button'
+import { PalettePaintPicker } from '@/modules/palettes/components/palette-paint-picker'
 
 /**
- * Full palette editor — composes the edit form, sort controls, grouped paint
- * list, and delete action.
+ * Full palette editor — composes the edit form, paint picker, sort controls,
+ * grouped paint list, and delete action.
  *
  * Owns the sort state and dispatches {@link reorderPalettePaints} via
  * {@link sortPaletteSlots} on confirm. {@link PaletteGroupedPaintList}
@@ -25,8 +27,18 @@ import { DeletePaletteButton } from '@/modules/palettes/components/delete-palett
  * when groups are present.
  *
  * @param props.palette - Fully hydrated palette to edit.
+ * @param props.catalog - Full paint catalog for the picker's search.
+ * @param props.collectionPaintIds - IDs of paints the viewer already owns; used to pre-filter the "save to collection" toggle.
  */
-export function PaletteBuilder({ palette }: { palette: Palette }) {
+export function PaletteBuilder({
+  palette,
+  catalog,
+  collectionPaintIds,
+}: {
+  palette: Palette
+  catalog: ColorWheelPaint[]
+  collectionPaintIds: string[]
+}) {
   const [sortField, setSortField] = useState<PaintSortField>('name')
   const [sortDirection, setSortDirection] = useState<PaintSortDirection>('asc')
   const [pendingSort, setPendingSort] = useState<{
@@ -57,6 +69,14 @@ export function PaletteBuilder({ palette }: { palette: Palette }) {
 
       <div>
         <h2 className="mb-4 text-lg font-semibold">Paints</h2>
+
+        <PalettePaintPicker
+          paletteId={palette.id}
+          paletteName={palette.name}
+          catalog={catalog}
+          excludedPaintIds={palette.paints.map((slot) => slot.paintId)}
+          collectionPaintIds={collectionPaintIds}
+        />
 
         {palette.paints.length > 0 && (
           <div className="mb-3 flex items-center gap-2">

@@ -17,6 +17,7 @@ import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-pa
  * @param props.onSelect - Called with the chosen {@link ColorWheelPaint} on selection.
  * @param props.placeholder - Placeholder text for the search input.
  * @param props.maxResults - Maximum number of dropdown results (default: 8).
+ * @param props.ownedIds - Optional set of paint IDs the viewer already owns. When provided, matching rows show an "In collection" badge.
  */
 export function PaintCombobox({
   paints,
@@ -24,6 +25,7 @@ export function PaintCombobox({
   placeholder = 'Search paints by name…',
   maxResults = 8,
   initialQuery = '',
+  ownedIds,
 }: {
   paints: ColorWheelPaint[]
   onSelect: (paint: ColorWheelPaint) => void
@@ -31,6 +33,8 @@ export function PaintCombobox({
   maxResults?: number
   /** Pre-fills the search query, e.g. when a selection is cleared mid-typing. */
   initialQuery?: string
+  /** When provided, rows whose ID is in this set show an "In collection" badge. */
+  ownedIds?: Set<string>
 }) {
   const [query, setQuery] = useState(initialQuery)
   const [open, setOpen] = useState(false)
@@ -102,7 +106,10 @@ export function PaintCombobox({
                   aria-hidden="true"
                 />
                 <span className="truncate">{paint.name}</span>
-                <span className="ml-auto shrink-0 text-xs text-muted-foreground">
+                <span className="ml-auto flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
+                  {ownedIds?.has(paint.id) && (
+                    <span className="badge badge-soft badge-xs">In collection</span>
+                  )}
                   {paint.brand_name}
                 </span>
               </button>
