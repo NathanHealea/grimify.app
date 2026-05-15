@@ -5,7 +5,7 @@ import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 export const metadata = pageMetadata({
   title: 'Browse Recipes',
   description: 'Discover step-by-step painting recipes from the Grimify community.',
-  path: '/recipes/browse',
+  path: '/recipes',
 })
 
 /** Valid page sizes accepted via the `?size=` search param. */
