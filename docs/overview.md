@@ -155,6 +155,7 @@ Core functionality:
 - [ ] [Collection overview and statistics](./06-collection-tracking/01-collection-overview.md)
 - [x] [Collection dashboard](./06-collection-tracking/02-collection-dashboard.md)
 - [x] [Collection toast feedback (add / remove)](./06-collection-tracking/03-collection-toast.md)
+- [ ] [Previously viewed palettes on the collection page](./06-collection-tracking/04-previously-viewed-palettes.md)
 
 ### Epic: Community & Social
 
@@ -239,3 +240,4 @@ Core functionality:
 - [x] [Recipe notes (multiple notes per recipe and per step)](./12-painting-recipes/04-recipe-notes.md)
 - [ ] [Public recipe sharing, browse, and OG previews](./12-painting-recipes/05-recipe-sharing.md)
 - [ ] [Migrate `RecipePaletteCombobox` to Radix Select](./12-painting-recipes/06-migrate-recipe-palette-combobox.md)
+- [ ] [Recipe browse page — public paginated listing](./12-painting-recipes/07-recipe-browse-page.md)
