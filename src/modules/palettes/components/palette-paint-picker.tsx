@@ -84,6 +84,7 @@ export function PalettePaintPicker({
           paints={candidates}
           onSelect={handleSelect}
           placeholder="Search paints to add to this palette…"
+          ownedIds={ownedSet}
         />
       </div>
       <label className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground sm:whitespace-nowrap">
