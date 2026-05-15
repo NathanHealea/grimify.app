@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
 import { Menu } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useState } from 'react'
 
 import { Logo } from '@/components/logo'
 import {
@@ -81,22 +81,21 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
               Palettes
             </Link>
           </SheetClose>
+        </SheetBody>
+
+        <SheetFooter>
           {viewer.kind === 'user' && viewer.isAdmin && (
             <SheetClose asChild>
               <Link href="/admin" className="btn btn-ghost w-full justify-center md:justify-start">
-                Admin
+                Admin Dashboard
               </Link>
             </SheetClose>
           )}
-        </SheetBody>
-        <SheetFooter>
+
           {viewer.kind === 'user' ? (
             <>
               <SheetClose asChild>
-                <Link
-                  href={`/users/${viewer.userId}`}
-                  className="btn btn-ghost w-full justify-center md:justify-start"
-                >
+                <Link href={`/users/${viewer.userId}`} className="btn btn-ghost w-full justify-center md:justify-start">
                   {viewer.avatarUrl ? (
                     <Image
                       src={viewer.avatarUrl}
@@ -107,12 +106,10 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
                       referrerPolicy="no-referrer"
                     />
                   ) : null}
-                  <span className="ml-2">{viewer.displayName}</span>
+                  <span className="">{viewer.displayName}</span>
                 </Link>
               </SheetClose>
-              <p className="text-xs uppercase tracking-wide text-muted-foreground px-3 pt-2">
-                Mine
-              </p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground px-3 pt-2 text-center">Mine</p>
               <SheetClose asChild>
                 <Link href="/collection" className="btn btn-ghost w-full justify-center md:justify-start">
                   My collection
@@ -123,19 +120,13 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
                   My palettes
                 </Link>
               </SheetClose>
-              <button
-                type="button"
-                disabled
-                aria-disabled="true"
-                className="btn btn-ghost w-full justify-center md:justify-start opacity-60 cursor-not-allowed"
-              >
-                My recipes <span className="ml-auto text-xs">Coming soon</span>
-              </button>
+              <SheetClose asChild>
+                <Link href="/user/recipes" className="btn btn-ghost w-full justify-center md:justify-start">
+                  My recipes
+                </Link>
+              </SheetClose>
               <form action={signOut}>
-                <button
-                  type="submit"
-                  className="btn btn-ghost btn-destructive w-full justify-center md:justify-start"
-                >
+                <button type="submit" className="btn btn-ghost btn-destructive w-full justify-center md:justify-start">
                   Sign out
                 </button>
               </form>
