@@ -71,11 +71,14 @@ export async function Navbar() {
         <Link href="/palettes" className="btn btn-ghost btn-sm">
           Palettes
         </Link>
+        <Link href="/recipes" className="btn btn-ghost btn-sm">
+          Recipes
+        </Link>
       </div>
       <div className="navbar-end hidden gap-2 lg:flex">
         {isAdmin && (
           <Link href="/admin" className="btn btn-ghost btn-sm">
-            Admin
+            Admin Dashboard
           </Link>
         )}
         {user && displayName ? (
