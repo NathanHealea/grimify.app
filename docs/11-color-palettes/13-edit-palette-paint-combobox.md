@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Enhancement
-**Status:** Todo
+**Status:** Done
 **Branch:** `enhancement/edit-palette-paint-combo-box`
 **Merge into:** `main`
 
@@ -14,18 +14,18 @@ Today the only ways to grow a palette during edit are to (a) navigate elsewhere 
 
 ## Acceptance Criteria
 
-- [ ] The palette edit page (`/user/palettes/[id]/edit`) renders a paint combobox above the grouped paint list, inside the "Paints" section of `<PaletteBuilder>`.
-- [ ] Typing in the combobox live-filters against the full paint catalog (`getColorWheelPaints`), matching against paint name (case-insensitive), capped at 8 results.
-- [ ] Paints already in the palette are excluded from the dropdown results so the user cannot pick a duplicate.
-- [ ] Each result row shows the paint swatch, name, and brand label — identical to the comparison picker's row layout.
-- [ ] A "Also save to my collection" checkbox sits next to the combobox; when checked, every successful palette add also calls `addToCollection` for that paint.
-- [ ] The checkbox is hidden (or disabled with explanatory text) when the user already owns the paint about to be added — i.e. the row shows a small "In collection" badge instead of duplicating the toggle.
-- [ ] Selecting a paint clears the combobox query and shows a toast `Added '{paint}' to '{palette}'` (success) or the action's error message (failure), reusing the existing toast conventions established by [06-prevent-duplicate-paint-add.md](./06-prevent-duplicate-paint-add.md).
-- [ ] When the collection toggle is on and the parallel collection add succeeds, an additional toast `Added '{paint}' to your collection` is shown (matching `CollectionToggle`'s existing success copy).
-- [ ] When the palette add succeeds but the collection add fails, the palette add toast still shows; a second error toast surfaces the collection failure independently (the two writes are independent — failing one does not roll back the other).
-- [ ] The component remains usable on a mobile viewport — the combobox + checkbox stack vertically below ~`sm` breakpoint.
-- [ ] The combobox is only rendered in edit mode; the public palette detail page is unaffected.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] The palette edit page (`/user/palettes/[id]/edit`) renders a paint combobox above the grouped paint list, inside the "Paints" section of `<PaletteBuilder>`.
+- [x] Typing in the combobox live-filters against the full paint catalog (`getColorWheelPaints`), matching against paint name (case-insensitive), capped at 8 results.
+- [x] Paints already in the palette are excluded from the dropdown results so the user cannot pick a duplicate.
+- [x] Each result row shows the paint swatch, name, and brand label — identical to the comparison picker's row layout.
+- [x] A "Also save to my collection" checkbox sits next to the combobox; when checked, every successful palette add also calls `addToCollection` for that paint.
+- [x] The checkbox is hidden (or disabled with explanatory text) when the user already owns the paint about to be added — i.e. the row shows a small "In collection" badge instead of duplicating the toggle.
+- [x] Selecting a paint clears the combobox query and shows a toast `Added '{paint}' to '{palette}'` (success) or the action's error message (failure), reusing the existing toast conventions established by [06-prevent-duplicate-paint-add.md](./06-prevent-duplicate-paint-add.md).
+- [x] When the collection toggle is on and the parallel collection add succeeds, an additional toast `Added '{paint}' to your collection` is shown (matching `CollectionToggle`'s existing success copy).
+- [x] When the palette add succeeds but the collection add fails, the palette add toast still shows; a second error toast surfaces the collection failure independently (the two writes are independent — failing one does not roll back the other).
+- [x] The component remains usable on a mobile viewport — the combobox + checkbox stack vertically below ~`sm` breakpoint.
+- [x] The combobox is only rendered in edit mode; the public palette detail page is unaffected.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Out of Scope
 
