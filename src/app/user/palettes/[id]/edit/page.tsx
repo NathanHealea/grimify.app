@@ -7,6 +7,8 @@ import { Main } from '@/components/main'
 import { PageHeader, PageTitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
+import { createPaintService } from '@/modules/paints/services/paint-service'
+import { createCollectionService } from '@/modules/collection/services/collection-service'
 import { PaletteBuilder } from '@/modules/palettes/components/palette-builder'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
@@ -30,10 +32,18 @@ export default async function UserPaletteEditPage({
 
   if (!user) redirect(`/sign-in?next=/user/palettes/${id}/edit`)
 
-  const service = createPaletteService(supabase)
-  const palette = await service.getPaletteById(id)
+  const paletteService = createPaletteService(supabase)
+  const palette = await paletteService.getPaletteById(id)
 
   if (!palette || palette.userId !== user.id) notFound()
+
+  const paintService = createPaintService(supabase)
+  const collectionService = createCollectionService(supabase)
+
+  const [catalog, collectionIds] = await Promise.all([
+    paintService.getColorWheelPaints(),
+    collectionService.getUserPaintIds(user.id),
+  ])
 
   return (
     <Main>
@@ -47,7 +57,11 @@ export default async function UserPaletteEditPage({
       <PageHeader>
         <PageTitle>Edit palette</PageTitle>
       </PageHeader>
-      <PaletteBuilder palette={palette} />
+      <PaletteBuilder
+        palette={palette}
+        catalog={catalog}
+        collectionPaintIds={Array.from(collectionIds)}
+      />
     </Main>
   )
 }
