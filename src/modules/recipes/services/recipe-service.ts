@@ -393,27 +393,34 @@ export function createRecipeService(supabase: SupabaseClient) {
 
       if (error || !data) return []
 
+      type RawCover = { storage_path: string }
+
       type RawRow = {
         id: string
         title: string
         is_public: boolean
         updated_at: string
         cover_photo_id: string | null
-        cover: { storage_path: string } | null
+        // PostgREST may return a single object or array depending on FK uniqueness
+        cover: RawCover | RawCover[] | null
         recipe_sections: { recipe_steps: { id: string }[] }[]
       }
 
-      return (data as unknown as RawRow[]).map((row) => ({
-        id: row.id,
-        title: row.title,
-        isPublic: row.is_public,
-        stepCount: (row.recipe_sections ?? []).reduce(
-          (n, s) => n + (s.recipe_steps?.length ?? 0),
-          0,
-        ),
-        coverPhotoUrl: row.cover ? publicUrlFor(row.cover.storage_path) : null,
-        updatedAt: row.updated_at,
-      }))
+      return (data as unknown as RawRow[]).map((row) => {
+        const rawCover = row.cover
+        const cover = Array.isArray(rawCover) ? (rawCover[0] ?? null) : rawCover
+        return {
+          id: row.id,
+          title: row.title,
+          isPublic: row.is_public,
+          stepCount: (row.recipe_sections ?? []).reduce(
+            (n, s) => n + (s.recipe_steps?.length ?? 0),
+            0,
+          ),
+          coverPhotoUrl: cover?.storage_path ? publicUrlFor(cover.storage_path) : null,
+          updatedAt: row.updated_at,
+        }
+      })
     },
 
     /**
@@ -447,6 +454,8 @@ export function createRecipeService(supabase: SupabaseClient) {
 
       if (error || !data) return []
 
+      type RawCover = { storage_path: string }
+
       type RawRow = {
         id: string
         title: string
@@ -454,22 +463,27 @@ export function createRecipeService(supabase: SupabaseClient) {
         updated_at: string
         cover_photo_id: string | null
         profiles: { display_name: string | null } | null
-        cover: { storage_path: string } | null
+        // PostgREST may return a single object or array depending on FK uniqueness
+        cover: RawCover | RawCover[] | null
         recipe_sections: { recipe_steps: { id: string }[] }[]
       }
 
-      return (data as unknown as RawRow[]).map((row) => ({
-        id: row.id,
-        title: row.title,
-        isPublic: row.is_public,
-        stepCount: (row.recipe_sections ?? []).reduce(
-          (n, s) => n + (s.recipe_steps?.length ?? 0),
-          0,
-        ),
-        coverPhotoUrl: row.cover ? publicUrlFor(row.cover.storage_path) : null,
-        updatedAt: row.updated_at,
-        ownerDisplayName: row.profiles?.display_name ?? null,
-      }))
+      return (data as unknown as RawRow[]).map((row) => {
+        const rawCover = row.cover
+        const cover = Array.isArray(rawCover) ? (rawCover[0] ?? null) : rawCover
+        return {
+          id: row.id,
+          title: row.title,
+          isPublic: row.is_public,
+          stepCount: (row.recipe_sections ?? []).reduce(
+            (n, s) => n + (s.recipe_steps?.length ?? 0),
+            0,
+          ),
+          coverPhotoUrl: cover?.storage_path ? publicUrlFor(cover.storage_path) : null,
+          updatedAt: row.updated_at,
+          ownerDisplayName: row.profiles?.display_name ?? null,
+        }
+      })
     },
 
     /**
