@@ -2,11 +2,17 @@ import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import type { PalettePaint } from '@/modules/palettes/types/palette-paint'
 
 /**
- * A fully hydrated palette including its ordered paint slots.
+ * A fully hydrated palette including its master paint list and named groups.
  *
- * Returned by `getPaletteById`. Each slot in `paints` has its embedded
- * {@link PalettePaint.paint} populated and the array is sorted by `position`
- * ascending.
+ * @remarks
+ * Returned by `getPaletteById`. The two collections represent separate concerns:
+ *
+ * - `paints` — the **master list**: every unique paint added to this palette,
+ *   sorted by `position` ascending. Each entry has its {@link PalettePaint.paint}
+ *   embedded.
+ * - `groups` — the **named groups**: ordered group sections, each carrying its own
+ *   `paints` array of {@link PaletteGroupPaint} membership rows. A paint from the
+ *   master list may appear in zero, one, or many groups simultaneously.
  */
 export type Palette = {
   /** UUID primary key. */
@@ -25,6 +31,6 @@ export type Palette = {
   updatedAt: string
   /** Named groups ordered by `position` ascending; empty array for ungrouped palettes. */
   groups: PaletteGroup[]
-  /** Ordered paint slots, sorted by `position` ascending. */
+  /** Master paint list, sorted by `position` ascending. */
   paints: PalettePaint[]
 }
