@@ -1,20 +1,27 @@
 'use client'
 
 import { useOptimistic, useTransition } from 'react'
+import { ChevronDown } from 'lucide-react'
 import { toast } from 'sonner'
 
 import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import { addPaintToGroup } from '@/modules/palettes/actions/add-paint-to-group'
 import { removePaintFromGroup } from '@/modules/palettes/actions/remove-paint-from-group'
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 /**
- * Chip multi-toggle for managing a master-list paint's group memberships.
+ * Dropdown multi-toggle for managing a master-list paint's group memberships.
  *
- * Each chip represents one named group. An active (filled) chip means the paint
- * is currently a member of that group; clicking it removes the membership via
- * {@link removePaintFromGroup}. An inactive chip adds the paint to the group via
- * {@link addPaintToGroup}. Membership changes are optimistic and roll back on
- * server error via a Sonner toast.
+ * Opens a menu listing all named groups; each row shows a checkbox reflecting
+ * current membership. Checking an unchecked row adds the paint to that group
+ * via {@link addPaintToGroup} and fires a success toast. Unchecking removes it
+ * via {@link removePaintFromGroup}. Membership changes are optimistic and roll
+ * back on server error via a Sonner toast.
  *
  * Renders nothing when `groups` is empty.
  *
@@ -47,7 +54,7 @@ export function PalettePaintGroupsToggle({
 
   if (groups.length === 0) return null
 
-  function handleToggle(groupId: string) {
+  function handleToggle(groupId: string, groupName: string) {
     const nowActive = !optimisticIds.has(groupId)
     startTransition(async () => {
       setOptimisticIds({ groupId, active: nowActive })
@@ -55,26 +62,29 @@ export function PalettePaintGroupsToggle({
         ? await addPaintToGroup(paletteId, groupId, palettePaintId)
         : await removePaintFromGroup(paletteId, groupId, palettePaintId)
       if (result?.error) toast.error(result.error)
+      else if (nowActive) toast.success(`Added to ${groupName}`)
     })
   }
 
   return (
-    <div className="flex flex-wrap gap-1">
-      {groups.map((g) => (
-        <button
-          key={g.id}
-          type="button"
-          onClick={() => handleToggle(g.id)}
-          className={[
-            'btn btn-xs',
-            optimisticIds.has(g.id) ? 'btn-primary' : 'btn-ghost border border-border',
-          ].join(' ')}
-          aria-pressed={optimisticIds.has(g.id)}
-          title={optimisticIds.has(g.id) ? `Remove from ${g.name}` : `Add to ${g.name}`}
-        >
-          {g.name}
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button type="button" className="btn btn-xs btn-outline flex items-center gap-1">
+          Groups
+          <ChevronDown className="h-3 w-3" />
         </button>
-      ))}
-    </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start">
+        {groups.map((g) => (
+          <DropdownMenuCheckboxItem
+            key={g.id}
+            checked={optimisticIds.has(g.id)}
+            onCheckedChange={() => handleToggle(g.id, g.name)}
+          >
+            {g.name}
+          </DropdownMenuCheckboxItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
