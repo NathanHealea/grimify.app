@@ -2,7 +2,7 @@
 -- Create palette_groups: ordered named buckets within a palette
 -- ============================================================
 
-CREATE TABLE public.palette_groups (
+CREATE TABLE IF NOT EXISTS public.palette_groups (
   id         uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
   palette_id uuid        NOT NULL REFERENCES public.palettes (id) ON DELETE CASCADE,
   name       text        NOT NULL CHECK (char_length(name) BETWEEN 1 AND 100),
@@ -10,16 +10,16 @@ CREATE TABLE public.palette_groups (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE INDEX idx_palette_groups_palette_id ON public.palette_groups (palette_id);
+CREATE INDEX IF NOT EXISTS idx_palette_groups_palette_id ON public.palette_groups (palette_id);
 
 -- ============================================================
 -- Add group_id to palette_paints (nullable; SET NULL on delete)
 -- ============================================================
 
 ALTER TABLE public.palette_paints
-  ADD COLUMN group_id uuid REFERENCES public.palette_groups (id) ON DELETE SET NULL;
+  ADD COLUMN IF NOT EXISTS group_id uuid REFERENCES public.palette_groups (id) ON DELETE SET NULL;
 
-CREATE INDEX idx_palette_paints_group_id ON public.palette_paints (group_id);
+CREATE INDEX IF NOT EXISTS idx_palette_paints_group_id ON public.palette_paints (group_id);
 
 -- ============================================================
 -- Row Level Security: palette_groups
@@ -28,60 +28,68 @@ CREATE INDEX idx_palette_paints_group_id ON public.palette_paints (group_id);
 
 ALTER TABLE public.palette_groups ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users can view palette groups they can access"
-  ON public.palette_groups
-  FOR SELECT
-  TO anon, authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.palettes p
-      WHERE p.id = palette_groups.palette_id
-        AND (p.user_id = auth.uid() OR p.is_public = true)
-    )
-  );
+DO $$ BEGIN
+  CREATE POLICY "Users can view palette groups they can access"
+    ON public.palette_groups
+    FOR SELECT
+    TO anon, authenticated
+    USING (
+      EXISTS (
+        SELECT 1 FROM public.palettes p
+        WHERE p.id = palette_groups.palette_id
+          AND (p.user_id = auth.uid() OR p.is_public = true)
+      )
+    );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
-CREATE POLICY "Owners can create palette groups"
-  ON public.palette_groups
-  FOR INSERT
-  TO authenticated
-  WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM public.palettes p
-      WHERE p.id = palette_groups.palette_id
-        AND p.user_id = auth.uid()
-    )
-  );
+DO $$ BEGIN
+  CREATE POLICY "Owners can create palette groups"
+    ON public.palette_groups
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (
+      EXISTS (
+        SELECT 1 FROM public.palettes p
+        WHERE p.id = palette_groups.palette_id
+          AND p.user_id = auth.uid()
+      )
+    );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
-CREATE POLICY "Owners can update palette groups"
-  ON public.palette_groups
-  FOR UPDATE
-  TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.palettes p
-      WHERE p.id = palette_groups.palette_id
-        AND p.user_id = auth.uid()
+DO $$ BEGIN
+  CREATE POLICY "Owners can update palette groups"
+    ON public.palette_groups
+    FOR UPDATE
+    TO authenticated
+    USING (
+      EXISTS (
+        SELECT 1 FROM public.palettes p
+        WHERE p.id = palette_groups.palette_id
+          AND p.user_id = auth.uid()
+      )
     )
-  )
-  WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM public.palettes p
-      WHERE p.id = palette_groups.palette_id
-        AND p.user_id = auth.uid()
-    )
-  );
+    WITH CHECK (
+      EXISTS (
+        SELECT 1 FROM public.palettes p
+        WHERE p.id = palette_groups.palette_id
+          AND p.user_id = auth.uid()
+      )
+    );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
-CREATE POLICY "Owners can delete palette groups"
-  ON public.palette_groups
-  FOR DELETE
-  TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.palettes p
-      WHERE p.id = palette_groups.palette_id
-        AND p.user_id = auth.uid()
-    )
-  );
+DO $$ BEGIN
+  CREATE POLICY "Owners can delete palette groups"
+    ON public.palette_groups
+    FOR DELETE
+    TO authenticated
+    USING (
+      EXISTS (
+        SELECT 1 FROM public.palettes p
+        WHERE p.id = palette_groups.palette_id
+          AND p.user_id = auth.uid()
+      )
+    );
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 -- ============================================================
 -- Update replace_palette_paints RPC to carry group_id
