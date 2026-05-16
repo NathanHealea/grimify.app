@@ -2865,22 +2865,21 @@ FROM (VALUES
   ( 6, 'citadel',      'shade',            'agrax-earthshade',    NULL),
   ( 7, 'citadel',      'shade',            'nuln-oil',            NULL),
   ( 8, 'citadel',      'shade',            'reikland-fleshshade', NULL),
-  ( 9, 'citadel',      'shade',            'agrax-earthshade',    NULL),
-  (10, 'citadel',      'shade',            'targor-rageshade',    NULL),
-  (11, 'citadel',      'base',             'morghast-bone',       NULL),
-  (12, 'citadel',      'layer',            'screaming-skull',     NULL),
-  (13, 'citadel',      'base',             'rakarth-flesh',       NULL),
-  (14, 'citadel',      'base',             'rhinox-hide',         NULL),
-  (15, 'citadel',      'base',             'barak-nar-burgundy',  NULL),
-  (16, 'citadel',      'base',             'screamer-pink',       NULL),
-  (17, 'army-painter', 'fanatic',          'matt-white',          NULL),
-  (18, 'army-painter', 'fanatic-metallic', 'gun-metal',           NULL),
-  (19, 'army-painter', 'fanatic',          'urban-buff',          NULL)
+  ( 9, 'citadel',      'shade',            'targor-rageshade',    NULL),
+  (10, 'citadel',      'base',             'morghast-bone',       NULL),
+  (11, 'citadel',      'layer',            'screaming-skull',     NULL),
+  (12, 'citadel',      'base',             'rakarth-flesh',       NULL),
+  (13, 'citadel',      'base',             'rhinox-hide',         NULL),
+  (14, 'citadel',      'base',             'barak-nar-burgundy',  NULL),
+  (15, 'citadel',      'base',             'screamer-pink',       NULL),
+  (16, 'army-painter', 'fanatic',          'matt-white',          NULL),
+  (17, 'army-painter', 'fanatic-metallic', 'gun-metal',           NULL),
+  (18, 'army-painter', 'fanatic',          'urban-buff',          NULL)
 ) AS e(position, brand_slug, product_line_slug, paint_slug, note)
 JOIN public.brands        b  ON b.slug  = e.brand_slug
 JOIN public.product_lines pl ON pl.brand_id = b.id AND pl.slug = e.product_line_slug
 JOIN public.paints        pa ON pa.product_line_id = pl.id AND pa.slug = e.paint_slug
-ON CONFLICT (palette_id, position) DO NOTHING;
+ON CONFLICT DO NOTHING;
 
 -- ----------------------------------------------------------
 -- Seed recipes (owned by admin@grimify.app)
