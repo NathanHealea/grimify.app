@@ -4,32 +4,30 @@ import { revalidatePath } from 'next/cache'
 
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
-import { normalizePalettePositions } from '@/modules/palettes/utils/normalize-palette-positions'
 
 /**
- * Server action that replaces the paint in a single palette slot.
+ * Server action that replaces the paint in a single master-list slot.
  *
- * Read-modify-write via `setPalettePaints` — clones the slot list, replaces
- * `paints[position].paintId`, preserves position and note, then atomically
- * persists via the `replace_palette_paints` RPC. Revalidates `/user/palettes`,
- * the public catalog, the palette detail page, and the owner edit page so card
- * swatches stay fresh.
+ * Identifies the slot by its stable `palettePaintId` and updates `paint_id`
+ * directly. Group memberships for the slot continue to reference the same
+ * `palette_paint_id`, so they will reflect the new paint automatically.
+ * Revalidates `/user/palettes`, the public catalog, the palette detail page, and
+ * the owner edit page so card swatches stay fresh.
  *
  * Swapping a slot with its current paint is a silent no-op (returns `undefined`
  * without touching the database).
  *
  * @param paletteId - UUID of the palette to modify.
- * @param position - 0-based slot index to replace.
+ * @param palettePaintId - Stable UUID of the master-list entry to replace.
  * @param newPaintId - UUID of the replacement paint.
  * @returns `undefined` on success; `{ error: string }` on failure.
  */
 export async function swapPalettePaint(
   paletteId: string,
-  position: number,
+  palettePaintId: string,
   newPaintId: string,
 ): Promise<{ error: string } | undefined> {
-  if (!paletteId || !newPaintId) return { error: 'Invalid palette or paint.' }
-  if (!Number.isInteger(position) || position < 0) return { error: 'Invalid position.' }
+  if (!paletteId || !palettePaintId || !newPaintId) return { error: 'Invalid palette or paint.' }
 
   const supabase = await createClient()
   const {
@@ -44,23 +42,21 @@ export async function swapPalettePaint(
   if (!palette) return { error: 'Palette not found.' }
   if (palette.userId !== user.id) return { error: 'You can only modify palettes you own.' }
 
-  if (position >= palette.paints.length) return { error: 'Slot position is out of range.' }
+  const slot = palette.paints.find((p) => p.id === palettePaintId)
+  if (!slot) return { error: 'Slot not found in palette.' }
 
-  // No-op if the paint is unchanged
-  if (palette.paints[position].paintId === newPaintId) return undefined
+  // No-op if the paint is unchanged.
+  if (slot.paintId === newPaintId) return undefined
 
-  const updated = palette.paints.map((slot, i) =>
-    i === position
-      ? { position: slot.position, paintId: newPaintId, note: slot.note ?? null }
-      : { position: slot.position, paintId: slot.paintId, note: slot.note ?? null },
-  )
-  const normalized = normalizePalettePositions(updated)
+  const { error } = await supabase
+    .from('palette_paints')
+    .update({ paint_id: newPaintId })
+    .eq('id', palettePaintId)
+    .eq('palette_id', paletteId)
 
-  try {
-    await service.setPalettePaints(paletteId, normalized)
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Failed to swap paint.'
-    return { error: message }
+  if (error) {
+    if (error.code === '23505') return { error: 'This paint is already in the palette.' }
+    return { error: error.message }
   }
 
   revalidatePath('/user/palettes')

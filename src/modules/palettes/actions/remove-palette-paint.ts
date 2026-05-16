@@ -4,25 +4,26 @@ import { revalidatePath } from 'next/cache'
 
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
-import { normalizePalettePositions } from '@/modules/palettes/utils/normalize-palette-positions'
 
 /**
- * Server action that removes a single paint slot from a palette.
+ * Server action that removes a single paint from a palette's master list.
  *
- * Filters out the slot at `position`, renumbers the remaining slots to close
- * the gap, then atomically replaces all slots via `setPalettePaints`.
- * Revalidates `/user/palettes`, the public catalog, the palette detail page,
- * and the owner edit page. Returns `{ error }` on any failure; no redirect.
+ * Deletes the `palette_paints` row by its stable `id`. The FK cascade on
+ * `palette_group_paints.palette_paint_id` removes every group membership for
+ * this paint automatically. Remaining master-list positions are renumbered via
+ * `reorder_palette_paints_v2`. Revalidates `/user/palettes`, the public catalog,
+ * the palette detail page, and the owner edit page. Returns `{ error }` on any
+ * failure; no redirect.
  *
  * @param paletteId - UUID of the palette to modify.
- * @param position - 0-based slot index to remove.
+ * @param palettePaintId - Stable UUID of the master-list entry to remove.
  * @returns `undefined` on success; `{ error: string }` on failure.
  */
 export async function removePalettePaint(
   paletteId: string,
-  position: number
+  palettePaintId: string,
 ): Promise<{ error: string } | undefined> {
-  if (!paletteId || position < 0) return { error: 'Invalid palette or position.' }
+  if (!paletteId || !palettePaintId) return { error: 'Invalid palette or paint.' }
 
   const supabase = await createClient()
   const {
@@ -35,20 +36,12 @@ export async function removePalettePaint(
   const palette = await service.getPaletteById(paletteId)
 
   if (!palette) return { error: 'Palette not found.' }
-
   if (palette.userId !== user.id) {
     return { error: 'You can only remove paints from palettes you own.' }
   }
 
-  const remaining = palette.paints.filter((p) => p.position !== position)
-  const normalized = normalizePalettePositions(remaining)
-
-  try {
-    await service.setPalettePaints(paletteId, normalized)
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Failed to remove paint.'
-    return { error: message }
-  }
+  const result = await service.removePalettePaint(paletteId, palettePaintId)
+  if (result.error) return { error: result.error }
 
   revalidatePath('/user/palettes')
   revalidatePath('/palettes')
