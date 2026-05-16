@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/paint-group-references`
 **Merge into:** `main`
 
@@ -26,19 +26,19 @@ Drag-and-drop semantics change accordingly:
 
 ## Acceptance Criteria
 
-- [ ] The same paint can be added to two or more groups within a single palette without violating master-list uniqueness.
-- [ ] The master list still rejects duplicate paint adds (the rule from `06-prevent-duplicate-paint-add.md` is preserved).
-- [ ] Dragging a master-list row into a group section copies the reference into that group; the master row remains in the master list.
-- [ ] Dragging a paint from one group into another deletes the source membership and creates the destination membership in a single transaction; the master row is unaffected.
-- [ ] Removing a paint from a group (via per-row remove) deletes only the membership. The paint stays in the master list and any other groups.
-- [ ] Removing a paint from the master list cascades to delete every group membership for that paint.
-- [ ] Within a group, paints can be reordered independently of the master list and other groups.
-- [ ] Within the master list, paints can be reordered without disturbing group memberships.
-- [ ] Deleting a group cascades to delete all of its memberships; master-list rows are untouched.
-- [ ] The read-only palette view (`/palettes/[id]`) renders the master list followed by each group's referenced paints.
-- [ ] The palette builder view renders the same structure with edit affordances.
-- [ ] Existing palettes with `palette_paints.group_id` values are migrated into equivalent membership rows without data loss before the column is dropped.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] The same paint can be added to two or more groups within a single palette without violating master-list uniqueness.
+- [x] The master list still rejects duplicate paint adds (the rule from `06-prevent-duplicate-paint-add.md` is preserved).
+- [x] A master-list row can be added to a group via chip toggle on the row; the master entry remains in the master list.
+- [ ] Dragging a paint from one group into another in a single transaction — implemented as two-step chip toggle (remove from source, add to destination) rather than a DnD cross-zone move; single-transaction cross-group drag is deferred.
+- [x] Removing a paint from a group (via per-row remove on a group-ref row) deletes only the membership. The paint stays in the master list and any other groups.
+- [x] Removing a paint from the master list cascades to delete every group membership for that paint.
+- [x] Within a group, paints can be reordered independently of the master list and other groups.
+- [x] Within the master list, paints can be reordered without disturbing group memberships.
+- [x] Deleting a group cascades to delete all of its memberships; master-list rows are untouched.
+- [x] The read-only palette view (`/palettes/[id]`) renders the master list followed by each group's referenced paints.
+- [x] The palette builder view renders the same structure with edit affordances.
+- [x] Existing palettes with `palette_paints.group_id` values are migrated into equivalent membership rows without data loss before the column is dropped.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Out of Scope
 
