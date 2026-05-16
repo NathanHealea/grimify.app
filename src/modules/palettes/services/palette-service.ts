@@ -86,8 +86,21 @@ export function createPaletteService(supabase: SupabaseClient) {
         } | null
       }
 
-      const rawGroups = (data.palette_groups as unknown as RawPaletteGroup[]) ?? []
-      const rawPaints = (data.palette_paints as unknown as RawPalettePaint[]) ?? []
+      type RawPaletteData = {
+        id: string
+        user_id: string
+        name: string
+        description: string | null
+        is_public: boolean
+        created_at: string
+        updated_at: string
+        palette_groups: RawPaletteGroup[]
+        palette_paints: RawPalettePaint[]
+      }
+
+      const raw = data as unknown as RawPaletteData
+      const rawGroups = raw.palette_groups ?? []
+      const rawPaints = raw.palette_paints ?? []
 
       const paints: PalettePaint[] = rawPaints
         .sort((a, b) => a.position - b.position)
@@ -150,13 +163,13 @@ export function createPaletteService(supabase: SupabaseClient) {
         })
 
       return {
-        id: data.id,
-        userId: data.user_id,
-        name: data.name,
-        description: data.description,
-        isPublic: data.is_public,
-        createdAt: data.created_at,
-        updatedAt: data.updated_at,
+        id: raw.id,
+        userId: raw.user_id,
+        name: raw.name,
+        description: raw.description,
+        isPublic: raw.is_public,
+        createdAt: raw.created_at,
+        updatedAt: raw.updated_at,
         groups,
         paints,
       }

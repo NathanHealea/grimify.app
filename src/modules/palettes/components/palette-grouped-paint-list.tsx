@@ -10,7 +10,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import type { DragEndEvent, DragOverEvent } from '@dnd-kit/core'
+import type { DragEndEvent } from '@dnd-kit/core'
 import {
   SortableContext,
   sortableKeyboardCoordinates,
@@ -22,20 +22,27 @@ import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import type { PalettePaint } from '@/modules/palettes/types/palette-paint'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { reorderPalettePaints } from '@/modules/palettes/actions/reorder-palette-paints'
+import { reorderGroupPaints } from '@/modules/palettes/actions/reorder-group-paints'
 import { reorderPaletteGroups } from '@/modules/palettes/actions/reorder-palette-groups'
 import { PaletteGroupHeader } from '@/modules/palettes/components/palette-group-header'
 import { PaletteGroupForm } from '@/modules/palettes/components/palette-group-form'
 import { PalettePaintRow } from '@/modules/palettes/components/palette-paint-row'
 import { reorderArray } from '@/modules/palettes/utils/reorder-array'
 
-/** A paint slot augmented with a mount-stable DnD id. */
-type DraggableSlot = {
+type MasterDraggable = {
   dndId: string
+  palettePaintId: string
   paintId: string
   note: string | null
-  groupId: string | null
-  paint: ColorWheelPaint | undefined
   addedAt: string
+  paint: ColorWheelPaint | undefined
+}
+
+type GroupRefDraggable = {
+  dndId: string
+  groupMembershipId: string
+  palettePaintId: string
+  paint: ColorWheelPaint | undefined
 }
 
 /** A group augmented with a mount-stable DnD id. */
@@ -44,15 +51,31 @@ type DraggableGroup = {
   group: PaletteGroup
 }
 
-function seedSlots(paints: PalettePaint[]): DraggableSlot[] {
-  return paints.map((slot) => ({
+function seedMaster(paints: PalettePaint[]): MasterDraggable[] {
+  return paints.map((p) => ({
     dndId: crypto.randomUUID(),
-    paintId: slot.paintId,
-    note: slot.note,
-    groupId: slot.groupId,
-    paint: slot.paint,
-    addedAt: slot.addedAt,
+    palettePaintId: p.id,
+    paintId: p.paintId,
+    note: p.note,
+    addedAt: p.addedAt,
+    paint: p.paint,
   }))
+}
+
+function seedGroupRefs(groups: PaletteGroup[]): Map<string, GroupRefDraggable[]> {
+  const map = new Map<string, GroupRefDraggable[]>()
+  for (const g of groups) {
+    map.set(
+      g.id,
+      g.paints.map((gp) => ({
+        dndId: crypto.randomUUID(),
+        groupMembershipId: gp.id,
+        palettePaintId: gp.palettePaintId,
+        paint: gp.palettePaint?.paint,
+      })),
+    )
+  }
+  return map
 }
 
 function seedGroups(groups: PaletteGroup[]): DraggableGroup[] {
@@ -60,19 +83,20 @@ function seedGroups(groups: PaletteGroup[]): DraggableGroup[] {
 }
 
 /**
- * Grouped vertical paint list with a unified DnD context for cross-group paint moves
- * and group reorder.
+ * Two-layer grouped paint list with separate DnD zones for the master list and
+ * per-group membership rows.
  *
- * A single `DndContext` handles both group header reordering and paint dragging.
- * Dragging a paint over a different group's section (or its header) moves it there
- * optimistically via `onDragOver`; the final order is persisted on `onDragEnd` via
- * {@link reorderPalettePaints}. Group reorder is persisted via
- * {@link reorderPaletteGroups}. Paints within named groups are visually indented.
+ * Master-list slots (top section) are sortable within the master zone and persist
+ * order via {@link reorderPalettePaints}. Each named group renders its membership
+ * refs below the master list; refs within a group are independently sortable via
+ * {@link reorderGroupPaints}. Groups themselves are reorderable via
+ * {@link reorderPaletteGroups}. Cross-zone drag moves are rejected; membership
+ * changes are managed by the group-toggle chips on each master-list row.
  *
- * In read mode (`canEdit={false}`) only the structural layout is shown.
+ * In read mode (`canEdit={false}`) drag handles and edit controls are hidden.
  *
  * @param props.paletteId - UUID of the owning palette.
- * @param props.paints - Ordered paint slots from the server.
+ * @param props.paints - Ordered master-list slots from the server.
  * @param props.groups - Named groups sorted by `position` ascending.
  * @param props.canEdit - When true, enables drag-to-reorder and edit controls.
  */
@@ -87,27 +111,32 @@ export function PaletteGroupedPaintList({
   groups: PaletteGroup[]
   canEdit: boolean
 }) {
-  const [slots, setSlots] = useState<DraggableSlot[]>(() => seedSlots(paints))
+  const [master, setMaster] = useState<MasterDraggable[]>(() => seedMaster(paints))
+  const [groupRefs, setGroupRefs] = useState<Map<string, GroupRefDraggable[]>>(() =>
+    seedGroupRefs(groups),
+  )
   const [draggableGroups, setDraggableGroups] = useState<DraggableGroup[]>(() => seedGroups(groups))
   const [, startTransition] = useTransition()
 
-  const latestConfirmedSlotsRef = useRef<DraggableSlot[]>(slots)
+  const latestConfirmedMasterRef = useRef<MasterDraggable[]>(master)
+  const latestConfirmedGroupRefsRef = useRef<Map<string, GroupRefDraggable[]>>(groupRefs)
   const latestConfirmedGroupsRef = useRef<DraggableGroup[]>(draggableGroups)
 
-  // Always holds the latest slots value — kept in sync via useEffect and also
-  // updated synchronously within handleDragOver so handleDragEnd never reads a stale closure.
-  const slotsRef = useRef<DraggableSlot[]>(slots)
-
   useEffect(() => {
-    slotsRef.current = slots
-  }, [slots])
-
-  useEffect(() => {
-    setSlots(seedSlots(paints))
+    const newMaster = seedMaster(paints)
+    latestConfirmedMasterRef.current = newMaster
+    startTransition(() => setMaster(newMaster))
   }, [paints])
 
   useEffect(() => {
-    setDraggableGroups(seedGroups(groups))
+    const newRefs = seedGroupRefs(groups)
+    const newDraggableGroups = seedGroups(groups)
+    latestConfirmedGroupRefsRef.current = newRefs
+    latestConfirmedGroupsRef.current = newDraggableGroups
+    startTransition(() => {
+      setGroupRefs(newRefs)
+      setDraggableGroups(newDraggableGroups)
+    })
   }, [groups])
 
   const sensors = useSensors(
@@ -116,102 +145,25 @@ export function PaletteGroupedPaintList({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   )
 
-  /** Builds the full ordered slot list grouped by current group + slot state. */
-  function buildFullSlotList(
-    currentSlots: DraggableSlot[],
-    currentGroups: DraggableGroup[],
-  ): DraggableSlot[] {
-    const result: DraggableSlot[] = []
-    for (const dg of currentGroups) {
-      result.push(...currentSlots.filter((s) => s.groupId === dg.group.id))
-    }
-    result.push(...currentSlots.filter((s) => s.groupId === null))
-    return result
-  }
-
-  /**
-   * Reorders `group`'s slots within the flat `currentSlots` array by replacing
-   * the slots at their original array positions with the reordered sequence.
-   * Other groups' slots are untouched.
-   */
-  function applyGroupReorder(
-    currentSlots: DraggableSlot[],
-    groupId: string | null,
-    reorderedGroup: DraggableSlot[],
-  ): DraggableSlot[] {
-    const groupIndices: number[] = []
-    currentSlots.forEach((s, i) => {
-      if (s.groupId === groupId) groupIndices.push(i)
-    })
-    const next = [...currentSlots]
-    groupIndices.forEach((arrIdx, i) => {
-      next[arrIdx] = reorderedGroup[i]
-    })
-    return next
-  }
-
-  /**
-   * Optimistically moves a paint to a different group while dragging.
-   * Updates `slotsRef` synchronously so `handleDragEnd` always reads
-   * the latest group assignment regardless of React render timing.
-   */
-  function handleDragOver(event: DragOverEvent) {
+  function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
     if (!over || active.id === over.id) return
 
-    const currentSlots = slotsRef.current
-    const activeSlot = currentSlots.find((s) => s.dndId === active.id)
-    if (!activeSlot) return // dragging a group header, not a paint
-
-    const overSlot = currentSlots.find((s) => s.dndId === over.id)
-    const overGroup = draggableGroups.find((dg) => dg.dndId === over.id)
-
-    let targetGroupId: string | null
-    if (overSlot) {
-      targetGroupId = overSlot.groupId
-    } else if (overGroup) {
-      targetGroupId = overGroup.group.id
-    } else {
-      return
-    }
-
-    if (activeSlot.groupId === targetGroupId) return
-
-    const updated = currentSlots.map((s) =>
-      s.dndId === activeSlot.dndId ? { ...s, groupId: targetGroupId } : s,
-    )
-    slotsRef.current = updated // synchronous update for handleDragEnd
-    setSlots(updated)
-  }
-
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event
-
-    if (!over) {
-      // Drag cancelled — roll back any cross-group groupId changes from dragOver
-      slotsRef.current = latestConfirmedSlotsRef.current
-      setSlots(latestConfirmedSlotsRef.current)
-      return
-    }
-
     // ── Group reorder ──────────────────────────────────────────────────────────
-    const activeGroupIndex = draggableGroups.findIndex((dg) => dg.dndId === active.id)
-    if (activeGroupIndex !== -1) {
-      if (active.id === over.id) return
-      const toIndex = draggableGroups.findIndex((dg) => dg.dndId === over.id)
-      if (toIndex === -1) return
-
-      const previousGroups = latestConfirmedGroupsRef.current
-      const newGroups = reorderArray(draggableGroups, activeGroupIndex, toIndex)
+    const activeGroupIdx = draggableGroups.findIndex((dg) => dg.dndId === active.id)
+    if (activeGroupIdx !== -1) {
+      const toIdx = draggableGroups.findIndex((dg) => dg.dndId === over.id)
+      if (toIdx === -1) return
+      const prevGroups = latestConfirmedGroupsRef.current
+      const newGroups = reorderArray(draggableGroups, activeGroupIdx, toIdx)
       setDraggableGroups(newGroups)
-
       startTransition(async () => {
         const result = await reorderPaletteGroups(
           paletteId,
           newGroups.map((dg, i) => ({ id: dg.group.id, position: i })),
         )
         if (result?.error) {
-          setDraggableGroups(previousGroups)
+          setDraggableGroups(prevGroups)
           toast.error(result.error)
         } else {
           latestConfirmedGroupsRef.current = newGroups
@@ -220,77 +172,86 @@ export function PaletteGroupedPaintList({
       return
     }
 
-    // ── Paint reorder (within-group or cross-group) ────────────────────────────
-    // Read from slotsRef so we always have the groupId updated by handleDragOver,
-    // even if React hasn't committed the setSlots call yet.
-    const currentSlots = slotsRef.current
-    const activeSlot = currentSlots.find((s) => s.dndId === active.id)
-    if (!activeSlot) return
-
-    const currentGroupId = activeSlot.groupId
-    const groupSlots = currentSlots.filter((s) => s.groupId === currentGroupId)
-    const fromIndex = groupSlots.findIndex((s) => s.dndId === active.id)
-
-    // Only reorder within the group when the drop target is a paint in the same group
-    const overSlotInGroup = currentSlots.find(
-      (s) => s.dndId === over.id && s.groupId === currentGroupId,
-    )
-    const toIndex = overSlotInGroup
-      ? groupSlots.findIndex((s) => s.dndId === over.id)
-      : fromIndex
-
-    let newSlots = currentSlots
-    if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
-      const reorderedGroup = reorderArray(groupSlots, fromIndex, toIndex)
-      // Replace slots at their original array positions with the reordered sequence.
-      // Using slots.map() would not change array order — it only replaces values
-      // at existing positions with the same objects, leaving the order intact.
-      newSlots = applyGroupReorder(currentSlots, currentGroupId, reorderedGroup)
-      slotsRef.current = newSlots
-      setSlots(newSlots)
+    // ── Master-list reorder ────────────────────────────────────────────────────
+    const activeMasterIdx = master.findIndex((m) => m.dndId === active.id)
+    if (activeMasterIdx !== -1) {
+      const toIdx = master.findIndex((m) => m.dndId === over.id)
+      if (toIdx === -1) return // cross-zone drop — rejected
+      const prevMaster = latestConfirmedMasterRef.current
+      const newMaster = reorderArray(master, activeMasterIdx, toIdx)
+      setMaster(newMaster)
+      startTransition(async () => {
+        const result = await reorderPalettePaints(
+          paletteId,
+          newMaster.map((m) => m.palettePaintId),
+        )
+        if (result?.error) {
+          setMaster(prevMaster)
+          toast.error(result.error)
+        } else {
+          latestConfirmedMasterRef.current = newMaster
+        }
+      })
+      return
     }
 
-    const previousSlots = latestConfirmedSlotsRef.current
-    const fullList = buildFullSlotList(newSlots, draggableGroups)
-
-    startTransition(async () => {
-      const result = await reorderPalettePaints(
-        paletteId,
-        fullList.map((s) => ({ paintId: s.paintId, note: s.note, groupId: s.groupId })),
-      )
-      if (result?.error) {
-        slotsRef.current = previousSlots
-        setSlots(previousSlots)
-        toast.error(result.error)
-      } else {
-        latestConfirmedSlotsRef.current = newSlots
-      }
-    })
+    // ── Group-ref reorder (within a single group) ──────────────────────────────
+    for (const [groupId, refs] of groupRefs) {
+      const activeRefIdx = refs.findIndex((r) => r.dndId === active.id)
+      if (activeRefIdx === -1) continue
+      const toIdx = refs.findIndex((r) => r.dndId === over.id)
+      if (toIdx === -1) return // cross-zone drop — rejected
+      const prevGroupRefs = latestConfirmedGroupRefsRef.current
+      const newRefs = reorderArray(refs, activeRefIdx, toIdx)
+      const newGroupRefs = new Map(groupRefs)
+      newGroupRefs.set(groupId, newRefs)
+      setGroupRefs(newGroupRefs)
+      startTransition(async () => {
+        const result = await reorderGroupPaints(
+          paletteId,
+          groupId,
+          newRefs.map((r) => r.palettePaintId),
+        )
+        if (result?.error) {
+          setGroupRefs(prevGroupRefs)
+          toast.error(result.error)
+        } else {
+          latestConfirmedGroupRefsRef.current = newGroupRefs
+        }
+      })
+      return
+    }
   }
 
-  function renderSection(sectionSlots: DraggableSlot[], groupId: string | null) {
-    const isNamedGroup = groupId !== null
-    if (sectionSlots.length === 0 && !canEdit) return null
+  function getActiveGroupIds(palettePaintId: string): string[] {
+    const active: string[] = []
+    for (const [groupId, refs] of groupRefs) {
+      if (refs.some((r) => r.palettePaintId === palettePaintId)) active.push(groupId)
+    }
+    return active
+  }
 
-    return (
-      <div className={['flex flex-col gap-1', isNamedGroup ? 'pl-6' : ''].filter(Boolean).join(' ')}>
+  return (
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <div className="flex flex-col gap-3 select-none">
+        {/* ── Master list ─────────────────────────────────────────────────────── */}
         <SortableContext
-          items={sectionSlots.map((s) => s.dndId)}
+          items={master.map((m) => m.dndId)}
           strategy={verticalListSortingStrategy}
         >
-          {sectionSlots.map((slot) => {
-            const idx = slots.findIndex((s) => s.dndId === slot.dndId)
-            return slot.paint ? (
+          {master.map((slot) =>
+            slot.paint ? (
               <PalettePaintRow
                 key={slot.dndId}
                 dndId={canEdit ? slot.dndId : undefined}
                 paletteId={paletteId}
-                position={idx}
+                palettePaintId={slot.palettePaintId}
                 paint={slot.paint}
                 note={slot.note}
                 canEdit={canEdit}
+                variant="master"
                 groups={canEdit ? groups : undefined}
-                currentGroupId={slot.groupId}
+                activeGroupIds={canEdit ? getActiveGroupIds(slot.palettePaintId) : undefined}
               />
             ) : (
               <div
@@ -299,31 +260,17 @@ export function PaletteGroupedPaintList({
               >
                 Paint unavailable
               </div>
-            )
-          })}
+            ),
+          )}
         </SortableContext>
-        {sectionSlots.length === 0 && canEdit && (
-          <p className="px-2 py-1 text-xs italic text-muted-foreground">No paints in this group</p>
-        )}
-      </div>
-    )
-  }
 
-  return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragOver={canEdit ? handleDragOver : undefined}
-      onDragEnd={handleDragEnd}
-    >
-      <div className="flex flex-col gap-3 select-none">
-        {/* Group headers share the outer SortableContext for group reorder */}
+        {/* ── Groups ──────────────────────────────────────────────────────────── */}
         <SortableContext
           items={draggableGroups.map((dg) => dg.dndId)}
           strategy={verticalListSortingStrategy}
         >
           {draggableGroups.map((dg) => {
-            const groupSlots = slots.filter((s) => s.groupId === dg.group.id)
+            const refs = groupRefs.get(dg.group.id) ?? []
             return (
               <div key={dg.dndId} className="flex flex-col gap-1">
                 <PaletteGroupHeader
@@ -332,29 +279,44 @@ export function PaletteGroupedPaintList({
                   canEdit={canEdit}
                   dndId={canEdit ? dg.dndId : undefined}
                 />
-                {renderSection(groupSlots, dg.group.id)}
+                <div className={['flex flex-col gap-1', refs.length > 0 ? 'pl-6' : ''].filter(Boolean).join(' ')}>
+                  <SortableContext
+                    items={refs.map((r) => r.dndId)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {refs.map((ref) =>
+                      ref.paint ? (
+                        <PalettePaintRow
+                          key={ref.dndId}
+                          dndId={canEdit ? ref.dndId : undefined}
+                          paletteId={paletteId}
+                          palettePaintId={ref.palettePaintId}
+                          groupId={dg.group.id}
+                          paint={ref.paint}
+                          note={null}
+                          canEdit={canEdit}
+                          variant="group"
+                        />
+                      ) : (
+                        <div
+                          key={ref.dndId}
+                          className="flex items-center rounded-lg border border-border p-3 text-sm text-muted-foreground"
+                        >
+                          Paint unavailable
+                        </div>
+                      ),
+                    )}
+                  </SortableContext>
+                  {refs.length === 0 && canEdit && (
+                    <p className="px-2 py-1 text-xs italic text-muted-foreground">
+                      No paints in this group
+                    </p>
+                  )}
+                </div>
               </div>
             )
           })}
         </SortableContext>
-
-        {/* Ungrouped section — not indented, no group-reorder drag handle */}
-        {(() => {
-          const ungrouped = slots.filter((s) => s.groupId === null)
-          if (ungrouped.length === 0 && !canEdit) return null
-          return (
-            <div className="flex flex-col gap-1">
-              {draggableGroups.length > 0 && (
-                <PaletteGroupHeader
-                  paletteId={paletteId}
-                  group={{ id: '', paletteId, name: 'Ungrouped', position: -1, createdAt: '' }}
-                  canEdit={false}
-                />
-              )}
-              {renderSection(ungrouped, null)}
-            </div>
-          )
-        })()}
 
         {canEdit && <PaletteGroupForm paletteId={paletteId} />}
       </div>
