@@ -373,9 +373,9 @@ export function createPaletteService(supabase: SupabaseClient) {
     /**
      * Reorders the master paint list for a palette using the id-based RPC.
      *
-     * Calls `reorder_palette_paints_v2` which uses the negative-offset trick to
-     * avoid firing the deferred `UNIQUE (palette_id, position)` constraint
-     * mid-update. Group memberships are not affected.
+     * Calls `reorder_palette_paints_v2` which shifts positions by the current
+     * row count to vacate the target range before re-assigning. Group memberships
+     * are not affected.
      *
      * @param paletteId - UUID of the palette.
      * @param palettePaintIds - Stable `palette_paints.id` values in the desired order.
