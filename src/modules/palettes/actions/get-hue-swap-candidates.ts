@@ -23,14 +23,14 @@ type HueSwapCandidatesResult = {
  * group, and returns the user's owned paint ids for the "Owned only" filter.
  *
  * @param input.paletteId - UUID of the palette containing the slot to swap.
- * @param input.position - 0-based slot index.
+ * @param input.palettePaintId - Stable UUID of the master-list entry to swap.
  * @returns Candidates + owned ids + hue group name on success; `{ error }` on failure.
  */
 export async function getHueSwapCandidates(input: {
   paletteId: string
-  position: number
+  palettePaintId: string
 }): Promise<{ error: string } | HueSwapCandidatesResult> {
-  const { paletteId, position } = input
+  const { paletteId, palettePaintId } = input
 
   const supabase = await createClient()
   const {
@@ -45,8 +45,8 @@ export async function getHueSwapCandidates(input: {
   if (!palette) return { error: 'Palette not found.' }
   if (palette.userId !== user.id) return { error: 'You can only swap paints in palettes you own.' }
 
-  const slot = palette.paints[position]
-  if (!slot) return { error: 'Slot not found at that position.' }
+  const slot = palette.paints.find((p) => p.id === palettePaintId)
+  if (!slot) return { error: 'Slot not found.' }
 
   const paint = slot.paint
   if (!paint) return { error: 'Paint data is missing for this slot.' }

@@ -8,50 +8,59 @@ import { toast } from 'sonner'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import { removePalettePaint } from '@/modules/palettes/actions/remove-palette-paint'
+import { removePaintFromGroup } from '@/modules/palettes/actions/remove-paint-from-group'
 import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
-import { PalettePaintGroupSelect } from '@/modules/palettes/components/palette-paint-group-select'
+import { PalettePaintGroupsToggle } from '@/modules/palettes/components/palette-paint-groups-toggle'
 import { PaletteSwapButton } from '@/modules/palettes/components/palette-swap-button'
 
 /**
- * A single row in a palette's paint list.
+ * A single row in a palette's paint list, shared by the master-list section and
+ * per-group membership sections.
  *
- * In edit mode, the row is sortable via dnd-kit: the drag handle is the
- * sole activator node so clicks on the row's other elements (remove button)
- * remain usable. `isDragging` applies a lifted visual state. Removing the
- * slot is handled via a `useTransition`-wrapped click that calls
- * {@link removePalettePaint} directly and surfaces success/error through
- * Sonner toasts.
+ * In `'master'` variant the row represents a master-list entry: it shows
+ * group-membership toggle chips ({@link PalettePaintGroupsToggle}), the hue-swap
+ * button, and a "Remove from palette" button that deletes the master-list entry
+ * (cascading all group memberships). In `'group'` variant the row represents a
+ * group-membership reference: it shows only a "Remove from group" button that
+ * deletes the membership without touching the master list.
  *
- * In read mode (`canEdit={false}`, `dndId` absent), the row renders without
- * any DnD wiring or handle.
+ * In edit mode the row is sortable via dnd-kit; the drag handle is the sole
+ * activator node. In read mode (`canEdit={false}`, `dndId` absent) DnD wiring
+ * and edit controls are hidden.
  *
  * @param props.paletteId - UUID of the owning palette.
- * @param props.position - 0-based slot index; passed to {@link removePalettePaint}.
+ * @param props.palettePaintId - Stable UUID of the master-list entry.
  * @param props.paint - Full paint data for display.
- * @param props.note - Optional per-slot painter note.
- * @param props.canEdit - When true, renders the remove button and drag handle.
- * @param props.dndId - Mount-stable DnD id assigned by the parent list; required when `canEdit` is true.
- * @param props.groups - Named groups for this palette; when present and non-empty in edit mode, renders a group selector.
- * @param props.currentGroupId - UUID of the group this slot belongs to; `null` for ungrouped.
+ * @param props.note - Per-slot painter note; shown in master variant only.
+ * @param props.canEdit - When true, renders edit controls and the drag handle.
+ * @param props.dndId - Mount-stable DnD id; required when `canEdit` is true.
+ * @param props.variant - `'master'` for master-list rows; `'group'` for membership ref rows.
+ * @param props.groups - Named palette groups; master variant only, used for toggle chips.
+ * @param props.activeGroupIds - Group IDs the paint currently belongs to; master variant only.
+ * @param props.groupId - UUID of the group; required for the `'group'` variant remove action.
  */
 export function PalettePaintRow({
   paletteId,
-  position,
+  palettePaintId,
   paint,
   note,
   canEdit,
   dndId,
+  variant,
   groups,
-  currentGroupId,
+  activeGroupIds,
+  groupId,
 }: {
   paletteId: string
-  position: number
+  palettePaintId: string
   paint: ColorWheelPaint
   note: string | null
   canEdit: boolean
   dndId?: string
+  variant: 'master' | 'group'
   groups?: PaletteGroup[]
-  currentGroupId?: string | null
+  activeGroupIds?: string[]
+  groupId?: string
 }) {
   const {
     attributes,
@@ -74,12 +83,21 @@ export function PalettePaintRow({
 
   function handleRemove() {
     startTransition(async () => {
-      const result = await removePalettePaint(paletteId, position)
-      if (result?.error) {
-        toast.error(result.error)
-        return
+      if (variant === 'group' && groupId) {
+        const result = await removePaintFromGroup(paletteId, groupId, palettePaintId)
+        if (result?.error) {
+          toast.error(result.error)
+          return
+        }
+        toast.success(`Removed '${paint.name}' from group`)
+      } else {
+        const result = await removePalettePaint(paletteId, palettePaintId)
+        if (result?.error) {
+          toast.error(result.error)
+          return
+        }
+        toast.success(`Removed '${paint.name}' from palette`)
       }
-      toast.success(`Removed '${paint.name}' from palette`)
     })
   }
 
@@ -109,30 +127,34 @@ export function PalettePaintRow({
       />
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium">{paint.name}</p>
-        {brandLine && (
-          <p className="text-xs text-muted-foreground">{brandLine}</p>
-        )}
-        {note && (
-          <p className="mt-1 text-xs text-muted-foreground">{note}</p>
-        )}
+        {brandLine && <p className="text-xs text-muted-foreground">{brandLine}</p>}
+        {note && <p className="mt-1 text-xs text-muted-foreground">{note}</p>}
       </div>
       {canEdit && (
         <div className="flex items-center gap-1 flex-wrap justify-end">
-          {groups && groups.length > 0 && (
-            <PalettePaintGroupSelect
+          {variant === 'master' && groups && groups.length > 0 && activeGroupIds && (
+            <PalettePaintGroupsToggle
               paletteId={paletteId}
-              position={position}
-              currentGroupId={currentGroupId ?? null}
+              palettePaintId={palettePaintId}
               groups={groups}
+              activeGroupIds={activeGroupIds}
             />
           )}
-          <PaletteSwapButton paletteId={paletteId} position={position} paint={paint} />
+          {variant === 'master' && (
+            <PaletteSwapButton
+              paletteId={paletteId}
+              palettePaintId={palettePaintId}
+              paint={paint}
+            />
+          )}
           <button
             type="button"
             onClick={handleRemove}
             disabled={isPending}
             className="btn btn-sm btn-ghost text-destructive hover:text-destructive"
-            aria-label={`Remove ${paint.name}`}
+            aria-label={
+              variant === 'group' ? `Remove ${paint.name} from group` : `Remove ${paint.name}`
+            }
           >
             {isPending ? 'Removing…' : 'Remove'}
           </button>

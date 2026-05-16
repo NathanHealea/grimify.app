@@ -1,19 +1,22 @@
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 
 /**
- * A single slot in a palette — one position in an ordered paint list.
+ * A single entry in a palette's master list — one unique paint in the palette.
  *
  * @remarks
- * `position` is the 0-based index within the palette and forms the second
- * half of the composite primary key `(palette_id, position)`. The same
- * `paintId` may appear at multiple positions (e.g. a recipe that uses the
- * same shade at two layering steps).
+ * `id` is the stable UUID primary key introduced in the master-list/group-membership
+ * split. `position` is the 0-based sort index within the palette's master list.
+ *
+ * Group membership is no longer stored here; see {@link PaletteGroupPaint} for the
+ * join-table rows that reference master entries from named groups.
  *
  * `paint` is the embedded {@link ColorWheelPaint} loaded by `getPaletteById`.
  * It is absent on lightweight list rows (e.g. summary swatches).
  */
 export type PalettePaint = {
-  /** 0-based slot index within the palette. */
+  /** Stable UUID primary key for this master-list entry. */
+  id: string
+  /** 0-based sort index within the palette master list. */
   position: number
   /** UUID of the referenced paint. */
   paintId: string
@@ -21,8 +24,6 @@ export type PalettePaint = {
   note: string | null
   /** ISO timestamp when this paint was added to the palette. */
   addedAt: string
-  /** UUID of the group this paint belongs to; `null` when ungrouped. */
-  groupId: string | null
   /** Full paint data, present when loaded via `getPaletteById`. */
   paint?: ColorWheelPaint
 }

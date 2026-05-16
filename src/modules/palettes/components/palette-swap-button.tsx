@@ -7,7 +7,7 @@ import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-pa
 import { PaletteSwapDialog } from '@/modules/palettes/components/palette-swap-dialog'
 
 /**
- * Icon-only button that opens the hue-swap dialog for a palette slot.
+ * Icon-only button that opens the hue-swap dialog for a palette master-list slot.
  *
  * Disabled with an explanatory tooltip when `paint.hue_id` is null — those
  * paints have no hue group and cannot be swapped by hue. The button owns the
@@ -15,16 +15,16 @@ import { PaletteSwapDialog } from '@/modules/palettes/components/palette-swap-di
  * state resets automatically on each open.
  *
  * @param props.paletteId - UUID of the owning palette.
- * @param props.position - 0-based slot index for this row.
+ * @param props.palettePaintId - Stable UUID of the master-list entry to swap.
  * @param props.paint - The current slot's paint.
  */
 export function PaletteSwapButton({
   paletteId,
-  position,
+  palettePaintId,
   paint,
 }: {
   paletteId: string
-  position: number
+  palettePaintId: string
   paint: ColorWheelPaint
 }) {
   const [open, setOpen] = useState(false)
@@ -52,7 +52,7 @@ export function PaletteSwapButton({
       {!disabled && open && (
         <PaletteSwapDialog
           paletteId={paletteId}
-          position={position}
+          palettePaintId={palettePaintId}
           paint={paint}
           onClose={() => setOpen(false)}
           onSwapped={() => setOpen(false)}

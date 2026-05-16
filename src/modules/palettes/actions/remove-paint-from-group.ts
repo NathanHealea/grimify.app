@@ -6,29 +6,32 @@ import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 
 /**
- * Server action that assigns (or removes) a group for a single paint slot.
+ * Server action that removes a paint's membership from a group.
  *
- * Updates `group_id` on the `palette_paints` row identified by
- * `(paletteId, position)`. Pass `groupId = null` to move the paint back to
- * the ungrouped section. Revalidates the palette detail and edit paths on
- * success.
+ * Deletes the `palette_group_paints` row for `(groupId, palettePaintId)`.
+ * The master-list entry and any other group memberships for the same paint are
+ * unaffected. Revalidates the palette detail and owner edit paths on success.
  *
- * @param paletteId - UUID of the parent palette.
- * @param position - 0-based slot index of the paint to reassign.
- * @param groupId - Target group UUID, or `null` to ungroup.
+ * @param paletteId - UUID of the parent palette (used for ownership check and revalidation).
+ * @param groupId - UUID of the group to remove the paint from.
+ * @param palettePaintId - Stable UUID of the master-list entry to remove from the group.
  * @returns `undefined` on success; `{ error: string }` on failure.
  */
-export async function assignPaintToGroup(
+export async function removePaintFromGroup(
   paletteId: string,
-  position: number,
-  groupId: string | null,
+  groupId: string,
+  palettePaintId: string,
 ): Promise<{ error?: string } | undefined> {
+  if (!paletteId || !groupId || !palettePaintId) {
+    return { error: 'Invalid palette, group, or paint.' }
+  }
+
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) return { error: 'You must be signed in to assign a paint to a group.' }
+  if (!user) return { error: 'You must be signed in to modify a palette.' }
 
   const service = createPaletteService(supabase)
   const palette = await service.getPaletteById(paletteId)
@@ -36,7 +39,7 @@ export async function assignPaintToGroup(
   if (!palette) return { error: 'Palette not found.' }
   if (palette.userId !== user.id) return { error: 'You can only modify palettes you own.' }
 
-  const result = await service.assignPaintToGroup(paletteId, position, groupId)
+  const result = await service.removePaintFromGroup(groupId, palettePaintId)
   if (result.error) return { error: result.error }
 
   revalidatePath('/user/palettes')

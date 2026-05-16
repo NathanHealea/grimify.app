@@ -42,20 +42,20 @@ type FetchState =
  * An info popover explains how the filters and ΔE score work.
  *
  * @param props.paletteId - UUID of the owning palette.
- * @param props.position - 0-based slot index to swap.
+ * @param props.palettePaintId - Stable UUID of the master-list entry to swap.
  * @param props.paint - The current slot's paint (must have non-null `hue_id`).
  * @param props.onClose - Called when the dialog closes.
  * @param props.onSwapped - Called after a successful swap (before `onClose`).
  */
 export function PaletteSwapDialog({
   paletteId,
-  position,
+  palettePaintId,
   paint,
   onClose,
   onSwapped,
 }: {
   paletteId: string
-  position: number
+  palettePaintId: string
   paint: ColorWheelPaint
   onClose: () => void
   onSwapped: () => void
@@ -72,7 +72,7 @@ export function PaletteSwapDialog({
   useEffect(() => {
     let cancelled = false
 
-    getHueSwapCandidates({ paletteId, position }).then((result) => {
+    getHueSwapCandidates({ paletteId, palettePaintId }).then((result) => {
       if (cancelled) return
       if ('error' in result) {
         setFetchState({ status: 'error', message: result.error })
@@ -89,7 +89,7 @@ export function PaletteSwapDialog({
     return () => {
       cancelled = true
     }
-  }, [paletteId, position])
+  }, [paletteId, palettePaintId])
 
   function handleClose() {
     onClose()
@@ -98,7 +98,7 @@ export function PaletteSwapDialog({
   function handleSelect(paintId: string) {
     const candidate = visible.find(({ paint: p }) => p.id === paintId)?.paint
     startTransition(async () => {
-      const result = await swapPalettePaint(paletteId, position, paintId)
+      const result = await swapPalettePaint(paletteId, palettePaintId, paintId)
       if (result?.error) {
         toast.error(result.error)
         return

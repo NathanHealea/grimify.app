@@ -54,7 +54,7 @@ export function PaletteBuilder({
     startTransition(async () => {
       const result = await reorderPalettePaints(
         palette.id,
-        sorted.map((s) => ({ paintId: s.paintId, note: s.note, groupId: s.groupId })),
+        sorted.map((s) => s.id),
       )
       if (result?.error) toast.error(result.error)
     })
