@@ -1,7 +1,5 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 
@@ -11,7 +9,8 @@ import { createPaletteService } from '@/modules/palettes/services/palette-servic
  * Creates a new `palette_group_paints` membership row at the end of the group.
  * The same paint may belong to multiple groups simultaneously. The operation is
  * idempotent — adding a paint that is already a member of the group is silently
- * ignored. Revalidates the palette detail and owner edit paths on success.
+ * ignored. UI state is managed optimistically by the caller; no revalidation is
+ * triggered so the page does not flash.
  *
  * @param paletteId - UUID of the parent palette (used for ownership check and revalidation).
  * @param groupId - UUID of the target group.
@@ -42,9 +41,4 @@ export async function addPaintToGroup(
 
   const result = await service.addPaintToGroup(groupId, palettePaintId)
   if (result.error) return { error: result.error }
-
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
-  revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/user/palettes/${paletteId}/edit`)
 }

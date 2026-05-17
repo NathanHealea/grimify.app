@@ -1,6 +1,7 @@
 'use client'
 
 import { useOptimistic, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { ChevronDown } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -50,6 +51,7 @@ export function PalettePaintGroupsToggle({
       return next
     },
   )
+  const router = useRouter()
   const [, startTransition] = useTransition()
 
   if (groups.length === 0) return null
@@ -61,8 +63,12 @@ export function PalettePaintGroupsToggle({
       const result = nowActive
         ? await addPaintToGroup(paletteId, groupId, palettePaintId)
         : await removePaintFromGroup(paletteId, groupId, palettePaintId)
-      if (result?.error) toast.error(result.error)
-      else if (nowActive) toast.success(`Added to ${groupName}`)
+      if (result?.error) {
+        toast.error(result.error)
+      } else {
+        if (nowActive) toast.success(`Added to ${groupName}`)
+        router.refresh()
+      }
     })
   }
 
@@ -80,6 +86,7 @@ export function PalettePaintGroupsToggle({
             key={g.id}
             checked={optimisticIds.has(g.id)}
             onCheckedChange={() => handleToggle(g.id, g.name)}
+            onSelect={(event) => event.preventDefault()}
           >
             {g.name}
           </DropdownMenuCheckboxItem>
