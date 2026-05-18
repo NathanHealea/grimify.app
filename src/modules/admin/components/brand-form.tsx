@@ -1,8 +1,8 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
+import type { ChangeEvent } from 'react'
 import { useFormStatus } from 'react-dom'
-import { useEffect, useState } from 'react'
 
 import type { BrandFormState } from '@/modules/admin/types/brand-form-state'
 import type { Brand } from '@/types/paint'
@@ -71,13 +71,13 @@ export function BrandForm({ action, defaultValues, mode }: BrandFormProps) {
     }
   }, [state])
 
-  function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
     if (!slugManuallyEdited) {
       setSlugValue(toSlug(e.target.value))
     }
   }
 
-  function handleSlugChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleSlugChange(e: ChangeEvent<HTMLInputElement>) {
     setSlugManuallyEdited(true)
     setSlugValue(e.target.value)
   }
@@ -98,7 +98,7 @@ export function BrandForm({ action, defaultValues, mode }: BrandFormProps) {
 
       {/* Name */}
       <div className="flex flex-col gap-1">
-        <label htmlFor="brand-name" className="label label-sm">
+        <label htmlFor="brand-name" className="form-label text-sm">
           Name <span className="text-destructive">*</span>
         </label>
         <input
@@ -118,7 +118,7 @@ export function BrandForm({ action, defaultValues, mode }: BrandFormProps) {
 
       {/* Slug */}
       <div className="flex flex-col gap-1">
-        <label htmlFor="brand-slug" className="label label-sm">
+        <label htmlFor="brand-slug" className="form-label text-sm">
           Slug <span className="text-destructive">*</span>
         </label>
         <input
@@ -138,7 +138,7 @@ export function BrandForm({ action, defaultValues, mode }: BrandFormProps) {
 
       {/* Website URL */}
       <div className="flex flex-col gap-1">
-        <label htmlFor="brand-website" className="label label-sm">
+        <label htmlFor="brand-website" className="form-label text-sm">
           Website URL
         </label>
         <input
@@ -156,7 +156,7 @@ export function BrandForm({ action, defaultValues, mode }: BrandFormProps) {
 
       {/* Logo URL */}
       <div className="flex flex-col gap-1">
-        <label htmlFor="brand-logo" className="label label-sm">
+        <label htmlFor="brand-logo" className="form-label text-sm">
           Logo URL
         </label>
         <input
