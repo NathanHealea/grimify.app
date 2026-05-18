@@ -89,6 +89,77 @@ export function createBrandService(supabase: SupabaseClient) {
 
       return data ?? []
     },
+
+    /**
+     * Fetches a brand by ID with all its product lines and paint counts per product line.
+     *
+     * Returns `null` if the brand does not exist.
+     *
+     * @param id - The brand's database ID.
+     * @returns The brand with nested product lines and paint counts, or `null`.
+     */
+    async getBrandWithProductLineCounts(
+      id: number
+    ): Promise<(Brand & { product_lines: (ProductLine & { paint_count: number })[] }) | null> {
+      const { data: brand } = await supabase
+        .from('brands')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+      if (!brand) return null
+
+      const { data: productLines } = await supabase
+        .from('product_lines')
+        .select('*')
+        .eq('brand_id', id)
+        .order('name')
+
+      if (!productLines || productLines.length === 0) {
+        return { ...brand, product_lines: [] }
+      }
+
+      const paintCounts = await Promise.all(
+        productLines.map(async (pl) => {
+          const { count } = await supabase
+            .from('paints')
+            .select('*', { count: 'exact', head: true })
+            .eq('product_line_id', pl.id)
+          return { ...pl, paint_count: count ?? 0 }
+        })
+      )
+
+      return { ...brand, product_lines: paintCounts }
+    },
+
+    /**
+     * Fetches all brands with their associated product lines, ordered by brand name.
+     *
+     * Used in the paint admin forms to populate brand and product line dropdowns.
+     *
+     * @returns Array of brands, each including a `product_lines` array.
+     */
+    async getAllBrandsWithProductLines(): Promise<(Brand & { product_lines: ProductLine[] })[]> {
+      const { data: brands } = await supabase.from('brands').select('*').order('name')
+      if (!brands || brands.length === 0) return []
+
+      const { data: productLines } = await supabase
+        .from('product_lines')
+        .select('*')
+        .order('name')
+
+      const linesByBrand = new Map<number, ProductLine[]>()
+      for (const pl of productLines ?? []) {
+        const existing = linesByBrand.get(pl.brand_id) ?? []
+        existing.push(pl)
+        linesByBrand.set(pl.brand_id, existing)
+      }
+
+      return brands.map((brand) => ({
+        ...brand,
+        product_lines: linesByBrand.get(brand.id) ?? [],
+      }))
+    },
   }
 }
 
