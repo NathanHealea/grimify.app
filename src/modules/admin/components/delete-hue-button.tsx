@@ -56,7 +56,7 @@ export function DeleteHueButton({ hueId, hueName, childCount, paintCount }: Dele
         Delete
       </button>
 
-      <dialog ref={dialogRef} className="rounded-lg border border-border bg-background p-0 shadow-lg backdrop:bg-black/50">
+      <dialog ref={dialogRef} className="m-auto rounded-lg border border-border bg-background p-0 shadow-lg backdrop:bg-black/50">
         <div className="p-6 flex flex-col gap-4">
           <h3 className="text-lg font-semibold">Delete Hue</h3>
           <p className="text-sm text-muted-foreground">

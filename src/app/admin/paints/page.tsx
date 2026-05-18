@@ -135,7 +135,7 @@ export default async function AdminPaintsPage({
                   <td className="py-2 pr-3">
                     <span
                       className="inline-block h-5 w-5 rounded border border-border"
-                      style={{ backgroundColor: `#${paint.hex}` }}
+                      style={{ backgroundColor: paint.hex }}
                       aria-hidden="true"
                     />
                   </td>

@@ -59,36 +59,43 @@ export default async function AdminPaintDetailPage({
 
   return (
     <Main as="div">
+      <div className="mb-6">
+        <Link href="/admin/paints" className="text-sm text-muted-foreground hover:text-foreground">
+          ← Back to paints
+        </Link>
+      </div>
+
       <PageHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Link href="/admin/paints" className="btn btn-ghost btn-sm">
-              ← Paints
-            </Link>
-            <div>
-              <PageTitle>{paint.name}</PageTitle>
-              <PageSubtitle>Edit paint details and color data.</PageSubtitle>
-            </div>
-          </div>
-          <DeletePaintButton paintId={paint.id} paintName={paint.name} />
-        </div>
+        <PageTitle>{paint.name}</PageTitle>
+        <PageSubtitle>Edit paint details and color data.</PageSubtitle>
       </PageHeader>
 
-      <Card className="max-w-2xl">
-        <CardHeader>
-          <CardTitle>Paint Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <PaintForm
-            action={updatePaint}
-            brands={brands}
-            parentHues={parentHues}
-            childHuesByParent={childHuesByParent}
-            defaultValues={paint}
-            mode="edit"
-          />
-        </CardContent>
-      </Card>
+      <div className="space-y-6">
+        <Card className="mx-auto max-w-2xl">
+          <CardHeader>
+            <CardTitle>Paint Details</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <PaintForm
+              action={updatePaint}
+              brands={brands}
+              parentHues={parentHues}
+              childHuesByParent={childHuesByParent}
+              defaultValues={paint}
+              mode="edit"
+            />
+          </CardContent>
+        </Card>
+
+        <Card className="mx-auto max-w-2xl border-destructive/20">
+          <CardHeader>
+            <CardTitle>Danger Zone</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DeletePaintButton paintId={paint.id} paintName={paint.name} />
+          </CardContent>
+        </Card>
+      </div>
     </Main>
   )
 }

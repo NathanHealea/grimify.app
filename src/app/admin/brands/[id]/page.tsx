@@ -43,80 +43,90 @@ export default async function AdminBrandDetailPage({
 
   return (
     <Main as="div">
-      <PageHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Link href="/admin/brands" className="btn btn-ghost btn-sm">
-              ← Brands
-            </Link>
-            <div>
-              <PageTitle>{brand.name}</PageTitle>
-              <PageSubtitle>Edit brand details and manage product lines.</PageSubtitle>
-            </div>
-          </div>
-          <DeleteBrandButton brandId={brand.id} brandName={brand.name} />
-        </div>
-      </PageHeader>
-
-      {/* Edit brand form */}
-      <Card className="mb-8 max-w-lg">
-        <CardHeader>
-          <CardTitle>Brand Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <BrandForm action={updateBrand} defaultValues={brand} mode="edit" />
-        </CardContent>
-      </Card>
-
-      {/* Product lines */}
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Product Lines</h2>
+      <div className="mb-6">
+        <Link href="/admin/brands" className="text-sm text-muted-foreground hover:text-foreground">
+          ← Back to brands
+        </Link>
       </div>
 
-      {brand.product_lines.length === 0 ? (
-        <p className="mb-6 text-sm text-muted-foreground">No product lines yet.</p>
-      ) : (
-        <div className="mb-8 overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border text-left">
-                <th className="pb-2 pr-4 font-medium">Name</th>
-                <th className="pb-2 pr-4 font-medium">Slug</th>
-                <th className="pb-2 pr-4 font-medium text-right">Paints</th>
-                <th className="pb-2 font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {brand.product_lines.map((pl) => (
-                <tr key={pl.id} className="border-b border-border/50">
-                  <td className="py-2 pr-4 font-medium">{pl.name}</td>
-                  <td className="py-2 pr-4 font-mono text-xs text-muted-foreground">
-                    {pl.slug}
-                  </td>
-                  <td className="py-2 pr-4 text-right tabular-nums">{pl.paint_count}</td>
-                  <td className="py-2">
-                    <DeleteProductLineButton
-                      productLineId={pl.id}
-                      productLineName={pl.name}
-                      brandId={brand.id}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <PageHeader>
+        <PageTitle>{brand.name}</PageTitle>
+        <PageSubtitle>Edit brand details and manage product lines.</PageSubtitle>
+      </PageHeader>
 
-      {/* Add product line */}
-      <Card className="max-w-lg">
-        <CardHeader>
-          <CardTitle>Add Product Line</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ProductLineForm action={createProductLine} brandId={brand.id} mode="create" />
-        </CardContent>
-      </Card>
+      <div className="space-y-6">
+        {/* Edit brand form */}
+        <Card className="mx-auto max-w-lg">
+          <CardHeader>
+            <CardTitle>Brand Details</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <BrandForm action={updateBrand} defaultValues={brand} mode="edit" />
+          </CardContent>
+        </Card>
+
+        {/* Product lines */}
+        <div className="mx-auto max-w-lg">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Product Lines</h2>
+          </div>
+
+          {brand.product_lines.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No product lines yet.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border text-left">
+                    <th className="pb-2 pr-4 font-medium">Name</th>
+                    <th className="pb-2 pr-4 font-medium">Slug</th>
+                    <th className="pb-2 pr-4 font-medium text-right">Paints</th>
+                    <th className="pb-2 font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {brand.product_lines.map((pl) => (
+                    <tr key={pl.id} className="border-b border-border/50">
+                      <td className="py-2 pr-4 font-medium">{pl.name}</td>
+                      <td className="py-2 pr-4 font-mono text-xs text-muted-foreground">
+                        {pl.slug}
+                      </td>
+                      <td className="py-2 pr-4 text-right tabular-nums">{pl.paint_count}</td>
+                      <td className="py-2">
+                        <DeleteProductLineButton
+                          productLineId={pl.id}
+                          productLineName={pl.name}
+                          brandId={brand.id}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* Add product line */}
+        <Card className="mx-auto max-w-lg">
+          <CardHeader>
+            <CardTitle>Add Product Line</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ProductLineForm action={createProductLine} brandId={brand.id} mode="create" />
+          </CardContent>
+        </Card>
+
+        {/* Danger zone */}
+        <Card className="mx-auto max-w-lg border-destructive/20">
+          <CardHeader>
+            <CardTitle>Danger Zone</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DeleteBrandButton brandId={brand.id} brandName={brand.name} />
+          </CardContent>
+        </Card>
+      </div>
     </Main>
   )
 }
