@@ -2,7 +2,7 @@
 
 **Epic:** Color Management
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/hue-management`
 **Merge into:** `main`
 

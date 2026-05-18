@@ -2,7 +2,7 @@
 
 **Epic:** Color Management
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/brand-management`
 **Merge into:** `main`
 
