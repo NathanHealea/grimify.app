@@ -49,6 +49,22 @@ export default async function AdminDashboardPage() {
     adminCount = count ?? 0
   }
 
+  // Total brands
+  const { count: totalBrands } = await supabase
+    .from('brands')
+    .select('id', { count: 'exact', head: true })
+
+  // Total hues (parent only)
+  const { count: totalHues } = await supabase
+    .from('hues')
+    .select('id', { count: 'exact', head: true })
+    .is('parent_id', null)
+
+  // Total paints
+  const { count: totalPaints } = await supabase
+    .from('paints')
+    .select('id', { count: 'exact', head: true })
+
   // Recent sign-ups (last 5)
   const { data: recentUsers } = await supabase
     .from('profiles')
@@ -83,6 +99,27 @@ export default async function AdminDashboardPage() {
           <CardHeader>
             <CardDescription>Admins</CardDescription>
             <CardTitle className="text-2xl">{adminCount}</CardTitle>
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardDescription>Total Brands</CardDescription>
+            <CardTitle className="text-2xl">{totalBrands ?? 0}</CardTitle>
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardDescription>Total Hues</CardDescription>
+            <CardTitle className="text-2xl">{totalHues ?? 0}</CardTitle>
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardDescription>Total Paints</CardDescription>
+            <CardTitle className="text-2xl">{totalPaints ?? 0}</CardTitle>
           </CardHeader>
         </Card>
       </div>
