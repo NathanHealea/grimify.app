@@ -660,18 +660,23 @@ export function createPaletteService(supabase: SupabaseClient) {
       groupId: string,
       palettePaintId: string,
     ): Promise<{ error?: string }> {
-      // Determine next position within this group.
-      const { count, error: countError } = await supabase
+      // Use MAX(position)+1 so gaps left by deletions never cause a collision.
+      const { data: maxRow, error: maxError } = await supabase
         .from('palette_group_paints')
-        .select('id', { count: 'exact', head: true })
+        .select('position')
         .eq('group_id', groupId)
+        .order('position', { ascending: false })
+        .limit(1)
+        .maybeSingle()
 
-      if (countError) return { error: countError.message }
+      if (maxError) return { error: maxError.message }
+
+      const nextPosition = maxRow == null ? 0 : maxRow.position + 1
 
       const { error } = await supabase
         .from('palette_group_paints')
         .upsert(
-          { group_id: groupId, palette_paint_id: palettePaintId, position: count ?? 0 },
+          { group_id: groupId, palette_paint_id: palettePaintId, position: nextPosition },
           { onConflict: 'group_id,palette_paint_id', ignoreDuplicates: true },
         )
 
