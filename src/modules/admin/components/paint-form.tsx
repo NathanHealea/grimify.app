@@ -85,7 +85,7 @@ export function PaintForm({
   const [selectedBrandId, setSelectedBrandId] = useState<number | ''>(
     defaultValues?.product_lines?.brand_id ?? ''
   )
-  const [hexValue, setHexValue] = useState(defaultValues?.hex ? `#${defaultValues.hex}` : '#000000')
+  const [hexValue, setHexValue] = useState(defaultValues?.hex ?? '#000000')
 
   const computedColor = useMemo(() => {
     const rgb = hexToRgb(hexValue)

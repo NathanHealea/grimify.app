@@ -83,7 +83,7 @@ export async function createPaint(
     .insert({
       name,
       slug,
-      hex,
+      hex: `#${hex}`,
       r,
       g,
       b,
@@ -182,7 +182,7 @@ export async function updatePaint(
     .update({
       name,
       slug,
-      hex,
+      hex: `#${hex}`,
       r,
       g,
       b,
