@@ -12,17 +12,17 @@ Provide an admin interface for managing paint brands and their product lines. Ad
 
 ## Acceptance Criteria
 
-- [ ] An admin brands list page at `/admin/brands` displays all brands with name, slug, paint count, and action links
-- [ ] A create brand page at `/admin/brands/new` allows creating a new brand with name, slug, website URL, and logo URL
-- [ ] An edit brand page at `/admin/brands/[id]` allows updating brand fields
-- [ ] The edit brand page displays the brand's product lines with name, slug, and paint count
-- [ ] Product lines can be created, edited, and deleted from the brand edit page
-- [ ] Deleting a brand shows a confirmation dialog warning about cascading deletion of product lines and paints
-- [ ] Deleting a product line shows a confirmation dialog warning about cascading deletion of paints
-- [ ] Form validation prevents empty names and duplicate slugs
-- [ ] Slugs are auto-generated from names but can be manually overridden
-- [ ] Server actions handle all mutations (no direct client-side Supabase calls for writes)
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] An admin brands list page at `/admin/brands` displays all brands with name, slug, paint count, and action links
+- [x] A create brand page at `/admin/brands/new` allows creating a new brand with name, slug, website URL, and logo URL
+- [x] An edit brand page at `/admin/brands/[id]` allows updating brand fields
+- [x] The edit brand page displays the brand's product lines with name, slug, and paint count
+- [x] Product lines can be created, edited, and deleted from the brand edit page
+- [x] Deleting a brand shows a confirmation dialog warning about cascading deletion of product lines and paints
+- [x] Deleting a product line shows a confirmation dialog warning about cascading deletion of paints
+- [x] Form validation prevents empty names and duplicate slugs
+- [x] Slugs are auto-generated from names but can be manually overridden
+- [x] Server actions handle all mutations (no direct client-side Supabase calls for writes)
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Implementation Plan
 

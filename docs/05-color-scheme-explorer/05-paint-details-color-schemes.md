@@ -17,25 +17,25 @@ The hook (`useColorScheme`) and the original `SchemeDisplay` continue to live in
 
 ## Acceptance Criteria
 
-- [ ] The paint detail page (`/paints/[id]`) renders a single `Color schemes` section containing all five scheme types stacked vertically — no selector, no tabs.
-- [ ] The paint's own color (the implicit base / "root") is **not** rendered anywhere inside the section. Each row shows the partner color and its matched catalog paints only.
-- [ ] Each non-base partner color renders a row of **exactly five** catalog paint chips, ordered light → dark by lightness, with the canonical (closest-hue) match in the center (index 2).
-- [ ] Scheme blocks render the following partner rows:
+- [x] The paint detail page (`/paints/[id]`) renders a single `Color schemes` section containing all five scheme types stacked vertically — no selector, no tabs.
+- [x] The paint's own color (the implicit base / "root") is **not** rendered anywhere inside the section. Each row shows the partner color and its matched catalog paints only.
+- [x] Each non-base partner color renders a row of **exactly five** catalog paint chips, ordered light → dark by lightness, with the canonical (closest-hue) match in the center (index 2).
+- [x] Scheme blocks render the following partner rows:
   - **Complementary** — 1 row (`Complement`)
   - **Split-complementary** — 2 rows (`Split 1`, `Split 2`)
   - **Analogous** — 2 rows (`Analogous −n°`, `Analogous +n°`)
   - **Triadic** — 2 rows (`Triad 1`, `Triad 2`)
   - **Tetradic** — 3 rows (`Tetrad 1`, `Complement`, `Tetrad 3`)
-- [ ] An inline angle slider (15°–60°, default 30°) on the analogous block updates only the analogous rows; other blocks are unaffected.
-- [ ] Each chip shows the paint's swatch color, name, brand, and hex; the chip is a link to `/paints/[id]` for that paint.
-- [ ] Each chip in the user's collection shows a small owned-state indicator (e.g. a filled dot or check overlay). Chips do **not** render inline collection toggle buttons in this layout — toggling happens on the linked paint detail page.
-- [ ] The canonical (center) chip has a subtle visual emphasis (e.g. ring/border) so the user can see the closest match at a glance.
-- [ ] If fewer than five catalog paints match the hue band, the row is padded by extending the candidate pool by hue distance (next-nearest by hue, then sorted into value-scale order). The row always renders exactly five chips when the catalog has ≥5 paints; if the catalog has fewer than five paints total, the row renders whatever is available.
-- [ ] The section renders for every paint (discontinued or not) on `/paints/[id]`, placed after the hue classification block and before `PaintSimilarSection`.
-- [ ] The `Save as palette` button is **not** rendered in this section. Users wanting to save a derived palette can do so from `/schemes`.
-- [ ] All exports include JSDoc per `CLAUDE.md`.
-- [ ] No barrel/index re-exports are introduced.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] An inline angle slider (15°–60°, default 30°) on the analogous block updates only the analogous rows; other blocks are unaffected.
+- [x] Each chip shows the paint's swatch color, name, brand, and hex; the chip is a link to `/paints/[id]` for that paint.
+- [x] Each chip in the user's collection shows a small owned-state indicator (e.g. a filled dot or check overlay). Chips do **not** render inline collection toggle buttons in this layout — toggling happens on the linked paint detail page.
+- [x] The canonical (center) chip has a subtle visual emphasis (e.g. ring/border) so the user can see the closest match at a glance.
+- [x] If fewer than five catalog paints match the hue band, the row is padded by extending the candidate pool by hue distance (next-nearest by hue, then sorted into value-scale order). The row always renders exactly five chips when the catalog has ≥5 paints; if the catalog has fewer than five paints total, the row renders whatever is available.
+- [x] The section renders for every paint (discontinued or not) on `/paints/[id]`, placed after the hue classification block and before `PaintSimilarSection`.
+- [x] The `Save as palette` button is **not** rendered in this section. Users wanting to save a derived palette can do so from `/schemes`.
+- [x] All exports include JSDoc per `CLAUDE.md`.
+- [x] No barrel/index re-exports are introduced.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Dependencies
 

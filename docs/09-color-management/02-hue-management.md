@@ -12,19 +12,19 @@ Provide an admin interface for managing the Munsell hue hierarchy (parent hues a
 
 ## Acceptance Criteria
 
-- [ ] An admin hues list page at `/admin/hues` displays all parent hues with name, hex swatch, slug, child hue count, and associated paint count
-- [ ] Clicking a parent hue navigates to `/admin/hues/[id]` showing the parent hue details and its child sub-hues
-- [ ] Parent hues can be created, edited, and deleted
-- [ ] Child sub-hues can be created, edited, and deleted from the parent hue detail page
-- [ ] The hue edit page displays all paints associated with that hue (for parent hues: paints associated with any of its child hues)
-- [ ] Individual paint-hue associations can be removed (sets `hue_id = NULL` on the paint)
-- [ ] Bulk removal of paint-hue associations is supported (select multiple paints, remove all at once)
-- [ ] Paints can be added to a hue from the hue edit page (search/select paints, assign the hue)
-- [ ] Deleting a parent hue warns that all child hues and paint associations will be removed
-- [ ] Deleting a child hue warns that paint associations will be removed
-- [ ] Hex color swatches are displayed next to hue names throughout the admin interface
-- [ ] Form validation prevents empty names and duplicate slugs within scope
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] An admin hues list page at `/admin/hues` displays all parent hues with name, hex swatch, slug, child hue count, and associated paint count
+- [x] Clicking a parent hue navigates to `/admin/hues/[id]` showing the parent hue details and its child sub-hues
+- [x] Parent hues can be created, edited, and deleted
+- [x] Child sub-hues can be created, edited, and deleted from the parent hue detail page
+- [x] The hue edit page displays all paints associated with that hue (for parent hues: paints associated with any of its child hues)
+- [x] Individual paint-hue associations can be removed (sets `hue_id = NULL` on the paint)
+- [x] Bulk removal of paint-hue associations is supported (select multiple paints, remove all at once)
+- [x] Paints can be added to a hue from the hue edit page (search/select paints, assign the hue)
+- [x] Deleting a parent hue warns that all child hues and paint associations will be removed
+- [x] Deleting a child hue warns that paint associations will be removed
+- [x] Hex color swatches are displayed next to hue names throughout the admin interface
+- [x] Form validation prevents empty names and duplicate slugs within scope
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Implementation Plan
 

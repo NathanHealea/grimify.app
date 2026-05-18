@@ -12,20 +12,20 @@ Provide an admin interface for managing individual paints. Administrators can cr
 
 ## Acceptance Criteria
 
-- [ ] An admin paints list page at `/admin/paints` displays paints with color swatch, name, brand, product line, hue assignment, and action links
-- [ ] The paints list supports search by name and filtering by brand
-- [ ] The paints list supports pagination
-- [ ] A create paint page at `/admin/paints/new` allows creating a new paint with all required fields
-- [ ] An edit paint page at `/admin/paints/[id]` allows updating all paint fields
-- [ ] RGB (`r`, `g`, `b`) and HSL (`hue`, `saturation`, `lightness`) values are automatically computed when the hex value changes
-- [ ] Hue assignment uses a two-step selection: first select a parent hue, then optionally select a child sub-hue within that parent
-- [ ] A child sub-hue cannot be selected without first selecting its parent hue
-- [ ] Changing the parent hue clears any previously selected child sub-hue (if it doesn't belong to the new parent)
-- [ ] Removing the parent hue also removes any child sub-hue assignment
-- [ ] The hue assignment is stored as `hue_id` pointing to the child sub-hue (when both parent and child are selected) or to the parent hue (when only parent is selected)
-- [ ] Deleting a paint shows a confirmation dialog warning about cascade deletion of paint references
-- [ ] The product line dropdown is filtered by the selected brand
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] An admin paints list page at `/admin/paints` displays paints with color swatch, name, brand, product line, hue assignment, and action links
+- [x] The paints list supports search by name and filtering by brand
+- [x] The paints list supports pagination
+- [x] A create paint page at `/admin/paints/new` allows creating a new paint with all required fields
+- [x] An edit paint page at `/admin/paints/[id]` allows updating all paint fields
+- [x] RGB (`r`, `g`, `b`) and HSL (`hue`, `saturation`, `lightness`) values are automatically computed when the hex value changes
+- [x] Hue assignment uses a two-step selection: first select a parent hue, then optionally select a child sub-hue within that parent
+- [x] A child sub-hue cannot be selected without first selecting its parent hue
+- [x] Changing the parent hue clears any previously selected child sub-hue (if it doesn't belong to the new parent)
+- [x] Removing the parent hue also removes any child sub-hue assignment
+- [x] The hue assignment is stored as `hue_id` pointing to the child sub-hue (when both parent and child are selected) or to the parent hue (when only parent is selected)
+- [x] Deleting a paint shows a confirmation dialog warning about cascade deletion of paint references
+- [x] The product line dropdown is filtered by the selected brand
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Implementation Plan
 

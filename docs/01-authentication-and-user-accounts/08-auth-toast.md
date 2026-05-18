@@ -28,14 +28,14 @@ This enhancement migrates the five auth forms to Sonner toasts, removing the inl
 
 ## Acceptance Criteria
 
-- [ ] `<SignInForm>` (`src/modules/auth/components/sign-in-form.tsx`) removes the `state?.error` banner block (lines 23–27) and instead calls `toast.error(state.error)` from a `useEffect` keyed on `state`.
-- [ ] `<SignUpForm>` (`src/modules/auth/components/sign-up-form.tsx`) removes both `state?.success` (lines 22–26) and `state?.error` (lines 27–31) banner blocks and dispatches `toast.success(state.success)` / `toast.error(state.error)` from a `useEffect`.
-- [ ] `<ForgotPasswordForm>` (`src/modules/auth/components/forgot-password-form.tsx`) removes both banner blocks (lines 22–26 and 27–31) and dispatches the same way.
-- [ ] `<ResetPasswordForm>` (`src/modules/auth/components/reset-password-form.tsx`) removes the `state?.error` banner block (lines 23–27) and dispatches `toast.error(state.error)` only — there is no success state in this form (success redirects).
-- [ ] `<ChangePasswordForm>` (`src/modules/user/components/change-password-form.tsx`) removes both banner blocks (lines 23–27 and 28–32) and dispatches both toast variants.
-- [ ] Each form's `useEffect` fires exactly once per submission — verified by triggering two consecutive failures and confirming two toasts (no duplicate stacking from re-renders).
-- [ ] No banner divs remain in any of the five forms; no other layout changes are introduced.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] `<SignInForm>` (`src/modules/auth/components/sign-in-form.tsx`) removes the `state?.error` banner block (lines 23–27) and instead calls `toast.error(state.error)` from a `useEffect` keyed on `state`.
+- [x] `<SignUpForm>` (`src/modules/auth/components/sign-up-form.tsx`) removes both `state?.success` (lines 22–26) and `state?.error` (lines 27–31) banner blocks and dispatches `toast.success(state.success)` / `toast.error(state.error)` from a `useEffect`.
+- [x] `<ForgotPasswordForm>` (`src/modules/auth/components/forgot-password-form.tsx`) removes both banner blocks (lines 22–26 and 27–31) and dispatches the same way.
+- [x] `<ResetPasswordForm>` (`src/modules/auth/components/reset-password-form.tsx`) removes the `state?.error` banner block (lines 23–27) and dispatches `toast.error(state.error)` only — there is no success state in this form (success redirects).
+- [x] `<ChangePasswordForm>` (`src/modules/user/components/change-password-form.tsx`) removes both banner blocks (lines 23–27 and 28–32) and dispatches both toast variants.
+- [x] Each form's `useEffect` fires exactly once per submission — verified by triggering two consecutive failures and confirming two toasts (no duplicate stacking from re-renders).
+- [x] No banner divs remain in any of the five forms; no other layout changes are introduced.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Out of Scope
 

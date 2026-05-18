@@ -12,13 +12,13 @@ Create the admin shell that all admin pages live inside: a layout with sidebar n
 
 ## Acceptance Criteria
 
-- [ ] An admin layout at `src/app/admin/layout.tsx` wraps all `/admin/*` routes with a sidebar navigation and content area
-- [ ] The sidebar navigation includes links to: Dashboard, Brands, Hues, Paints
-- [ ] An admin dashboard page at `src/app/admin/page.tsx` displays summary counts (total brands, total hues, total paints)
-- [ ] The admin layout visually distinguishes itself from the public layout (e.g., different background, admin badge/indicator)
-- [ ] Navigation highlights the active section
-- [ ] The layout is responsive (sidebar collapses on small screens)
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] An admin layout at `src/app/admin/layout.tsx` wraps all `/admin/*` routes with a sidebar navigation and content area
+- [x] The sidebar navigation includes links to: Dashboard, Brands, Hues, Paints
+- [x] An admin dashboard page at `src/app/admin/page.tsx` displays summary counts (total brands, total hues, total paints)
+- [x] The admin layout visually distinguishes itself from the public layout (e.g., different background, admin badge/indicator)
+- [x] Navigation highlights the active section
+- [x] The layout is responsive (sidebar collapses on small screens)
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Implementation Plan
 

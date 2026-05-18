@@ -24,12 +24,12 @@ This enhancement migrates the **top-level error** in both forms to a Sonner toas
 
 ## Acceptance Criteria
 
-- [ ] `<ProfileForm>` (`src/modules/user/components/profile-form.tsx`) removes the top-level `state?.error` banner block (lines 55–59) and instead calls `toast.error(state.error)` from a `useEffect` keyed on `state`.
-- [ ] `<ProfileForm>` keeps the inline `clientError || state?.errors?.display_name` rendering beneath the input unchanged (lines 74–82).
-- [ ] `<AdminEditProfileForm>` (`src/modules/user/components/admin-edit-profile-form.tsx`) removes the top-level `state?.error` banner block (lines 42–46) and dispatches `toast.error(state.error)` from a `useEffect`.
-- [ ] `<AdminEditProfileForm>` keeps the per-field `<p className="text-xs text-destructive">` blocks for `display_name` and `bio` unchanged.
-- [ ] Submitting either form with both a top-level error AND a field error fires a single toast (for the top-level message) AND renders the field error inline — never both as toasts.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] `<ProfileForm>` (`src/modules/user/components/profile-form.tsx`) removes the top-level `state?.error` banner block (lines 55–59) and instead calls `toast.error(state.error)` from a `useEffect` keyed on `state`.
+- [x] `<ProfileForm>` keeps the inline `clientError || state?.errors?.display_name` rendering beneath the input unchanged (lines 74–82).
+- [x] `<AdminEditProfileForm>` (`src/modules/user/components/admin-edit-profile-form.tsx`) removes the top-level `state?.error` banner block (lines 42–46) and dispatches `toast.error(state.error)` from a `useEffect`.
+- [x] `<AdminEditProfileForm>` keeps the per-field `<p className="text-xs text-destructive">` blocks for `display_name` and `bio` unchanged.
+- [x] Submitting either form with both a top-level error AND a field error fires a single toast (for the top-level message) AND renders the field error inline — never both as toasts.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Out of Scope
 

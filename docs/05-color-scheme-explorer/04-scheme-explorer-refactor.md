@@ -14,18 +14,18 @@ This is a prep refactor — no new user-facing behavior — that unblocks featur
 
 ## Acceptance Criteria
 
-- [ ] A new hook `src/modules/color-schemes/hooks/use-color-scheme.ts` is created. It accepts `{ baseColor, paints, initialScheme?, initialAnalogousAngle? }` and returns `{ schemeColors, activeScheme, setActiveScheme, analogousAngle, setAnalogousAngle }`.
-- [ ] The hook contains all the `useMemo` and `useState` previously inlined in `scheme-explorer.tsx` for scheme type, analogous spread, and the derived `schemeColors` (with nearest paints filled in).
-- [ ] The hook does **not** import or depend on `BaseColorPicker` — `baseColor: BaseColor | null` is passed in, so the hook is reusable wherever the base color comes from.
-- [ ] A new reusable display component is created (e.g. `src/modules/color-schemes/components/scheme-display.tsx`) that accepts `{ baseColor, paints, isAuthenticated, ownedIds, revalidatePath? }` and renders the scheme type selector + swatch grid + save-as-palette button. It uses `useColorScheme` internally.
-- [ ] The display component is consumable on the `/schemes` page **and** on the paint details page (feature 05) without modification.
-- [ ] `scheme-explorer.tsx` becomes thin: it owns only the `baseColor` state (driven by `BaseColorPicker`), composes `BaseColorPicker` + the new display component, and renders the "Select a base color" empty-state card.
-- [ ] Any non-trivial pure logic extracted from the orchestration lives under `utils/`. If a piece of logic needs server-side data access (not expected for this refactor — `paints` is passed in as a prop), it lives under a new `services/` directory in the module.
-- [ ] The `revalidatePath` value passed to `CollectionPaintCard` inside `SchemeSwatch` becomes a prop on the display component (default `'/schemes'`), so callers on other routes (`/paints/[id]`) can override it.
-- [ ] `/schemes` renders pixel-for-pixel the same as before — base color picker, scheme type tabs, analogous slider, swatch grid, save-as-palette button, and empty state are all visually and functionally unchanged.
-- [ ] All exports include JSDoc per `CLAUDE.md` (hook, component, props types).
-- [ ] No barrel/index re-exports are introduced.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] A new hook `src/modules/color-schemes/hooks/use-color-scheme.ts` is created. It accepts `{ baseColor, paints, initialScheme?, initialAnalogousAngle? }` and returns `{ schemeColors, activeScheme, setActiveScheme, analogousAngle, setAnalogousAngle }`.
+- [x] The hook contains all the `useMemo` and `useState` previously inlined in `scheme-explorer.tsx` for scheme type, analogous spread, and the derived `schemeColors` (with nearest paints filled in).
+- [x] The hook does **not** import or depend on `BaseColorPicker` — `baseColor: BaseColor | null` is passed in, so the hook is reusable wherever the base color comes from.
+- [x] A new reusable display component is created (e.g. `src/modules/color-schemes/components/scheme-display.tsx`) that accepts `{ baseColor, paints, isAuthenticated, ownedIds, revalidatePath? }` and renders the scheme type selector + swatch grid + save-as-palette button. It uses `useColorScheme` internally.
+- [x] The display component is consumable on the `/schemes` page **and** on the paint details page (feature 05) without modification.
+- [x] `scheme-explorer.tsx` becomes thin: it owns only the `baseColor` state (driven by `BaseColorPicker`), composes `BaseColorPicker` + the new display component, and renders the "Select a base color" empty-state card.
+- [x] Any non-trivial pure logic extracted from the orchestration lives under `utils/`. If a piece of logic needs server-side data access (not expected for this refactor — `paints` is passed in as a prop), it lives under a new `services/` directory in the module.
+- [x] The `revalidatePath` value passed to `CollectionPaintCard` inside `SchemeSwatch` becomes a prop on the display component (default `'/schemes'`), so callers on other routes (`/paints/[id]`) can override it.
+- [x] `/schemes` renders pixel-for-pixel the same as before — base color picker, scheme type tabs, analogous slider, swatch grid, save-as-palette button, and empty state are all visually and functionally unchanged.
+- [x] All exports include JSDoc per `CLAUDE.md` (hook, component, props types).
+- [x] No barrel/index re-exports are introduced.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Dependencies
 

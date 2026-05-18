@@ -23,15 +23,15 @@ The same pattern that already exists for "Add to palette" — `toast.success(...
 
 ## Acceptance Criteria
 
-- [ ] `<CollectionToggle>` accepts a new required `paintName: string` prop and calls `toast.success(\`Added '${paintName}' to your collection\`)` after `addToCollection` resolves without error.
-- [ ] `<CollectionToggle>` calls `toast.success(\`Removed '${paintName}' from your collection\`)` after `removeFromCollection` resolves without error.
-- [ ] On `result.error`, `<CollectionToggle>` calls `toast.error(result.error)` and reverts the optimistic state (existing revert logic preserved).
-- [ ] All callers of `<CollectionToggle>` pass the paint's display name:
-  - [ ] `src/modules/collection/components/collection-paint-card.tsx`
-  - [ ] `src/modules/paints/components/paint-detail.tsx`
-- [ ] `<PaintDetailPanel>` (`src/modules/color-wheel/components/paint-detail-panel.tsx`) is updated to call `toast.success` / `toast.error` for its inline collection toggle, and the inline `actionError` `<p>` is removed along with its `useState`.
-- [ ] Unauthenticated click behavior is unchanged — still redirects, never toasts.
-- [ ] `npm run build` and `npm run lint` pass with no errors.
+- [x] `<CollectionToggle>` accepts a new required `paintName: string` prop and calls `toast.success(\`Added '${paintName}' to your collection\`)` after `addToCollection` resolves without error.
+- [x] `<CollectionToggle>` calls `toast.success(\`Removed '${paintName}' from your collection\`)` after `removeFromCollection` resolves without error.
+- [x] On `result.error`, `<CollectionToggle>` calls `toast.error(result.error)` and reverts the optimistic state (existing revert logic preserved).
+- [x] All callers of `<CollectionToggle>` pass the paint's display name:
+  - [x] `src/modules/collection/components/collection-paint-card.tsx`
+  - [x] `src/modules/paints/components/paint-detail.tsx`
+- [x] `<PaintDetailPanel>` (`src/modules/color-wheel/components/paint-detail-panel.tsx`) is updated to call `toast.success` / `toast.error` for its inline collection toggle, and the inline `actionError` `<p>` is removed along with its `useState`.
+- [x] Unauthenticated click behavior is unchanged — still redirects, never toasts.
+- [x] `npm run build` and `npm run lint` pass with no errors.
 
 ## Out of Scope
 
