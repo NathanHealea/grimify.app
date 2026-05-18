@@ -1,0 +1,122 @@
+import { notFound } from 'next/navigation'
+import Link from 'next/link'
+
+import { Main } from '@/components/main'
+import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { getBrandService } from '@/modules/brands/services/brand-service.server'
+import { BrandForm } from '@/modules/admin/components/brand-form'
+import { ProductLineForm } from '@/modules/admin/components/product-line-form'
+import { DeleteBrandButton } from '@/modules/admin/components/delete-brand-button'
+import { DeleteProductLineButton } from '@/modules/admin/components/delete-product-line-button'
+import { updateBrand } from '@/modules/admin/actions/brand-actions'
+import { createProductLine } from '@/modules/admin/actions/product-line-actions'
+import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  title: 'Edit brand',
+  description: 'Admin: edit a paint brand.',
+  path: '/admin/brands',
+  noindex: true,
+})
+
+/**
+ * Admin page for viewing and editing a brand and its product lines.
+ *
+ * Fetches the brand with product-line paint counts, renders the edit form,
+ * and shows a product lines table with inline actions.
+ */
+export default async function AdminBrandDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const brandId = parseInt(id, 10)
+
+  if (isNaN(brandId)) notFound()
+
+  const service = await getBrandService()
+  const brand = await service.getBrandWithProductLineCounts(brandId)
+
+  if (!brand) notFound()
+
+  return (
+    <Main as="div">
+      <PageHeader>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Link href="/admin/brands" className="btn btn-ghost btn-sm">
+              ← Brands
+            </Link>
+            <div>
+              <PageTitle>{brand.name}</PageTitle>
+              <PageSubtitle>Edit brand details and manage product lines.</PageSubtitle>
+            </div>
+          </div>
+          <DeleteBrandButton brandId={brand.id} brandName={brand.name} />
+        </div>
+      </PageHeader>
+
+      {/* Edit brand form */}
+      <Card className="mb-8 max-w-lg">
+        <CardHeader>
+          <CardTitle>Brand Details</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <BrandForm action={updateBrand} defaultValues={brand} mode="edit" />
+        </CardContent>
+      </Card>
+
+      {/* Product lines */}
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Product Lines</h2>
+      </div>
+
+      {brand.product_lines.length === 0 ? (
+        <p className="mb-6 text-sm text-muted-foreground">No product lines yet.</p>
+      ) : (
+        <div className="mb-8 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border text-left">
+                <th className="pb-2 pr-4 font-medium">Name</th>
+                <th className="pb-2 pr-4 font-medium">Slug</th>
+                <th className="pb-2 pr-4 font-medium text-right">Paints</th>
+                <th className="pb-2 font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {brand.product_lines.map((pl) => (
+                <tr key={pl.id} className="border-b border-border/50">
+                  <td className="py-2 pr-4 font-medium">{pl.name}</td>
+                  <td className="py-2 pr-4 font-mono text-xs text-muted-foreground">
+                    {pl.slug}
+                  </td>
+                  <td className="py-2 pr-4 text-right tabular-nums">{pl.paint_count}</td>
+                  <td className="py-2">
+                    <DeleteProductLineButton
+                      productLineId={pl.id}
+                      productLineName={pl.name}
+                      brandId={brand.id}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Add product line */}
+      <Card className="max-w-lg">
+        <CardHeader>
+          <CardTitle>Add Product Line</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ProductLineForm action={createProductLine} brandId={brand.id} mode="create" />
+        </CardContent>
+      </Card>
+    </Main>
+  )
+}
