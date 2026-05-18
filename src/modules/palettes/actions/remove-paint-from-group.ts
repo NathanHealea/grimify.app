@@ -8,8 +8,8 @@ import { createPaletteService } from '@/modules/palettes/services/palette-servic
  *
  * Deletes the `palette_group_paints` row for `(groupId, palettePaintId)`.
  * The master-list entry and any other group memberships for the same paint are
- * unaffected. UI state is managed optimistically by the caller; no revalidation
- * is triggered so the page does not flash.
+ * unaffected. Callers are responsible for refreshing server-component data (e.g. via
+ * `router.refresh()` inside a transition) so the UI updates without a flash.
  *
  * @param paletteId - UUID of the parent palette (used for ownership check and revalidation).
  * @param groupId - UUID of the group to remove the paint from.

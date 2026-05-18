@@ -42,6 +42,7 @@ export function PalettePaintGroupsToggle({
   groups: PaletteGroup[]
   activeGroupIds: string[]
 }) {
+  const router = useRouter()
   const [optimisticIds, setOptimisticIds] = useOptimistic(
     new Set(activeGroupIds),
     (state: Set<string>, update: { groupId: string; active: boolean }) => {
@@ -51,7 +52,6 @@ export function PalettePaintGroupsToggle({
       return next
     },
   )
-  const router = useRouter()
   const [, startTransition] = useTransition()
 
   if (groups.length === 0) return null
@@ -63,9 +63,8 @@ export function PalettePaintGroupsToggle({
       const result = nowActive
         ? await addPaintToGroup(paletteId, groupId, palettePaintId)
         : await removePaintFromGroup(paletteId, groupId, palettePaintId)
-      if (result?.error) {
-        toast.error(result.error)
-      } else {
+      if (result?.error) toast.error(result.error)
+      else {
         if (nowActive) toast.success(`Added to ${groupName}`)
         router.refresh()
       }
@@ -73,7 +72,7 @@ export function PalettePaintGroupsToggle({
   }
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <button type="button" className="btn btn-xs btn-outline flex items-center gap-1">
           Groups

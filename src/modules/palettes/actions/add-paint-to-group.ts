@@ -9,8 +9,8 @@ import { createPaletteService } from '@/modules/palettes/services/palette-servic
  * Creates a new `palette_group_paints` membership row at the end of the group.
  * The same paint may belong to multiple groups simultaneously. The operation is
  * idempotent — adding a paint that is already a member of the group is silently
- * ignored. UI state is managed optimistically by the caller; no revalidation is
- * triggered so the page does not flash.
+ * ignored. Callers are responsible for refreshing server-component data (e.g. via
+ * `router.refresh()` inside a transition) so the UI updates without a flash.
  *
  * @param paletteId - UUID of the parent palette (used for ownership check and revalidation).
  * @param groupId - UUID of the target group.
