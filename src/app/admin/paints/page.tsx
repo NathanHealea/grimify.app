@@ -37,10 +37,9 @@ export default async function AdminPaintsPage({
     getBrandService(),
   ])
 
-  const [brands, paints, totalCount] = await Promise.all([
+  const [brands, { paints, count: totalCount }] = await Promise.all([
     brandService.getAllBrands(),
     paintService.searchPaints({ search, brandId, limit: PAGE_SIZE, offset }),
-    paintService.getTotalPaintCount(),
   ])
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE)

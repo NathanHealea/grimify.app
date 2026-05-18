@@ -261,38 +261,48 @@ export function createPaintService(supabase: SupabaseClient) {
      *
      * When `search` is provided, matches against paint name via ilike.
      * When `brandId` is provided, limits results to paints in that brand's product lines.
+     * Returns both the paginated page of results and the total matching count so
+     * callers can render accurate pagination without a separate unfiltered count call.
      *
      * @param options.search - Optional text to search in paint names.
      * @param options.brandId - Optional brand ID to filter by.
      * @param options.limit - Maximum number of paints to return (default 50).
      * @param options.offset - Number of paints to skip (default 0).
-     * @returns Array of paints with brand info, ordered by name.
+     * @returns `{ paints, count }` where `count` is the total filtered row count.
      */
     async searchPaints(options: {
       search?: string
       brandId?: number
       limit?: number
       offset?: number
-    }): Promise<PaintWithBrand[]> {
+    }): Promise<{ paints: PaintWithBrand[]; count: number }> {
       const { search, brandId, limit = 50, offset = 0 } = options
 
-      let query = supabase
+      let countQuery = supabase
+        .from('paints')
+        .select('*, product_lines!inner(brand_id)', { count: 'exact', head: true })
+
+      let dataQuery = supabase
         .from('paints')
         .select('*, product_lines!inner(brands(name))')
         .order('name')
         .range(offset, offset + limit - 1)
 
       if (search) {
-        query = query.ilike('name', `%${search}%`)
+        countQuery = countQuery.ilike('name', `%${search}%`)
+        dataQuery = dataQuery.ilike('name', `%${search}%`)
       }
 
       if (brandId) {
-        // Filter by brand via inner join on product_lines
-        query = query.eq('product_lines.brand_id', brandId)
+        countQuery = countQuery.eq('product_lines.brand_id', brandId)
+        dataQuery = dataQuery.eq('product_lines.brand_id', brandId)
       }
 
-      const { data } = await query
-      return (data as PaintWithBrand[] | null) ?? []
+      const [{ count }, { data }] = await Promise.all([countQuery, dataQuery])
+      return {
+        paints: (data as PaintWithBrand[] | null) ?? [],
+        count: count ?? 0,
+      }
     },
 
     /**
