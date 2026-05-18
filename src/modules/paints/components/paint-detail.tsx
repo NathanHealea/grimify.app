@@ -25,6 +25,7 @@ import type { Brand } from '@/types/paint'
  * @param props.parentHue - The parent Munsell principal hue, if the paint has a sub-hue.
  * @param props.isInCollection - Whether the paint is in the user's collection.
  * @param props.isAuthenticated - Whether the current user is signed in.
+ * @param props.adminEditHref - When provided (admin users only), renders an edit link pointing to this URL.
  * @param props.brands - All brands, used by the substitutes brand filter when
  *   the paint is discontinued and by the {@link PaintSectionsToggle} similar
  *   filter. Always required now that Similar Paints renders for every paint.
@@ -41,6 +42,7 @@ export function PaintDetail({
   parentHue,
   isInCollection = false,
   isAuthenticated = false,
+  adminEditHref,
   brands = [],
   paintTypes = [],
   paints = [],
@@ -50,6 +52,7 @@ export function PaintDetail({
   parentHue: Hue | null
   isInCollection?: boolean
   isAuthenticated?: boolean
+  adminEditHref?: string
   brands?: Brand[]
   paintTypes?: string[]
   paints?: ColorWheelPaint[]
@@ -86,6 +89,11 @@ export function PaintDetail({
               isAuthenticated={isAuthenticated}
             />
             <FindSimilarButton paintId={paint.id} />
+            {adminEditHref && (
+              <Link href={adminEditHref} className="btn btn-outline btn-sm">
+                Edit
+              </Link>
+            )}
           </div>
           <p className="text-muted-foreground">
             <Link href={`/brands/${brand.id}`} className="underline hover:text-foreground">

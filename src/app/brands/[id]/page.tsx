@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { Breadcrumbs } from '@/components/breadcrumbs'
@@ -57,6 +58,10 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ id
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
+  const isAdmin = user
+    ? await supabase.rpc('get_user_roles', { user_uuid: user.id }).then(({ data }) => (data ?? []).includes('admin'))
+    : false
+
   const brandService = await getBrandService()
   const brand = await brandService.getBrandById(numericId)
 
@@ -91,6 +96,11 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ id
               {brand.website_url}
             </a>
           </PageSubtitle>
+        )}
+        {isAdmin && (
+          <Link href={`/admin/brands/${numericId}`} className="btn btn-outline btn-sm self-start">
+            Edit
+          </Link>
         )}
       </PageHeader>
 

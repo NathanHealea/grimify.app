@@ -55,6 +55,10 @@ export default async function PaintDetailPage({ params }: { params: Promise<{ id
     data: { user },
   } = await supabase.auth.getUser()
 
+  const isAdmin = user
+    ? await supabase.rpc('get_user_roles', { user_uuid: user.id }).then(({ data }) => (data ?? []).includes('admin'))
+    : false
+
   const [references, parentHue, isInCollection, brands, paintTypes, paints, collectionPaintIdsSet] = await Promise.all([
     paintService.getPaintReferences(id),
     paint.hues?.parent_id
@@ -81,6 +85,7 @@ export default async function PaintDetailPage({ params }: { params: Promise<{ id
         parentHue={parentHue}
         isInCollection={isInCollection}
         isAuthenticated={user !== null}
+        adminEditHref={isAdmin ? `/admin/paints/${id}` : undefined}
         brands={brands}
         paintTypes={paintTypes}
         paints={paints}

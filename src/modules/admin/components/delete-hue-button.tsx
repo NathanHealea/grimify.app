@@ -5,6 +5,7 @@ import { useFormStatus } from 'react-dom'
 
 import { deleteHue } from '@/modules/admin/actions/hue-actions'
 import type { HueFormState } from '@/modules/admin/types/hue-form-state'
+import { Button } from '@/components/ui/button';
 
 /**
  * Props for {@link DeleteHueButton}.
@@ -48,13 +49,13 @@ export function DeleteHueButton({ hueId, hueName, childCount, paintCount }: Dele
 
   return (
     <>
-      <button
-        type="button"
-        className="btn btn-destructive btn-sm btn-outline"
+      <Button
+        className='btn-destructive'
+
         onClick={() => dialogRef.current?.showModal()}
       >
         Delete
-      </button>
+      </Button>
 
       <dialog ref={dialogRef} className="m-auto rounded-lg border border-border bg-background p-0 shadow-lg backdrop:bg-black/50">
         <div className="p-6 flex flex-col gap-4">
