@@ -257,6 +257,66 @@ export function createPaintService(supabase: SupabaseClient) {
     },
 
     /**
+     * Searches paints with optional text search and brand filter, with pagination.
+     *
+     * When `search` is provided, matches against paint name via ilike.
+     * When `brandId` is provided, limits results to paints in that brand's product lines.
+     *
+     * @param options.search - Optional text to search in paint names.
+     * @param options.brandId - Optional brand ID to filter by.
+     * @param options.limit - Maximum number of paints to return (default 50).
+     * @param options.offset - Number of paints to skip (default 0).
+     * @returns Array of paints with brand info, ordered by name.
+     */
+    async searchPaints(options: {
+      search?: string
+      brandId?: number
+      limit?: number
+      offset?: number
+    }): Promise<PaintWithBrand[]> {
+      const { search, brandId, limit = 50, offset = 0 } = options
+
+      let query = supabase
+        .from('paints')
+        .select('*, product_lines!inner(brands(name))')
+        .order('name')
+        .range(offset, offset + limit - 1)
+
+      if (search) {
+        query = query.ilike('name', `%${search}%`)
+      }
+
+      if (brandId) {
+        // Filter by brand via inner join on product_lines
+        query = query.eq('product_lines.brand_id', brandId)
+      }
+
+      const { data } = await query
+      return (data as PaintWithBrand[] | null) ?? []
+    },
+
+    /**
+     * Fetches all paints whose `hue_id` is in the provided list of hue IDs.
+     *
+     * Used by the admin hue detail page to show paints associated with a hue
+     * or any of its child hues.
+     *
+     * @param hueIds - Array of hue UUIDs to filter by.
+     * @returns Array of paints with relations, ordered by name.
+     */
+    async getPaintsByHueIds(hueIds: string[]): Promise<PaintWithRelations[]> {
+      if (hueIds.length === 0) return []
+
+      const { data } = await supabase
+        .from('paints')
+        .select('*, product_lines(*, brands(*))')
+        .in('hue_id', hueIds)
+        .order('name')
+
+      return (data as PaintWithRelations[] | null) ?? []
+    },
+
+    /**
      * Fetches a single paint by ID with its product line and brand joined.
      *
      * @param id - The paint's UUID.

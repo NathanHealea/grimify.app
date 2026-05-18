@@ -1,6 +1,6 @@
 {
   "name": "grimify.app",
-  "version": "1.56.0",
+  "version": "1.56.1",
   "description": "Interactive color research and collection management app for miniature painters",
   "author": "Nathan Healea <nhealea@uoregon.edu>",
   "private": true,
@@ -16,6 +16,7 @@
     "db:restart": "npx supabase stop && npx supabase start",
     "db:reset": "npx supabase db reset",
     "db:status": "npx supabase status",
+    "db:update": "npx supabase db push",
     "db:types": "npx supabase gen types typescript --local > src/types/supabase.ts",
     "db:seed:generate": "npx tsx scripts/generate-seed.ts",
     "db:paints:recalculate": "node --env-file=.env node_modules/.bin/tsx scripts/recalculate-paint-colors.ts"

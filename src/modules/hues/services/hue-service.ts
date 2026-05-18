@@ -64,6 +64,77 @@ export function createHueService(supabase: SupabaseClient) {
       return data ?? []
     },
     /**
+     * Fetches a single parent hue with its child count.
+     *
+     * Returns `null` if not found.
+     *
+     * @param id - The hue's UUID.
+     * @returns The hue with `child_count`, or `null`.
+     */
+    async getHueWithChildCount(id: string): Promise<(Hue & { child_count: number }) | null> {
+      const { data: hue } = await supabase.from('hues').select('*').eq('id', id).single()
+      if (!hue) return null
+
+      const { count } = await supabase
+        .from('hues')
+        .select('*', { count: 'exact', head: true })
+        .eq('parent_id', id)
+
+      return { ...hue, child_count: count ?? 0 }
+    },
+
+    /**
+     * Fetches all top-level (parent) hues with child counts and paint counts.
+     *
+     * Used by the admin hues list page to display per-hue statistics.
+     *
+     * @returns Array of parent hues with `child_count` and `paint_count`.
+     */
+    async getParentHuesWithCounts(): Promise<(Hue & { child_count: number; paint_count: number })[]> {
+      const { data: parents } = await supabase
+        .from('hues')
+        .select('*')
+        .is('parent_id', null)
+        .order('sort_order', { ascending: true })
+
+      if (!parents || parents.length === 0) return []
+
+      const parentIds = parents.map((h) => h.id)
+
+      const { data: children } = await supabase
+        .from('hues')
+        .select('id, parent_id')
+        .in('parent_id', parentIds)
+
+      const childIdsByParent = new Map<string, string[]>()
+      for (const child of children ?? []) {
+        const existing = childIdsByParent.get(child.parent_id) ?? []
+        existing.push(child.id)
+        childIdsByParent.set(child.parent_id, existing)
+      }
+
+      const results = await Promise.all(
+        parents.map(async (parent) => {
+          const childIds = childIdsByParent.get(parent.id) ?? []
+          const child_count = childIds.length
+
+          let paint_count = 0
+          if (childIds.length > 0) {
+            const { count } = await supabase
+              .from('paints')
+              .select('*', { count: 'exact', head: true })
+              .in('hue_id', childIds)
+            paint_count = count ?? 0
+          }
+
+          return { ...parent, child_count, paint_count }
+        })
+      )
+
+      return results
+    },
+
+    /**
      * Fetches all top-level Munsell hues with their ISCC-NBS child hues nested,
      * for use in color wheel sector and sub-divider rendering.
      *
