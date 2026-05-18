@@ -257,6 +257,27 @@ export function createPaintService(supabase: SupabaseClient) {
     },
 
     /**
+     * Fetches all paints whose `hue_id` is in the provided list of hue IDs.
+     *
+     * Used by the admin hue detail page to show paints associated with a hue
+     * or any of its child hues.
+     *
+     * @param hueIds - Array of hue UUIDs to filter by.
+     * @returns Array of paints with relations, ordered by name.
+     */
+    async getPaintsByHueIds(hueIds: string[]): Promise<PaintWithRelations[]> {
+      if (hueIds.length === 0) return []
+
+      const { data } = await supabase
+        .from('paints')
+        .select('*, product_lines(*, brands(*))')
+        .in('hue_id', hueIds)
+        .order('name')
+
+      return (data as PaintWithRelations[] | null) ?? []
+    },
+
+    /**
      * Fetches a single paint by ID with its product line and brand joined.
      *
      * @param id - The paint's UUID.
