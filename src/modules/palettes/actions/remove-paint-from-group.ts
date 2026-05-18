@@ -1,7 +1,5 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 
@@ -10,7 +8,8 @@ import { createPaletteService } from '@/modules/palettes/services/palette-servic
  *
  * Deletes the `palette_group_paints` row for `(groupId, palettePaintId)`.
  * The master-list entry and any other group memberships for the same paint are
- * unaffected. Revalidates the palette detail and owner edit paths on success.
+ * unaffected. Callers are responsible for refreshing server-component data (e.g. via
+ * `router.refresh()` inside a transition) so the UI updates without a flash.
  *
  * @param paletteId - UUID of the parent palette (used for ownership check and revalidation).
  * @param groupId - UUID of the group to remove the paint from.
@@ -41,9 +40,4 @@ export async function removePaintFromGroup(
 
   const result = await service.removePaintFromGroup(groupId, palettePaintId)
   if (result.error) return { error: result.error }
-
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
-  revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/user/palettes/${paletteId}/edit`)
 }

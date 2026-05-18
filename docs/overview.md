@@ -226,6 +226,7 @@ Core functionality:
 - [x] [Paint group references (multi-group memberships)](./11-color-palettes/11-paint-group-references.md)
 - [x] [Edit palette — paint combobox](./11-color-palettes/13-edit-palette-paint-combobox.md)
 - [x] [Palette sort bar missing from edit page](./11-color-palettes/14-palette-sort-bar-missing.md)
+- [x] [Palette group dropdown with checkbox & add toast](./11-color-palettes/15-palette-group-dropdown-checkbox.md)
 
 ### Epic: Painting Recipes
 
