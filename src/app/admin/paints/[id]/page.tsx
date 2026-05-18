@@ -71,7 +71,7 @@ export default async function AdminPaintDetailPage({
       </PageHeader>
 
       <div className="space-y-6">
-        <Card className="mx-auto max-w-2xl">
+        <Card>
           <CardHeader>
             <CardTitle>Paint Details</CardTitle>
           </CardHeader>
@@ -87,7 +87,7 @@ export default async function AdminPaintDetailPage({
           </CardContent>
         </Card>
 
-        <Card className="mx-auto max-w-2xl border-destructive/20">
+        <Card className="border-destructive/20">
           <CardHeader>
             <CardTitle>Danger Zone</CardTitle>
           </CardHeader>

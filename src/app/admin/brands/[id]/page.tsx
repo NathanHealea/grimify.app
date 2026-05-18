@@ -56,7 +56,7 @@ export default async function AdminBrandDetailPage({
 
       <div className="space-y-6">
         {/* Edit brand form */}
-        <Card className="mx-auto max-w-lg">
+        <Card>
           <CardHeader>
             <CardTitle>Brand Details</CardTitle>
           </CardHeader>
@@ -66,49 +66,50 @@ export default async function AdminBrandDetailPage({
         </Card>
 
         {/* Product lines */}
-        <div className="mx-auto max-w-lg">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Product Lines</h2>
-          </div>
-
-          {brand.product_lines.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No product lines yet.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border text-left">
-                    <th className="pb-2 pr-4 font-medium">Name</th>
-                    <th className="pb-2 pr-4 font-medium">Slug</th>
-                    <th className="pb-2 pr-4 font-medium text-right">Paints</th>
-                    <th className="pb-2 font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {brand.product_lines.map((pl) => (
-                    <tr key={pl.id} className="border-b border-border/50">
-                      <td className="py-2 pr-4 font-medium">{pl.name}</td>
-                      <td className="py-2 pr-4 font-mono text-xs text-muted-foreground">
-                        {pl.slug}
-                      </td>
-                      <td className="py-2 pr-4 text-right tabular-nums">{pl.paint_count}</td>
-                      <td className="py-2">
-                        <DeleteProductLineButton
-                          productLineId={pl.id}
-                          productLineName={pl.name}
-                          brandId={brand.id}
-                        />
-                      </td>
+        <Card>
+          <CardHeader>
+            <CardTitle>Product Lines</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {brand.product_lines.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No product lines yet.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border text-left">
+                      <th className="pb-2 pr-4 font-medium">Name</th>
+                      <th className="pb-2 pr-4 font-medium">Slug</th>
+                      <th className="pb-2 pr-4 font-medium text-right">Paints</th>
+                      <th className="pb-2 font-medium">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+                  </thead>
+                  <tbody>
+                    {brand.product_lines.map((pl) => (
+                      <tr key={pl.id} className="border-b border-border/50">
+                        <td className="py-2 pr-4 font-medium">{pl.name}</td>
+                        <td className="py-2 pr-4 font-mono text-xs text-muted-foreground">
+                          {pl.slug}
+                        </td>
+                        <td className="py-2 pr-4 text-right tabular-nums">{pl.paint_count}</td>
+                        <td className="py-2">
+                          <DeleteProductLineButton
+                            productLineId={pl.id}
+                            productLineName={pl.name}
+                            brandId={brand.id}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Add product line */}
-        <Card className="mx-auto max-w-lg">
+        <Card>
           <CardHeader>
             <CardTitle>Add Product Line</CardTitle>
           </CardHeader>
@@ -118,7 +119,7 @@ export default async function AdminBrandDetailPage({
         </Card>
 
         {/* Danger zone */}
-        <Card className="mx-auto max-w-lg border-destructive/20">
+        <Card className="border-destructive/20">
           <CardHeader>
             <CardTitle>Danger Zone</CardTitle>
           </CardHeader>
