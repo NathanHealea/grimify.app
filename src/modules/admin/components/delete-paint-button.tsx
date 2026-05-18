@@ -3,17 +3,17 @@
 import { useRef, useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
-import { deleteBrand } from '@/modules/admin/actions/brand-actions'
-import type { BrandFormState } from '@/modules/admin/types/brand-form-state'
+import { deletePaint } from '@/modules/admin/actions/paint-actions'
+import type { PaintFormState } from '@/modules/admin/types/paint-form-state'
 
 /**
- * Props for {@link DeleteBrandButton}.
+ * Props for {@link DeletePaintButton}.
  */
-type DeleteBrandButtonProps = {
-  /** The numeric database ID of the brand to delete. */
-  brandId: number
-  /** The human-readable name of the brand, used in the confirmation dialog. */
-  brandName: string
+type DeletePaintButtonProps = {
+  /** The UUID of the paint to delete. */
+  paintId: string
+  /** The human-readable name of the paint, used in the confirmation dialog. */
+  paintName: string
 }
 
 /**
@@ -23,26 +23,21 @@ function ConfirmDeleteButton() {
   const { pending } = useFormStatus()
   return (
     <button type="submit" disabled={pending} className="btn btn-destructive btn-sm">
-      {pending ? 'Deleting…' : 'Delete Brand'}
+      {pending ? 'Deleting…' : 'Delete Paint'}
     </button>
   )
 }
 
 /**
- * Admin button that opens a native `<dialog>` confirmation before deleting a brand.
+ * Admin button that opens a native `<dialog>` confirmation before deleting a paint.
  *
- * Warns the user that deleting the brand will cascade and remove all its
- * product lines and associated paints. On confirm, calls the {@link deleteBrand}
- * server action.
+ * On confirm, calls the {@link deletePaint} server action and redirects to `/admin/paints`.
  *
- * @param props - {@link DeleteBrandButtonProps}
+ * @param props - {@link DeletePaintButtonProps}
  */
-export function DeleteBrandButton({ brandId, brandName }: DeleteBrandButtonProps) {
+export function DeletePaintButton({ paintId, paintName }: DeletePaintButtonProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
-  const [state, formAction] = useActionState(
-    deleteBrand,
-    null as BrandFormState
-  )
+  const [state, formAction] = useActionState(deletePaint, null as PaintFormState)
 
   return (
     <>
@@ -56,10 +51,9 @@ export function DeleteBrandButton({ brandId, brandName }: DeleteBrandButtonProps
 
       <dialog ref={dialogRef} className="rounded-lg border border-border bg-background p-0 shadow-lg backdrop:bg-black/50">
         <div className="p-6 flex flex-col gap-4">
-          <h3 className="text-lg font-semibold">Delete Brand</h3>
+          <h3 className="text-lg font-semibold">Delete Paint</h3>
           <p className="text-sm text-muted-foreground">
-            Are you sure you want to delete <strong>{brandName}</strong>? This will permanently
-            remove the brand along with all its product lines and paints. This action cannot
+            Are you sure you want to delete <strong>{paintName}</strong>? This action cannot
             be undone.
           </p>
 
@@ -77,7 +71,7 @@ export function DeleteBrandButton({ brandId, brandName }: DeleteBrandButtonProps
             </button>
 
             <form action={formAction}>
-              <input type="hidden" name="id" value={brandId} />
+              <input type="hidden" name="id" value={paintId} />
               <ConfirmDeleteButton />
             </form>
           </div>

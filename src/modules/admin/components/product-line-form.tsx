@@ -1,8 +1,8 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
+import type { ChangeEvent } from 'react'
 import { useFormStatus } from 'react-dom'
-import { useState } from 'react'
 
 import type { ProductLineFormState } from '@/modules/admin/types/product-line-form-state'
 import type { ProductLine } from '@/types/paint'
@@ -65,13 +65,13 @@ export function ProductLineForm({ action, brandId, defaultValues, mode }: Produc
   const [slugValue, setSlugValue] = useState(defaultValues?.slug ?? '')
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(mode === 'edit')
 
-  function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
     if (!slugManuallyEdited) {
       setSlugValue(toSlug(e.target.value))
     }
   }
 
-  function handleSlugChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleSlugChange(e: ChangeEvent<HTMLInputElement>) {
     setSlugManuallyEdited(true)
     setSlugValue(e.target.value)
   }
@@ -93,7 +93,7 @@ export function ProductLineForm({ action, brandId, defaultValues, mode }: Produc
 
       {/* Name */}
       <div className="flex flex-col gap-1">
-        <label htmlFor={`pl-name-${brandId}-${defaultValues?.id ?? 'new'}`} className="label label-sm">
+        <label htmlFor={`pl-name-${brandId}-${defaultValues?.id ?? 'new'}`} className="form-label text-sm">
           Name <span className="text-destructive">*</span>
         </label>
         <input
@@ -113,7 +113,7 @@ export function ProductLineForm({ action, brandId, defaultValues, mode }: Produc
 
       {/* Slug */}
       <div className="flex flex-col gap-1">
-        <label htmlFor={`pl-slug-${brandId}-${defaultValues?.id ?? 'new'}`} className="label label-sm">
+        <label htmlFor={`pl-slug-${brandId}-${defaultValues?.id ?? 'new'}`} className="form-label text-sm">
           Slug <span className="text-destructive">*</span>
         </label>
         <input

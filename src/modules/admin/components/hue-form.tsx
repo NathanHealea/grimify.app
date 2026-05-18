@@ -1,8 +1,8 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
+import type { ChangeEvent } from 'react'
 import { useFormStatus } from 'react-dom'
-import { useState } from 'react'
 
 import type { HueFormState } from '@/modules/admin/types/hue-form-state'
 import type { Hue } from '@/types/color'
@@ -66,22 +66,22 @@ export function HueForm({ action, parentId, defaultValues, mode }: HueFormProps)
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(mode === 'edit')
   const [hexValue, setHexValue] = useState(defaultValues?.hex_code ?? '#000000')
 
-  function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
     if (!slugManuallyEdited) {
       setSlugValue(toSlug(e.target.value))
     }
   }
 
-  function handleSlugChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleSlugChange(e: ChangeEvent<HTMLInputElement>) {
     setSlugManuallyEdited(true)
     setSlugValue(e.target.value)
   }
 
-  function handleHexTextChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleHexTextChange(e: ChangeEvent<HTMLInputElement>) {
     setHexValue(e.target.value)
   }
 
-  function handleColorPickerChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleColorPickerChange(e: ChangeEvent<HTMLInputElement>) {
     setHexValue(e.target.value)
   }
 
@@ -104,7 +104,7 @@ export function HueForm({ action, parentId, defaultValues, mode }: HueFormProps)
 
       {/* Name */}
       <div className="flex flex-col gap-1">
-        <label htmlFor="hue-name" className="label label-sm">
+        <label htmlFor="hue-name" className="form-label text-sm">
           Name <span className="text-destructive">*</span>
         </label>
         <input
@@ -124,7 +124,7 @@ export function HueForm({ action, parentId, defaultValues, mode }: HueFormProps)
 
       {/* Slug */}
       <div className="flex flex-col gap-1">
-        <label htmlFor="hue-slug" className="label label-sm">
+        <label htmlFor="hue-slug" className="form-label text-sm">
           Slug <span className="text-destructive">*</span>
         </label>
         <input
@@ -144,7 +144,7 @@ export function HueForm({ action, parentId, defaultValues, mode }: HueFormProps)
 
       {/* Hex code with color picker */}
       <div className="flex flex-col gap-1">
-        <label htmlFor="hue-hex" className="label label-sm">
+        <label htmlFor="hue-hex" className="form-label text-sm">
           Hex Code
         </label>
         <div className="flex items-center gap-2">
@@ -178,7 +178,7 @@ export function HueForm({ action, parentId, defaultValues, mode }: HueFormProps)
       {/* Sort order — only for parent hues */}
       {!parentId && (
         <div className="flex flex-col gap-1">
-          <label htmlFor="hue-sort-order" className="label label-sm">
+          <label htmlFor="hue-sort-order" className="form-label text-sm">
             Sort Order
           </label>
           <input
