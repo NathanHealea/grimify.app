@@ -5,17 +5,8 @@ import { redirect } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase/server'
 import { hexToRgb, rgbToHsl } from '@/lib/color-utils'
+import { toSlug } from '@/modules/admin/utils/to-slug'
 import type { PaintFormState } from '@/modules/admin/types/paint-form-state'
-
-/**
- * Converts a raw string into a URL-safe slug.
- *
- * @param value - The raw input string.
- * @returns A lowercase, hyphenated slug string.
- */
-function toSlug(value: string): string {
-  return value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-}
 
 /**
  * Creates a new paint.

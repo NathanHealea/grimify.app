@@ -3,20 +3,11 @@
 import { revalidatePath } from 'next/cache'
 
 import { createClient } from '@/lib/supabase/server'
+import { toSlug } from '@/modules/admin/utils/to-slug'
 import type { ProductLineFormState } from '@/modules/admin/types/product-line-form-state'
 
 /** Slug validation pattern: only lowercase letters, digits, and hyphens. */
 const SLUG_PATTERN = /^[a-z0-9-]+$/
-
-/**
- * Converts a raw string into a URL-safe slug.
- *
- * @param value - The raw input string.
- * @returns A lowercase, hyphenated slug string.
- */
-function toSlug(value: string): string {
-  return value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-}
 
 /**
  * Creates a new product line under a brand.

@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useState, useEffect } from 'react'
+import { useActionState, useState, useMemo } from 'react'
 import type { ChangeEvent } from 'react'
 import { useFormStatus } from 'react-dom'
 
@@ -86,18 +86,12 @@ export function PaintForm({
     defaultValues?.product_lines?.brand_id ?? ''
   )
   const [hexValue, setHexValue] = useState(defaultValues?.hex ? `#${defaultValues.hex}` : '#000000')
-  const [computedColor, setComputedColor] = useState<{
-    r: number; g: number; b: number; h: number; s: number; l: number
-  } | null>(null)
 
-  useEffect(() => {
+  const computedColor = useMemo(() => {
     const rgb = hexToRgb(hexValue)
-    if (rgb) {
-      const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
-      setComputedColor({ ...rgb, ...hsl })
-    } else {
-      setComputedColor(null)
-    }
+    if (!rgb) return null
+    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b)
+    return { ...rgb, ...hsl }
   }, [hexValue])
 
   const productLines =

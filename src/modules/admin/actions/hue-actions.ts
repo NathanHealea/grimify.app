@@ -4,18 +4,9 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase/server'
+import { toSlug } from '@/modules/admin/utils/to-slug'
 import type { HueFormState } from '@/modules/admin/types/hue-form-state'
 import type { PaintHueActionState } from '@/modules/admin/types/paint-hue-action-state'
-
-/**
- * Converts a raw string into a URL-safe slug.
- *
- * @param value - The raw input string.
- * @returns A lowercase, hyphenated slug string.
- */
-function toSlug(value: string): string {
-  return value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-}
 
 /**
  * Creates a new hue.

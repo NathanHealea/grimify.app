@@ -4,20 +4,8 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase/server'
+import { toSlug } from '@/modules/admin/utils/to-slug'
 import type { BrandFormState } from '@/modules/admin/types/brand-form-state'
-
-/**
- * Converts a raw string into a URL-safe slug.
- *
- * Replaces spaces with hyphens, lowercases, and strips any character
- * that is not `[a-z0-9-]`.
- *
- * @param value - The raw input string (e.g., a brand name).
- * @returns A lowercase, hyphenated slug string.
- */
-function toSlug(value: string): string {
-  return value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-}
 
 /** Slug validation pattern: only lowercase letters, digits, and hyphens. */
 const SLUG_PATTERN = /^[a-z0-9-]+$/
