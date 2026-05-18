@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache'
 
 import { createClient } from '@/lib/supabase/server'
-import { toSlug } from '@/modules/admin/utils/to-slug'
 import type { ProductLineFormState } from '@/modules/admin/types/product-line-form-state'
 
 /** Slug validation pattern: only lowercase letters, digits, and hyphens. */
@@ -133,6 +132,3 @@ export async function deleteProductLine(
   revalidatePath(`/admin/brands/${brand_id}`)
   return { success: true }
 }
-
-/** Re-export slug helper for use in client components. */
-export { toSlug }

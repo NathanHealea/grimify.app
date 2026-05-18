@@ -138,6 +138,3 @@ export async function deleteBrand(
   revalidatePath('/admin/brands')
   redirect('/admin/brands')
 }
-
-/** Re-export slug helper for use in client components. */
-export { toSlug }
