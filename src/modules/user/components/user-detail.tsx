@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { PageTitle } from '@/components/page-header'
+import { Button } from '@/components/ui/button'
 import { DeactivateUserButton } from '@/modules/user/components/deactivate-user-button'
 import { DeleteUserDialog } from '@/modules/user/components/delete-user-dialog'
 
@@ -244,13 +245,13 @@ export function UserDetail({
               displayName={profile.display_name ?? 'this user'}
             />
 
-            <button
+            <Button
               type="button"
               onClick={() => setDeleteOpen(true)}
-              className="btn btn-sm btn-destructive btn-outline"
+              className="btn-sm btn-destructive btn-outline"
             >
               Delete account
-            </button>
+            </Button>
           </CardContent>
         </Card>
       )}

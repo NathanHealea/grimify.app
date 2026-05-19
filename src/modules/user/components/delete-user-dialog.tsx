@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 /**
@@ -97,22 +98,22 @@ export function DeleteUserDialog({
         </div>
 
         <DialogFooter className="mt-2">
-          <button
+          <Button
             type="button"
             onClick={handleClose}
             disabled={isPending}
-            className="btn btn-sm btn-ghost"
+            className="btn-sm btn-ghost"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={handleConfirm}
             disabled={!canConfirm}
-            className="btn btn-sm btn-destructive"
+            className="btn-sm btn-destructive"
           >
             {isPending ? 'Deleting...' : 'Delete user'}
-          </button>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

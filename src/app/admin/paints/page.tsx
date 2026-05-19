@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Main } from '@/components/main'
 import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
@@ -79,9 +80,9 @@ export default async function AdminPaintsPage({
             className="input-sm w-56"
           />
           {brand_id && <input type="hidden" name="brand_id" value={brand_id} />}
-          <button type="submit" className="btn btn-ghost btn-sm">
+          <Button type="submit" className="btn-ghost btn-sm">
             Search
-          </button>
+          </Button>
         </form>
 
         <form method="GET" className="flex items-center gap-2">
@@ -98,9 +99,9 @@ export default async function AdminPaintsPage({
               </option>
             ))}
           </select>
-          <button type="submit" className="btn btn-ghost btn-sm">
+          <Button type="submit" className="btn-ghost btn-sm">
             Filter
-          </button>
+          </Button>
         </form>
 
         {(search || brand_id) && (

@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 
 import { Main } from '@/components/main'
+import { Button } from '@/components/ui/button'
 import { PageHeader, PageTitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
@@ -30,9 +31,9 @@ export default async function UserPalettesPage() {
       <PageHeader
         actions={
           <form action="/user/palettes/new" method="post">
-            <button type="submit" className="btn btn-primary btn-sm">
+            <Button type="submit" className="btn-primary btn-sm">
               New palette
-            </button>
+            </Button>
           </form>
         }
       >
@@ -47,9 +48,9 @@ export default async function UserPalettesPage() {
             You don&apos;t have any palettes yet.
           </p>
           <form action="/user/palettes/new" method="post" className="mt-4">
-            <button type="submit" className="btn btn-primary btn-sm">
+            <Button type="submit" className="btn-primary btn-sm">
               Create your first palette
-            </button>
+            </Button>
           </form>
         </div>
       )}

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
+import { Button } from '@/components/ui/button'
 import { DeleteUserDialog } from '@/modules/user/components/delete-user-dialog'
 
 /**
@@ -35,13 +36,13 @@ export function AdminDeleteUserSection({
 
   return (
     <>
-      <button
+      <Button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn btn-sm btn-destructive btn-outline"
+        className="btn-sm btn-destructive btn-outline"
       >
         Delete account
-      </button>
+      </Button>
 
       <DeleteUserDialog
         userId={userId}
