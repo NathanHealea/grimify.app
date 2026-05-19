@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import { deleteRole } from '@/modules/admin/actions/delete-role'
 
 /** Shape of a role row in the role list table. */
@@ -100,26 +101,26 @@ function RoleRow({ role }: { role: RoleRow }) {
           {canDelete && (
             <>
               {confirming && !isPending && (
-                <button
+                <Button
                   type="button"
                   onClick={() => setConfirming(false)}
-                  className="btn btn-sm btn-ghost"
+                  className="btn-sm btn-ghost"
                 >
                   Cancel
-                </button>
+                </Button>
               )}
-              <button
+              <Button
                 type="button"
                 onClick={handleDelete}
                 disabled={isPending}
-                className="btn btn-sm btn-destructive"
+                className="btn-sm btn-destructive"
               >
                 {isPending
                   ? 'Deleting...'
                   : confirming
                     ? 'Confirm'
                     : 'Delete'}
-              </button>
+              </Button>
             </>
           )}
         </div>

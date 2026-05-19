@@ -27,9 +27,9 @@ type DeleteHueButtonProps = {
 function ConfirmDeleteButton() {
   const { pending } = useFormStatus()
   return (
-    <button type="submit" disabled={pending} className="btn btn-destructive btn-sm">
+    <Button type="submit" disabled={pending} className="btn-destructive btn-sm">
       {pending ? 'Deleting…' : 'Delete Hue'}
-    </button>
+    </Button>
   )
 }
 
@@ -87,13 +87,13 @@ export function DeleteHueButton({ hueId, hueName, childCount, paintCount }: Dele
           )}
 
           <div className="flex justify-end gap-2">
-            <button
+            <Button
               type="button"
-              className="btn btn-ghost btn-sm"
+              className="btn-ghost btn-sm"
               onClick={() => dialogRef.current?.close()}
             >
               Cancel
-            </button>
+            </Button>
 
             <form action={formAction}>
               <input type="hidden" name="id" value={hueId} />

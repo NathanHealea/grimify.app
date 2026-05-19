@@ -4,6 +4,8 @@ import { useActionState, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import { Button } from '@/components/ui/button'
+
 import type { HueFormState } from '@/modules/admin/types/hue-form-state'
 import type { Hue } from '@/types/color'
 
@@ -29,7 +31,7 @@ type HueFormProps = {
 function SubmitButton({ mode }: { mode: 'create' | 'edit' }) {
   const { pending } = useFormStatus()
   return (
-    <button type="submit" disabled={pending} className="btn btn-primary btn-sm">
+    <Button type="submit" disabled={pending} className="btn-primary btn-sm">
       {pending
         ? mode === 'create'
           ? 'Creating…'
@@ -37,7 +39,7 @@ function SubmitButton({ mode }: { mode: 'create' | 'edit' }) {
         : mode === 'create'
           ? 'Create Hue'
           : 'Save Changes'}
-    </button>
+    </Button>
   )
 }
 

@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import { Button } from '@/components/ui/button'
 import type { BrandFormState } from '@/modules/admin/types/brand-form-state'
 import type { Brand } from '@/types/paint'
 
@@ -27,7 +28,7 @@ type BrandFormProps = {
 function SubmitButton({ mode }: { mode: 'create' | 'edit' }) {
   const { pending } = useFormStatus()
   return (
-    <button type="submit" disabled={pending} className="btn btn-primary btn-sm">
+    <Button type="submit" disabled={pending} className="btn-primary btn-sm">
       {pending
         ? mode === 'create'
           ? 'Creating…'
@@ -35,7 +36,7 @@ function SubmitButton({ mode }: { mode: 'create' | 'edit' }) {
         : mode === 'create'
           ? 'Create Brand'
           : 'Save Changes'}
-    </button>
+    </Button>
   )
 }
 

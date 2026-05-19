@@ -4,6 +4,7 @@ import { useActionState, useState, useMemo } from 'react'
 import type { ChangeEvent } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import { Button } from '@/components/ui/button'
 import { hexToRgb, rgbToHsl } from '@/lib/color-utils'
 import { HueSelector } from '@/modules/admin/components/hue-selector'
 import type { PaintFormState } from '@/modules/admin/types/paint-form-state'
@@ -40,7 +41,7 @@ type PaintFormProps = {
 function SubmitButton({ mode }: { mode: 'create' | 'edit' }) {
   const { pending } = useFormStatus()
   return (
-    <button type="submit" disabled={pending} className="btn btn-primary btn-sm">
+    <Button type="submit" disabled={pending} className="btn-primary btn-sm">
       {pending
         ? mode === 'create'
           ? 'Creating…'
@@ -48,7 +49,7 @@ function SubmitButton({ mode }: { mode: 'create' | 'edit' }) {
         : mode === 'create'
           ? 'Create Paint'
           : 'Save Changes'}
-    </button>
+    </Button>
   )
 }
 

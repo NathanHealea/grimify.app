@@ -3,6 +3,7 @@
 import { useActionState } from 'react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import { createRole } from '@/modules/admin/actions/create-role'
 import { validateRoleName } from '@/modules/admin/validation'
 
@@ -51,13 +52,13 @@ export function CreateRoleForm() {
           disabled={isPending}
         />
       </div>
-      <button
+      <Button
         type="submit"
         disabled={isPending}
-        className="btn btn-sm btn-primary"
+        className="btn-sm btn-primary"
       >
         {isPending ? 'Creating...' : 'Create role'}
-      </button>
+      </Button>
     </form>
   )
 }

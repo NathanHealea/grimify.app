@@ -3,6 +3,7 @@
 import { useActionState, useState } from 'react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import { updateRole } from '@/modules/admin/actions/update-role'
 import { validateRoleName } from '@/modules/admin/validation'
 
@@ -66,21 +67,21 @@ export function RoleDetailCard({
                 autoFocus
               />
             </div>
-            <button
+            <Button
               type="submit"
               disabled={isPending}
-              className="btn btn-sm btn-primary"
+              className="btn-sm btn-primary"
             >
               {isPending ? 'Saving...' : 'Save'}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={() => setEditing(false)}
               disabled={isPending}
-              className="btn btn-sm btn-ghost"
+              className="btn-sm btn-ghost"
             >
               Cancel
-            </button>
+            </Button>
           </form>
         ) : (
           <div className="flex items-center gap-3">
@@ -88,13 +89,13 @@ export function RoleDetailCard({
             {role.builtin ? (
               <span className="badge badge-soft">Built-in</span>
             ) : (
-              <button
+              <Button
                 type="button"
                 onClick={() => setEditing(true)}
-                className="btn btn-sm btn-ghost"
+                className="btn-sm btn-ghost"
               >
                 Rename
-              </button>
+              </Button>
             )}
           </div>
         )}
