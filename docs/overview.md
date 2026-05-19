@@ -249,4 +249,4 @@ Core functionality:
 | | Name | Type | Status |
 |---|------|------|--------|
 | [ ] | [Button Component Props Refactor](./other/button-component-props.md) | Refactor | Todo |
-| [ ] | [Input Component Props Refactor](./other/input-component-props.md) | Refactor | Todo |
+| [ ] | [Input & Textarea Component Props Refactor](./other/input-component-props.md) | Refactor | Todo |
