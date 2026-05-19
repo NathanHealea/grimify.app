@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 /** Display labels for each sort field. */
@@ -90,15 +91,15 @@ export function PaintSortBar({
         </SelectContent>
       </Select>
 
-      <button
+      <Button
         type="button"
         onClick={handleDirectionToggle}
         disabled={disabled}
-        className="btn btn-sm btn-outline"
+        className="btn-sm btn-outline"
         aria-label={direction === 'asc' ? 'Ascending — click to switch to descending' : 'Descending — click to switch to ascending'}
       >
         {direction === 'asc' ? '↑ Asc' : '↓ Desc'}
-      </button>
+      </Button>
     </div>
   )
 }

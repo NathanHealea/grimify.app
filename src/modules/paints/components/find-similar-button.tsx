@@ -36,7 +36,7 @@ export function FindSimilarButton({
   return (
     <Button
       type="button"
-      className="btn btn-secondary btn-sm"
+      className="btn-secondary btn-sm"
       onClick={() => findAndNavigate(paintId, limit)}
       disabled={isPending}
       aria-label="Find similar paints across brands"

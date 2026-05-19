@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, useTransition } from 'react'
 
+import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
 import { findPaintMatches } from '@/modules/paints/actions/find-paint-matches'
@@ -267,13 +268,13 @@ export function PaintSimilarSection({
         </label>
 
         {hasActiveFilters && (
-          <button
+          <Button
             type="button"
             onClick={clearAll}
-            className="btn btn-ghost btn-sm"
+            className="btn-ghost btn-sm"
           >
             Clear all
-          </button>
+          </Button>
         )}
       </div>
 
@@ -323,13 +324,13 @@ export function PaintSimilarSection({
             No similar paints with the current filters.
           </p>
           {hasActiveFilters && (
-            <button
+            <Button
               type="button"
               onClick={clearAll}
-              className="btn btn-ghost btn-sm"
+              className="btn-ghost btn-sm"
             >
               Clear all filters
-            </button>
+            </Button>
           )}
         </div>
       ) : (
