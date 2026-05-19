@@ -11,7 +11,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
+import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core'
 import {
   SortableContext,
   sortableKeyboardCoordinates,
@@ -120,6 +120,7 @@ export function PaletteGroupedPaintList({
   )
   const [draggableGroups, setDraggableGroups] = useState<DraggableGroup[]>(() => seedGroups(groups))
   const [activeDndId, setActiveDndId] = useState<string | null>(null)
+  const [overGroupId, setOverGroupId] = useState<string | null>(null)
   const [, startTransition] = useTransition()
 
   const latestConfirmedMasterRef = useRef<MasterDraggable[]>(master)
@@ -149,12 +150,43 @@ export function PaletteGroupedPaintList({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   )
 
+  /** Resolves a group id from a dnd id that may be a group header or a group-ref. */
+  function resolveTargetGroupId(dndId: string): string | null {
+    // Check if it's a group header dndId
+    const headerMatch = draggableGroups.find((dg) => dg.dndId === dndId)
+    if (headerMatch) return headerMatch.group.id
+    // Check if it's a group-ref dndId
+    for (const [groupId, refs] of groupRefs) {
+      if (refs.some((r) => r.dndId === dndId)) return groupId
+    }
+    return null
+  }
+
   function handleDragStart(event: DragStartEvent) {
     setActiveDndId(event.active.id as string)
   }
 
+  function handleDragOver(event: DragOverEvent) {
+    const { active, over } = event
+    if (!over) {
+      setOverGroupId(null)
+      return
+    }
+
+    // Only highlight when a master paint is being dragged over a group
+    const activeMasterIdx = master.findIndex((m) => m.dndId === active.id)
+    if (activeMasterIdx === -1) {
+      setOverGroupId(null)
+      return
+    }
+
+    const targetGroupId = resolveTargetGroupId(over.id as string)
+    setOverGroupId(targetGroupId)
+  }
+
   function handleDragEnd(event: DragEndEvent) {
     setActiveDndId(null)
+    setOverGroupId(null)
     const { active, over } = event
     if (!over || active.id === over.id) return
 
@@ -181,11 +213,45 @@ export function PaletteGroupedPaintList({
       return
     }
 
-    // ── Master-list reorder ────────────────────────────────────────────────────
+    // ── Master-list reorder or cross-zone drop into a group ───────────────────
     const activeMasterIdx = master.findIndex((m) => m.dndId === active.id)
     if (activeMasterIdx !== -1) {
       const toIdx = master.findIndex((m) => m.dndId === over.id)
-      if (toIdx === -1) return // cross-zone drop — rejected
+
+      if (toIdx === -1) {
+        // Check if over.id resolves to a group — cross-zone add
+        const targetGroupId = resolveTargetGroupId(over.id as string)
+        if (!targetGroupId) return
+
+        const slot = master[activeMasterIdx]
+        const prevGroupRefs = latestConfirmedGroupRefsRef.current
+        const existingRefs = groupRefs.get(targetGroupId) ?? []
+
+        // Skip if paint is already in the group
+        if (existingRefs.some((r) => r.palettePaintId === slot.palettePaintId)) return
+
+        const newRef: GroupRefDraggable = {
+          dndId: crypto.randomUUID(),
+          groupMembershipId: crypto.randomUUID(),
+          palettePaintId: slot.palettePaintId,
+          paint: slot.paint,
+        }
+        const newGroupRefs = new Map(groupRefs)
+        newGroupRefs.set(targetGroupId, [...existingRefs, newRef])
+        setGroupRefs(newGroupRefs)
+
+        startTransition(async () => {
+          const result = await addPaintToGroup(paletteId, targetGroupId, slot.palettePaintId)
+          if (result?.error) {
+            setGroupRefs(prevGroupRefs)
+            toast.error(result.error)
+          } else {
+            latestConfirmedGroupRefsRef.current = newGroupRefs
+          }
+        })
+        return
+      }
+
       const prevMaster = latestConfirmedMasterRef.current
       const newMaster = reorderArray(master, activeMasterIdx, toIdx)
       setMaster(newMaster)
@@ -280,7 +346,7 @@ export function PaletteGroupedPaintList({
   }
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
       <div className="flex flex-col gap-3 select-none">
         {/* ── Master list ─────────────────────────────────────────────────────── */}
         <SortableContext
@@ -321,7 +387,7 @@ export function PaletteGroupedPaintList({
           {draggableGroups.map((dg) => {
             const refs = groupRefs.get(dg.group.id) ?? []
             return (
-              <div key={dg.dndId} className="flex flex-col gap-1">
+              <div key={dg.dndId} className={['flex flex-col gap-1 rounded-md transition-shadow', overGroupId === dg.group.id ? 'ring-2 ring-primary/40' : ''].filter(Boolean).join(' ')}>
                 <PaletteGroupHeader
                   paletteId={paletteId}
                   group={dg.group}
@@ -371,21 +437,40 @@ export function PaletteGroupedPaintList({
         {canEdit && <PaletteGroupForm paletteId={paletteId} />}
       </div>
 
-      {/* ── Drag overlay for group header ghosts ────────────────────────────── */}
+      {/* ── Drag overlay for group header and cross-zone paint ghosts ────────── */}
       <DragOverlay>
         {(() => {
           if (!activeDndId) return null
+
+          // Group header ghost
           const dg = draggableGroups.find((g) => g.dndId === activeDndId)
-          if (!dg) return null
-          const count = groupRefs.get(dg.group.id)?.length ?? 0
-          return (
-            <div className="flex items-center gap-2 rounded-md border border-dashed border-border bg-background px-2 py-1 shadow-xl">
-              <span className="flex-1 text-sm font-semibold">{dg.group.name}</span>
-              <span className="rounded px-1.5 py-0.5 text-xs text-muted-foreground bg-muted">
-                {count} {count === 1 ? 'paint' : 'paints'}
-              </span>
-            </div>
-          )
+          if (dg) {
+            const count = groupRefs.get(dg.group.id)?.length ?? 0
+            return (
+              <div className="flex items-center gap-2 rounded-md border border-dashed border-border bg-background px-2 py-1 shadow-xl">
+                <span className="flex-1 text-sm font-semibold">{dg.group.name}</span>
+                <span className="rounded px-1.5 py-0.5 text-xs text-muted-foreground bg-muted">
+                  {count} {count === 1 ? 'paint' : 'paints'}
+                </span>
+              </div>
+            )
+          }
+
+          // Paint swatch ghost — shown when a master paint is dragged over a group
+          const masterSlot = master.find((m) => m.dndId === activeDndId)
+          if (masterSlot && overGroupId && masterSlot.paint) {
+            return (
+              <div className="flex items-center gap-2 rounded-lg border border-primary/40 bg-background px-3 py-2 shadow-xl">
+                <div
+                  className="size-6 shrink-0 rounded-sm"
+                  style={{ backgroundColor: masterSlot.paint.hex }}
+                />
+                <span className="text-sm font-medium">{masterSlot.paint.name}</span>
+              </div>
+            )
+          }
+
+          return null
         })()}
       </DragOverlay>
     </DndContext>
