@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { getHueSwapCandidates } from '@/modules/palettes/actions/get-hue-swap-candidates'
 import { swapPalettePaint } from '@/modules/palettes/actions/swap-palette-paint'
@@ -141,14 +142,14 @@ export function PaletteSwapDialog({
               <p className="text-xs text-muted-foreground">Hue group: {hueGroupName}</p>
             )}
           </DialogHeader>
-          <button
+          <Button
             type="button"
             onClick={handleClose}
-            className="btn btn-ghost btn-xs btn-square shrink-0"
+            className="btn-ghost btn-xs btn-square shrink-0"
             aria-label="Close"
           >
             ✕
-          </button>
+          </Button>
         </div>
 
         {/* Body */}
@@ -226,14 +227,14 @@ export function PaletteSwapDialog({
 
         {/* Footer */}
         <DialogFooter className="border-t border-border px-5 py-3 shrink-0">
-          <button
+          <Button
             type="button"
             onClick={handleClose}
             disabled={isPending}
-            className="btn btn-sm btn-ghost"
+            className="btn-sm btn-ghost"
           >
             Cancel
-          </button>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -247,13 +248,13 @@ function SliderInfoPopover() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button
+        <Button
           type="button"
-          className="btn btn-ghost btn-xs btn-square"
+          className="btn-ghost btn-xs btn-square"
           aria-label="How filters work"
         >
           <Info className="size-3.5" />
-        </button>
+        </Button>
       </PopoverTrigger>
       <PopoverContent side="left" align="start" className="w-80">
         <div className="flex flex-col gap-3 text-sm">

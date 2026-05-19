@@ -10,6 +10,7 @@ import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import { updatePaletteGroup } from '@/modules/palettes/actions/update-palette-group'
 import { validateGroupName } from '@/modules/palettes/validation'
 import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
+import { Button } from '@/components/ui/button'
 import { PaletteGroupDeleteDialog } from '@/modules/palettes/components/palette-group-delete-dialog'
 
 /**
@@ -117,14 +118,14 @@ export function PaletteGroupHeader({
           className="input input-sm flex-1 bg-transparent border-0 shadow-none focus:ring-0 font-semibold text-sm"
           aria-label="Group name"
         />
-        <button
+        <Button
           type="button"
           onClick={() => setDeleteOpen(true)}
-          className="btn btn-ghost btn-xs text-muted-foreground hover:text-destructive"
+          className="btn-ghost btn-xs text-muted-foreground hover:text-destructive"
           aria-label={`Delete group ${group.name}`}
         >
           <Trash2 className="size-3.5" aria-hidden />
-        </button>
+        </Button>
       </div>
 
       <PaletteGroupDeleteDialog

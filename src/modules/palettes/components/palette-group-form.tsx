@@ -4,6 +4,7 @@ import { useRef, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
 import { validateGroupName } from '@/modules/palettes/validation'
+import { Button } from '@/components/ui/button'
 import { createPaletteGroup } from '@/modules/palettes/actions/create-palette-group'
 
 /**
@@ -60,13 +61,13 @@ export function PaletteGroupForm({ paletteId }: { paletteId: string }) {
           {nameError}
         </p>
       )}
-      <button
+      <Button
         type="submit"
         disabled={isPending}
-        className="btn btn-sm btn-outline whitespace-nowrap"
+        className="btn-sm btn-outline whitespace-nowrap"
       >
         {isPending ? 'Adding…' : 'Add group'}
-      </button>
+      </Button>
     </form>
   )
 }

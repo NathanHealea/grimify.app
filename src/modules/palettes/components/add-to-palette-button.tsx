@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
@@ -64,20 +65,20 @@ export function AddToPaletteButton({
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <button
+        <Button
           type="button"
           aria-label="Add to palette"
           onClick={handleTriggerClick}
           className={cn(
             variant === 'icon'
-              ? 'btn btn-ghost btn-square btn-sm text-muted-foreground hover:text-foreground'
-              : 'btn btn-soft btn-primary btn-md',
+              ? 'btn-ghost btn-square btn-sm text-muted-foreground hover:text-foreground'
+              : 'btn-soft btn-primary btn-md',
             className,
           )}
         >
           <Plus size={variant === 'icon' ? 16 : 18} aria-hidden="true" />
           {variant === 'full' && <span>Add to palette</span>}
-        </button>
+        </Button>
       </DropdownMenuTrigger>
       {isAuthenticated && (
         <DropdownMenuContent align="end" className="w-56">

@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
 import { validatePaletteName } from '@/modules/palettes/validation'
+import { Button } from '@/components/ui/button'
 import { createPaletteWithPaints } from '@/modules/palettes/actions/create-palette-with-paints'
 
 /**
@@ -69,21 +70,21 @@ export function NewPaletteInlineForm({
         </p>
       )}
       <div className="flex gap-2">
-        <button
+        <Button
           type="submit"
           disabled={isPending}
-          className="btn btn-primary btn-sm flex-1"
+          className="btn-primary btn-sm flex-1"
         >
           {isPending ? 'Creating…' : 'Create'}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={onCancel}
           disabled={isPending}
-          className="btn btn-ghost btn-sm flex-1"
+          className="btn-ghost btn-sm flex-1"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   )
