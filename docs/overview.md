@@ -243,3 +243,9 @@ Core functionality:
 - [ ] [Public recipe sharing, browse, and OG previews](./12-painting-recipes/05-recipe-sharing.md)
 - [ ] [Migrate `RecipePaletteCombobox` to Radix Select](./12-painting-recipes/06-migrate-recipe-palette-combobox.md)
 - [x] [Recipe browse page — public paginated listing](./12-painting-recipes/07-recipe-browse-page.md)
+
+### Other
+
+| | Name | Type | Status |
+|---|------|------|--------|
+| [ ] | [Button Component Props Refactor](./other/button-component-props.md) | Refactor | Todo |
