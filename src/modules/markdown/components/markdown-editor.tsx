@@ -5,6 +5,7 @@ import { Eye } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
 import { MarkdownToolbarButton } from '@/modules/markdown/components/markdown-toolbar-button'
 import { MarkdownToolbarDropdown } from '@/modules/markdown/components/markdown-toolbar-dropdown'
@@ -191,7 +192,7 @@ export function MarkdownEditor({
           )}
         </div>
       )}
-      <textarea
+      <Textarea
         ref={textareaRef}
         id={id}
         name={name}
@@ -202,7 +203,7 @@ export function MarkdownEditor({
         onInput={(e) => setCount(e.currentTarget.value.length)}
         onKeyDown={handleKeyDown}
         className={cn(
-          'textarea w-full',
+          'w-full',
           error && 'textarea-error',
           previewMode && 'hidden'
         )}
