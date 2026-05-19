@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useTransition } from 'react'
 import {
   DndContext,
+  DragOverlay,
   KeyboardSensor,
   PointerSensor,
   TouchSensor,
@@ -10,7 +11,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import type { DragEndEvent } from '@dnd-kit/core'
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import {
   SortableContext,
   sortableKeyboardCoordinates,
@@ -118,6 +119,7 @@ export function PaletteGroupedPaintList({
     seedGroupRefs(groups),
   )
   const [draggableGroups, setDraggableGroups] = useState<DraggableGroup[]>(() => seedGroups(groups))
+  const [activeDndId, setActiveDndId] = useState<string | null>(null)
   const [, startTransition] = useTransition()
 
   const latestConfirmedMasterRef = useRef<MasterDraggable[]>(master)
@@ -147,7 +149,12 @@ export function PaletteGroupedPaintList({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   )
 
+  function handleDragStart(event: DragStartEvent) {
+    setActiveDndId(event.active.id as string)
+  }
+
   function handleDragEnd(event: DragEndEvent) {
+    setActiveDndId(null)
     const { active, over } = event
     if (!over || active.id === over.id) return
 
@@ -273,7 +280,7 @@ export function PaletteGroupedPaintList({
   }
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="flex flex-col gap-3 select-none">
         {/* ── Master list ─────────────────────────────────────────────────────── */}
         <SortableContext
@@ -320,6 +327,7 @@ export function PaletteGroupedPaintList({
                   group={dg.group}
                   canEdit={canEdit}
                   dndId={canEdit ? dg.dndId : undefined}
+                  paintCount={refs.length}
                 />
                 <div className={['flex flex-col gap-1', refs.length > 0 ? 'pl-6' : ''].filter(Boolean).join(' ')}>
                   <SortableContext
@@ -362,6 +370,24 @@ export function PaletteGroupedPaintList({
 
         {canEdit && <PaletteGroupForm paletteId={paletteId} />}
       </div>
+
+      {/* ── Drag overlay for group header ghosts ────────────────────────────── */}
+      <DragOverlay>
+        {(() => {
+          if (!activeDndId) return null
+          const dg = draggableGroups.find((g) => g.dndId === activeDndId)
+          if (!dg) return null
+          const count = groupRefs.get(dg.group.id)?.length ?? 0
+          return (
+            <div className="flex items-center gap-2 rounded-md border border-dashed border-border bg-background px-2 py-1 shadow-xl">
+              <span className="flex-1 text-sm font-semibold">{dg.group.name}</span>
+              <span className="rounded px-1.5 py-0.5 text-xs text-muted-foreground bg-muted">
+                {count} {count === 1 ? 'paint' : 'paints'}
+              </span>
+            </div>
+          )
+        })()}
+      </DragOverlay>
     </DndContext>
   )
 }
