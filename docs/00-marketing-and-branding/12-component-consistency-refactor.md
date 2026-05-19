@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Refactor
-**Status:** Todo
+**Status:** Done
 **Branch:** `refactor/component-consistency-refactor`
 **Merge into:** `main`
 
@@ -14,14 +14,14 @@ Fixes a pre-existing bug in the `<Button>` component: the default class is `btn 
 
 ## Acceptance Criteria
 
-- [ ] `<Button>` component base class is changed from `btn btn-primary` to `btn`
-- [ ] All existing `<Button>` usages that depend on the `btn-primary` default are updated to pass `className="btn-primary"` explicitly
-- [ ] All raw `<button className="btn ...">` elements across every module are replaced with `<Button className="...">`
-- [ ] All text-type raw `<input>` elements (type `text`, `email`, `password`, `number`, `search`, `url`, or no type) are replaced with `<Input>`; hidden, checkbox, color, and range inputs are untouched
-- [ ] Raw `<textarea>` elements in `recipe-note-card.tsx` and `markdown-editor.tsx` are replaced with `<Textarea>`
-- [ ] Raw `<h1>` page-title headings across route pages and components are replaced with `<PageHeader>`+`<PageTitle>` (or `<PageTitle>` alone where no subtitle is needed); marketing hero and document-structure headings are excluded
-- [ ] `<Main>` wrapper coverage is verified; any route pages missing it are corrected
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] `<Button>` component base class is changed from `btn btn-primary` to `btn`
+- [x] All existing `<Button>` usages that depend on the `btn-primary` default are updated to pass `className="btn-primary"` explicitly
+- [x] All raw `<button className="btn ...">` elements across every module are replaced with `<Button className="...">`
+- [x] All text-type raw `<input>` elements (type `text`, `email`, `password`, `number`, `search`, `url`, or no type) are replaced with `<Input>`; hidden, checkbox, color, and range inputs are untouched
+- [x] Raw `<textarea>` elements in `recipe-note-card.tsx` and `markdown-editor.tsx` are replaced with `<Textarea>`
+- [x] Raw `<h1>` page-title headings across route pages and components are replaced with `<PageHeader>`+`<PageTitle>` (or `<PageTitle>` alone where no subtitle is needed); marketing hero and document-structure headings are excluded
+- [x] `<Main>` wrapper coverage is verified; any route pages missing it are corrected
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Implementation Plan
 
