@@ -73,6 +73,7 @@ Core functionality:
 - [x] [Mobile-friendly navbar](./00-marketing-and-branding/09-mobile-friendly-navbar.md)
 - [x] [Navbar user menu](./00-marketing-and-branding/10-navbar-user-menu.md)
 - [ ] [404 not-found page](./00-marketing-and-branding/11-404-not-found-page.md)
+- [ ] [UI component consistency refactor](./00-marketing-and-branding/12-component-consistency-refactor.md)
 
 ### Epic: Authentication & User Accounts
 
