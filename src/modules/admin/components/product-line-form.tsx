@@ -5,6 +5,7 @@ import type { ChangeEvent } from 'react'
 import { useFormStatus } from 'react-dom'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import type { ProductLineFormState } from '@/modules/admin/types/product-line-form-state'
 import type { ProductLine } from '@/types/paint'
 
@@ -97,14 +98,14 @@ export function ProductLineForm({ action, brandId, defaultValues, mode }: Produc
         <label htmlFor={`pl-name-${brandId}-${defaultValues?.id ?? 'new'}`} className="form-label text-sm">
           Name <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           id={`pl-name-${brandId}-${defaultValues?.id ?? 'new'}`}
           name="name"
           type="text"
           required
           defaultValue={defaultValues?.name ?? ''}
           onChange={handleNameChange}
-          className="input input-sm"
+          className="input-sm"
           placeholder="e.g. Base"
         />
         {state?.errors?.name && (
@@ -117,14 +118,14 @@ export function ProductLineForm({ action, brandId, defaultValues, mode }: Produc
         <label htmlFor={`pl-slug-${brandId}-${defaultValues?.id ?? 'new'}`} className="form-label text-sm">
           Slug <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           id={`pl-slug-${brandId}-${defaultValues?.id ?? 'new'}`}
           name="slug"
           type="text"
           required
           value={slugValue}
           onChange={handleSlugChange}
-          className="input input-sm font-mono"
+          className="input-sm font-mono"
           placeholder="e.g. base"
         />
         {state?.errors?.slug && (

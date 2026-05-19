@@ -4,6 +4,7 @@ import { useActionState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { createRole } from '@/modules/admin/actions/create-role'
 import { validateRoleName } from '@/modules/admin/validation'
 
@@ -40,7 +41,7 @@ export function CreateRoleForm() {
   return (
     <form action={formAction} className="flex items-start gap-3">
       <div className="flex flex-col gap-1">
-        <input
+        <Input
           name="name"
           type="text"
           placeholder="new-role-name"
@@ -48,7 +49,7 @@ export function CreateRoleForm() {
           minLength={2}
           maxLength={30}
           pattern="[a-z][a-z0-9-]*"
-          className="input input-sm w-60"
+          className="input-sm w-60"
           disabled={isPending}
         />
       </div>

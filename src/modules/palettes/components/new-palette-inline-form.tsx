@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 
 import { validatePaletteName } from '@/modules/palettes/validation'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { createPaletteWithPaints } from '@/modules/palettes/actions/create-palette-with-paints'
 
 /**
@@ -54,14 +55,14 @@ export function NewPaletteInlineForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2 p-2">
-      <input
+      <Input
         name="name"
         type="text"
         required
         maxLength={80}
         autoFocus
         placeholder="Palette name"
-        className="input input-sm w-full"
+        className="input-sm w-full"
         disabled={isPending}
       />
       {nameError && (

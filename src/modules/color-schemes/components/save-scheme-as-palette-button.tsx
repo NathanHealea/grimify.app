@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import type { BaseColor } from '@/modules/color-schemes/types/base-color'
 import type { SchemeColor } from '@/modules/color-schemes/types/scheme-color'
 import type { ColorScheme } from '@/modules/color-wheel/types/color-scheme'
@@ -104,13 +105,13 @@ export function SaveSchemeAsPaletteButton({
             <label className="form-label text-sm" htmlFor="scheme-palette-name">
               Palette name
             </label>
-            <input
+            <Input
               id="scheme-palette-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={80}
-              className="input input-sm w-full"
+              className="input-sm w-full"
               placeholder="My palette"
               autoComplete="off"
             />

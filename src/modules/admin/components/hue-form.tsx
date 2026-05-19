@@ -5,6 +5,7 @@ import type { ChangeEvent } from 'react'
 import { useFormStatus } from 'react-dom'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 import type { HueFormState } from '@/modules/admin/types/hue-form-state'
 import type { Hue } from '@/types/color'
@@ -109,14 +110,14 @@ export function HueForm({ action, parentId, defaultValues, mode }: HueFormProps)
         <label htmlFor="hue-name" className="form-label text-sm">
           Name <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           id="hue-name"
           name="name"
           type="text"
           required
           defaultValue={defaultValues?.name ?? ''}
           onChange={handleNameChange}
-          className="input input-sm"
+          className="input-sm"
           placeholder="e.g. Vivid Red"
         />
         {state?.errors?.name && (
@@ -129,14 +130,14 @@ export function HueForm({ action, parentId, defaultValues, mode }: HueFormProps)
         <label htmlFor="hue-slug" className="form-label text-sm">
           Slug <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           id="hue-slug"
           name="slug"
           type="text"
           required
           value={slugValue}
           onChange={handleSlugChange}
-          className="input input-sm font-mono"
+          className="input-sm font-mono"
           placeholder="e.g. vivid-red"
         />
         {state?.errors?.slug && (
@@ -150,13 +151,13 @@ export function HueForm({ action, parentId, defaultValues, mode }: HueFormProps)
           Hex Code
         </label>
         <div className="flex items-center gap-2">
-          <input
+          <Input
             id="hue-hex"
             name="hex_code"
             type="text"
             value={hexValue}
             onChange={handleHexTextChange}
-            className="input input-sm font-mono w-32"
+            className="input-sm font-mono w-32"
             placeholder="#000000"
           />
           <input
@@ -183,13 +184,13 @@ export function HueForm({ action, parentId, defaultValues, mode }: HueFormProps)
           <label htmlFor="hue-sort-order" className="form-label text-sm">
             Sort Order
           </label>
-          <input
+          <Input
             id="hue-sort-order"
             name="sort_order"
             type="number"
             min={0}
             defaultValue={defaultValues?.sort_order ?? ''}
-            className="input input-sm w-24"
+            className="input-sm w-24"
             placeholder="0"
           />
           {state?.errors?.sort_order && (

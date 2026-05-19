@@ -5,6 +5,7 @@ import type { ChangeEvent } from 'react'
 import { useFormStatus } from 'react-dom'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { hexToRgb, rgbToHsl } from '@/lib/color-utils'
 import { HueSelector } from '@/modules/admin/components/hue-selector'
 import type { PaintFormState } from '@/modules/admin/types/paint-form-state'
@@ -150,14 +151,14 @@ export function PaintForm({
         <label htmlFor="paint-name" className="form-label text-sm">
           Name <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           id="paint-name"
           name="name"
           type="text"
           required
           defaultValue={defaultValues?.name ?? ''}
           onChange={handleNameChange}
-          className="input input-sm"
+          className="input-sm"
           placeholder="e.g. Abaddon Black"
         />
         {state?.errors?.name && (
@@ -170,13 +171,13 @@ export function PaintForm({
         <label htmlFor="paint-slug" className="form-label text-sm">
           Slug
         </label>
-        <input
+        <Input
           id="paint-slug"
           name="slug"
           type="text"
           value={slugValue}
           onChange={handleSlugChange}
-          className="input input-sm font-mono"
+          className="input-sm font-mono"
           placeholder="e.g. abaddon-black"
         />
         {state?.errors?.slug && (
@@ -237,13 +238,13 @@ export function PaintForm({
         <label htmlFor="paint-brand-paint-id" className="form-label text-sm">
           Brand Paint ID <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           id="paint-brand-paint-id"
           name="brand_paint_id"
           type="text"
           required
           defaultValue={defaultValues?.brand_paint_id ?? ''}
-          className="input input-sm font-mono"
+          className="input-sm font-mono"
           placeholder="e.g. 99189950001"
         />
         {state?.errors?.brand_paint_id && (
@@ -258,13 +259,13 @@ export function PaintForm({
         </label>
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">#</span>
-          <input
+          <Input
             id="paint-hex"
             name="hex"
             type="text"
             value={hexInputValue}
             onChange={handleHexChange}
-            className="input input-sm font-mono w-28"
+            className="input-sm font-mono w-28"
             placeholder="000000"
             maxLength={6}
           />
@@ -304,12 +305,12 @@ export function PaintForm({
         <label htmlFor="paint-type" className="form-label text-sm">
           Paint Type
         </label>
-        <input
+        <Input
           id="paint-type"
           name="paint_type"
           type="text"
           defaultValue={defaultValues?.paint_type ?? ''}
-          className="input input-sm"
+          className="input-sm"
           placeholder="e.g. base, layer, contrast"
         />
       </div>

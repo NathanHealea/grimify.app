@@ -7,6 +7,7 @@ import { Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 import { MarkdownEditor } from '@/modules/markdown/components/markdown-editor'
 import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
@@ -136,13 +137,13 @@ export function RecipeStepCard({
         <span className="mt-1 text-sm font-medium tabular-nums text-muted-foreground">
           {label}
         </span>
-        <input
+        <Input
           type="text"
           defaultValue={savedTitle}
           maxLength={120}
           onBlur={(e) => saveField('title', e.currentTarget.value)}
           placeholder="Step title (optional)"
-          className="input flex-1"
+          className="flex-1"
           aria-label={`Step ${label} title`}
         />
         <Button
@@ -163,14 +164,13 @@ export function RecipeStepCard({
         >
           Technique
         </label>
-        <input
+        <Input
           id={`step-${step.id}-technique`}
           type="text"
           defaultValue={savedTechnique}
           maxLength={60}
           onBlur={(e) => saveField('technique', e.currentTarget.value)}
           placeholder="e.g. stipple, wet blend"
-          className="input"
         />
       </div>
 

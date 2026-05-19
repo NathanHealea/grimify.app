@@ -13,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 
 /**
  * Destructive delete button with a type-to-confirm dialog.
@@ -71,12 +72,12 @@ export function DeletePaletteButton({ palette }: { palette: Palette }) {
             <label className="form-label text-sm" htmlFor="confirm-palette-name">
               Type <span className="font-medium">{palette.name}</span> to confirm
             </label>
-            <input
+            <Input
               id="confirm-palette-name"
               type="text"
               value={confirmValue}
               onChange={(e) => setConfirmValue(e.target.value)}
-              className="input input-sm w-full"
+              className="input-sm w-full"
               placeholder={palette.name}
               autoComplete="off"
             />

@@ -4,6 +4,7 @@ import { useActionState, useEffect } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { MarkdownEditor } from '@/modules/markdown/components/markdown-editor'
 import type { Recipe } from '@/modules/recipes/types/recipe'
 import type { RecipeFormState } from '@/modules/recipes/types/recipe-form-state'
@@ -57,14 +58,14 @@ export function RecipeForm({
         <label htmlFor="recipe-title" className="form-label">
           Title
         </label>
-        <input
+        <Input
           id="recipe-title"
           name="title"
           type="text"
           required
           maxLength={120}
           defaultValue={state.values.title}
-          className="input w-full"
+          className="w-full"
           placeholder="My recipe"
         />
         {state.errors.title && (

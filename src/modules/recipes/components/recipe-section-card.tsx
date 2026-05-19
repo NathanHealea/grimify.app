@@ -7,6 +7,7 @@ import { Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { addRecipeStep } from '@/modules/recipes/actions/add-recipe-step'
 import { deleteRecipeSection } from '@/modules/recipes/actions/delete-recipe-section'
 import { updateRecipeSection } from '@/modules/recipes/actions/update-recipe-section'
@@ -138,14 +139,14 @@ export function RecipeSectionCard({
         <span className="mt-1 text-sm font-semibold tabular-nums text-muted-foreground">
           {label}.
         </span>
-        <input
+        <Input
           type="text"
           defaultValue={savedTitle}
           maxLength={120}
           required
           onBlur={(e) => handleTitleBlur(e.currentTarget.value)}
           placeholder="Section title"
-          className="input flex-1 text-base font-medium"
+          className="flex-1 text-base font-medium"
           aria-label={`Section ${label} title`}
         />
         <Button

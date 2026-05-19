@@ -5,6 +5,7 @@ import type { ChangeEvent } from 'react'
 import { useFormStatus } from 'react-dom'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import type { BrandFormState } from '@/modules/admin/types/brand-form-state'
 import type { Brand } from '@/types/paint'
 
@@ -102,14 +103,14 @@ export function BrandForm({ action, defaultValues, mode }: BrandFormProps) {
         <label htmlFor="brand-name" className="form-label text-sm">
           Name <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           id="brand-name"
           name="name"
           type="text"
           required
           defaultValue={defaultValues?.name ?? ''}
           onChange={handleNameChange}
-          className="input input-sm"
+          className="input-sm"
           placeholder="e.g. Citadel"
         />
         {state?.errors?.name && (
@@ -122,14 +123,14 @@ export function BrandForm({ action, defaultValues, mode }: BrandFormProps) {
         <label htmlFor="brand-slug" className="form-label text-sm">
           Slug <span className="text-destructive">*</span>
         </label>
-        <input
+        <Input
           id="brand-slug"
           name="slug"
           type="text"
           required
           value={slugValue}
           onChange={handleSlugChange}
-          className="input input-sm font-mono"
+          className="input-sm font-mono"
           placeholder="e.g. citadel"
         />
         {state?.errors?.slug && (
@@ -142,12 +143,12 @@ export function BrandForm({ action, defaultValues, mode }: BrandFormProps) {
         <label htmlFor="brand-website" className="form-label text-sm">
           Website URL
         </label>
-        <input
+        <Input
           id="brand-website"
           name="website_url"
           type="url"
           defaultValue={defaultValues?.website_url ?? ''}
-          className="input input-sm"
+          className="input-sm"
           placeholder="https://example.com"
         />
         {state?.errors?.website_url && (
@@ -160,12 +161,12 @@ export function BrandForm({ action, defaultValues, mode }: BrandFormProps) {
         <label htmlFor="brand-logo" className="form-label text-sm">
           Logo URL
         </label>
-        <input
+        <Input
           id="brand-logo"
           name="logo_url"
           type="url"
           defaultValue={defaultValues?.logo_url ?? ''}
-          className="input input-sm"
+          className="input-sm"
           placeholder="https://example.com/logo.png"
         />
         {state?.errors?.logo_url && (

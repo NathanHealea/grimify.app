@@ -11,6 +11,7 @@ import { updatePaletteGroup } from '@/modules/palettes/actions/update-palette-gr
 import { validateGroupName } from '@/modules/palettes/validation'
 import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { PaletteGroupDeleteDialog } from '@/modules/palettes/components/palette-group-delete-dialog'
 
 /**
@@ -109,13 +110,13 @@ export function PaletteGroupHeader({
             {...listeners}
           />
         )}
-        <input
+        <Input
           type="text"
           value={nameValue}
           onChange={(e) => setNameValue(e.target.value)}
           onBlur={handleBlur}
           maxLength={100}
-          className="input input-sm flex-1 bg-transparent border-0 shadow-none focus:ring-0 font-semibold text-sm"
+          className="input-sm flex-1 bg-transparent border-0 shadow-none focus:ring-0 font-semibold text-sm"
           aria-label="Group name"
         />
         <Button

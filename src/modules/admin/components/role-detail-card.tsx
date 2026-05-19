@@ -4,6 +4,7 @@ import { useActionState, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { updateRole } from '@/modules/admin/actions/update-role'
 import { validateRoleName } from '@/modules/admin/validation'
 
@@ -54,7 +55,7 @@ export function RoleDetailCard({
         {editing ? (
           <form action={formAction} className="flex items-start gap-3">
             <div className="flex flex-col gap-1">
-              <input
+              <Input
                 name="name"
                 type="text"
                 defaultValue={role.name}
@@ -62,7 +63,7 @@ export function RoleDetailCard({
                 minLength={2}
                 maxLength={30}
                 pattern="[a-z][a-z0-9-]*"
-                className="input input-sm w-60"
+                className="input-sm w-60"
                 disabled={isPending}
                 autoFocus
               />

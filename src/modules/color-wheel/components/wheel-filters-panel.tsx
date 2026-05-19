@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import type { WheelFilterState } from '@/modules/color-wheel/types/wheel-filter-state'
 import type { FilterOptions } from '@/modules/color-wheel/utils/derive-filter-options'
 
@@ -109,12 +110,12 @@ export function WheelFiltersPanel({
     <div className="pointer-events-none absolute left-4 top-4 z-10 flex flex-col gap-2">
       {/* Search input */}
       <div className="pointer-events-auto">
-        <input
+        <Input
           type="search"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search paints…"
-          className="input input-sm w-48 rounded-lg border border-border bg-background px-3 py-1.5 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+          className="input-sm w-48 rounded-lg border border-border bg-background px-3 py-1.5 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
           aria-label="Search paints"
         />
       </div>

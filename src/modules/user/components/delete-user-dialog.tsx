@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 
 /**
  * Modal confirmation dialog for permanently deleting a user account.
@@ -84,12 +85,12 @@ export function DeleteUserDialog({
           <label className="form-label text-sm" htmlFor="confirm-name">
             Type <span className="font-medium">{displayName}</span> to confirm
           </label>
-          <input
+          <Input
             id="confirm-name"
             type="text"
             value={confirmValue}
             onChange={(e) => setConfirmValue(e.target.value)}
-            className="input input-sm w-full"
+            className="input-sm w-full"
             placeholder={displayName}
             autoComplete="off"
           />

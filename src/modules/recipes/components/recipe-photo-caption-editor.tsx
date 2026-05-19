@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
+import { Input } from '@/components/ui/input'
 import { updateRecipePhoto } from '@/modules/recipes/actions/update-recipe-photo'
 
 const CAPTION_MAX_LENGTH = 200
@@ -70,7 +71,7 @@ export function RecipePhotoCaptionEditor({
   }
 
   return (
-    <input
+    <Input
       type="text"
       value={value}
       autoFocus={autoFocus}
@@ -90,7 +91,7 @@ export function RecipePhotoCaptionEditor({
       disabled={isPending}
       placeholder="Add caption…"
       aria-label="Photo caption"
-      className="input input-sm w-full"
+      className="input-sm w-full"
     />
   )
 }

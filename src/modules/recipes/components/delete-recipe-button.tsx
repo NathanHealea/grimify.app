@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 import { deleteRecipe } from '@/modules/recipes/actions/delete-recipe'
 import type { Recipe } from '@/modules/recipes/types/recipe'
 
@@ -72,12 +73,12 @@ export function DeleteRecipeButton({ recipe }: { recipe: Recipe }) {
             <label className="form-label text-sm" htmlFor="confirm-recipe-title">
               Type <span className="font-medium">{recipe.title}</span> to confirm
             </label>
-            <input
+            <Input
               id="confirm-recipe-title"
               type="text"
               value={confirmValue}
               onChange={(e) => setConfirmValue(e.target.value)}
-              className="input input-sm w-full"
+              className="input-sm w-full"
               placeholder={recipe.title}
               autoComplete="off"
             />
