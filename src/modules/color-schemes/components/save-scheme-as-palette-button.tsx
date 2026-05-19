@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import type { BaseColor } from '@/modules/color-schemes/types/base-color'
 import type { SchemeColor } from '@/modules/color-schemes/types/scheme-color'
 import type { ColorScheme } from '@/modules/color-wheel/types/color-scheme'
@@ -70,7 +71,7 @@ export function SaveSchemeAsPaletteButton({
 
   return (
     <>
-      <button
+      <Button
         type="button"
         aria-disabled={isDisabled}
         title={disabledReason}
@@ -85,10 +86,10 @@ export function SaveSchemeAsPaletteButton({
             setOpen(true)
           }
         }}
-        className="btn btn-soft btn-secondary btn-sm"
+        className="btn-soft btn-secondary btn-sm"
       >
         Save as palette
-      </button>
+      </Button>
 
       <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
         <DialogContent className="w-full max-w-sm p-6">
@@ -116,22 +117,22 @@ export function SaveSchemeAsPaletteButton({
           </div>
 
           <DialogFooter className="mt-2">
-            <button
+            <Button
               type="button"
               onClick={handleClose}
               disabled={isPending}
-              className="btn btn-sm btn-ghost"
+              className="btn-sm btn-ghost"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={handleConfirm}
               disabled={isPending || !name.trim()}
-              className="btn btn-sm btn-primary"
+              className="btn-sm btn-primary"
             >
               {isPending ? 'Saving…' : 'Save palette'}
-            </button>
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

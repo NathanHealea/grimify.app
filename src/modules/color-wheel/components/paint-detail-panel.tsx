@@ -4,6 +4,7 @@ import { useEffect, useTransition, useState } from 'react'
 
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { addToCollection } from '@/modules/collection/actions/add-to-collection'
 import { removeFromCollection } from '@/modules/collection/actions/remove-from-collection'
@@ -76,14 +77,14 @@ export function PaintDetailPanel({
         style={{ minWidth: 220, maxWidth: 280 }}
         onPointerDown={(e) => e.stopPropagation()}
       >
-        <button
+        <Button
           type="button"
           onClick={onClose}
-          className="btn btn-ghost btn-sm absolute right-2 top-2"
+          className="btn-ghost btn-sm absolute right-2 top-2"
           aria-label="Close"
         >
           ✕
-        </button>
+        </Button>
 
         <div className="flex items-center gap-3">
           <div
@@ -110,14 +111,14 @@ export function PaintDetailPanel({
 
         {isOwned !== undefined && (
           <div className="flex flex-col gap-1 border-t border-border pt-3">
-            <button
+            <Button
               type="button"
               onClick={handleCollectionToggle}
               disabled={isPending}
-              className={owned ? 'btn btn-sm btn-outline' : 'btn btn-sm btn-primary'}
+              className={owned ? 'btn-sm btn-outline' : 'btn-sm btn-primary'}
             >
               {isPending ? '…' : owned ? 'Remove from Collection' : 'Add to Collection'}
-            </button>
+            </Button>
           </div>
         )}
       </div>

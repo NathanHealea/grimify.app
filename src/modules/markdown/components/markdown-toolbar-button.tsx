@@ -2,6 +2,8 @@
 
 import type { LucideIcon } from 'lucide-react'
 
+import { Button } from '@/components/ui/button'
+
 /**
  * Props accepted by {@link MarkdownToolbarButton}.
  */
@@ -33,14 +35,14 @@ export function MarkdownToolbarButton({
   onClick,
 }: MarkdownToolbarButtonProps) {
   return (
-    <button
+    <Button
       type="button"
       aria-label={label}
       disabled={disabled}
-      className="btn btn-ghost btn-sm btn-square"
+      className="btn-ghost btn-sm btn-square"
       onClick={onClick}
     >
       <Icon className="h-4 w-4" />
-    </button>
+    </Button>
   )
 }
