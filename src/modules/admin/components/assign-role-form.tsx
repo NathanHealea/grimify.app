@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
 import { assignRole } from '@/modules/admin/actions/assign-role'
 
 /** A user available for role assignment. */
@@ -81,13 +82,13 @@ export function AssignRoleForm({
           </SelectContent>
         </Select>
       </div>
-      <button
+      <Button
         type="submit"
         disabled={isPending}
-        className="btn btn-sm btn-primary"
+        className="btn-sm btn-primary"
       >
         {isPending ? 'Assigning...' : 'Assign'}
-      </button>
+      </Button>
     </form>
   )
 }

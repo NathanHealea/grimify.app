@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 import type { ColorWheelHue } from '@/modules/color-wheel/types/color-wheel-hue'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { useWheelDisplayState } from '@/modules/color-wheel/hooks/use-wheel-display-state'
@@ -54,20 +55,20 @@ export function ColorWheelContainer({
   return (
     <div className="relative flex h-full w-full flex-col items-center gap-4 p-4">
       <div className="flex gap-1 rounded-lg border border-border p-1">
-        <button
+        <Button
           type="button"
           onClick={() => setView('munsell')}
-          className={cn('btn btn-sm', view === 'munsell' ? 'btn-primary' : 'btn-ghost')}
+          className={cn('btn-sm', view === 'munsell' ? 'btn-primary' : 'btn-ghost')}
         >
           Munsell
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={() => setView('hsl')}
-          className={cn('btn btn-sm', view === 'hsl' ? 'btn-primary' : 'btn-ghost')}
+          className={cn('btn-sm', view === 'hsl' ? 'btn-primary' : 'btn-ghost')}
         >
           HSL
-        </button>
+        </Button>
       </div>
 
       <WheelFiltersPanel

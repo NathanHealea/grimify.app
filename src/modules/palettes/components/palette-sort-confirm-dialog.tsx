@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -42,22 +43,22 @@ export function PaletteSortConfirmDialog({
         </DialogHeader>
 
         <DialogFooter className="mt-4">
-          <button
+          <Button
             type="button"
             onClick={onCancel}
             disabled={isPending}
-            className="btn btn-sm btn-ghost"
+            className="btn-sm btn-ghost"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={onConfirm}
             disabled={isPending}
-            className="btn btn-sm btn-primary"
+            className="btn-sm btn-primary"
           >
             {isPending ? 'Sorting…' : 'Apply sort'}
-          </button>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

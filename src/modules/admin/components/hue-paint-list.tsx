@@ -3,6 +3,7 @@
 import { useActionState, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import { Button } from '@/components/ui/button'
 import {
   removePaintHueAssociation,
   bulkRemovePaintHueAssociations,
@@ -25,9 +26,9 @@ type HuePaintListProps = {
 function BulkRemoveButton() {
   const { pending } = useFormStatus()
   return (
-    <button type="submit" disabled={pending} className="btn btn-destructive btn-sm">
+    <Button type="submit" disabled={pending} className="btn-destructive btn-sm">
       {pending ? 'Removing…' : 'Remove Selected'}
-    </button>
+    </Button>
   )
 }
 
@@ -142,9 +143,9 @@ export function HuePaintList({ paints, hueId }: HuePaintListProps) {
                   <form action={singleFormAction}>
                     <input type="hidden" name="paint_id" value={paint.id} />
                     <input type="hidden" name="hue_id" value={hueId} />
-                    <button type="submit" className="btn btn-ghost btn-sm text-destructive">
+                    <Button type="submit" className="btn-ghost btn-sm text-destructive">
                       Remove
-                    </button>
+                    </Button>
                   </form>
                 </td>
               </tr>

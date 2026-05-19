@@ -4,6 +4,8 @@ import { useState } from 'react'
 import type { ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import type { WheelFilterState } from '@/modules/color-wheel/types/wheel-filter-state'
 import type { FilterOptions } from '@/modules/color-wheel/utils/derive-filter-options'
 
@@ -108,23 +110,23 @@ export function WheelFiltersPanel({
     <div className="pointer-events-none absolute left-4 top-4 z-10 flex flex-col gap-2">
       {/* Search input */}
       <div className="pointer-events-auto">
-        <input
+        <Input
           type="search"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search paints…"
-          className="input input-sm w-48 rounded-lg border border-border bg-background px-3 py-1.5 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+          className="input-sm w-48 rounded-lg border border-border bg-background px-3 py-1.5 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
           aria-label="Search paints"
         />
       </div>
 
       {/* Toggle button row */}
       <div className="pointer-events-auto flex items-center gap-2">
-        <button
+        <Button
           type="button"
           onClick={() => setOpen((v) => !v)}
           className={cn(
-            'btn btn-sm',
+            'btn-sm',
             open ? 'btn-primary' : 'btn-outline',
           )}
           aria-expanded={open}
@@ -135,17 +137,17 @@ export function WheelFiltersPanel({
           {activeCount > 0 && (
             <span className="badge badge-sm badge-primary ml-0.5">{activeCount}</span>
           )}
-        </button>
+        </Button>
 
         {activeCount > 0 && !open && (
-          <button
+          <Button
             type="button"
             onClick={onClearAll}
-            className="btn btn-ghost btn-sm text-muted-foreground"
+            className="btn-ghost btn-sm text-muted-foreground"
             aria-label="Clear all filters"
           >
             Clear all
-          </button>
+          </Button>
         )}
       </div>
 
@@ -186,13 +188,13 @@ export function WheelFiltersPanel({
           <div className="flex items-center justify-between">
             <span className="text-sm font-semibold">Filters</span>
             {activeCount > 0 && (
-              <button
+              <Button
                 type="button"
                 onClick={onClearAll}
-                className="btn btn-ghost btn-xs text-muted-foreground"
+                className="btn-ghost btn-xs text-muted-foreground"
               >
                 Clear all
-              </button>
+              </Button>
             )}
           </div>
 

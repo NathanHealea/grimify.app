@@ -3,6 +3,8 @@
 import { useActionState, useState } from 'react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { updateRole } from '@/modules/admin/actions/update-role'
 import { validateRoleName } from '@/modules/admin/validation'
 
@@ -53,7 +55,7 @@ export function RoleDetailCard({
         {editing ? (
           <form action={formAction} className="flex items-start gap-3">
             <div className="flex flex-col gap-1">
-              <input
+              <Input
                 name="name"
                 type="text"
                 defaultValue={role.name}
@@ -61,26 +63,26 @@ export function RoleDetailCard({
                 minLength={2}
                 maxLength={30}
                 pattern="[a-z][a-z0-9-]*"
-                className="input input-sm w-60"
+                className="input-sm w-60"
                 disabled={isPending}
                 autoFocus
               />
             </div>
-            <button
+            <Button
               type="submit"
               disabled={isPending}
-              className="btn btn-sm btn-primary"
+              className="btn-sm btn-primary"
             >
               {isPending ? 'Saving...' : 'Save'}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={() => setEditing(false)}
               disabled={isPending}
-              className="btn btn-sm btn-ghost"
+              className="btn-sm btn-ghost"
             >
               Cancel
-            </button>
+            </Button>
           </form>
         ) : (
           <div className="flex items-center gap-3">
@@ -88,13 +90,13 @@ export function RoleDetailCard({
             {role.builtin ? (
               <span className="badge badge-soft">Built-in</span>
             ) : (
-              <button
+              <Button
                 type="button"
                 onClick={() => setEditing(true)}
-                className="btn btn-sm btn-ghost"
+                className="btn-sm btn-ghost"
               >
                 Rename
-              </button>
+              </Button>
             )}
           </div>
         )}

@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from 'react'
 import { Plus } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -105,14 +106,14 @@ export function RecipeStepPaintPicker({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <button
+        <Button
           type="button"
-          className="btn btn-sm btn-ghost text-xs gap-1"
+          className="btn-sm btn-ghost text-xs gap-1"
           aria-label="Add paint to step"
         >
           <Plus className="size-3.5" aria-hidden />
           Add paint
-        </button>
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col gap-4 p-6">
         <DialogHeader>

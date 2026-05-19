@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 
 import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import { deletePaletteGroup } from '@/modules/palettes/actions/delete-palette-group'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -62,22 +63,22 @@ export function PaletteGroupDeleteDialog({
         </DialogHeader>
 
         <DialogFooter className="mt-4">
-          <button
+          <Button
             type="button"
             onClick={() => onOpenChange(false)}
             disabled={isPending}
-            className="btn btn-sm btn-ghost"
+            className="btn-sm btn-ghost"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={handleConfirm}
             disabled={isPending}
-            className="btn btn-sm btn-destructive"
+            className="btn-sm btn-destructive"
           >
             {isPending ? 'Deleting…' : 'Delete group'}
-          </button>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -5,6 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
 
 /** Maximum number of page buttons to show at once (includes first + last). */
 const MAX_VISIBLE_PAGES = 7
@@ -86,13 +87,13 @@ export function PaginationControls({
           className="flex flex-wrap items-center justify-center gap-1"
           aria-label="Pagination"
         >
-          <button
+          <Button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage <= 1 || isPending}
-            className="btn btn-outline btn-sm disabled:opacity-40"
+            className="btn-outline btn-sm disabled:opacity-40"
           >
             Previous
-          </button>
+          </Button>
 
           {visiblePages.map((page, i) =>
             page === null ? (
@@ -100,27 +101,27 @@ export function PaginationControls({
                 &hellip;
               </span>
             ) : (
-              <button
+              <Button
                 key={page}
                 onClick={() => onPageChange(page)}
                 disabled={isPending}
                 className={
-                  page === currentPage ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm'
+                  page === currentPage ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'
                 }
                 aria-current={page === currentPage ? 'page' : undefined}
               >
                 {page}
-              </button>
+              </Button>
             )
           )}
 
-          <button
+          <Button
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage >= totalPages || isPending}
-            className="btn btn-outline btn-sm disabled:opacity-40"
+            className="btn-outline btn-sm disabled:opacity-40"
           >
             Next
-          </button>
+          </Button>
         </nav>
       )}
     </div>

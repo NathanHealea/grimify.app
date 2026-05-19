@@ -5,6 +5,8 @@ import { CSS } from '@dnd-kit/utilities'
 import { useSortable } from '@dnd-kit/sortable'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import type { RecipeStepPaint } from '@/modules/recipes/types/recipe-step-paint'
 import { removeRecipeStepPaint } from '@/modules/recipes/actions/remove-recipe-step-paint'
 import { updateRecipeStepPaint } from '@/modules/recipes/actions/update-recipe-step-paint'
@@ -172,7 +174,7 @@ export function RecipeStepPaintRow({
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-xs">
               <span className="text-muted-foreground">Ratio</span>
-              <input
+              <Input
                 type="text"
                 value={ratio}
                 onChange={(e) => setRatio(e.target.value)}
@@ -180,12 +182,12 @@ export function RecipeStepPaintRow({
                 maxLength={200}
                 disabled={isSavingRatio}
                 placeholder="e.g. 50/50 with Lahmian Medium"
-                className="input input-sm"
+                className="input-sm"
               />
             </label>
             <label className="flex flex-col gap-1 text-xs">
               <span className="text-muted-foreground">Note</span>
-              <input
+              <Input
                 type="text"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
@@ -193,7 +195,7 @@ export function RecipeStepPaintRow({
                 maxLength={500}
                 disabled={isSavingNote}
                 placeholder="Optional note"
-                className="input input-sm"
+                className="input-sm"
               />
             </label>
           </div>
@@ -217,15 +219,15 @@ export function RecipeStepPaintRow({
         )}
       </div>
       {canEdit && (
-        <button
+        <Button
           type="button"
           onClick={handleRemove}
           disabled={isRemoving}
-          className="btn btn-sm btn-ghost text-destructive hover:text-destructive"
+          className="btn-sm btn-ghost text-destructive hover:text-destructive"
           aria-label={`Remove ${data?.name ?? 'paint'}`}
         >
           {isRemoving ? 'Removing…' : 'Remove'}
-        </button>
+        </Button>
       )}
     </div>
   )

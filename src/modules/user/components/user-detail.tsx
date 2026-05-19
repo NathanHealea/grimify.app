@@ -11,6 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { PageTitle } from '@/components/page-header'
+import { Button } from '@/components/ui/button'
 import { DeactivateUserButton } from '@/modules/user/components/deactivate-user-button'
 import { DeleteUserDialog } from '@/modules/user/components/delete-user-dialog'
 
@@ -105,9 +107,9 @@ export function UserDetail({
         )}
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold">
+            <PageTitle size="md">
               {profile.display_name ?? 'No display name'}
-            </h1>
+            </PageTitle>
             {isSelf && (
               <span className="badge badge-soft text-xs">you</span>
             )}
@@ -243,13 +245,13 @@ export function UserDetail({
               displayName={profile.display_name ?? 'this user'}
             />
 
-            <button
+            <Button
               type="button"
               onClick={() => setDeleteOpen(true)}
-              className="btn btn-sm btn-destructive btn-outline"
+              className="btn-sm btn-destructive btn-outline"
             >
               Delete account
-            </button>
+            </Button>
           </CardContent>
         </Card>
       )}

@@ -54,7 +54,7 @@ export function ResetPasswordForm() {
           autoComplete="new-password"
         />
       </div>
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" className="btn-primary" disabled={pending}>
         {pending ? 'Resetting...' : 'Reset password'}
       </Button>
     </form>

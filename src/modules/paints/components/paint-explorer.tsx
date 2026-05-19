@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import SearchInput from '@/components/search'
+import { Button } from '@/components/ui/button'
 import { CollectionPaintCard } from '@/modules/collection/components/collection-paint-card'
 import { HueFilterBar } from '@/modules/paints/components/hue-filter-bar'
 import { PaintCard } from '@/modules/paints/components/paint-card'
@@ -212,9 +213,9 @@ export function PaintExplorer({
           />
         </div>
         {hasActiveFilters && (
-          <button onClick={handleClearAll} className="btn btn-ghost shrink-0">
+          <Button onClick={handleClearAll} className="btn-ghost shrink-0">
             Clear All
-          </button>
+          </Button>
         )}
       </div>
 

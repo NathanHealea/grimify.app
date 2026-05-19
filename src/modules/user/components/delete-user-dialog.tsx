@@ -11,6 +11,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 /**
  * Modal confirmation dialog for permanently deleting a user account.
@@ -84,34 +86,34 @@ export function DeleteUserDialog({
           <label className="form-label text-sm" htmlFor="confirm-name">
             Type <span className="font-medium">{displayName}</span> to confirm
           </label>
-          <input
+          <Input
             id="confirm-name"
             type="text"
             value={confirmValue}
             onChange={(e) => setConfirmValue(e.target.value)}
-            className="input input-sm w-full"
+            className="input-sm w-full"
             placeholder={displayName}
             autoComplete="off"
           />
         </div>
 
         <DialogFooter className="mt-2">
-          <button
+          <Button
             type="button"
             onClick={handleClose}
             disabled={isPending}
-            className="btn btn-sm btn-ghost"
+            className="btn-sm btn-ghost"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={handleConfirm}
             disabled={!canConfirm}
-            className="btn btn-sm btn-destructive"
+            className="btn-sm btn-destructive"
           >
             {isPending ? 'Deleting...' : 'Delete user'}
-          </button>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

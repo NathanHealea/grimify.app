@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useTransition } from 'react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import { revokeRole } from '@/modules/admin/actions/revoke-role'
 
 /** Shape of a user row in the role users table. */
@@ -129,14 +130,14 @@ function UserRow({
               Cannot revoke baseline role
             </span>
           ) : (
-            <button
+            <Button
               type="button"
               onClick={handleRevoke}
               disabled={isPending}
-              className="btn btn-sm btn-destructive"
+              className="btn-sm btn-destructive"
             >
               {isPending ? 'Revoking...' : 'Revoke'}
-            </button>
+            </Button>
           )}
         </div>
       </td>

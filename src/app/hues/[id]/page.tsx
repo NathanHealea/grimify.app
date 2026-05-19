@@ -154,7 +154,7 @@ export default async function HuePage({
           aria-hidden="true"
         />
         <div>
-          <h1 className="text-3xl font-bold">{hue.name}</h1>
+          <PageTitle>{hue.name}</PageTitle>
           <p className="text-sm text-muted-foreground">
             {totalCount} {totalCount === 1 ? 'paint' : 'paints'}
           </p>

@@ -54,7 +54,7 @@ export function ChangePasswordForm() {
           autoComplete="new-password"
         />
       </div>
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" className="btn-primary" disabled={pending}>
         {pending ? 'Changing...' : 'Change password'}
       </Button>
     </form>

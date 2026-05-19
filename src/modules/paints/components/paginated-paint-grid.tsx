@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
 import { CollectionPaintCard } from '@/modules/collection/components/collection-paint-card'
 import { PaintCard } from '@/modules/paints/components/paint-card'
 import { getPaintService } from '@/modules/paints/services/paint-service.client'
@@ -214,13 +215,13 @@ export function PaginatedPaintGrid({
 
       {totalPages > 1 && (
         <nav className="mt-8 flex flex-wrap items-center justify-center gap-1" aria-label="Pagination">
-          <button
+          <Button
             onClick={() => fetchPage(currentPage - 1)}
             disabled={currentPage <= 1 || isPending}
-            className="btn btn-outline btn-sm disabled:opacity-40"
+            className="btn-outline btn-sm disabled:opacity-40"
           >
             Previous
-          </button>
+          </Button>
 
           {visiblePages.map((page, i) =>
             page === null ? (
@@ -228,29 +229,29 @@ export function PaginatedPaintGrid({
                 &hellip;
               </span>
             ) : (
-              <button
+              <Button
                 key={page}
                 onClick={() => fetchPage(page)}
                 disabled={isPending}
                 className={
                   page === currentPage
-                    ? 'btn btn-primary btn-sm'
-                    : 'btn btn-ghost btn-sm'
+                    ? 'btn-primary btn-sm'
+                    : 'btn-ghost btn-sm'
                 }
                 aria-current={page === currentPage ? 'page' : undefined}
               >
                 {page}
-              </button>
+              </Button>
             )
           )}
 
-          <button
+          <Button
             onClick={() => fetchPage(currentPage + 1)}
             disabled={currentPage >= totalPages || isPending}
-            className="btn btn-outline btn-sm disabled:opacity-40"
+            className="btn-outline btn-sm disabled:opacity-40"
           >
             Next
-          </button>
+          </Button>
         </nav>
       )}
     </div>

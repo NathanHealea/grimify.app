@@ -4,6 +4,8 @@ import { useRef, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
 import { validateGroupName } from '@/modules/palettes/validation'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { createPaletteGroup } from '@/modules/palettes/actions/create-palette-group'
 
 /**
@@ -45,14 +47,14 @@ export function PaletteGroupForm({ paletteId }: { paletteId: string }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex items-center gap-2 mt-3">
-      <input
+      <Input
         ref={inputRef}
         name="name"
         type="text"
         maxLength={100}
         placeholder="Group name"
         disabled={isPending}
-        className="input input-sm flex-1"
+        className="input-sm flex-1"
         aria-label="New group name"
       />
       {nameError && (
@@ -60,13 +62,13 @@ export function PaletteGroupForm({ paletteId }: { paletteId: string }) {
           {nameError}
         </p>
       )}
-      <button
+      <Button
         type="submit"
         disabled={isPending}
-        className="btn btn-sm btn-outline whitespace-nowrap"
+        className="btn-sm btn-outline whitespace-nowrap"
       >
         {isPending ? 'Adding…' : 'Add group'}
-      </button>
+      </Button>
     </form>
   )
 }

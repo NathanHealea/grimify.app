@@ -4,6 +4,8 @@ import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
 import { validatePaletteName } from '@/modules/palettes/validation'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { createPaletteWithPaints } from '@/modules/palettes/actions/create-palette-with-paints'
 
 /**
@@ -53,14 +55,14 @@ export function NewPaletteInlineForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2 p-2">
-      <input
+      <Input
         name="name"
         type="text"
         required
         maxLength={80}
         autoFocus
         placeholder="Palette name"
-        className="input input-sm w-full"
+        className="input-sm w-full"
         disabled={isPending}
       />
       {nameError && (
@@ -69,21 +71,21 @@ export function NewPaletteInlineForm({
         </p>
       )}
       <div className="flex gap-2">
-        <button
+        <Button
           type="submit"
           disabled={isPending}
-          className="btn btn-primary btn-sm flex-1"
+          className="btn-primary btn-sm flex-1"
         >
           {isPending ? 'Creating…' : 'Create'}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={onCancel}
           disabled={isPending}
-          className="btn btn-ghost btn-sm flex-1"
+          className="btn-ghost btn-sm flex-1"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   )

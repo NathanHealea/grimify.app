@@ -19,6 +19,8 @@ import {
 import { Plus } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
+
 import type { Palette } from '@/modules/palettes/types/palette'
 import { addRecipeSection } from '@/modules/recipes/actions/add-recipe-section'
 import { reorderRecipeSections } from '@/modules/recipes/actions/reorder-recipe-sections'
@@ -144,15 +146,15 @@ export function RecipeSectionList({
       )}
 
       <div>
-        <button
+        <Button
           type="button"
           onClick={handleAddSection}
           disabled={isPending}
-          className="btn btn-sm btn-outline"
+          className="btn-sm btn-outline"
         >
           <Plus className="size-4" aria-hidden />
           Add section
-        </button>
+        </Button>
       </div>
     </div>
   )

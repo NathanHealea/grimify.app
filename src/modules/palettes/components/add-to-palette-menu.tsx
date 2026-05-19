@@ -8,6 +8,7 @@ import { getPaletteService } from '@/modules/palettes/services/palette-service.c
 import type { PaletteSummary } from '@/modules/palettes/types/palette-summary'
 import { addPaintToPalette } from '@/modules/palettes/actions/add-paint-to-palette'
 import { NewPaletteInlineForm } from '@/modules/palettes/components/new-palette-inline-form'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -111,15 +112,15 @@ export function AddToPaletteMenu({
     return (
       <div className="flex flex-col gap-2 p-3">
         <p className="text-sm text-destructive">Failed to load palettes.</p>
-        <button
+        <Button
           type="button"
           onClick={() => {
             setLastOpen(false)
           }}
-          className="btn btn-ghost btn-sm"
+          className="btn-ghost btn-sm"
         >
           Retry
-        </button>
+        </Button>
       </div>
     )
   }

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Replace } from 'lucide-react'
 
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import { Button } from '@/components/ui/button'
 import { PaletteSwapDialog } from '@/modules/palettes/components/palette-swap-dialog'
 
 /**
@@ -32,11 +33,11 @@ export function PaletteSwapButton({
 
   return (
     <>
-      <button
+      <Button
         type="button"
         disabled={disabled}
         onClick={() => setOpen(true)}
-        className="btn btn-ghost btn-xs btn-square"
+        className="btn-ghost btn-xs btn-square"
         aria-label="Swap by hue"
         title={
           disabled
@@ -45,7 +46,7 @@ export function PaletteSwapButton({
         }
       >
         <Replace className="size-3.5" />
-      </button>
+      </Button>
 
       {/* Dialog is conditionally mounted so its local state (fetch result, sliders)
           resets automatically each time the user opens it. */}

@@ -16,6 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { Button } from '@/components/ui/button'
 import { signOut } from '@/modules/auth/actions/sign-out'
 
 /**
@@ -126,9 +127,9 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
                 </Link>
               </SheetClose>
               <form action={signOut}>
-                <button type="submit" className="btn btn-ghost btn-destructive w-full justify-center md:justify-start">
+                <Button type="submit" className="btn-ghost btn-destructive w-full justify-center md:justify-start">
                   Sign out
-                </button>
+                </Button>
               </form>
             </>
           ) : (

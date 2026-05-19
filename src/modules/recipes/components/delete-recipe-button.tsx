@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -10,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 import { deleteRecipe } from '@/modules/recipes/actions/delete-recipe'
 import type { Recipe } from '@/modules/recipes/types/recipe'
 
@@ -47,13 +49,13 @@ export function DeleteRecipeButton({ recipe }: { recipe: Recipe }) {
 
   return (
     <>
-      <button
+      <Button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn btn-sm btn-destructive"
+        className="btn-sm btn-destructive"
       >
         Delete recipe
-      </button>
+      </Button>
 
       <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
         <DialogContent className="w-full max-w-sm p-6">
@@ -71,34 +73,34 @@ export function DeleteRecipeButton({ recipe }: { recipe: Recipe }) {
             <label className="form-label text-sm" htmlFor="confirm-recipe-title">
               Type <span className="font-medium">{recipe.title}</span> to confirm
             </label>
-            <input
+            <Input
               id="confirm-recipe-title"
               type="text"
               value={confirmValue}
               onChange={(e) => setConfirmValue(e.target.value)}
-              className="input input-sm w-full"
+              className="input-sm w-full"
               placeholder={recipe.title}
               autoComplete="off"
             />
           </div>
 
           <DialogFooter className="mt-2">
-            <button
+            <Button
               type="button"
               onClick={handleClose}
               disabled={isPending}
-              className="btn btn-sm btn-ghost"
+              className="btn-sm btn-ghost"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={handleConfirm}
               disabled={!canConfirm}
-              className="btn btn-sm btn-destructive"
+              className="btn-sm btn-destructive"
             >
               {isPending ? 'Deleting…' : 'Delete recipe'}
-            </button>
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

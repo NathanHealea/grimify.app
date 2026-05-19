@@ -3,6 +3,7 @@
 import { useRef, useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import { Button } from '@/components/ui/button'
 import { deletePaint } from '@/modules/admin/actions/paint-actions'
 import type { PaintFormState } from '@/modules/admin/types/paint-form-state'
 
@@ -22,9 +23,9 @@ type DeletePaintButtonProps = {
 function ConfirmDeleteButton() {
   const { pending } = useFormStatus()
   return (
-    <button type="submit" disabled={pending} className="btn btn-destructive btn-sm">
+    <Button type="submit" disabled={pending} className="btn-destructive btn-sm">
       {pending ? 'Deleting…' : 'Delete Paint'}
-    </button>
+    </Button>
   )
 }
 
@@ -41,13 +42,13 @@ export function DeletePaintButton({ paintId, paintName }: DeletePaintButtonProps
 
   return (
     <>
-      <button
+      <Button
         type="button"
-        className="btn btn-destructive btn-sm btn-outline"
+        className="btn-destructive btn-sm btn-outline"
         onClick={() => dialogRef.current?.showModal()}
       >
         Delete
-      </button>
+      </Button>
 
       <dialog ref={dialogRef} className="m-auto rounded-lg border border-border bg-background p-0 shadow-lg backdrop:bg-black/50">
         <div className="p-6 flex flex-col gap-4">
@@ -62,13 +63,13 @@ export function DeletePaintButton({ paintId, paintName }: DeletePaintButtonProps
           )}
 
           <div className="flex justify-end gap-2">
-            <button
+            <Button
               type="button"
-              className="btn btn-ghost btn-sm"
+              className="btn-ghost btn-sm"
               onClick={() => dialogRef.current?.close()}
             >
               Cancel
-            </button>
+            </Button>
 
             <form action={formAction}>
               <input type="hidden" name="id" value={paintId} />

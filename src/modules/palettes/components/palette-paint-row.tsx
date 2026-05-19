@@ -11,6 +11,7 @@ import { removePalettePaint } from '@/modules/palettes/actions/remove-palette-pa
 import { removePaintFromGroup } from '@/modules/palettes/actions/remove-paint-from-group'
 import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
 import { PalettePaintGroupsToggle } from '@/modules/palettes/components/palette-paint-groups-toggle'
+import { Button } from '@/components/ui/button'
 import { PaletteSwapButton } from '@/modules/palettes/components/palette-swap-button'
 
 /**
@@ -147,17 +148,17 @@ export function PalettePaintRow({
               paint={paint}
             />
           )}
-          <button
+          <Button
             type="button"
             onClick={handleRemove}
             disabled={isPending}
-            className="btn btn-sm btn-ghost text-destructive hover:text-destructive"
+            className="btn-sm btn-ghost text-destructive hover:text-destructive"
             aria-label={
               variant === 'group' ? `Remove ${paint.name} from group` : `Remove ${paint.name}`
             }
           >
             {isPending ? 'Removing…' : 'Remove'}
-          </button>
+          </Button>
         </div>
       )}
     </div>

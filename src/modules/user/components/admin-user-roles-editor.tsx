@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
 import { assignRole } from '@/modules/admin/actions/assign-role'
 import { revokeRole } from '@/modules/admin/actions/revoke-role'
 
@@ -138,14 +139,14 @@ export function AdminUserRolesEditor({
               ))}
             </SelectContent>
           </Select>
-          <button
+          <Button
             type="button"
             onClick={handleAssign}
             disabled={!selectedRoleId || isPending}
-            className="btn btn-sm btn-primary"
+            className="btn-sm btn-primary"
           >
             {isPending ? 'Saving…' : 'Add'}
-          </button>
+          </Button>
         </div>
       )}
     </div>

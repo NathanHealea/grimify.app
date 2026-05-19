@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import { addPaintToGroup } from '@/modules/palettes/actions/add-paint-to-group'
 import { removePaintFromGroup } from '@/modules/palettes/actions/remove-paint-from-group'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -74,10 +75,10 @@ export function PalettePaintGroupsToggle({
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <button type="button" className="btn btn-xs btn-outline flex items-center gap-1">
+        <Button type="button" className="btn-xs btn-outline flex items-center gap-1">
           Groups
           <ChevronDown className="h-3 w-3" />
-        </button>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         {groups.map((g) => (

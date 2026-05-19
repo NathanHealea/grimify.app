@@ -4,6 +4,8 @@ import { useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import { Eye } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
 import { MarkdownToolbarButton } from '@/modules/markdown/components/markdown-toolbar-button'
 import { MarkdownToolbarDropdown } from '@/modules/markdown/components/markdown-toolbar-dropdown'
@@ -168,18 +170,18 @@ export function MarkdownEditor({
             />
           ),
         )}
-        <button
+        <Button
           type="button"
           aria-label={previewMode ? 'Show editor' : 'Show preview'}
           aria-pressed={previewMode}
-          className="btn btn-ghost btn-sm ml-auto"
+          className="btn-ghost btn-sm ml-auto"
           onClick={togglePreview}
         >
           <Eye className="h-4 w-4" />
           <span className="ml-1 text-xs">
             {previewMode ? 'Edit' : 'Preview'}
           </span>
-        </button>
+        </Button>
       </div>
       {previewMode && (
         <div className="textarea w-full" style={{ minHeight: '17rem' }}>
@@ -190,7 +192,7 @@ export function MarkdownEditor({
           )}
         </div>
       )}
-      <textarea
+      <Textarea
         ref={textareaRef}
         id={id}
         name={name}
@@ -201,7 +203,7 @@ export function MarkdownEditor({
         onInput={(e) => setCount(e.currentTarget.value.length)}
         onKeyDown={handleKeyDown}
         className={cn(
-          'textarea w-full',
+          'w-full',
           error && 'textarea-error',
           previewMode && 'hidden'
         )}

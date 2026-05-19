@@ -6,6 +6,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { Pencil, Star, Trash2, X } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import type { RecipePhoto } from '@/modules/recipes/types/recipe-photo'
 import { deleteRecipePhoto } from '@/modules/recipes/actions/delete-recipe-photo'
 import { setRecipeCoverPhoto } from '@/modules/recipes/actions/set-recipe-cover-photo'
@@ -141,11 +142,11 @@ export function RecipePhotoThumbnail({
               <span />
             )}
             {canBeCover && (
-              <button
+              <Button
                 type="button"
                 onClick={handleSetCover}
                 disabled={isCovering}
-                className="btn btn-xs btn-square btn-ghost bg-background/80 hover:bg-background"
+                className="btn-xs btn-square btn-ghost bg-background/80 hover:bg-background"
                 aria-label={isCover ? 'Clear cover photo' : 'Set as cover photo'}
                 aria-pressed={isCover}
                 title={isCover ? 'Clear cover photo' : 'Set as cover photo'}
@@ -159,14 +160,14 @@ export function RecipePhotoThumbnail({
                     .join(' ')}
                   aria-hidden
                 />
-              </button>
+              </Button>
             )}
           </div>
           <div className="pointer-events-auto flex items-end justify-between gap-1">
-            <button
+            <Button
               type="button"
               onClick={() => setIsEditingCaption((s) => !s)}
-              className="btn btn-xs btn-square btn-ghost bg-background/80 hover:bg-background"
+              className="btn-xs btn-square btn-ghost bg-background/80 hover:bg-background"
               aria-label={isEditingCaption ? 'Hide caption editor' : 'Edit caption'}
               aria-pressed={isEditingCaption}
               title={isEditingCaption ? 'Hide caption' : 'Edit caption'}
@@ -176,17 +177,17 @@ export function RecipePhotoThumbnail({
               ) : (
                 <Pencil className="size-4" aria-hidden />
               )}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={handleDelete}
               disabled={isDeleting}
-              className="btn btn-xs btn-square btn-ghost bg-background/80 hover:bg-background text-destructive hover:text-destructive"
+              className="btn-xs btn-square btn-ghost bg-background/80 hover:bg-background text-destructive hover:text-destructive"
               aria-label="Delete photo"
               title="Delete photo"
             >
               <Trash2 className="size-4" aria-hidden />
-            </button>
+            </Button>
           </div>
         </div>
       )}

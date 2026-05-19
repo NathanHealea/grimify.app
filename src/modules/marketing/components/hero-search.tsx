@@ -43,7 +43,7 @@ export function HeroSearch() {
           onChange={handleChange}
         />
       </div>
-      <Button type="submit" className="btn-lg sm:w-auto">
+      <Button type="submit" className="btn-primary btn-lg sm:w-auto">
         Search paints
       </Button>
     </form>

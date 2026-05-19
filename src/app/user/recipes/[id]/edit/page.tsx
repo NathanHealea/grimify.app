@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 
 import { Main } from '@/components/main'
+import { PageTitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { createRecipeService } from '@/modules/recipes/services/recipe-service'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
@@ -46,7 +47,7 @@ export default async function UserRecipeEditPage({
         <ArrowLeft className="size-4" />
         Back to recipe
       </Link>
-      <h1 className="mb-8 text-3xl font-bold">Edit recipe</h1>
+      <PageTitle className="mb-8">Edit recipe</PageTitle>
       <RecipeBuilder recipe={recipe} palettes={palettes} />
     </Main>
   )

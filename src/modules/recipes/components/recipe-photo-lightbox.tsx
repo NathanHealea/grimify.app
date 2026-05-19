@@ -3,6 +3,8 @@
 import { useCallback, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
+import { Button } from '@/components/ui/button'
+
 import type { RecipePhoto } from '@/modules/recipes/types/recipe-photo'
 
 /**
@@ -71,42 +73,42 @@ export function RecipePhotoLightbox({
       onClick={onClose}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4"
     >
-      <button
+      <Button
         type="button"
         onClick={(e) => {
           e.stopPropagation()
           onClose()
         }}
         aria-label="Close"
-        className="btn btn-sm btn-square btn-ghost absolute right-4 top-4 text-white hover:bg-white/10"
+        className="btn-sm btn-square btn-ghost absolute right-4 top-4 text-white hover:bg-white/10"
       >
         <X className="size-5" aria-hidden />
-      </button>
+      </Button>
       {hasPrev && (
-        <button
+        <Button
           type="button"
           onClick={(e) => {
             e.stopPropagation()
             goPrev()
           }}
           aria-label="Previous photo"
-          className="btn btn-square btn-ghost absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10"
+          className="btn-square btn-ghost absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10"
         >
           <ChevronLeft className="size-6" aria-hidden />
-        </button>
+        </Button>
       )}
       {hasNext && (
-        <button
+        <Button
           type="button"
           onClick={(e) => {
             e.stopPropagation()
             goNext()
           }}
           aria-label="Next photo"
-          className="btn btn-square btn-ghost absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10"
+          className="btn-square btn-ghost absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10"
         >
           <ChevronRight className="size-6" aria-hidden />
-        </button>
+        </Button>
       )}
       <figure
         onClick={(e) => e.stopPropagation()}

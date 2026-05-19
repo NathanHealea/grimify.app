@@ -3,6 +3,7 @@
 import { useRef, useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import { Button } from '@/components/ui/button'
 import { deleteProductLine } from '@/modules/admin/actions/product-line-actions'
 import type { ProductLineFormState } from '@/modules/admin/types/product-line-form-state'
 
@@ -24,9 +25,9 @@ type DeleteProductLineButtonProps = {
 function ConfirmDeleteButton() {
   const { pending } = useFormStatus()
   return (
-    <button type="submit" disabled={pending} className="btn btn-destructive btn-sm">
+    <Button type="submit" disabled={pending} className="btn-destructive btn-sm">
       {pending ? 'Deleting…' : 'Delete Product Line'}
-    </button>
+    </Button>
   )
 }
 
@@ -51,13 +52,13 @@ export function DeleteProductLineButton({
 
   return (
     <>
-      <button
+      <Button
         type="button"
-        className="btn btn-destructive btn-sm btn-outline"
+        className="btn-destructive btn-sm btn-outline"
         onClick={() => dialogRef.current?.showModal()}
       >
         Delete
-      </button>
+      </Button>
 
       <dialog ref={dialogRef} className="rounded-lg border border-border bg-background p-0 shadow-lg backdrop:bg-black/50">
         <div className="p-6 flex flex-col gap-4">
@@ -73,13 +74,13 @@ export function DeleteProductLineButton({
           )}
 
           <div className="flex justify-end gap-2">
-            <button
+            <Button
               type="button"
-              className="btn btn-ghost btn-sm"
+              className="btn-ghost btn-sm"
               onClick={() => dialogRef.current?.close()}
             >
               Cancel
-            </button>
+            </Button>
 
             <form action={formAction}>
               <input type="hidden" name="id" value={productLineId} />

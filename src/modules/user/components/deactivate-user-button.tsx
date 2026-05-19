@@ -3,6 +3,7 @@
 import { useTransition } from 'react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import { deactivateUser } from '@/modules/user/actions/deactivate-user'
 
 /**
@@ -43,14 +44,14 @@ export function DeactivateUserButton({
   }
 
   return (
-    <button
+    <Button
       type="button"
       onClick={handleClick}
       disabled={isPending}
       className={
         isBanned
-          ? 'btn btn-sm btn-primary'
-          : 'btn btn-sm btn-destructive btn-outline'
+          ? 'btn-sm btn-primary'
+          : 'btn-sm btn-destructive btn-outline'
       }
     >
       {isPending
@@ -60,6 +61,6 @@ export function DeactivateUserButton({
         : isBanned
           ? 'Reactivate account'
           : 'Deactivate account'}
-    </button>
+    </Button>
   )
 }

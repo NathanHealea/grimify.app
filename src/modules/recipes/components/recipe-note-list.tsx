@@ -19,6 +19,8 @@ import {
 import { Plus } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
+
 import { reorderRecipeNotes } from '@/modules/recipes/actions/reorder-recipe-notes'
 import { RecipeNoteCard } from '@/modules/recipes/components/recipe-note-card'
 import type { RecipeNote } from '@/modules/recipes/types/recipe-note'
@@ -161,14 +163,14 @@ export function RecipeNoteList({
         ) : (
           <h2 className="text-lg font-semibold">Notes</h2>
         )}
-        <button
+        <Button
           type="button"
           onClick={handleAdd}
-          className="btn btn-ghost btn-sm"
+          className="btn-ghost btn-sm"
         >
           <Plus className="size-4" aria-hidden />
           <span>Add note</span>
-        </button>
+        </Button>
       </div>
       {slots.length === 0 && (
         <p className="text-xs text-muted-foreground">

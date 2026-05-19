@@ -77,7 +77,7 @@ export function AdminEditProfileForm({
       </div>
 
       <div className="flex items-center gap-2">
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" className="btn-primary" disabled={pending}>
           {pending ? 'Saving...' : 'Save changes'}
         </Button>
         <Link href="/admin/users" className="btn btn-ghost btn-sm">

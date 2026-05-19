@@ -6,6 +6,8 @@ import { toast } from 'sonner'
 import type { Palette } from '@/modules/palettes/types/palette'
 import type { PaletteFormState } from '@/modules/palettes/types/palette-form-state'
 import { updatePalette } from '@/modules/palettes/actions/update-palette'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { MarkdownEditor } from '@/modules/markdown/components/markdown-editor'
 
 const initialState = (palette: Palette): PaletteFormState => ({
@@ -50,14 +52,14 @@ export function PaletteForm({ palette }: { palette: Palette }) {
         <label htmlFor="palette-name" className="form-label">
           Name
         </label>
-        <input
+        <Input
           id="palette-name"
           name="name"
           type="text"
           required
           maxLength={80}
           defaultValue={state.values.name}
-          className="input w-full"
+          className="w-full"
           placeholder="My palette"
         />
         {state.errors.name && (
@@ -94,13 +96,13 @@ export function PaletteForm({ palette }: { palette: Palette }) {
       </div>
 
       <div className="flex items-center gap-3">
-        <button
+        <Button
           type="submit"
           disabled={isPending}
-          className="btn btn-primary btn-sm"
+          className="btn-primary btn-sm"
         >
           {isPending ? 'Saving…' : 'Save'}
-        </button>
+        </Button>
       </div>
     </form>
   )

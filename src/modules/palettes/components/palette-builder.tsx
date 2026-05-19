@@ -14,6 +14,7 @@ import { PaletteGroupedPaintList } from '@/modules/palettes/components/palette-g
 import { PaletteSortConfirmDialog } from '@/modules/palettes/components/palette-sort-confirm-dialog'
 import { PaletteEmptyState } from '@/modules/palettes/components/palette-empty-state'
 import { DeletePaletteButton } from '@/modules/palettes/components/delete-palette-button'
+import { Button } from '@/components/ui/button'
 import { PalettePaintPicker } from '@/modules/palettes/components/palette-paint-picker'
 
 /**
@@ -89,14 +90,14 @@ export function PaletteBuilder({
               }}
               disabled={isPending}
             />
-            <button
+            <Button
               type="button"
               onClick={() => setPendingSort({ field: sortField, direction: sortDirection })}
-              className="btn btn-sm btn-outline"
+              className="btn-sm btn-outline"
               disabled={isPending}
             >
               Apply sort
-            </button>
+            </Button>
           </div>
         )}
 

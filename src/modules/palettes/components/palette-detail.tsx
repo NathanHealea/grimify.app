@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { PageTitle } from '@/components/page-header'
 import type { Palette } from '@/modules/palettes/types/palette'
 import { PaletteSwatchStrip } from '@/modules/palettes/components/palette-swatch-strip'
 import { PaletteGroupedPaintList } from '@/modules/palettes/components/palette-grouped-paint-list'
@@ -37,7 +38,7 @@ export function PaletteDetail({
       <div className="card card-body">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <h1 className="text-2xl font-bold">{palette.name}</h1>
+            <PageTitle size="md">{palette.name}</PageTitle>
             <MarkdownRenderer
               content={palette.description}
               className="mt-1 text-muted-foreground"

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 
+import { Button } from '@/components/ui/button'
 import { PaintColorSchemesSection } from '@/modules/paints/components/paint-color-schemes-section'
 import { PaintSimilarSection } from '@/modules/paints/components/paint-similar-section'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
@@ -55,20 +56,20 @@ export function PaintSectionsToggle({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex gap-2">
-        <button
+        <Button
           type="button"
           onClick={() => setActive('similar')}
-          className={cn('btn btn-sm', active === 'similar' ? 'btn-primary' : 'btn-ghost')}
+          className={cn('btn-sm', active === 'similar' ? 'btn-primary' : 'btn-ghost')}
         >
           Similar
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={() => setActive('schemes')}
-          className={cn('btn btn-sm', active === 'schemes' ? 'btn-primary' : 'btn-ghost')}
+          className={cn('btn-sm', active === 'schemes' ? 'btn-primary' : 'btn-ghost')}
         >
           Color Schemes
-        </button>
+        </Button>
       </div>
 
       {active === 'similar' && (

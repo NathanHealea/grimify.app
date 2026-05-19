@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 
 import type { Palette } from '@/modules/palettes/types/palette'
 import { deletePalette } from '@/modules/palettes/actions/delete-palette'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -12,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 
 /**
  * Destructive delete button with a type-to-confirm dialog.
@@ -47,13 +49,13 @@ export function DeletePaletteButton({ palette }: { palette: Palette }) {
 
   return (
     <>
-      <button
+      <Button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn btn-sm btn-destructive"
+        className="btn-sm btn-destructive"
       >
         Delete palette
-      </button>
+      </Button>
 
       <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
         <DialogContent className="w-full max-w-sm p-6">
@@ -70,34 +72,34 @@ export function DeletePaletteButton({ palette }: { palette: Palette }) {
             <label className="form-label text-sm" htmlFor="confirm-palette-name">
               Type <span className="font-medium">{palette.name}</span> to confirm
             </label>
-            <input
+            <Input
               id="confirm-palette-name"
               type="text"
               value={confirmValue}
               onChange={(e) => setConfirmValue(e.target.value)}
-              className="input input-sm w-full"
+              className="input-sm w-full"
               placeholder={palette.name}
               autoComplete="off"
             />
           </div>
 
           <DialogFooter className="mt-2">
-            <button
+            <Button
               type="button"
               onClick={handleClose}
               disabled={isPending}
-              className="btn btn-sm btn-ghost"
+              className="btn-sm btn-ghost"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={handleConfirm}
               disabled={!canConfirm}
-              className="btn btn-sm btn-destructive"
+              className="btn-sm btn-destructive"
             >
               {isPending ? 'Deleting…' : 'Delete palette'}
-            </button>
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -43,7 +43,7 @@ export function ForgotPasswordForm() {
       </div>
       <TurnstileWidget />
       <input type="hidden" name="cf-turnstile-response" value={token} />
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" className="btn-primary" disabled={pending}>
         {pending ? 'Sending...' : 'Send reset link'}
       </Button>
     </form>
