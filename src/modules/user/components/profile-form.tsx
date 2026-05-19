@@ -81,7 +81,7 @@ export function ProfileForm({
           <p className="text-sm text-muted-foreground">3-20 characters. Letters, numbers, hyphens, and underscores only.</p>
         )}
       </div>
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" className="btn-primary" disabled={pending}>
         {pending ? 'Saving...' : submitLabel}
       </Button>
     </form>

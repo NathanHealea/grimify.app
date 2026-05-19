@@ -58,7 +58,7 @@ export function SignInForm() {
       </div>
       <TurnstileWidget />
       <input type="hidden" name="cf-turnstile-response" value={token} />
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" className="btn-primary" disabled={pending}>
         {pending ? 'Signing in...' : 'Sign in'}
       </Button>
     </form>

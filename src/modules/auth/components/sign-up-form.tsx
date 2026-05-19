@@ -54,7 +54,7 @@ export function SignUpForm() {
       </div>
       <TurnstileWidget />
       <input type="hidden" name="cf-turnstile-response" value={token} />
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" className="btn-primary" disabled={pending}>
         {pending ? 'Creating account...' : 'Sign up'}
       </Button>
     </form>
