@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Refactor
-**Status:** Done
+**Status:** Completed
 **Branch:** `refactor/component-consistency-refactor`
 **Merge into:** `main`
 
