@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { PageTitle } from '@/components/page-header'
 import type { Hue } from '@/types/color'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { CollectionToggle } from '@/modules/collection/components/collection-toggle'
@@ -73,7 +74,7 @@ export function PaintDetail({
         />
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-bold">{paint.name}</h1>
+            <PageTitle>{paint.name}</PageTitle>
             <CollectionToggle
               paintId={paint.id}
               paintName={paint.name}

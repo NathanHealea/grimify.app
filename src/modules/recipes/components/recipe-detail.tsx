@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { PageTitle } from '@/components/page-header'
 import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
 import { RecipeNoteDisplay } from '@/modules/recipes/components/recipe-note-display'
 import { RecipePhotoGrid } from '@/modules/recipes/components/recipe-photo-grid'
@@ -36,7 +37,7 @@ export function RecipeDetail({
       <header className="flex flex-col gap-2">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="flex flex-col gap-1">
-            <h1 className="text-2xl font-bold">{recipe.title}</h1>
+            <PageTitle size="md">{recipe.title}</PageTitle>
             <p className="text-xs text-muted-foreground">
               {recipe.isPublic ? 'Public recipe' : 'Private recipe'}
             </p>

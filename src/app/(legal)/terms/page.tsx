@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { Main } from '@/components/main'
+import { PageTitle } from '@/components/page-header'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
@@ -17,7 +18,7 @@ export default function TermsOfUsePage() {
     <Main width="3xl" className="px-6">
       <article className="space-y-6">
         <header className="space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight">Terms of Use</h1>
+        <PageTitle className="font-semibold tracking-tight">Terms of Use</PageTitle>
         <p className="text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
       </header>
 

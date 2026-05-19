@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
 
 import { Main } from '@/components/main'
+import { PageTitle } from '@/components/page-header'
+import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/server'
 import { createRecipeService } from '@/modules/recipes/services/recipe-service'
 import { RecipeCardGrid } from '@/modules/recipes/components/recipe-card-grid'
@@ -27,11 +29,11 @@ export default async function UserRecipesPage() {
   return (
     <Main>
       <div className="mb-8 flex items-center justify-between gap-4">
-        <h1 className="text-3xl font-bold">My recipes</h1>
+        <PageTitle>My recipes</PageTitle>
         <form action="/user/recipes/new" method="post">
-          <button type="submit" className="btn btn-primary btn-sm">
+          <Button type="submit" className="btn-primary btn-sm">
             New recipe
-          </button>
+          </Button>
         </form>
       </div>
 
@@ -43,9 +45,9 @@ export default async function UserRecipesPage() {
             You don&apos;t have any recipes yet.
           </p>
           <form action="/user/recipes/new" method="post" className="mt-4">
-            <button type="submit" className="btn btn-primary btn-sm">
+            <Button type="submit" className="btn-primary btn-sm">
               Create your first recipe
-            </button>
+            </Button>
           </form>
         </div>
       )}
