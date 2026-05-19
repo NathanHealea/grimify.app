@@ -6,6 +6,7 @@ import { Bookmark } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { addToCollection } from '@/modules/collection/actions/add-to-collection'
 import { removeFromCollection } from '@/modules/collection/actions/remove-from-collection'
@@ -96,14 +97,14 @@ export function CollectionToggle({
   const btnSize = size === 'md' ? 'btn-md btn-square' : 'btn-sm btn-square'
 
   return (
-    <button
+    <Button
       type="button"
       aria-pressed={optimisticInCollection}
       aria-label={optimisticInCollection ? 'Remove from collection' : 'Add to collection'}
       disabled={isPending}
       onClick={handleClick}
       className={cn(
-        'btn btn-ghost',
+        'btn-ghost',
         btnSize,
         optimisticInCollection
           ? 'text-primary'
@@ -116,6 +117,6 @@ export function CollectionToggle({
         className={cn('transition-colors', optimisticInCollection && 'fill-current')}
         aria-hidden="true"
       />
-    </button>
+    </Button>
   )
 }
