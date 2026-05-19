@@ -5,6 +5,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { useSortable } from '@dnd-kit/sortable'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import type { RecipeStepPaint } from '@/modules/recipes/types/recipe-step-paint'
 import { removeRecipeStepPaint } from '@/modules/recipes/actions/remove-recipe-step-paint'
 import { updateRecipeStepPaint } from '@/modules/recipes/actions/update-recipe-step-paint'
@@ -217,15 +218,15 @@ export function RecipeStepPaintRow({
         )}
       </div>
       {canEdit && (
-        <button
+        <Button
           type="button"
           onClick={handleRemove}
           disabled={isRemoving}
-          className="btn btn-sm btn-ghost text-destructive hover:text-destructive"
+          className="btn-sm btn-ghost text-destructive hover:text-destructive"
           aria-label={`Remove ${data?.name ?? 'paint'}`}
         >
           {isRemoving ? 'Removing…' : 'Remove'}
-        </button>
+        </Button>
       )}
     </div>
   )

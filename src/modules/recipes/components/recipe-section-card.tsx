@@ -6,6 +6,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import { addRecipeStep } from '@/modules/recipes/actions/add-recipe-step'
 import { deleteRecipeSection } from '@/modules/recipes/actions/delete-recipe-section'
 import { updateRecipeSection } from '@/modules/recipes/actions/update-recipe-section'
@@ -147,15 +148,15 @@ export function RecipeSectionCard({
           className="input flex-1 text-base font-medium"
           aria-label={`Section ${label} title`}
         />
-        <button
+        <Button
           type="button"
           onClick={handleDelete}
           disabled={isPending}
-          className="btn btn-sm btn-ghost text-destructive hover:text-destructive"
+          className="btn-sm btn-ghost text-destructive hover:text-destructive"
           aria-label={`Delete section ${label}`}
         >
           <Trash2 className="size-4" aria-hidden />
-        </button>
+        </Button>
       </header>
 
       <RecipeStepList
@@ -167,15 +168,15 @@ export function RecipeSectionCard({
       />
 
       <div>
-        <button
+        <Button
           type="button"
           onClick={handleAddStep}
           disabled={isPending}
-          className="btn btn-sm btn-ghost"
+          className="btn-sm btn-ghost"
         >
           <Plus className="size-4" aria-hidden />
           Add step
-        </button>
+        </Button>
       </div>
     </section>
   )

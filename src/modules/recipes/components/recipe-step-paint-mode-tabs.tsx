@@ -1,5 +1,7 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
+
 /**
  * Two-tab toggle that switches the picker between palette and library modes.
  *
@@ -21,24 +23,24 @@ export function RecipeStepPaintModeTabs({
 }) {
   return (
     <div role="tablist" aria-label="Paint source" className="flex gap-1">
-      <button
+      <Button
         type="button"
         role="tab"
         aria-selected={value === 'palette'}
         onClick={() => onChange('palette')}
-        className={`btn btn-sm ${value === 'palette' ? 'btn-primary' : 'btn-ghost'}`}
+        className={`btn-sm ${value === 'palette' ? 'btn-primary' : 'btn-ghost'}`}
       >
         Palette
-      </button>
-      <button
+      </Button>
+      <Button
         type="button"
         role="tab"
         aria-selected={value === 'library'}
         onClick={() => onChange('library')}
-        className={`btn btn-sm ${value === 'library' ? 'btn-primary' : 'btn-ghost'}`}
+        className={`btn-sm ${value === 'library' ? 'btn-primary' : 'btn-ghost'}`}
       >
         All paints
-      </button>
+      </Button>
     </div>
   )
 }

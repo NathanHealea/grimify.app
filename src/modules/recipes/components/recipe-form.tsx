@@ -3,6 +3,7 @@
 import { useActionState, useEffect } from 'react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import { MarkdownEditor } from '@/modules/markdown/components/markdown-editor'
 import type { Recipe } from '@/modules/recipes/types/recipe'
 import type { RecipeFormState } from '@/modules/recipes/types/recipe-form-state'
@@ -112,9 +113,9 @@ export function RecipeForm({
       </div>
 
       <div className="flex items-center gap-3">
-        <button type="submit" disabled={isPending} className="btn btn-primary btn-sm">
+        <Button type="submit" disabled={isPending} className="btn-primary btn-sm">
           {isPending ? 'Saving…' : 'Save'}
-        </button>
+        </Button>
       </div>
     </form>
   )

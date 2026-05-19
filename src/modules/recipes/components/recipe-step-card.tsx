@@ -6,6 +6,8 @@ import { useSortable } from '@dnd-kit/sortable'
 import { Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
+
 import { MarkdownEditor } from '@/modules/markdown/components/markdown-editor'
 import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
 import type { Palette } from '@/modules/palettes/types/palette'
@@ -143,15 +145,15 @@ export function RecipeStepCard({
           className="input flex-1"
           aria-label={`Step ${label} title`}
         />
-        <button
+        <Button
           type="button"
           onClick={handleDelete}
           disabled={isPending}
-          className="btn btn-sm btn-ghost text-destructive hover:text-destructive"
+          className="btn-sm btn-ghost text-destructive hover:text-destructive"
           aria-label={`Delete step ${label}`}
         >
           <Trash2 className="size-4" aria-hidden />
-        </button>
+        </Button>
       </div>
 
       <div className="form-item">

@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -47,13 +48,13 @@ export function DeleteRecipeButton({ recipe }: { recipe: Recipe }) {
 
   return (
     <>
-      <button
+      <Button
         type="button"
         onClick={() => setOpen(true)}
-        className="btn btn-sm btn-destructive"
+        className="btn-sm btn-destructive"
       >
         Delete recipe
-      </button>
+      </Button>
 
       <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
         <DialogContent className="w-full max-w-sm p-6">
@@ -83,22 +84,22 @@ export function DeleteRecipeButton({ recipe }: { recipe: Recipe }) {
           </div>
 
           <DialogFooter className="mt-2">
-            <button
+            <Button
               type="button"
               onClick={handleClose}
               disabled={isPending}
-              className="btn btn-sm btn-ghost"
+              className="btn-sm btn-ghost"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={handleConfirm}
               disabled={!canConfirm}
-              className="btn btn-sm btn-destructive"
+              className="btn-sm btn-destructive"
             >
               {isPending ? 'Deleting…' : 'Delete recipe'}
-            </button>
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
