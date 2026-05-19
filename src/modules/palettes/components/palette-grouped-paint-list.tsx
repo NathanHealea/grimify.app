@@ -21,6 +21,8 @@ import { toast } from 'sonner'
 import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import type { PalettePaint } from '@/modules/palettes/types/palette-paint'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import { addPaintToGroup } from '@/modules/palettes/actions/add-paint-to-group'
+import { removePaintFromGroup } from '@/modules/palettes/actions/remove-paint-from-group'
 import { reorderPalettePaints } from '@/modules/palettes/actions/reorder-palette-paints'
 import { reorderGroupPaints } from '@/modules/palettes/actions/reorder-group-paints'
 import { reorderPaletteGroups } from '@/modules/palettes/actions/reorder-palette-groups'
@@ -231,6 +233,45 @@ export function PaletteGroupedPaintList({
     return active
   }
 
+  function handleGroupToggle(palettePaintId: string, groupId: string, active: boolean) {
+    const prevGroupRefs = latestConfirmedGroupRefsRef.current
+    const newGroupRefs = new Map(groupRefs)
+
+    if (active) {
+      // Optimistically add the paint to the group ref list
+      const masterSlot = master.find((m) => m.palettePaintId === palettePaintId)
+      const existing = newGroupRefs.get(groupId) ?? []
+      // Avoid duplicate
+      if (!existing.some((r) => r.palettePaintId === palettePaintId)) {
+        const newRef: GroupRefDraggable = {
+          dndId: crypto.randomUUID(),
+          groupMembershipId: crypto.randomUUID(),
+          palettePaintId,
+          paint: masterSlot?.paint,
+        }
+        newGroupRefs.set(groupId, [...existing, newRef])
+      }
+    } else {
+      // Optimistically remove the paint from the group ref list
+      const existing = newGroupRefs.get(groupId) ?? []
+      newGroupRefs.set(groupId, existing.filter((r) => r.palettePaintId !== palettePaintId))
+    }
+
+    setGroupRefs(newGroupRefs)
+
+    startTransition(async () => {
+      const result = active
+        ? await addPaintToGroup(paletteId, groupId, palettePaintId)
+        : await removePaintFromGroup(paletteId, groupId, palettePaintId)
+      if (result?.error) {
+        setGroupRefs(prevGroupRefs)
+        toast.error(result.error)
+      } else {
+        latestConfirmedGroupRefsRef.current = newGroupRefs
+      }
+    })
+  }
+
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <div className="flex flex-col gap-3 select-none">
@@ -252,6 +293,7 @@ export function PaletteGroupedPaintList({
                 variant="master"
                 groups={canEdit ? groups : undefined}
                 activeGroupIds={canEdit ? getActiveGroupIds(slot.palettePaintId) : undefined}
+                onGroupToggle={canEdit ? (groupId, active) => handleGroupToggle(slot.palettePaintId, groupId, active) : undefined}
               />
             ) : (
               <div
