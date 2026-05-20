@@ -9,6 +9,7 @@ import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-pa
 import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import { removePalettePaint } from '@/modules/palettes/actions/remove-palette-paint'
 import { removePaintFromGroup } from '@/modules/palettes/actions/remove-paint-from-group'
+import { formatBrandLine } from '@/modules/palettes/utils/format-brand-line'
 import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
 import { PalettePaintGroupsToggle } from '@/modules/palettes/components/palette-paint-groups-toggle'
 import { Button } from '@/components/ui/button'
@@ -81,7 +82,7 @@ export function PalettePaintRow({
 
   const [isPending, startTransition] = useTransition()
 
-  const brandLine = [paint.brand_name, paint.product_line_name].filter(Boolean).join(': ')
+  const brandLine = formatBrandLine(paint.brand_name, paint.product_line_name)
 
   const style = {
     transform: CSS.Transform.toString(transform),
