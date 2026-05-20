@@ -76,6 +76,9 @@ export function UserMenu({
         <DropdownMenuItem asChild>
           <Link href={`/users/${userId}`}>{displayName}</Link>
         </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/profile/edit">Edit profile</Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuLabel className="text-xs text-muted-foreground">Mine</DropdownMenuLabel>
         {OWNED_ITEMS.map((item) =>
