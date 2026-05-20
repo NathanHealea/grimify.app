@@ -2,7 +2,7 @@
 
 import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
 import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
-import type { AddPaintsToPaletteResult } from '@/modules/palettes/types/add-paint-to-palette-result'
+import type { VoidResult } from '@/modules/palettes/types/action-result'
 
 /**
  * Server action that appends an ordered list of paints to an existing palette.
@@ -13,30 +13,20 @@ import type { AddPaintsToPaletteResult } from '@/modules/palettes/types/add-pain
  * owner edit page on success. Reserved for the deferred multi-select grid
  * path; the scheme save flow uses {@link createPaletteWithPaints} instead.
  *
- * Threads the service-layer `code` discriminator and `duplicateIds` array
- * through so callers can surface duplicate-specific feedback that names the
- * offending paints.
- *
  * @param paletteId - UUID of the target palette.
  * @param paintIds - Ordered list of paint UUIDs to append.
- * @returns An {@link AddPaintsToPaletteResult} discriminated by `error`.
+ * @returns {@link VoidResult} — `ok: true` on success; `ok: false` with an error message on failure.
  */
 export async function addPaintsToPalette(
   paletteId: string,
   paintIds: string[],
-): Promise<AddPaintsToPaletteResult> {
+): Promise<VoidResult> {
   const auth = await requirePaletteOwnership(paletteId)
-  if (!auth.ok) return { error: auth.error, code: 'forbidden' }
+  if (!auth.ok) return { ok: false, error: auth.error }
   const { service } = auth
 
   const result = await service.appendPaintsToPalette(paletteId, paintIds)
-  if (result.error) {
-    return {
-      error: result.error,
-      code: result.code ?? 'unknown',
-      ...(result.duplicateIds ? { duplicateIds: result.duplicateIds } : {}),
-    }
-  }
+  if (result.error) return { ok: false, error: result.error }
 
   revalidatePalette(paletteId)
 

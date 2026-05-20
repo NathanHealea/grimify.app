@@ -75,14 +75,14 @@ export function PaletteSwapDialog({
 
     getHueSwapCandidates({ paletteId, palettePaintId }).then((result) => {
       if (cancelled) return
-      if ('error' in result) {
+      if (!result.ok) {
         setFetchState({ status: 'error', message: result.error })
       } else {
         setFetchState({
           status: 'success',
-          candidates: result.candidates,
-          ownedIds: new Set(result.ownedIds),
-          hueGroupName: result.hueGroupName,
+          candidates: result.data.candidates,
+          ownedIds: new Set(result.data.ownedIds),
+          hueGroupName: result.data.hueGroupName,
         })
       }
     })
@@ -100,7 +100,7 @@ export function PaletteSwapDialog({
     const candidate = visible.find(({ paint: p }) => p.id === paintId)?.paint
     startTransition(async () => {
       const result = await swapPalettePaint(paletteId, palettePaintId, paintId)
-      if (result?.error) {
+      if (!result.ok) {
         toast.error(result.error)
         return
       }

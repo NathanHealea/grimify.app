@@ -52,7 +52,7 @@ export function PalettePaintPicker({
     startTransition(async () => {
       const paletteResult = await addPaintToPalette(paletteId, paint.id)
 
-      if ('error' in paletteResult) {
+      if (!paletteResult.ok) {
         if (paletteResult.code === 'duplicate') {
           toast.error(`'${paint.name}' is already in '${paletteName}'`)
         } else {
@@ -61,7 +61,7 @@ export function PalettePaintPicker({
         return
       }
 
-      toast.success(`Added '${paint.name}' to '${paletteResult.paletteName}'`)
+      toast.success(`Added '${paint.name}' to '${paletteResult.data.paletteName}'`)
 
       if (alsoSaveToCollection && !ownedSet.has(paint.id)) {
         const collectionResult = await addToCollection(

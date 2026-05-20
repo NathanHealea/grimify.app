@@ -3,6 +3,7 @@
 import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
 import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
 import { validateGroupName } from '@/modules/palettes/validation'
+import type { VoidResult } from '@/modules/palettes/types/action-result'
 
 /**
  * Server action that renames an existing palette group.
@@ -15,22 +16,23 @@ import { validateGroupName } from '@/modules/palettes/validation'
  * @param paletteId - UUID of the parent palette (used for ownership check).
  * @param groupId - UUID of the group to update.
  * @param name - New display name (1–100 characters).
- * @returns `undefined` on success; `{ error: string }` on failure.
+ * @returns {@link VoidResult} — `ok: true` on success; `ok: false` with an error message on failure.
  */
 export async function updatePaletteGroup(
   paletteId: string,
   groupId: string,
   name: string,
-): Promise<{ error?: string } | undefined> {
+): Promise<VoidResult> {
   const nameError = validateGroupName(name)
-  if (nameError) return { error: nameError }
+  if (nameError) return { ok: false, error: nameError }
 
   const auth = await requirePaletteOwnership(paletteId)
-  if (!auth.ok) return { error: auth.error }
+  if (!auth.ok) return { ok: false, error: auth.error }
   const { service } = auth
 
   const result = await service.updatePaletteGroup(groupId, { name: name.trim() })
-  if (result.error) return { error: result.error }
+  if (result.error) return { ok: false, error: result.error }
 
   revalidatePalette(paletteId)
+  return { ok: true }
 }

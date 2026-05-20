@@ -117,7 +117,7 @@ export function AddToPaletteMenu({
   function handleSelect(palette: PaletteSummary) {
     startTransition(async () => {
       const result = await addPaintToPalette(palette.id, paintId)
-      if ('error' in result) {
+      if (!result.ok) {
         if (result.code === 'duplicate') {
           toast.error(`'${paintName}' is already in '${palette.name}'`)
         } else {
@@ -126,7 +126,7 @@ export function AddToPaletteMenu({
         // Keep the menu open on duplicate/error so the user can pick another palette
         return
       }
-      toast.success(`Added '${paintName}' to '${result.paletteName}'`)
+      toast.success(`Added '${paintName}' to '${result.data.paletteName}'`)
       onClose()
     })
   }

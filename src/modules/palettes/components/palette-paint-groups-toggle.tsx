@@ -68,7 +68,7 @@ export function PalettePaintGroupsToggle({
       const result = nowActive
         ? await addPaintToGroup(paletteId, groupId, palettePaintId)
         : await removePaintFromGroup(paletteId, groupId, palettePaintId)
-      if (result?.error) toast.error(result.error)
+      if (!result.ok) toast.error(result.error)
       else {
         if (nowActive) toast.success(`Added to ${groupName}`)
         onToggle(groupId, nowActive)

@@ -93,7 +93,7 @@ export function PalettePaintRow({
     startTransition(async () => {
       if (variant === 'group' && groupId) {
         const result = await removePaintFromGroup(paletteId, groupId, palettePaintId)
-        if (result?.error) {
+        if (!result.ok) {
           toast.error(result.error)
           return
         }
@@ -101,7 +101,7 @@ export function PalettePaintRow({
         onRemovedFromGroup?.()
       } else {
         const result = await removePalettePaint(paletteId, palettePaintId)
-        if (result?.error) {
+        if (!result.ok) {
           toast.error(result.error)
           return
         }

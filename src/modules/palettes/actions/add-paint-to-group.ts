@@ -1,6 +1,7 @@
 'use server'
 
 import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
+import type { VoidResult } from '@/modules/palettes/types/action-result'
 
 /**
  * Server action that adds a master-list paint to a named group.
@@ -14,21 +15,23 @@ import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palett
  * @param paletteId - UUID of the parent palette (used for ownership check and revalidation).
  * @param groupId - UUID of the target group.
  * @param palettePaintId - Stable UUID of the master-list entry to add.
- * @returns `undefined` on success; `{ error: string }` on failure.
+ * @returns {@link VoidResult} — `ok: true` on success; `ok: false` with an error message on failure.
  */
 export async function addPaintToGroup(
   paletteId: string,
   groupId: string,
   palettePaintId: string,
-): Promise<{ error?: string } | undefined> {
+): Promise<VoidResult> {
   if (!paletteId || !groupId || !palettePaintId) {
-    return { error: 'Invalid palette, group, or paint.' }
+    return { ok: false, error: 'Invalid palette, group, or paint.' }
   }
 
   const auth = await requirePaletteOwnership(paletteId)
-  if (!auth.ok) return { error: auth.error }
+  if (!auth.ok) return { ok: false, error: auth.error }
   const { service } = auth
 
   const result = await service.addPaintToGroup(groupId, palettePaintId)
-  if (result.error) return { error: result.error }
+  if (result.error) return { ok: false, error: result.error }
+
+  return { ok: true }
 }

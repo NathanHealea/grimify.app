@@ -35,7 +35,7 @@ export function PaletteGroupForm({ paletteId }: { paletteId: string }) {
 
     startTransition(async () => {
       const result = await createPaletteGroup(paletteId, name.trim())
-      if (result?.error) {
+      if (!result.ok) {
         toast.error(result.error)
         return
       }

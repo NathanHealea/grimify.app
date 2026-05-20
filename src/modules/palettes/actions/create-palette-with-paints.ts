@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { validatePaletteForm } from '@/modules/palettes/validation'
+import type { VoidResult } from '@/modules/palettes/types/action-result'
 
 /**
  * Server action that creates a new palette and populates it with an ordered
@@ -20,19 +21,19 @@ import { validatePaletteForm } from '@/modules/palettes/validation'
  * @param input.name - Palette name (1–80 chars, required).
  * @param input.description - Optional description (max 1000 chars).
  * @param input.paintIds - Ordered list of paint UUIDs to pre-populate.
- * @returns `{ error }` on validation or auth failure; redirects on success.
+ * @returns {@link VoidResult} — redirects on success (never returns `ok: true`); `ok: false` with an error message on failure.
  */
 export async function createPaletteWithPaints(input: {
   name: string
   description?: string
   paintIds: string[]
-}): Promise<{ error: string }> {
+}): Promise<VoidResult> {
   const name = input.name.trim()
   const description = input.description?.trim() ?? ''
 
   const fieldErrors = validatePaletteForm({ name, description })
   if (Object.keys(fieldErrors).length > 0) {
-    return { error: Object.values(fieldErrors)[0] ?? 'Validation failed.' }
+    return { ok: false, error: Object.values(fieldErrors)[0] ?? 'Validation failed.' }
   }
 
   const supabase = await createClient()
@@ -40,7 +41,7 @@ export async function createPaletteWithPaints(input: {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) return { error: 'You must be signed in to create a palette.' }
+  if (!user) return { ok: false, error: 'You must be signed in to create a palette.' }
 
   const service = createPaletteService(supabase)
 
@@ -53,7 +54,7 @@ export async function createPaletteWithPaints(input: {
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to create palette.'
-    return { error: message }
+    return { ok: false, error: message }
   }
 
   // Dedupe defensively so callers like "Save scheme as palette" cannot seed

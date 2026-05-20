@@ -43,7 +43,7 @@ export function PaletteGroupDeleteDialog({
   function handleConfirm() {
     startTransition(async () => {
       const result = await deletePaletteGroup(paletteId, group.id)
-      if (result?.error) {
+      if (!result.ok) {
         toast.error(result.error)
         return
       }

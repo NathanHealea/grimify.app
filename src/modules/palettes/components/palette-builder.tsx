@@ -57,7 +57,7 @@ export function PaletteBuilder({
         palette.id,
         sorted.map((s) => s.id),
       )
-      if (result?.error) toast.error(result.error)
+      if (!result.ok) toast.error(result.error)
     })
   }
 

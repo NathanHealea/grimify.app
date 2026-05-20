@@ -81,7 +81,7 @@ export function PaletteGroupHeader({
 
     startTransition(async () => {
       const result = await updatePaletteGroup(paletteId, group.id, trimmed)
-      if (result?.error) {
+      if (!result.ok) {
         setNameValue(savedNameRef.current)
         toast.error(result.error)
       } else {

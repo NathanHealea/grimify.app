@@ -156,7 +156,7 @@ export function PaletteGroupedPaintList({
         paletteId,
         newGroups.map((dg, i) => ({ id: dg.group.id, position: i })),
       )
-      if (result?.error) {
+      if (!result.ok) {
         setDraggableGroups(prevGroups)
         toast.error(result.error)
       } else {
@@ -193,7 +193,7 @@ export function PaletteGroupedPaintList({
     setGroupDropFeedback({ groupId: targetGroupId, kind: 'success' })
 
     void addPaintToGroup(paletteId, targetGroupId, slot.palettePaintId).then((result) => {
-      if (result?.error) {
+      if (!result.ok) {
         setGroupRefs(prevGroupRefs)
         setGroupDropFeedback({ groupId: targetGroupId, kind: 'error' })
         toast.error(result.error)
@@ -217,7 +217,7 @@ export function PaletteGroupedPaintList({
         paletteId,
         newMaster.map((m) => m.palettePaintId),
       )
-      if (result?.error) {
+      if (!result.ok) {
         setMaster(prevMaster)
         toast.error(result.error)
       } else {
@@ -244,7 +244,7 @@ export function PaletteGroupedPaintList({
           groupId,
           newRefs.map((r) => r.palettePaintId),
         )
-        if (result?.error) {
+        if (!result.ok) {
           setGroupRefs(prevGroupRefs)
           toast.error(result.error)
         } else {
@@ -310,7 +310,7 @@ export function PaletteGroupedPaintList({
       const result = active
         ? await addPaintToGroup(paletteId, groupId, palettePaintId)
         : await removePaintFromGroup(paletteId, groupId, palettePaintId)
-      if (result?.error) {
+      if (!result.ok) {
         setGroupRefs(prevGroupRefs)
         toast.error(result.error)
       } else {

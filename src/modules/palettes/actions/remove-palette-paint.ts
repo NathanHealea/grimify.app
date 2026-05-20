@@ -2,6 +2,7 @@
 
 import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
 import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
+import type { VoidResult } from '@/modules/palettes/types/action-result'
 
 /**
  * Server action that removes a single paint from a palette's master list.
@@ -15,20 +16,21 @@ import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
  *
  * @param paletteId - UUID of the palette to modify.
  * @param palettePaintId - Stable UUID of the master-list entry to remove.
- * @returns `undefined` on success; `{ error: string }` on failure.
+ * @returns {@link VoidResult} — `ok: true` on success; `ok: false` with an error message on failure.
  */
 export async function removePalettePaint(
   paletteId: string,
   palettePaintId: string,
-): Promise<{ error: string } | undefined> {
-  if (!paletteId || !palettePaintId) return { error: 'Invalid palette or paint.' }
+): Promise<VoidResult> {
+  if (!paletteId || !palettePaintId) return { ok: false, error: 'Invalid palette or paint.' }
 
   const auth = await requirePaletteOwnership(paletteId)
-  if (!auth.ok) return { error: auth.error }
+  if (!auth.ok) return { ok: false, error: auth.error }
   const { service } = auth
 
   const result = await service.removePalettePaint(paletteId, palettePaintId)
-  if (result.error) return { error: result.error }
+  if (result.error) return { ok: false, error: result.error }
 
   revalidatePalette(paletteId)
+  return { ok: true }
 }

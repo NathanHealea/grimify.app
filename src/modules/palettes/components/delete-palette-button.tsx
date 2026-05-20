@@ -38,7 +38,7 @@ export function DeletePaletteButton({ palette }: { palette: Palette }) {
   function handleConfirm() {
     startTransition(async () => {
       const result = await deletePalette(palette.id)
-      if (result?.error) {
+      if (!result.ok) {
         toast.error(result.error)
       }
       // success: server already redirected, this code path is unreachable

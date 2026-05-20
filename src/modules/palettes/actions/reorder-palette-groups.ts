@@ -2,6 +2,7 @@
 
 import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
 import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
+import type { VoidResult } from '@/modules/palettes/types/action-result'
 
 /**
  * Server action that persists a new group order for a palette.
@@ -12,22 +13,23 @@ import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
  *
  * @param paletteId - UUID of the palette whose groups are being reordered.
  * @param ordered - Complete ordered list with new `position` values (0-based).
- * @returns `undefined` on success; `{ error: string }` on failure.
+ * @returns {@link VoidResult} — `ok: true` on success; `ok: false` with an error message on failure.
  */
 export async function reorderPaletteGroups(
   paletteId: string,
   ordered: Array<{ id: string; position: number }>,
-): Promise<{ error?: string } | undefined> {
+): Promise<VoidResult> {
   if (!paletteId || !Array.isArray(ordered)) {
-    return { error: 'Invalid reorder request.' }
+    return { ok: false, error: 'Invalid reorder request.' }
   }
 
   const auth = await requirePaletteOwnership(paletteId)
-  if (!auth.ok) return { error: auth.error }
+  if (!auth.ok) return { ok: false, error: auth.error }
   const { service } = auth
 
   const result = await service.reorderPaletteGroups(paletteId, ordered)
-  if (result.error) return { error: result.error }
+  if (result.error) return { ok: false, error: result.error }
 
   revalidatePalette(paletteId)
+  return { ok: true }
 }
