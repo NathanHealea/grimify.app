@@ -1,10 +1,8 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
-import { createClient } from '@/lib/supabase/server'
-import { createPaletteService } from '@/modules/palettes/services/palette-service'
-import type { AddPaintsToPaletteResult } from '@/modules/palettes/types/add-paint-to-palette-result'
+import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
+import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
+import type { VoidResult } from '@/modules/palettes/types/action-result'
 
 /**
  * Server action that appends an ordered list of paints to an existing palette.
@@ -15,48 +13,22 @@ import type { AddPaintsToPaletteResult } from '@/modules/palettes/types/add-pain
  * owner edit page on success. Reserved for the deferred multi-select grid
  * path; the scheme save flow uses {@link createPaletteWithPaints} instead.
  *
- * Threads the service-layer `code` discriminator and `duplicateIds` array
- * through so callers can surface duplicate-specific feedback that names the
- * offending paints.
- *
  * @param paletteId - UUID of the target palette.
  * @param paintIds - Ordered list of paint UUIDs to append.
- * @returns An {@link AddPaintsToPaletteResult} discriminated by `error`.
+ * @returns {@link VoidResult} — `ok: true` on success; `ok: false` with an error message on failure.
  */
 export async function addPaintsToPalette(
   paletteId: string,
   paintIds: string[],
-): Promise<AddPaintsToPaletteResult> {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return { error: 'You must be signed in to add paints to a palette.', code: 'auth' }
-  }
-
-  const service = createPaletteService(supabase)
-  const palette = await service.getPaletteById(paletteId)
-
-  if (!palette) return { error: 'Palette not found.', code: 'not_found' }
-  if (palette.userId !== user.id) {
-    return { error: 'You can only add paints to palettes you own.', code: 'forbidden' }
-  }
+): Promise<VoidResult> {
+  const auth = await requirePaletteOwnership(paletteId)
+  if (!auth.ok) return { ok: false, error: auth.error }
+  const { service } = auth
 
   const result = await service.appendPaintsToPalette(paletteId, paintIds)
-  if (result.error) {
-    return {
-      error: result.error,
-      code: result.code ?? 'unknown',
-      ...(result.duplicateIds ? { duplicateIds: result.duplicateIds } : {}),
-    }
-  }
+  if (result.error) return { ok: false, error: result.error }
 
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
-  revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/user/palettes/${paletteId}/edit`)
+  revalidatePalette(paletteId)
 
   return { ok: true }
 }

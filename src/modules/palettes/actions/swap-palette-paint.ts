@@ -1,9 +1,8 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
-import { createClient } from '@/lib/supabase/server'
-import { createPaletteService } from '@/modules/palettes/services/palette-service'
+import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
+import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
+import type { VoidResult } from '@/modules/palettes/types/action-result'
 
 /**
  * Server action that replaces the paint in a single master-list slot.
@@ -14,39 +13,30 @@ import { createPaletteService } from '@/modules/palettes/services/palette-servic
  * Revalidates `/user/palettes`, the public catalog, the palette detail page, and
  * the owner edit page so card swatches stay fresh.
  *
- * Swapping a slot with its current paint is a silent no-op (returns `undefined`
+ * Swapping a slot with its current paint is a silent no-op (returns `ok: true`
  * without touching the database).
  *
  * @param paletteId - UUID of the palette to modify.
  * @param palettePaintId - Stable UUID of the master-list entry to replace.
  * @param newPaintId - UUID of the replacement paint.
- * @returns `undefined` on success; `{ error: string }` on failure.
+ * @returns {@link VoidResult} — `ok: true` on success; `ok: false` with an error message on failure.
  */
 export async function swapPalettePaint(
   paletteId: string,
   palettePaintId: string,
   newPaintId: string,
-): Promise<{ error: string } | undefined> {
-  if (!paletteId || !palettePaintId || !newPaintId) return { error: 'Invalid palette or paint.' }
+): Promise<VoidResult> {
+  if (!paletteId || !palettePaintId || !newPaintId) return { ok: false, error: 'Invalid palette or paint.' }
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) return { error: 'You must be signed in to modify a palette.' }
-
-  const service = createPaletteService(supabase)
-  const palette = await service.getPaletteById(paletteId)
-
-  if (!palette) return { error: 'Palette not found.' }
-  if (palette.userId !== user.id) return { error: 'You can only modify palettes you own.' }
+  const auth = await requirePaletteOwnership(paletteId)
+  if (!auth.ok) return { ok: false, error: auth.error }
+  const { supabase, palette } = auth
 
   const slot = palette.paints.find((p) => p.id === palettePaintId)
-  if (!slot) return { error: 'Slot not found in palette.' }
+  if (!slot) return { ok: false, error: 'Slot not found in palette.' }
 
   // No-op if the paint is unchanged.
-  if (slot.paintId === newPaintId) return undefined
+  if (slot.paintId === newPaintId) return { ok: true }
 
   const { error } = await supabase
     .from('palette_paints')
@@ -55,12 +45,10 @@ export async function swapPalettePaint(
     .eq('palette_id', paletteId)
 
   if (error) {
-    if (error.code === '23505') return { error: 'This paint is already in the palette.' }
-    return { error: error.message }
+    if (error.code === '23505') return { ok: false, error: 'This paint is already in the palette.' }
+    return { ok: false, error: error.message }
   }
 
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
-  revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/user/palettes/${paletteId}/edit`)
+  revalidatePalette(paletteId)
+  return { ok: true }
 }

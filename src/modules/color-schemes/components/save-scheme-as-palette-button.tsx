@@ -63,7 +63,7 @@ export function SaveSchemeAsPaletteButton({
     const { paintIds } = buildPaletteFromScheme(schemeColors, baseColor, activeScheme)
     startTransition(async () => {
       const result = await createPaletteWithPaints({ name, paintIds })
-      if (result?.error) {
+      if (!result.ok) {
         toast.error(result.error)
       }
       // On success the action redirects — nothing to do here

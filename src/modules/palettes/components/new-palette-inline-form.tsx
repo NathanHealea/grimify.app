@@ -46,7 +46,7 @@ export function NewPaletteInlineForm({
 
     startTransition(async () => {
       const result = await createPaletteWithPaints({ name, paintIds: [paintId] })
-      if (result?.error) {
+      if (!result.ok) {
         toast.error(result.error)
       }
       // On success the action redirects — the redirect itself is feedback

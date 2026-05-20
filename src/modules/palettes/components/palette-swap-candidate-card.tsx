@@ -1,6 +1,7 @@
 'use client'
 
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import { formatBrandLine } from '@/modules/palettes/utils/format-brand-line'
 
 /**
  * A compact candidate tile in the hue-swap dialog grid.
@@ -25,7 +26,7 @@ export function PaletteSwapCandidateCard({
   isOwned: boolean
   onSelect: (paintId: string) => void
 }) {
-  const brandLine = [paint.brand_name, paint.product_line_name].filter(Boolean).join(': ')
+  const brandLine = formatBrandLine(paint.brand_name, paint.product_line_name)
 
   return (
     <button

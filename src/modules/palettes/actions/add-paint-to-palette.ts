@@ -1,10 +1,8 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
-import { createClient } from '@/lib/supabase/server'
-import { createPaletteService } from '@/modules/palettes/services/palette-service'
-import type { AddPaintToPaletteResult } from '@/modules/palettes/types/add-paint-to-palette-result'
+import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
+import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
+import type { ActionResult } from '@/modules/palettes/types/action-result'
 
 /**
  * Server action that appends a single paint to an existing palette.
@@ -20,36 +18,20 @@ import type { AddPaintToPaletteResult } from '@/modules/palettes/types/add-paint
  *
  * @param paletteId - UUID of the target palette.
  * @param paintId - UUID of the paint to append.
- * @returns An {@link AddPaintToPaletteResult} discriminated by `error`.
+ * @returns {@link ActionResult} with `{ paletteName }` on success; `ok: false` with `error` and `code` on failure.
  */
 export async function addPaintToPalette(
   paletteId: string,
   paintId: string,
-): Promise<AddPaintToPaletteResult> {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return { error: 'You must be signed in to add paints to a palette.', code: 'auth' }
-  }
-
-  const service = createPaletteService(supabase)
-  const palette = await service.getPaletteById(paletteId)
-
-  if (!palette) return { error: 'Palette not found.', code: 'not_found' }
-  if (palette.userId !== user.id) {
-    return { error: 'You can only add paints to palettes you own.', code: 'forbidden' }
-  }
+): Promise<ActionResult<{ paletteName: string }>> {
+  const auth = await requirePaletteOwnership(paletteId)
+  if (!auth.ok) return { ok: false, error: auth.error, code: 'forbidden' }
+  const { service, palette } = auth
 
   const result = await service.appendPaintToPalette(paletteId, paintId)
-  if (result.error) return { error: result.error, code: result.code ?? 'unknown' }
+  if (result.error) return { ok: false, error: result.error, code: result.code ?? 'unknown' }
 
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
-  revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/user/palettes/${paletteId}/edit`)
+  revalidatePalette(paletteId)
 
-  return { ok: true, paletteName: palette.name }
+  return { ok: true, data: { paletteName: palette.name } }
 }

@@ -1,9 +1,8 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
-import { createClient } from '@/lib/supabase/server'
-import { createPaletteService } from '@/modules/palettes/services/palette-service'
+import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
+import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
+import type { VoidResult } from '@/modules/palettes/types/action-result'
 
 /**
  * Server action that deletes a palette group.
@@ -15,30 +14,19 @@ import { createPaletteService } from '@/modules/palettes/services/palette-servic
  *
  * @param paletteId - UUID of the parent palette (used for ownership check).
  * @param groupId - UUID of the group to delete.
- * @returns `undefined` on success; `{ error: string }` on failure.
+ * @returns {@link VoidResult} — `ok: true` on success; `ok: false` with an error message on failure.
  */
 export async function deletePaletteGroup(
   paletteId: string,
   groupId: string,
-): Promise<{ error?: string } | undefined> {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) return { error: 'You must be signed in to delete a group.' }
-
-  const service = createPaletteService(supabase)
-  const palette = await service.getPaletteById(paletteId)
-
-  if (!palette) return { error: 'Palette not found.' }
-  if (palette.userId !== user.id) return { error: 'You can only delete groups on palettes you own.' }
+): Promise<VoidResult> {
+  const auth = await requirePaletteOwnership(paletteId)
+  if (!auth.ok) return { ok: false, error: auth.error }
+  const { service } = auth
 
   const result = await service.deletePaletteGroup(groupId)
-  if (result.error) return { error: result.error }
+  if (result.error) return { ok: false, error: result.error }
 
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
-  revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/user/palettes/${paletteId}/edit`)
+  revalidatePalette(paletteId)
+  return { ok: true }
 }

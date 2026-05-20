@@ -1,17 +1,22 @@
 'use server'
 
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
-import { createClient } from '@/lib/supabase/server'
 import { getCollectionService } from '@/modules/collection/services/collection-service.server'
 import { getHueService } from '@/modules/hues/services/hue-service.server'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
-import { createPaletteService } from '@/modules/palettes/services/palette-service'
+import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
 import { resolvePrincipalHueId } from '@/modules/palettes/utils/resolve-principal-hue-id'
+import type { ActionResult } from '@/modules/palettes/types/action-result'
 
-/** Successful result from {@link getHueSwapCandidates}. */
-type HueSwapCandidatesResult = {
+/**
+ * Successful payload returned by {@link getHueSwapCandidates}.
+ *
+ * - `candidates` — all paints in the same hue group as the slot being swapped.
+ * - `ownedIds` — paint ids in the user's collection; wrap in `Set` for O(1) lookup.
+ * - `hueGroupName` — display name of the hue group (e.g. "Reds").
+ */
+export type HueSwapCandidatesResult = {
   candidates: ColorWheelPaint[]
-  /** Paint ids in the user's collection; client wraps in `Set` for O(1) lookup. */
   ownedIds: string[]
   hueGroupName: string
 }
@@ -24,40 +29,31 @@ type HueSwapCandidatesResult = {
  *
  * @param input.paletteId - UUID of the palette containing the slot to swap.
  * @param input.palettePaintId - Stable UUID of the master-list entry to swap.
- * @returns Candidates + owned ids + hue group name on success; `{ error }` on failure.
+ * @returns {@link ActionResult} with {@link HueSwapCandidatesResult} on success; `ok: false` with an error message on failure.
  */
 export async function getHueSwapCandidates(input: {
   paletteId: string
   palettePaintId: string
-}): Promise<{ error: string } | HueSwapCandidatesResult> {
+}): Promise<ActionResult<HueSwapCandidatesResult>> {
   const { paletteId, palettePaintId } = input
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) return { error: 'You must be signed in to use the swap feature.' }
-
-  const paletteService = createPaletteService(supabase)
-  const palette = await paletteService.getPaletteById(paletteId)
-
-  if (!palette) return { error: 'Palette not found.' }
-  if (palette.userId !== user.id) return { error: 'You can only swap paints in palettes you own.' }
+  const auth = await requirePaletteOwnership(paletteId)
+  if (!auth.ok) return { ok: false, error: auth.error }
+  const { user, palette } = auth
 
   const slot = palette.paints.find((p) => p.id === palettePaintId)
-  if (!slot) return { error: 'Slot not found.' }
+  if (!slot) return { ok: false, error: 'Slot not found.' }
 
   const paint = slot.paint
-  if (!paint) return { error: 'Paint data is missing for this slot.' }
-  if (!paint.hue_id) return { error: 'This paint has no hue assigned and cannot be swapped by hue.' }
+  if (!paint) return { ok: false, error: 'Paint data is missing for this slot.' }
+  if (!paint.hue_id) return { ok: false, error: 'This paint has no hue assigned and cannot be swapped by hue.' }
 
   const hueService = await getHueService()
   const principalHueId = await resolvePrincipalHueId(hueService, paint.hue_id)
-  if (!principalHueId) return { error: 'Could not resolve hue group.' }
+  if (!principalHueId) return { ok: false, error: 'Could not resolve hue group.' }
 
   const principalHue = await hueService.getHueById(principalHueId)
-  if (!principalHue) return { error: 'Hue group not found.' }
+  if (!principalHue) return { ok: false, error: 'Hue group not found.' }
 
   const paintService = await getPaintService()
   const candidates = await paintService.listColorWheelPaintsByHueGroup(principalHueId)
@@ -66,8 +62,11 @@ export async function getHueSwapCandidates(input: {
   const ownedSet = await collectionService.getUserPaintIds(user.id)
 
   return {
-    candidates,
-    ownedIds: Array.from(ownedSet),
-    hueGroupName: principalHue.name,
+    ok: true,
+    data: {
+      candidates,
+      ownedIds: Array.from(ownedSet),
+      hueGroupName: principalHue.name,
+    },
   }
 }

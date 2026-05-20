@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useEffect, useReducer, useTransition } from 'react'
 import { toast } from 'sonner'
 
 import { createClient } from '@/lib/supabase/client'
@@ -15,14 +15,44 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 
-type MenuState = 'loading' | 'error' | 'list' | 'create'
+type MenuState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+  | { status: 'list'; palettes: PaletteSummary[] }
+  | { status: 'create' }
+
+type MenuAction =
+  | { type: 'FETCH_START' }
+  | { type: 'FETCH_SUCCESS'; palettes: PaletteSummary[] }
+  | { type: 'FETCH_ERROR'; message: string }
+  | { type: 'SHOW_CREATE' }
+  | { type: 'SHOW_LIST' }
+  | { type: 'RESET' }
+
+function menuReducer(state: MenuState, action: MenuAction): MenuState {
+  switch (action.type) {
+    case 'FETCH_START':
+      return { status: 'loading' }
+    case 'FETCH_SUCCESS':
+      return { status: 'list', palettes: action.palettes }
+    case 'FETCH_ERROR':
+      return { status: 'error', message: action.message }
+    case 'SHOW_CREATE':
+      return { status: 'create' }
+    case 'SHOW_LIST':
+      return state.status === 'list' ? state : { status: 'loading' }
+    case 'RESET':
+      return { status: 'idle' }
+  }
+}
 
 /**
  * Body of the "Add to palette" dropdown menu.
  *
  * Fetches the viewer's palettes from the browser-side Supabase client on every
- * open so newly created palettes from other tabs are reflected. Renders four
- * states: loading skeleton, error with retry, empty CTA, and a scrollable
+ * open so newly created palettes from other tabs are reflected. Renders five
+ * states: idle, loading skeleton, error with retry, empty CTA, and a scrollable
  * palette list. Selecting an existing palette calls {@link addPaintToPalette}
  * and surfaces success/error via Sonner toasts. On a successful add, calls
  * `onClose` so the parent dropdown closes; on a duplicate the menu stays open
@@ -48,43 +78,46 @@ export function AddToPaletteMenu({
   open: boolean
   onClose: () => void
 }) {
-  const [menuState, setMenuState] = useState<MenuState>('loading')
-  const [palettes, setPalettes] = useState<PaletteSummary[]>([])
+  const [state, dispatch] = useReducer(menuReducer, { status: 'idle' })
   const [isPending, startTransition] = useTransition()
 
-  // Fetch palettes every time the menu opens
-  const [lastOpen, setLastOpen] = useState(false)
-  if (open && !lastOpen) {
-    setLastOpen(true)
-    setMenuState('loading')
+  useEffect(() => {
+    if (!open) {
+      dispatch({ type: 'RESET' })
+      return
+    }
+
+    let cancelled = false
+    dispatch({ type: 'FETCH_START' })
     ;(async () => {
       try {
         const supabase = createClient()
         const {
           data: { user },
         } = await supabase.auth.getUser()
+        if (cancelled) return
         if (!user) {
-          setMenuState('error')
+          dispatch({ type: 'FETCH_ERROR', message: 'You must be signed in.' })
           return
         }
         const service = getPaletteService()
         const list = await service.listPalettesForUser(user.id)
-        setPalettes(list)
-        setMenuState('list')
+        if (cancelled) return
+        dispatch({ type: 'FETCH_SUCCESS', palettes: list })
       } catch {
-        setMenuState('error')
+        if (cancelled) return
+        dispatch({ type: 'FETCH_ERROR', message: 'Failed to load palettes.' })
       }
     })()
-  }
-  if (!open && lastOpen) {
-    setLastOpen(false)
-    setMenuState('loading')
-  }
+    return () => {
+      cancelled = true
+    }
+  }, [open])
 
   function handleSelect(palette: PaletteSummary) {
     startTransition(async () => {
       const result = await addPaintToPalette(palette.id, paintId)
-      if ('error' in result) {
+      if (!result.ok) {
         if (result.code === 'duplicate') {
           toast.error(`'${paintName}' is already in '${palette.name}'`)
         } else {
@@ -93,12 +126,12 @@ export function AddToPaletteMenu({
         // Keep the menu open on duplicate/error so the user can pick another palette
         return
       }
-      toast.success(`Added '${paintName}' to '${result.paletteName}'`)
+      toast.success(`Added '${paintName}' to '${result.data.paletteName}'`)
       onClose()
     })
   }
 
-  if (menuState === 'loading') {
+  if (state.status === 'idle' || state.status === 'loading') {
     return (
       <div className="flex flex-col gap-1 p-2">
         {[1, 2, 3].map((n) => (
@@ -108,15 +141,13 @@ export function AddToPaletteMenu({
     )
   }
 
-  if (menuState === 'error') {
+  if (state.status === 'error') {
     return (
       <div className="flex flex-col gap-2 p-3">
         <p className="text-sm text-destructive">Failed to load palettes.</p>
         <Button
           type="button"
-          onClick={() => {
-            setLastOpen(false)
-          }}
+          onClick={() => dispatch({ type: 'FETCH_START' })}
           className="btn-ghost btn-sm"
         >
           Retry
@@ -125,21 +156,22 @@ export function AddToPaletteMenu({
     )
   }
 
-  if (menuState === 'create') {
+  if (state.status === 'create') {
     return (
       <NewPaletteInlineForm
         paintId={paintId}
-        onCancel={() => setMenuState('list')}
+        onCancel={() => dispatch({ type: 'SHOW_LIST' })}
       />
     )
   }
 
   // list state
+  const { palettes } = state
   return (
     <>
       {palettes.length === 0 ? (
         <DropdownMenuItem
-          onSelect={() => setMenuState('create')}
+          onSelect={() => dispatch({ type: 'SHOW_CREATE' })}
           className="font-medium"
         >
           + Create new palette
@@ -164,7 +196,7 @@ export function AddToPaletteMenu({
             ))}
           </div>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={() => setMenuState('create')}>
+          <DropdownMenuItem onSelect={() => dispatch({ type: 'SHOW_CREATE' })}>
             + Create new palette
           </DropdownMenuItem>
         </>
