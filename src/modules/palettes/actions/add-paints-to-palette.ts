@@ -1,8 +1,7 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
 import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
+import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
 import type { AddPaintsToPaletteResult } from '@/modules/palettes/types/add-paint-to-palette-result'
 
 /**
@@ -39,10 +38,7 @@ export async function addPaintsToPalette(
     }
   }
 
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
-  revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/user/palettes/${paletteId}/edit`)
+  revalidatePalette(paletteId)
 
   return { ok: true }
 }

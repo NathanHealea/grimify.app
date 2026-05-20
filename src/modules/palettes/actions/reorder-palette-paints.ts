@@ -1,8 +1,7 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
 import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
+import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
 
 /**
  * Server action that persists a new master-list order for a palette.
@@ -42,8 +41,5 @@ export async function reorderPalettePaints(
   const result = await service.reorderMasterList(paletteId, palettePaintIds)
   if (result.error) return { error: result.error }
 
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
-  revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/user/palettes/${paletteId}/edit`)
+  revalidatePalette(paletteId)
 }

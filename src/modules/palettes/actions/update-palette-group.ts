@@ -1,8 +1,7 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
 import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
+import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
 import { validateGroupName } from '@/modules/palettes/validation'
 
 /**
@@ -33,8 +32,5 @@ export async function updatePaletteGroup(
   const result = await service.updatePaletteGroup(groupId, { name: name.trim() })
   if (result.error) return { error: result.error }
 
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
-  revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/user/palettes/${paletteId}/edit`)
+  revalidatePalette(paletteId)
 }

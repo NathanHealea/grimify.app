@@ -1,8 +1,7 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
 import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
+import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
 
 /**
  * Server action that persists a new group order for a palette.
@@ -30,8 +29,5 @@ export async function reorderPaletteGroups(
   const result = await service.reorderPaletteGroups(paletteId, ordered)
   if (result.error) return { error: result.error }
 
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
-  revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/user/palettes/${paletteId}/edit`)
+  revalidatePalette(paletteId)
 }

@@ -1,8 +1,7 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
 import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
+import { revalidatePalette } from '@/modules/palettes/utils/revalidate-palette'
 
 /**
  * Server action that reorders the paint memberships within a single group.
@@ -47,8 +46,5 @@ export async function reorderGroupPaints(
   const result = await service.reorderGroupPaints(groupId, palettePaintIds)
   if (result.error) return { error: result.error }
 
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
-  revalidatePath(`/palettes/${paletteId}`)
-  revalidatePath(`/user/palettes/${paletteId}/edit`)
+  revalidatePalette(paletteId)
 }
