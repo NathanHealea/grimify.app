@@ -21,72 +21,23 @@ import { toast } from 'sonner'
 
 import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import type { PalettePaint } from '@/modules/palettes/types/palette-paint'
-import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import type { MasterDraggable } from '@/modules/palettes/types/master-draggable'
+import type { GroupRefDraggable } from '@/modules/palettes/types/group-ref-draggable'
+import type { DraggableGroup } from '@/modules/palettes/types/draggable-group'
+import type { GroupDropState } from '@/modules/palettes/types/group-drop-state'
 import { addPaintToGroup } from '@/modules/palettes/actions/add-paint-to-group'
 import { removePaintFromGroup } from '@/modules/palettes/actions/remove-paint-from-group'
 import { reorderPalettePaints } from '@/modules/palettes/actions/reorder-palette-paints'
 import { reorderGroupPaints } from '@/modules/palettes/actions/reorder-group-paints'
 import { reorderPaletteGroups } from '@/modules/palettes/actions/reorder-palette-groups'
+import { seedMaster, seedGroupRefs, seedGroups } from '@/modules/palettes/utils/seed-dnd-items'
+import { resolveTargetGroupId } from '@/modules/palettes/utils/resolve-group-target'
+import { getActiveGroupIds } from '@/modules/palettes/utils/get-active-group-ids'
+import { getGroupRingClass } from '@/modules/palettes/utils/group-ring-class'
+import { reorderArray } from '@/modules/palettes/utils/reorder-array'
 import { PaletteGroupHeader } from '@/modules/palettes/components/palette-group-header'
 import { PaletteGroupForm } from '@/modules/palettes/components/palette-group-form'
 import { PalettePaintRow } from '@/modules/palettes/components/palette-paint-row'
-import { reorderArray } from '@/modules/palettes/utils/reorder-array'
-
-type MasterDraggable = {
-  dndId: string
-  palettePaintId: string
-  paintId: string
-  note: string | null
-  addedAt: string
-  paint: ColorWheelPaint | undefined
-}
-
-type GroupRefDraggable = {
-  dndId: string
-  groupMembershipId: string
-  palettePaintId: string
-  paint: ColorWheelPaint | undefined
-}
-
-/** A group augmented with a mount-stable DnD id. */
-type DraggableGroup = {
-  dndId: string
-  group: PaletteGroup
-}
-
-/** Visual feedback state for paint-to-group drag interactions. */
-type GroupDropState = { groupId: string; kind: 'hover' | 'success' | 'error' } | null
-
-function seedMaster(paints: PalettePaint[]): MasterDraggable[] {
-  return paints.map((p) => ({
-    dndId: crypto.randomUUID(),
-    palettePaintId: p.id,
-    paintId: p.paintId,
-    note: p.note,
-    addedAt: p.addedAt,
-    paint: p.paint,
-  }))
-}
-
-function seedGroupRefs(groups: PaletteGroup[]): Map<string, GroupRefDraggable[]> {
-  const map = new Map<string, GroupRefDraggable[]>()
-  for (const g of groups) {
-    map.set(
-      g.id,
-      g.paints.map((gp) => ({
-        dndId: crypto.randomUUID(),
-        groupMembershipId: gp.id,
-        palettePaintId: gp.palettePaintId,
-        paint: gp.palettePaint?.paint,
-      })),
-    )
-  }
-  return map
-}
-
-function seedGroups(groups: PaletteGroup[]): DraggableGroup[] {
-  return groups.map((g) => ({ dndId: crypto.randomUUID(), group: g }))
-}
 
 /**
  * Two-layer grouped paint list with separate DnD zones for the master list and
@@ -155,18 +106,6 @@ export function PaletteGroupedPaintList({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   )
 
-  /** Resolves a group id from a dnd id that may be a group header or a group-ref. */
-  function resolveTargetGroupId(dndId: string): string | null {
-    // Check if it's a group header dndId
-    const headerMatch = draggableGroups.find((dg) => dg.dndId === dndId)
-    if (headerMatch) return headerMatch.group.id
-    // Check if it's a group-ref dndId
-    for (const [groupId, refs] of groupRefs) {
-      if (refs.some((r) => r.dndId === dndId)) return groupId
-    }
-    return null
-  }
-
   /** Sets drop feedback state, scheduling auto-clear for success/error kinds. */
   function setGroupDropFeedback(state: GroupDropState, duration = 800) {
     if (dropFeedbackTimeoutRef.current !== null) {
@@ -180,13 +119,6 @@ export function PaletteGroupedPaintList({
         dropFeedbackTimeoutRef.current = null
       }, duration)
     }
-  }
-
-  function getGroupRingClass(groupId: string): string {
-    if (groupDropState?.groupId !== groupId) return ''
-    if (groupDropState.kind === 'error') return 'ring-2 ring-red-500'
-    if (groupDropState.kind === 'success') return 'ring-2 ring-green-500'
-    return 'ring-2 ring-primary'
   }
 
   function handleDragStart(event: DragStartEvent) {
@@ -207,105 +139,99 @@ export function PaletteGroupedPaintList({
       return
     }
 
-    const targetGroupId = resolveTargetGroupId(over.id as string)
+    const targetGroupId = resolveTargetGroupId(over.id as string, draggableGroups, groupRefs)
     setGroupDropState(targetGroupId ? { groupId: targetGroupId, kind: 'hover' } : null)
   }
 
-  function handleDragEnd(event: DragEndEvent) {
-    setActiveDndId(null)
-    setGroupDropFeedback(null)
-    const { active, over } = event
-    if (!over || active.id === over.id) return
-
-    // ── Group reorder ──────────────────────────────────────────────────────────
-    const activeGroupIdx = draggableGroups.findIndex((dg) => dg.dndId === active.id)
-    if (activeGroupIdx !== -1) {
-      const toIdx = draggableGroups.findIndex((dg) => dg.dndId === over.id)
-      if (toIdx === -1) return
-      const prevGroups = latestConfirmedGroupsRef.current
-      const newGroups = reorderArray(draggableGroups, activeGroupIdx, toIdx)
-      setDraggableGroups(newGroups)
-      startTransition(async () => {
-        const result = await reorderPaletteGroups(
-          paletteId,
-          newGroups.map((dg, i) => ({ id: dg.group.id, position: i })),
-        )
-        if (result?.error) {
-          setDraggableGroups(prevGroups)
-          toast.error(result.error)
-        } else {
-          latestConfirmedGroupsRef.current = newGroups
-        }
-      })
-      return
-    }
-
-    // ── Master-list reorder or cross-zone drop into a group ───────────────────
-    const activeMasterIdx = master.findIndex((m) => m.dndId === active.id)
-    if (activeMasterIdx !== -1) {
-      const toIdx = master.findIndex((m) => m.dndId === over.id)
-
-      if (toIdx === -1) {
-        // Check if over.id resolves to a group — cross-zone add
-        const targetGroupId = resolveTargetGroupId(over.id as string)
-        if (!targetGroupId) return
-
-        const slot = master[activeMasterIdx]
-        const prevGroupRefs = latestConfirmedGroupRefsRef.current
-        const existingRefs = groupRefs.get(targetGroupId) ?? []
-
-        // Skip if paint is already in the group — flash error ring
-        if (existingRefs.some((r) => r.palettePaintId === slot.palettePaintId)) {
-          setGroupDropFeedback({ groupId: targetGroupId, kind: 'error' })
-          return
-        }
-
-        const newRef: GroupRefDraggable = {
-          dndId: crypto.randomUUID(),
-          groupMembershipId: crypto.randomUUID(),
-          palettePaintId: slot.palettePaintId,
-          paint: slot.paint,
-        }
-        const newGroupRefs = new Map(groupRefs)
-        newGroupRefs.set(targetGroupId, [...existingRefs, newRef])
-        setGroupRefs(newGroupRefs)
-        setGroupDropFeedback({ groupId: targetGroupId, kind: 'success' })
-
-        void addPaintToGroup(paletteId, targetGroupId, slot.palettePaintId).then((result) => {
-          if (result?.error) {
-            setGroupRefs(prevGroupRefs)
-            setGroupDropFeedback({ groupId: targetGroupId, kind: 'error' })
-            toast.error(result.error)
-          } else {
-            latestConfirmedGroupRefsRef.current = newGroupRefs
-          }
-        })
-        return
+  function handleGroupReorder(activeId: string, overId: string): boolean {
+    const activeGroupIdx = draggableGroups.findIndex((dg) => dg.dndId === activeId)
+    if (activeGroupIdx === -1) return false
+    const toIdx = draggableGroups.findIndex((dg) => dg.dndId === overId)
+    if (toIdx === -1) return true
+    const prevGroups = latestConfirmedGroupsRef.current
+    const newGroups = reorderArray(draggableGroups, activeGroupIdx, toIdx)
+    setDraggableGroups(newGroups)
+    startTransition(async () => {
+      const result = await reorderPaletteGroups(
+        paletteId,
+        newGroups.map((dg, i) => ({ id: dg.group.id, position: i })),
+      )
+      if (result?.error) {
+        setDraggableGroups(prevGroups)
+        toast.error(result.error)
+      } else {
+        latestConfirmedGroupsRef.current = newGroups
       }
+    })
+    return true
+  }
 
-      const prevMaster = latestConfirmedMasterRef.current
-      const newMaster = reorderArray(master, activeMasterIdx, toIdx)
-      setMaster(newMaster)
-      startTransition(async () => {
-        const result = await reorderPalettePaints(
-          paletteId,
-          newMaster.map((m) => m.palettePaintId),
-        )
-        if (result?.error) {
-          setMaster(prevMaster)
-          toast.error(result.error)
-        } else {
-          latestConfirmedMasterRef.current = newMaster
-        }
-      })
-      return
+  function handleCrossZoneAdd(activeId: string, overId: string): boolean {
+    const activeMasterIdx = master.findIndex((m) => m.dndId === activeId)
+    if (activeMasterIdx === -1) return false
+    const targetGroupId = resolveTargetGroupId(overId, draggableGroups, groupRefs)
+    if (!targetGroupId) return false
+
+    const slot = master[activeMasterIdx]
+    const prevGroupRefs = latestConfirmedGroupRefsRef.current
+    const existingRefs = groupRefs.get(targetGroupId) ?? []
+
+    if (existingRefs.some((r) => r.palettePaintId === slot.palettePaintId)) {
+      setGroupDropFeedback({ groupId: targetGroupId, kind: 'error' })
+      return true
     }
 
-    // ── Group-ref reorder (within a single group) ──────────────────────────────
+    const newRef: GroupRefDraggable = {
+      dndId: crypto.randomUUID(),
+      groupMembershipId: crypto.randomUUID(),
+      palettePaintId: slot.palettePaintId,
+      paint: slot.paint,
+    }
+    const newGroupRefs = new Map(groupRefs)
+    newGroupRefs.set(targetGroupId, [...existingRefs, newRef])
+    setGroupRefs(newGroupRefs)
+    setGroupDropFeedback({ groupId: targetGroupId, kind: 'success' })
+
+    void addPaintToGroup(paletteId, targetGroupId, slot.palettePaintId).then((result) => {
+      if (result?.error) {
+        setGroupRefs(prevGroupRefs)
+        setGroupDropFeedback({ groupId: targetGroupId, kind: 'error' })
+        toast.error(result.error)
+      } else {
+        latestConfirmedGroupRefsRef.current = newGroupRefs
+      }
+    })
+    return true
+  }
+
+  function handleMasterReorder(activeId: string, overId: string): boolean {
+    const activeMasterIdx = master.findIndex((m) => m.dndId === activeId)
+    if (activeMasterIdx === -1) return false
+    const toIdx = master.findIndex((m) => m.dndId === overId)
+    if (toIdx === -1) return false
+    const prevMaster = latestConfirmedMasterRef.current
+    const newMaster = reorderArray(master, activeMasterIdx, toIdx)
+    setMaster(newMaster)
+    startTransition(async () => {
+      const result = await reorderPalettePaints(
+        paletteId,
+        newMaster.map((m) => m.palettePaintId),
+      )
+      if (result?.error) {
+        setMaster(prevMaster)
+        toast.error(result.error)
+      } else {
+        latestConfirmedMasterRef.current = newMaster
+      }
+    })
+    return true
+  }
+
+  function handleGroupRefReorder(activeId: string, overId: string) {
     for (const [groupId, refs] of groupRefs) {
-      const activeRefIdx = refs.findIndex((r) => r.dndId === active.id)
+      const activeRefIdx = refs.findIndex((r) => r.dndId === activeId)
       if (activeRefIdx === -1) continue
-      const toIdx = refs.findIndex((r) => r.dndId === over.id)
+      const toIdx = refs.findIndex((r) => r.dndId === overId)
       if (toIdx === -1) return // cross-zone drop — rejected
       const prevGroupRefs = latestConfirmedGroupRefsRef.current
       const newRefs = reorderArray(refs, activeRefIdx, toIdx)
@@ -329,12 +255,32 @@ export function PaletteGroupedPaintList({
     }
   }
 
-  function getActiveGroupIds(palettePaintId: string): string[] {
-    const active: string[] = []
-    for (const [groupId, refs] of groupRefs) {
-      if (refs.some((r) => r.palettePaintId === palettePaintId)) active.push(groupId)
+  function handleDragEnd(event: DragEndEvent) {
+    setActiveDndId(null)
+    setGroupDropFeedback(null)
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+
+    const activeId = active.id as string
+    const overId = over.id as string
+
+    // ── Group reorder ──────────────────────────────────────────────────────────
+    if (handleGroupReorder(activeId, overId)) return
+
+    // ── Master paint: cross-zone add or within-zone reorder ───────────────────
+    const activeMasterIdx = master.findIndex((m) => m.dndId === activeId)
+    if (activeMasterIdx !== -1) {
+      const toIdx = master.findIndex((m) => m.dndId === overId)
+      if (toIdx === -1) {
+        handleCrossZoneAdd(activeId, overId)
+      } else {
+        handleMasterReorder(activeId, overId)
+      }
+      return
     }
-    return active
+
+    // ── Group-ref reorder (within a single group) ──────────────────────────────
+    handleGroupRefReorder(activeId, overId)
   }
 
   function handleGroupToggle(palettePaintId: string, groupId: string, active: boolean) {
@@ -342,10 +288,8 @@ export function PaletteGroupedPaintList({
     const newGroupRefs = new Map(groupRefs)
 
     if (active) {
-      // Optimistically add the paint to the group ref list
       const masterSlot = master.find((m) => m.palettePaintId === palettePaintId)
       const existing = newGroupRefs.get(groupId) ?? []
-      // Avoid duplicate
       if (!existing.some((r) => r.palettePaintId === palettePaintId)) {
         const newRef: GroupRefDraggable = {
           dndId: crypto.randomUUID(),
@@ -356,7 +300,6 @@ export function PaletteGroupedPaintList({
         newGroupRefs.set(groupId, [...existing, newRef])
       }
     } else {
-      // Optimistically remove the paint from the group ref list
       const existing = newGroupRefs.get(groupId) ?? []
       newGroupRefs.set(groupId, existing.filter((r) => r.palettePaintId !== palettePaintId))
     }
@@ -396,7 +339,7 @@ export function PaletteGroupedPaintList({
                 canEdit={canEdit}
                 variant="master"
                 groups={canEdit ? groups : undefined}
-                activeGroupIds={canEdit ? getActiveGroupIds(slot.palettePaintId) : undefined}
+                activeGroupIds={canEdit ? getActiveGroupIds(slot.palettePaintId, groupRefs) : undefined}
                 onGroupToggle={canEdit ? (groupId, active) => handleGroupToggle(slot.palettePaintId, groupId, active) : undefined}
               />
             ) : (
@@ -419,7 +362,7 @@ export function PaletteGroupedPaintList({
             const refs = groupRefs.get(dg.group.id) ?? []
             const isAnyGroupDragging = activeDndId !== null && draggableGroups.some((g) => g.dndId === activeDndId)
             return (
-              <div key={dg.dndId} className={['flex flex-col gap-1 rounded-md transition-shadow', getGroupRingClass(dg.group.id)].filter(Boolean).join(' ')}>
+              <div key={dg.dndId} className={['flex flex-col gap-1 rounded-md transition-shadow', getGroupRingClass(dg.group.id, groupDropState)].filter(Boolean).join(' ')}>
                 <PaletteGroupHeader
                   paletteId={paletteId}
                   group={dg.group}
