@@ -228,6 +228,7 @@ Core functionality:
 - [x] [Edit palette — paint combobox](./11-color-palettes/13-edit-palette-paint-combobox.md)
 - [x] [Palette sort bar missing from edit page](./11-color-palettes/14-palette-sort-bar-missing.md)
 - [x] [Palette group dropdown with checkbox & add toast](./11-color-palettes/15-palette-group-dropdown-checkbox.md)
+- [x] [Palette edit UX improvements (no-refresh group toggles, group drag overlay, cross-zone DnD)](./11-color-palettes/16-palette-edit-ux.md)
 
 ### Epic: Painting Recipes
 

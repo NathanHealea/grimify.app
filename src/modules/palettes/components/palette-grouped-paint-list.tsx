@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useTransition } from 'react'
 import {
   DndContext,
+  DragOverlay,
   KeyboardSensor,
   PointerSensor,
   TouchSensor,
@@ -10,7 +11,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import type { DragEndEvent } from '@dnd-kit/core'
+import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core'
 import {
   SortableContext,
   sortableKeyboardCoordinates,
@@ -21,6 +22,8 @@ import { toast } from 'sonner'
 import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import type { PalettePaint } from '@/modules/palettes/types/palette-paint'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import { addPaintToGroup } from '@/modules/palettes/actions/add-paint-to-group'
+import { removePaintFromGroup } from '@/modules/palettes/actions/remove-paint-from-group'
 import { reorderPalettePaints } from '@/modules/palettes/actions/reorder-palette-paints'
 import { reorderGroupPaints } from '@/modules/palettes/actions/reorder-group-paints'
 import { reorderPaletteGroups } from '@/modules/palettes/actions/reorder-palette-groups'
@@ -50,6 +53,9 @@ type DraggableGroup = {
   dndId: string
   group: PaletteGroup
 }
+
+/** Visual feedback state for paint-to-group drag interactions. */
+type GroupDropState = { groupId: string; kind: 'hover' | 'success' | 'error' } | null
 
 function seedMaster(paints: PalettePaint[]): MasterDraggable[] {
   return paints.map((p) => ({
@@ -116,7 +122,11 @@ export function PaletteGroupedPaintList({
     seedGroupRefs(groups),
   )
   const [draggableGroups, setDraggableGroups] = useState<DraggableGroup[]>(() => seedGroups(groups))
+  const [activeDndId, setActiveDndId] = useState<string | null>(null)
+  const [groupDropState, setGroupDropState] = useState<GroupDropState>(null)
   const [, startTransition] = useTransition()
+
+  const dropFeedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const latestConfirmedMasterRef = useRef<MasterDraggable[]>(master)
   const latestConfirmedGroupRefsRef = useRef<Map<string, GroupRefDraggable[]>>(groupRefs)
@@ -145,7 +155,65 @@ export function PaletteGroupedPaintList({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   )
 
+  /** Resolves a group id from a dnd id that may be a group header or a group-ref. */
+  function resolveTargetGroupId(dndId: string): string | null {
+    // Check if it's a group header dndId
+    const headerMatch = draggableGroups.find((dg) => dg.dndId === dndId)
+    if (headerMatch) return headerMatch.group.id
+    // Check if it's a group-ref dndId
+    for (const [groupId, refs] of groupRefs) {
+      if (refs.some((r) => r.dndId === dndId)) return groupId
+    }
+    return null
+  }
+
+  /** Sets drop feedback state, scheduling auto-clear for success/error kinds. */
+  function setGroupDropFeedback(state: GroupDropState, duration = 800) {
+    if (dropFeedbackTimeoutRef.current !== null) {
+      clearTimeout(dropFeedbackTimeoutRef.current)
+      dropFeedbackTimeoutRef.current = null
+    }
+    setGroupDropState(state)
+    if (state !== null && state.kind !== 'hover') {
+      dropFeedbackTimeoutRef.current = setTimeout(() => {
+        setGroupDropState(null)
+        dropFeedbackTimeoutRef.current = null
+      }, duration)
+    }
+  }
+
+  function getGroupRingClass(groupId: string): string {
+    if (groupDropState?.groupId !== groupId) return ''
+    if (groupDropState.kind === 'error') return 'ring-2 ring-red-500'
+    if (groupDropState.kind === 'success') return 'ring-2 ring-green-500'
+    return 'ring-2 ring-primary'
+  }
+
+  function handleDragStart(event: DragStartEvent) {
+    setActiveDndId(event.active.id as string)
+  }
+
+  function handleDragOver(event: DragOverEvent) {
+    const { active, over } = event
+    if (!over) {
+      setGroupDropFeedback(null)
+      return
+    }
+
+    // Only highlight when a master paint is being dragged over a group
+    const activeMasterIdx = master.findIndex((m) => m.dndId === active.id)
+    if (activeMasterIdx === -1) {
+      setGroupDropFeedback(null)
+      return
+    }
+
+    const targetGroupId = resolveTargetGroupId(over.id as string)
+    setGroupDropState(targetGroupId ? { groupId: targetGroupId, kind: 'hover' } : null)
+  }
+
   function handleDragEnd(event: DragEndEvent) {
+    setActiveDndId(null)
+    setGroupDropFeedback(null)
     const { active, over } = event
     if (!over || active.id === over.id) return
 
@@ -172,11 +240,49 @@ export function PaletteGroupedPaintList({
       return
     }
 
-    // ── Master-list reorder ────────────────────────────────────────────────────
+    // ── Master-list reorder or cross-zone drop into a group ───────────────────
     const activeMasterIdx = master.findIndex((m) => m.dndId === active.id)
     if (activeMasterIdx !== -1) {
       const toIdx = master.findIndex((m) => m.dndId === over.id)
-      if (toIdx === -1) return // cross-zone drop — rejected
+
+      if (toIdx === -1) {
+        // Check if over.id resolves to a group — cross-zone add
+        const targetGroupId = resolveTargetGroupId(over.id as string)
+        if (!targetGroupId) return
+
+        const slot = master[activeMasterIdx]
+        const prevGroupRefs = latestConfirmedGroupRefsRef.current
+        const existingRefs = groupRefs.get(targetGroupId) ?? []
+
+        // Skip if paint is already in the group — flash error ring
+        if (existingRefs.some((r) => r.palettePaintId === slot.palettePaintId)) {
+          setGroupDropFeedback({ groupId: targetGroupId, kind: 'error' })
+          return
+        }
+
+        const newRef: GroupRefDraggable = {
+          dndId: crypto.randomUUID(),
+          groupMembershipId: crypto.randomUUID(),
+          palettePaintId: slot.palettePaintId,
+          paint: slot.paint,
+        }
+        const newGroupRefs = new Map(groupRefs)
+        newGroupRefs.set(targetGroupId, [...existingRefs, newRef])
+        setGroupRefs(newGroupRefs)
+        setGroupDropFeedback({ groupId: targetGroupId, kind: 'success' })
+
+        void addPaintToGroup(paletteId, targetGroupId, slot.palettePaintId).then((result) => {
+          if (result?.error) {
+            setGroupRefs(prevGroupRefs)
+            setGroupDropFeedback({ groupId: targetGroupId, kind: 'error' })
+            toast.error(result.error)
+          } else {
+            latestConfirmedGroupRefsRef.current = newGroupRefs
+          }
+        })
+        return
+      }
+
       const prevMaster = latestConfirmedMasterRef.current
       const newMaster = reorderArray(master, activeMasterIdx, toIdx)
       setMaster(newMaster)
@@ -231,8 +337,47 @@ export function PaletteGroupedPaintList({
     return active
   }
 
+  function handleGroupToggle(palettePaintId: string, groupId: string, active: boolean) {
+    const prevGroupRefs = latestConfirmedGroupRefsRef.current
+    const newGroupRefs = new Map(groupRefs)
+
+    if (active) {
+      // Optimistically add the paint to the group ref list
+      const masterSlot = master.find((m) => m.palettePaintId === palettePaintId)
+      const existing = newGroupRefs.get(groupId) ?? []
+      // Avoid duplicate
+      if (!existing.some((r) => r.palettePaintId === palettePaintId)) {
+        const newRef: GroupRefDraggable = {
+          dndId: crypto.randomUUID(),
+          groupMembershipId: crypto.randomUUID(),
+          palettePaintId,
+          paint: masterSlot?.paint,
+        }
+        newGroupRefs.set(groupId, [...existing, newRef])
+      }
+    } else {
+      // Optimistically remove the paint from the group ref list
+      const existing = newGroupRefs.get(groupId) ?? []
+      newGroupRefs.set(groupId, existing.filter((r) => r.palettePaintId !== palettePaintId))
+    }
+
+    setGroupRefs(newGroupRefs)
+
+    startTransition(async () => {
+      const result = active
+        ? await addPaintToGroup(paletteId, groupId, palettePaintId)
+        : await removePaintFromGroup(paletteId, groupId, palettePaintId)
+      if (result?.error) {
+        setGroupRefs(prevGroupRefs)
+        toast.error(result.error)
+      } else {
+        latestConfirmedGroupRefsRef.current = newGroupRefs
+      }
+    })
+  }
+
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
       <div className="flex flex-col gap-3 select-none">
         {/* ── Master list ─────────────────────────────────────────────────────── */}
         <SortableContext
@@ -252,6 +397,7 @@ export function PaletteGroupedPaintList({
                 variant="master"
                 groups={canEdit ? groups : undefined}
                 activeGroupIds={canEdit ? getActiveGroupIds(slot.palettePaintId) : undefined}
+                onGroupToggle={canEdit ? (groupId, active) => handleGroupToggle(slot.palettePaintId, groupId, active) : undefined}
               />
             ) : (
               <div
@@ -271,15 +417,17 @@ export function PaletteGroupedPaintList({
         >
           {draggableGroups.map((dg) => {
             const refs = groupRefs.get(dg.group.id) ?? []
+            const isAnyGroupDragging = activeDndId !== null && draggableGroups.some((g) => g.dndId === activeDndId)
             return (
-              <div key={dg.dndId} className="flex flex-col gap-1">
+              <div key={dg.dndId} className={['flex flex-col gap-1 rounded-md transition-shadow', getGroupRingClass(dg.group.id)].filter(Boolean).join(' ')}>
                 <PaletteGroupHeader
                   paletteId={paletteId}
                   group={dg.group}
                   canEdit={canEdit}
                   dndId={canEdit ? dg.dndId : undefined}
+                  paintCount={refs.length}
                 />
-                <div className={['flex flex-col gap-1', refs.length > 0 ? 'pl-6' : ''].filter(Boolean).join(' ')}>
+                <div className={['flex flex-col gap-1', refs.length > 0 ? 'pl-6' : '', isAnyGroupDragging ? 'hidden' : ''].filter(Boolean).join(' ')}>
                   <SortableContext
                     items={refs.map((r) => r.dndId)}
                     strategy={verticalListSortingStrategy}
@@ -296,6 +444,13 @@ export function PaletteGroupedPaintList({
                           note={null}
                           canEdit={canEdit}
                           variant="group"
+                          onRemovedFromGroup={() => {
+                            const newGroupRefs = new Map(groupRefs)
+                            const existing = newGroupRefs.get(dg.group.id) ?? []
+                            newGroupRefs.set(dg.group.id, existing.filter((r) => r.palettePaintId !== ref.palettePaintId))
+                            setGroupRefs(newGroupRefs)
+                            latestConfirmedGroupRefsRef.current = newGroupRefs
+                          }}
                         />
                       ) : (
                         <div
@@ -320,6 +475,43 @@ export function PaletteGroupedPaintList({
 
         {canEdit && <PaletteGroupForm paletteId={paletteId} />}
       </div>
+
+      {/* ── Drag overlay for group header and cross-zone paint ghosts ────────── */}
+      <DragOverlay dropAnimation={null}>
+        {(() => {
+          if (!activeDndId) return null
+
+          // Group header ghost
+          const dg = draggableGroups.find((g) => g.dndId === activeDndId)
+          if (dg) {
+            const count = groupRefs.get(dg.group.id)?.length ?? 0
+            return (
+              <div className="flex items-center gap-2 rounded-md border border-dashed border-border bg-background px-2 py-1 shadow-xl">
+                <span className="flex-1 text-sm font-semibold">{dg.group.name}</span>
+                <span className="rounded px-1.5 py-0.5 text-xs text-muted-foreground bg-muted">
+                  {count} {count === 1 ? 'paint' : 'paints'}
+                </span>
+              </div>
+            )
+          }
+
+          // Paint swatch ghost — shown when a master paint is dragged over a group
+          const masterSlot = master.find((m) => m.dndId === activeDndId)
+          if (masterSlot && groupDropState?.kind === 'hover' && masterSlot.paint) {
+            return (
+              <div className="flex items-center gap-2 rounded-lg border border-primary/40 bg-background px-3 py-2 shadow-xl">
+                <div
+                  className="size-6 shrink-0 rounded-sm"
+                  style={{ backgroundColor: masterSlot.paint.hex }}
+                />
+                <span className="text-sm font-medium">{masterSlot.paint.name}</span>
+              </div>
+            )
+          }
+
+          return null
+        })()}
+      </DragOverlay>
     </DndContext>
   )
 }

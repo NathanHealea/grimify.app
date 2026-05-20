@@ -1,7 +1,6 @@
 'use client'
 
 import { useOptimistic, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
 import { ChevronDown } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -25,25 +24,30 @@ import {
  * via {@link removePaintFromGroup}. Membership changes are optimistic and roll
  * back on server error via a Sonner toast.
  *
+ * After a successful toggle the `onToggle` callback is called so the parent can
+ * update its local `groupRefs` state without triggering a full router refresh.
+ *
  * Renders nothing when `groups` is empty.
  *
  * @param props.paletteId - UUID of the owning palette.
  * @param props.palettePaintId - Stable UUID of the master-list entry to toggle.
  * @param props.groups - All named groups for this palette.
  * @param props.activeGroupIds - Group IDs the paint currently belongs to.
+ * @param props.onToggle - Called after a successful server action with the toggled group id and its new active state.
  */
 export function PalettePaintGroupsToggle({
   paletteId,
   palettePaintId,
   groups,
   activeGroupIds,
+  onToggle,
 }: {
   paletteId: string
   palettePaintId: string
   groups: PaletteGroup[]
   activeGroupIds: string[]
+  onToggle: (groupId: string, active: boolean) => void
 }) {
-  const router = useRouter()
   const [optimisticIds, setOptimisticIds] = useOptimistic(
     new Set(activeGroupIds),
     (state: Set<string>, update: { groupId: string; active: boolean }) => {
@@ -67,7 +71,7 @@ export function PalettePaintGroupsToggle({
       if (result?.error) toast.error(result.error)
       else {
         if (nowActive) toast.success(`Added to ${groupName}`)
-        router.refresh()
+        onToggle(groupId, nowActive)
       }
     })
   }
