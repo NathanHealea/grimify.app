@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { Main } from '@/components/main'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
 import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
@@ -104,9 +103,9 @@ export default async function UserProfilePage({
             )}
           </div>
           {isOwner && (
-            <Button asChild variant="outline" size="sm" className="ml-auto">
-              <Link href="/profile/edit">Edit profile</Link>
-            </Button>
+            <Link href="/profile/edit" className="btn btn-outline btn-sm ml-auto">
+              Edit profile
+            </Link>
           )}
         </CardHeader>
         <CardContent>
