@@ -40,6 +40,7 @@ import { PaletteSwapButton } from '@/modules/palettes/components/palette-swap-bu
  * @param props.activeGroupIds - Group IDs the paint currently belongs to; master variant only.
  * @param props.groupId - UUID of the group; required for the `'group'` variant remove action.
  * @param props.onGroupToggle - Called after a successful group toggle with the toggled group id and its new active state; master variant only.
+ * @param props.onRemovedFromGroup - Called after a paint is successfully removed from a group; group variant only.
  */
 export function PalettePaintRow({
   paletteId,
@@ -53,6 +54,7 @@ export function PalettePaintRow({
   activeGroupIds,
   groupId,
   onGroupToggle,
+  onRemovedFromGroup,
 }: {
   paletteId: string
   palettePaintId: string
@@ -65,6 +67,7 @@ export function PalettePaintRow({
   activeGroupIds?: string[]
   groupId?: string
   onGroupToggle?: (groupId: string, active: boolean) => void
+  onRemovedFromGroup?: () => void
 }) {
   const {
     attributes,
@@ -94,6 +97,7 @@ export function PalettePaintRow({
           return
         }
         toast.success(`Removed '${paint.name}' from group`)
+        onRemovedFromGroup?.()
       } else {
         const result = await removePalettePaint(paletteId, palettePaintId)
         if (result?.error) {
