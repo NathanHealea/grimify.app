@@ -245,6 +245,14 @@ Core functionality:
 - [ ] [Migrate `RecipePaletteCombobox` to Radix Select](./12-painting-recipes/06-migrate-recipe-palette-combobox.md)
 - [x] [Recipe browse page — public paginated listing](./12-painting-recipes/07-recipe-browse-page.md)
 
+### Epic: Application Improvements
+
+**Goal:** Refactor cross-cutting patterns and module internals to reduce complexity, eliminate boilerplate, and improve consistency across the codebase.
+
+**High-Level Scope:**
+
+- [ ] [Palette module refactor — DnD utilities, action guards, result types](./13-application-improvements/00-palette-module-refactor.md)
+
 ### Other
 
 | | Name | Type | Status |
