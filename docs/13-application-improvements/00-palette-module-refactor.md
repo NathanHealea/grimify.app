@@ -2,7 +2,7 @@
 
 **Epic:** Application Improvements
 **Type:** Refactor
-**Status:** Todo
+**Status:** In Progress
 **Branch:** `refactor/palette-module`
 **Merge into:** `main`
 
@@ -18,14 +18,14 @@ The refactor is split into six independent groups ordered by risk and impact. Gr
 
 ## Acceptance Criteria
 
-- [ ] `PaletteGroupedPaintList` is reduced by at least 80 lines; no utility logic remains inline in the component.
-- [ ] `seedMaster`, `seedGroupRefs`, `seedGroups`, `resolveTargetGroupId`, `getActiveGroupIds`, and `getGroupRingClass` live in dedicated utility files with JSDoc.
-- [ ] `formatBrandLine` utility exists and is used in both `PalettePaintRow` and `PaletteSwapCandidateCard`.
-- [ ] `add-to-palette-menu.tsx` uses `useReducer` with a typed `MenuState` discriminated union; the `lastOpen` ref is removed.
-- [ ] `requirePaletteOwnership` and `requireAuth` utilities exist; all 14 ownership-checking actions use them.
-- [ ] `revalidatePaletteList`, `revalidatePaletteDetail`, and `revalidatePalette` utilities exist; all write actions use them.
-- [ ] `ActionResult<T>` / `VoidResult` types exist; all 17 actions return typed results (no `| undefined`).
-- [ ] Build and lint pass with no new errors.
+- [x] `PaletteGroupedPaintList` is reduced by at least 80 lines; no utility logic remains inline in the component.
+- [x] `seedMaster`, `seedGroupRefs`, `seedGroups`, `resolveTargetGroupId`, `getActiveGroupIds`, and `getGroupRingClass` live in dedicated utility files with JSDoc.
+- [x] `formatBrandLine` utility exists and is used in both `PalettePaintRow` and `PaletteSwapCandidateCard`.
+- [x] `add-to-palette-menu.tsx` uses `useReducer` with a typed `MenuState` discriminated union; the `lastOpen` ref is removed.
+- [x] `requirePaletteOwnership` and `requireAuth` utilities exist; all 14 ownership-checking actions use them.
+- [ ] `revalidatePaletteList`, `revalidatePaletteDetail`, and `revalidatePalette` utilities exist; all write actions use them. *(Only `revalidatePalette` was created; `revalidatePaletteList` and `revalidatePaletteDetail` were not extracted as separate functions.)*
+- [x] `ActionResult<T>` / `VoidResult` types exist; all standardizable actions return typed results (no `| undefined`). *(The 2 `useActionState` actions — `create-palette`, `update-palette` — retain `PaletteFormState` as required by React; all other 15 actions were standardized.)*
+- [x] Build and lint pass with no new errors.
 
 ## Scope
 
