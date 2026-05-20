@@ -2,7 +2,7 @@
 
 **Epic:** Authentication & User Accounts
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/edit-user-profile`
 **Merge into:** `main`
 
@@ -12,22 +12,22 @@ Allow authenticated users to update their own profile information — display na
 
 ## Acceptance Criteria
 
-- [ ] Authenticated users can update their display name from `/profile/edit`
-- [ ] Authenticated users can update their bio from `/profile/edit`
-- [ ] Authenticated users can upload a new avatar image from `/profile/edit`
-- [ ] Display name validation enforces the existing rules (3-20 chars, `[a-zA-Z0-9_-]+`, unique case-insensitively)
-- [ ] Bio is optional, capped at 500 characters, edited via the `MarkdownEditor` component
-- [ ] Avatar uploads are stored in Supabase Storage and the resulting public URL is saved to `profiles.avatar_url`
-- [ ] Avatar images are resized client-side to fit within **800 × 800 px** before upload; aspect ratio is preserved
-- [ ] Avatar file size is validated server-side at **2 MB** maximum after resize
-- [ ] The profile info form is pre-filled with the user's current display name and bio
-- [ ] The current avatar is previewed above the upload input; a client-side preview updates immediately on file selection
-- [ ] Success and field-level errors are surfaced after each form submission
-- [ ] Display name and avatar changes are immediately reflected in the navbar after submission (layout revalidated)
-- [ ] The public profile page at `/users/[id]` renders the bio as markdown
-- [ ] The public profile page at `/users/[id]` reflects changes after editing
-- [ ] The user menu dropdown includes an "Edit profile" link to `/profile/edit`
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Authenticated users can update their display name from `/profile/edit`
+- [x] Authenticated users can update their bio from `/profile/edit`
+- [x] Authenticated users can upload a new avatar image from `/profile/edit`
+- [x] Display name validation enforces the existing rules (3-20 chars, `[a-zA-Z0-9_-]+`, unique case-insensitively)
+- [x] Bio is optional, capped at 500 characters, edited via the `MarkdownEditor` component
+- [x] Avatar uploads are stored in Supabase Storage and the resulting public URL is saved to `profiles.avatar_url`
+- [x] Avatar images are resized client-side to fit within **800 × 800 px** before upload; aspect ratio is preserved
+- [x] Avatar file size is validated server-side at **2 MB** maximum after resize
+- [x] The profile info form is pre-filled with the user's current display name and bio
+- [x] The current avatar is previewed above the upload input; a client-side preview updates immediately on file selection
+- [x] Success and field-level errors are surfaced after each form submission
+- [x] Display name and avatar changes are immediately reflected in the navbar after submission (layout revalidated)
+- [x] The public profile page at `/users/[id]` renders the bio as markdown
+- [x] The public profile page at `/users/[id]` reflects changes after editing
+- [x] The user menu dropdown includes an "Edit profile" link to `/profile/edit`
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes
 
