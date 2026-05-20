@@ -17,7 +17,7 @@ Allow users to associate a palette with an army when creating or editing it. Add
 - [ ] The palette edit form pre-populates with the current army selection and allows changing or clearing it
 - [ ] The army selector shows all armies in a searchable combobox with ancestry breadcrumb labels (e.g., `Imperium › Space Marines › Dark Angels`)
 - [ ] Selecting a leaf node or any mid-level army is allowed — any army in the tree can be chosen
-- [ ] Palette detail/view page displays the associated army name (and ancestry path) when set
+- [ ] Palette detail/view page displays the associated army icon (if set) and name (with ancestry path) when set
 - [ ] `Palette` TypeScript type includes an optional `army` field
 - [ ] Palette service queries join `armies` so the army data is embedded in the returned `Palette`
 - [ ] All new components and types have JSDoc comments
@@ -58,11 +58,11 @@ If the palette list service (`getPalettes()` or similar) returns summaries, also
 A searchable combobox (built on the project's existing combobox pattern — see `src/modules/paints/components/paint-combobox.tsx` for reference) that:
 
 - Accepts `armies: Army[]` (flat list) as a prop and builds ancestry labels in JS
-- Displays options as `"Alliance › Faction › Sub-faction"` breadcrumb strings
+- Displays options as `"Alliance › Faction › Sub-faction"` breadcrumb strings; if an army has an `icon_url`, renders a small icon image (16×16) to the left of the label
 - Allows searching by any segment of the breadcrumb path
 - Includes a "None" / clear option so the user can unset the army
 - Emits the selected army `id` (or `null`) via a hidden form input named `army_id`
-- Shows the selected army's breadcrumb label when closed
+- Shows the selected army's icon (if set) and breadcrumb label when closed
 
 Props: `armies: Army[]`, `defaultValue?: string | null`, `name?: string` (defaults to `"army_id"`).
 
@@ -86,7 +86,7 @@ The route pages that render the palette form must now fetch `armyService.getAllA
 
 ### 9. Display army on palette detail page
 
-On the palette view/detail page (and list cards if space permits), render the army name with its ancestry path when `palette.army` is set. A simple inline breadcrumb (e.g., `Imperium › Space Marines`) next to the palette name or in the metadata row is sufficient. When `army` is null, render nothing.
+On the palette view/detail page (and list cards if space permits), render the army icon (if `icon_url` is set, as a small `<img>` inline) followed by the army name with its ancestry path when `palette.army` is set. A simple inline breadcrumb (e.g., `Imperium › Space Marines`) next to the palette name or in the metadata row is sufficient. When `army` is null, render nothing.
 
 ### Affected Files
 

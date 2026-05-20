@@ -20,6 +20,8 @@ Give administrators a full CRUD interface for managing the hierarchical army lis
 - [ ] Deleting an army with children shows an error and does not delete
 - [ ] Deleting an army linked to one or more palettes shows a warning (or is blocked, per decision)
 - [ ] Admin sidebar includes an "Armies" navigation link
+- [ ] The army create/edit form includes an icon upload field that writes to the `army-icons` Supabase storage bucket
+- [ ] Uploaded icons are displayed as a thumbnail preview in the form and in the army list
 - [ ] All new actions, components, and types have JSDoc comments
 
 ## Implementation Plan
@@ -32,7 +34,17 @@ Define a Zod schema (or plain validation) for the army form:
 - `parent_id`: optional UUID string (null for root)
 - `sort_order`: optional integer ≥ 0
 
-### 2. Army actions (`src/modules/armies/actions/`)
+### 2. Icon upload action (`src/modules/armies/actions/upload-army-icon.ts`)
+
+A server action (or client-side upload using the Supabase JS client) that:
+1. Accepts a `File` from the form's icon input
+2. Uploads to the `army-icons` storage bucket under the path `{army-id}/{filename}`
+3. Returns the public URL via `supabase.storage.from('army-icons').getPublicUrl(...)`
+4. The URL is then saved to `armies.icon_url` as part of the create or update action
+
+The icon upload can be invoked before or after the army record is saved. If uploading on create, generate a temporary UUID for the path; replace with the real army ID on success.
+
+### 3. Army actions (`src/modules/armies/actions/`)
 
 **`create-army.ts`** — server action that:
 1. Validates form data against the validation schema
@@ -71,6 +83,7 @@ Fields:
 - **Slug** — text input (editable); auto-generates from name (lowercase, spaces → hyphens, strip non-alphanumeric)
 - **Parent** — `<ArmyParentSelector>` (optional; null = root army)
 - **Sort order** — number input (optional)
+- **Icon** — file input (accepts `image/*`); on selection shows an `<img>` thumbnail preview next to the input. On submit, the file is uploaded to the `army-icons` bucket via `upload-army-icon` and the resulting URL is written to the `icon_url` field. When editing an existing army that already has an `icon_url`, display the current icon as the initial preview.
 
 Renders a submit button labeled "Create Army" or "Save Changes" based on mode. Uses `useActionState` from React 19.
 
@@ -78,7 +91,7 @@ Renders a submit button labeled "Create Army" or "Save Changes" based on mode. U
 
 Renders an `ArmyNode[]` tree as an indented HTML list or table. Each row:
 - Indented by depth level (CSS padding-left based on depth)
-- Shows: army name, parent name (or "—" for roots), sort order, Edit / Delete buttons
+- Shows: icon thumbnail (if set), army name, parent name (or "—" for roots), sort order, Edit / Delete buttons
 - Delete button triggers `delete-army` action; shows inline error if children exist
 
 ### 6. Admin pages
@@ -106,6 +119,7 @@ Add an "Armies" nav item to `src/modules/admin/components/admin-sidebar.tsx` aft
 | File | Changes |
 |------|---------|
 | `src/modules/armies/validation.ts` | New — Zod schema for army form |
+| `src/modules/armies/actions/upload-army-icon.ts` | New — upload icon to army-icons bucket, return public URL |
 | `src/modules/armies/actions/create-army.ts` | New — create server action |
 | `src/modules/armies/actions/update-army.ts` | New — update server action |
 | `src/modules/armies/actions/delete-army.ts` | New — delete server action with child guard |
@@ -123,3 +137,5 @@ Add an "Armies" nav item to `src/modules/admin/components/admin-sidebar.tsx` aft
 - **Delete and palettes**: Decide at implementation time whether to block deletion when palettes reference the army (safest) or allow with `SET NULL` (loses association silently). If the DB FK uses `ON DELETE SET NULL`, soft-block is optional — but blocking is more explicit for the admin.
 - **Slug auto-generation**: Use the same pattern as hue slugs (lowercase, spaces to hyphens, strip punctuation). Preview the generated slug next to the name field before the user submits.
 - **Form state**: Use `useActionState` from React 19 for server action responses, matching the pattern used by `hue-form.tsx` and `brand-form.tsx`.
+- **Icon upload timing**: Uploading before the army record exists means the storage path won't have a real army ID. Use a pre-generated UUID for both the insert and the storage path to keep them in sync — generate the ID in the create action and pass it to the upload helper.
+- **Stale icons**: When an admin replaces an existing icon, delete the old file from storage before uploading the new one to avoid orphaned objects in the `army-icons` bucket.
