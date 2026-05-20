@@ -52,6 +52,7 @@ Core functionality:
 10. Purchase List — Let users bookmark paints they want to buy, with a dedicated dashboard and admin management interface
 11. Color Palettes — Personal palettes of paints (owned and not), built from any source, with drag/drop reorder, scheme integration, and hue-locked HSL swap
 12. Painting Recipes — Step-by-step painting guides with sections, paints per step, photos, freeform notes, and public sharing
+13. Army Management — Hierarchical army/faction reference data for tagging palettes; admin CRUD with tree display
 
 ## MVP Features (Epics)
 
@@ -252,6 +253,16 @@ Core functionality:
 **High-Level Scope:**
 
 - [x] [Palette module refactor — DnD utilities, action guards, result types](./13-application-improvements/00-palette-module-refactor.md)
+
+### Epic: Army Management
+
+**Goal:** Let users tag their palettes with the army they're painting, backed by an admin-managed hierarchical army/faction tree (alliance → faction → sub-faction).
+
+**High-Level Scope:**
+
+- [ ] [Army database schema & module foundation](./14-army-management/00-army-schema.md)
+- [ ] [Admin army management](./14-army-management/01-admin-army-management.md)
+- [ ] [Palette army selection](./14-army-management/02-palette-army-selection.md)
 
 ### Other
 
