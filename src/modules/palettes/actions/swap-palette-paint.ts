@@ -2,8 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
-import { createClient } from '@/lib/supabase/server'
-import { createPaletteService } from '@/modules/palettes/services/palette-service'
+import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
 
 /**
  * Server action that replaces the paint in a single master-list slot.
@@ -29,18 +28,9 @@ export async function swapPalettePaint(
 ): Promise<{ error: string } | undefined> {
   if (!paletteId || !palettePaintId || !newPaintId) return { error: 'Invalid palette or paint.' }
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) return { error: 'You must be signed in to modify a palette.' }
-
-  const service = createPaletteService(supabase)
-  const palette = await service.getPaletteById(paletteId)
-
-  if (!palette) return { error: 'Palette not found.' }
-  if (palette.userId !== user.id) return { error: 'You can only modify palettes you own.' }
+  const auth = await requirePaletteOwnership(paletteId)
+  if (!auth.ok) return { error: auth.error }
+  const { supabase, palette } = auth
 
   const slot = palette.paints.find((p) => p.id === palettePaintId)
   if (!slot) return { error: 'Slot not found in palette.' }

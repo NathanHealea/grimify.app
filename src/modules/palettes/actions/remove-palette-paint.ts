@@ -2,8 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
-import { createClient } from '@/lib/supabase/server'
-import { createPaletteService } from '@/modules/palettes/services/palette-service'
+import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
 
 /**
  * Server action that removes a single paint from a palette's master list.
@@ -25,20 +24,9 @@ export async function removePalettePaint(
 ): Promise<{ error: string } | undefined> {
   if (!paletteId || !palettePaintId) return { error: 'Invalid palette or paint.' }
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) return { error: 'You must be signed in to modify a palette.' }
-
-  const service = createPaletteService(supabase)
-  const palette = await service.getPaletteById(paletteId)
-
-  if (!palette) return { error: 'Palette not found.' }
-  if (palette.userId !== user.id) {
-    return { error: 'You can only remove paints from palettes you own.' }
-  }
+  const auth = await requirePaletteOwnership(paletteId)
+  if (!auth.ok) return { error: auth.error }
+  const { service } = auth
 
   const result = await service.removePalettePaint(paletteId, palettePaintId)
   if (result.error) return { error: result.error }

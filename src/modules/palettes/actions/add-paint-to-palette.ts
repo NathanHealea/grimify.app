@@ -2,8 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
-import { createClient } from '@/lib/supabase/server'
-import { createPaletteService } from '@/modules/palettes/services/palette-service'
+import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
 import type { AddPaintToPaletteResult } from '@/modules/palettes/types/add-paint-to-palette-result'
 
 /**
@@ -26,22 +25,9 @@ export async function addPaintToPalette(
   paletteId: string,
   paintId: string,
 ): Promise<AddPaintToPaletteResult> {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return { error: 'You must be signed in to add paints to a palette.', code: 'auth' }
-  }
-
-  const service = createPaletteService(supabase)
-  const palette = await service.getPaletteById(paletteId)
-
-  if (!palette) return { error: 'Palette not found.', code: 'not_found' }
-  if (palette.userId !== user.id) {
-    return { error: 'You can only add paints to palettes you own.', code: 'forbidden' }
-  }
+  const auth = await requirePaletteOwnership(paletteId)
+  if (!auth.ok) return { error: auth.error, code: 'forbidden' }
+  const { service, palette } = auth
 
   const result = await service.appendPaintToPalette(paletteId, paintId)
   if (result.error) return { error: result.error, code: result.code ?? 'unknown' }

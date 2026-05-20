@@ -1,11 +1,10 @@
 'use server'
 
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
-import { createClient } from '@/lib/supabase/server'
 import { getCollectionService } from '@/modules/collection/services/collection-service.server'
 import { getHueService } from '@/modules/hues/services/hue-service.server'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
-import { createPaletteService } from '@/modules/palettes/services/palette-service'
+import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
 import { resolvePrincipalHueId } from '@/modules/palettes/utils/resolve-principal-hue-id'
 
 /** Successful result from {@link getHueSwapCandidates}. */
@@ -32,18 +31,9 @@ export async function getHueSwapCandidates(input: {
 }): Promise<{ error: string } | HueSwapCandidatesResult> {
   const { paletteId, palettePaintId } = input
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) return { error: 'You must be signed in to use the swap feature.' }
-
-  const paletteService = createPaletteService(supabase)
-  const palette = await paletteService.getPaletteById(paletteId)
-
-  if (!palette) return { error: 'Palette not found.' }
-  if (palette.userId !== user.id) return { error: 'You can only swap paints in palettes you own.' }
+  const auth = await requirePaletteOwnership(paletteId)
+  if (!auth.ok) return { error: auth.error }
+  const { user, palette } = auth
 
   const slot = palette.paints.find((p) => p.id === palettePaintId)
   if (!slot) return { error: 'Slot not found.' }

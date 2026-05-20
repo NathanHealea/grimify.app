@@ -2,8 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 
-import { createClient } from '@/lib/supabase/server'
-import { createPaletteService } from '@/modules/palettes/services/palette-service'
+import { requirePaletteOwnership } from '@/modules/palettes/utils/require-palette-ownership'
 import { validateGroupName } from '@/modules/palettes/validation'
 
 /**
@@ -27,18 +26,9 @@ export async function updatePaletteGroup(
   const nameError = validateGroupName(name)
   if (nameError) return { error: nameError }
 
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) return { error: 'You must be signed in to update a group.' }
-
-  const service = createPaletteService(supabase)
-  const palette = await service.getPaletteById(paletteId)
-
-  if (!palette) return { error: 'Palette not found.' }
-  if (palette.userId !== user.id) return { error: 'You can only update groups on palettes you own.' }
+  const auth = await requirePaletteOwnership(paletteId)
+  if (!auth.ok) return { error: auth.error }
+  const { service } = auth
 
   const result = await service.updatePaletteGroup(groupId, { name: name.trim() })
   if (result.error) return { error: result.error }
