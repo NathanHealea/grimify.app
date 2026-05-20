@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { Main } from '@/components/main'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
 import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
@@ -49,15 +51,16 @@ export default async function UserProfilePage({
   const { id } = await params
   const supabase = await createClient()
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('id, display_name, avatar_url, bio, created_at')
-    .eq('id', id)
-    .single()
+  const [{ data: profile }, { data: { user: currentUser } }] = await Promise.all([
+    supabase.from('profiles').select('id, display_name, avatar_url, bio, created_at').eq('id', id).single(),
+    supabase.auth.getUser(),
+  ])
 
   if (!profile) {
     notFound()
   }
+
+  const isOwner = currentUser?.id === profile.id
 
   const initials = (profile.display_name ?? '?')
     .split(/\s+/)
@@ -90,7 +93,7 @@ export default async function UserProfilePage({
               {initials}
             </span>
           )}
-          <div>
+          <div className="flex-1">
             <CardTitle className="text-2xl">
               {profile.display_name ?? 'Unnamed user'}
             </CardTitle>
@@ -100,6 +103,11 @@ export default async function UserProfilePage({
               </p>
             )}
           </div>
+          {isOwner && (
+            <Button asChild variant="outline" size="sm" className="ml-auto">
+              <Link href="/profile/edit">Edit profile</Link>
+            </Button>
+          )}
         </CardHeader>
         <CardContent>
           {profile.bio ? (

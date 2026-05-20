@@ -27,11 +27,11 @@ export default async function ProfileEditPage() {
 
   return (
     <Main>
-      <div className="w-full max-w-md space-y-6">
-        <PageHeader>
-          <PageTitle size="md">Edit Profile</PageTitle>
-        </PageHeader>
+      <PageHeader>
+        <PageTitle size="md">Edit Profile</PageTitle>
+      </PageHeader>
 
+      <div className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Profile</CardTitle>
