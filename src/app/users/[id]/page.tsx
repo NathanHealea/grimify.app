@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { Main } from '@/components/main'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
+import { MarkdownRenderer } from '@/modules/markdown/components/markdown-renderer'
 import { buildOgUrl } from '@/modules/seo/utils/build-og-url'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
@@ -102,7 +103,7 @@ export default async function UserProfilePage({
         </CardHeader>
         <CardContent>
           {profile.bio ? (
-            <p className="whitespace-pre-wrap text-sm">{profile.bio}</p>
+            <MarkdownRenderer content={profile.bio} />
           ) : (
             <p className="text-sm text-muted-foreground italic">
               This user hasn&apos;t written a bio yet.
