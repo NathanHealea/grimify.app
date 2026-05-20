@@ -251,7 +251,7 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Palette module refactor — DnD utilities, action guards, result types](./13-application-improvements/00-palette-module-refactor.md)
+- [x] [Palette module refactor — DnD utilities, action guards, result types](./13-application-improvements/00-palette-module-refactor.md)
 
 ### Other
 

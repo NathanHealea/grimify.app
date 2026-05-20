@@ -2,7 +2,7 @@
 
 **Epic:** Application Improvements
 **Type:** Refactor
-**Status:** In Progress
+**Status:** Done
 **Branch:** `refactor/palette-module`
 **Merge into:** `main`
 
