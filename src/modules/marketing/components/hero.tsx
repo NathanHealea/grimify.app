@@ -1,3 +1,4 @@
+import { BrandStrip } from '@/modules/marketing/components/brand-strip'
 import { HeroSearch } from '@/modules/marketing/components/hero-search'
 
 /**
@@ -19,8 +20,9 @@ export function Hero() {
           Search Citadel, Vallejo, Army Painter, Scale75, and more — all in one place. Build
           palettes, track your shelf, and share your recipes.
         </p>
-        <div className="w-full pt-2">
+        <div className="flex w-full flex-col gap-3 pt-2">
           <HeroSearch />
+          <BrandStrip />
         </div>
       </div>
     </section>
