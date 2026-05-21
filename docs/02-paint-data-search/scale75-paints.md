@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Enhancement
-**Status:** Done
+**Status:** Completed
 **Branch:** `enhancement/scale75-paints`
 **Merge into:** `main`
 
