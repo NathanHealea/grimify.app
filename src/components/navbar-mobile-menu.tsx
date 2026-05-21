@@ -72,11 +72,11 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
               Brands
             </Link>
           </SheetClose>
-          <SheetClose asChild>
+          {/* <SheetClose asChild>
             <Link href="/schemes" className="btn btn-ghost w-full justify-center md:justify-start">
               Schemes
             </Link>
-          </SheetClose>
+          </SheetClose> */}
           <SheetClose asChild>
             <Link href="/palettes" className="btn btn-ghost w-full justify-center md:justify-start">
               Palettes
