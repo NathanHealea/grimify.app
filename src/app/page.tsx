@@ -3,12 +3,13 @@ import { createClient } from '@/lib/supabase/server'
 import { CtaSection } from '@/modules/marketing/components/cta-section'
 import { FeatureGrid } from '@/modules/marketing/components/feature-grid'
 import { Hero } from '@/modules/marketing/components/hero'
+import { StatsStrip } from '@/modules/marketing/components/stats-strip'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
-  title: 'Color research for miniature painters',
+  title: 'Find any miniature paint — Citadel, Vallejo, Army Painter and more',
   description:
-    'Search paints across every major brand, build palettes, track your collection, and share recipes — Grimify is the painter\'s color companion.',
+    'Search Citadel, Vallejo, Army Painter, Scale75 and 10+ other brands in one place. Build palettes, track your collection, and share painting recipes — free to browse, no account needed.',
   path: '/',
 })
 
@@ -22,6 +23,7 @@ export default async function Home() {
     <Main>
       <Hero />
       <FeatureGrid />
+      <StatsStrip />
       <CtaSection isAuthenticated={!!user} />
     </Main>
   )
