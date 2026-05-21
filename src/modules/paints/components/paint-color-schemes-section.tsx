@@ -72,7 +72,7 @@ export function PaintColorSchemesSection({
   const filteredPaints = useMemo(
     () =>
       selectedBrandIds.length > 0
-        ? paints.filter((p) => selectedBrandIds.includes(p.brand_id))
+        ? paints.filter((p) => selectedBrandIds.includes(String(p.brand_id)))
         : paints,
     [paints, selectedBrandIds],
   )
