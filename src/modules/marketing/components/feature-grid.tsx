@@ -14,11 +14,10 @@ export function FeatureGrid() {
       <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:py-20">
         <div className="mx-auto mb-10 max-w-2xl text-center">
           <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-            Everything in one place
+            Built for miniature painters
           </h2>
           <p className="mt-3 text-base text-muted-foreground text-balance">
-            From discovery to documentation — the tools to research, plan, and share what you
-            paint.
+            Cross-brand search, palette building, collection tracking — every tool on one shelf.
           </p>
         </div>
         <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

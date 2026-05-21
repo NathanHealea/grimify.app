@@ -7,14 +7,14 @@ export const features: Feature[] = [
   {
     slug: 'paints',
     title: 'Cross-Brand Search',
-    blurb: 'Search every major brand by name, hex code, or color and find the closest match.',
+    blurb: 'Search Citadel, Vallejo, Army Painter, and 10+ other brands by name, hex, or colour. Find the closest match in seconds.',
     icon: Search,
     href: '/paints',
   },
   {
     slug: 'brands',
     title: 'Brand Browser',
-    blurb: 'Explore full paint lines from your favourite manufacturers side by side.',
+    blurb: 'Browse every Citadel, Vallejo, and Scale75 range — full product lines, side by side.',
     icon: Building2,
     href: '/brands',
   },
@@ -35,7 +35,7 @@ export const features: Feature[] = [
   {
     slug: 'collection',
     title: 'Collection Tracking',
-    blurb: 'Log the paints you own, plan your next purchase, and never buy a duplicate.',
+    blurb: 'Log every pot on your shelf, track what you\'re missing, and stop buying duplicates.',
     icon: Archive,
     href: '/collection',
   },
