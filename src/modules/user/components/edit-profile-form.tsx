@@ -201,19 +201,21 @@ export function EditProfileForm({
           <CardDescription>Drag and drop or click to upload a new profile picture.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <div className="flex flex-wrap items-start gap-6">
-            {previewUrl ? (
-              <Image
-                src={previewUrl}
-                alt={initialDisplayName}
-                width={80}
-                height={80}
-                className="size-20 shrink-0 rounded-full object-cover"
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <span className="avatar avatar-lg avatar-placeholder shrink-0">{initials}</span>
-            )}
+          <div className="flex flex-wrap items-center gap-6">
+            <label htmlFor={inputId} className="shrink-0 cursor-pointer">
+              {previewUrl ? (
+                <Image
+                  src={previewUrl}
+                  alt={initialDisplayName}
+                  width={80}
+                  height={80}
+                  className="size-20 rounded-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <span className="avatar avatar-lg avatar-placeholder">{initials}</span>
+              )}
+            </label>
 
             <label
               htmlFor={inputId}
