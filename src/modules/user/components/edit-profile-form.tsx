@@ -1,6 +1,5 @@
 'use client'
 
-import { Upload } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useId, useRef, useState, useTransition, type ChangeEvent, type DragEvent } from 'react'
 
