@@ -55,6 +55,7 @@ const BRAND_WEBSITES: Record<string, string> = {
   vallejo: 'https://acrylicosvallejo.com',
   'green-stuff-world': 'https://www.greenstuffworld.com',
   'ak-interactive': 'https://ak-interactive.com',
+  'scale75': 'https://scale75.com',
 }
 
 /**
@@ -100,6 +101,7 @@ const PAINT_FILES: Record<string, string> = {
   vallejo: 'vallejo.json',
   'green-stuff-world': 'green-stuff-world.json',
   'ak-interactive': 'ak-interactive.json',
+  'scale75': 'scale75.json',
 }
 
 // ---------------------------------------------------------------------------
