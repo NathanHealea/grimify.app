@@ -75,7 +75,7 @@ Core functionality:
 - [x] [Navbar user menu](./00-marketing-and-branding/10-navbar-user-menu.md)
 - [ ] [404 not-found page](./00-marketing-and-branding/11-404-not-found-page.md)
 - [x] [UI component consistency refactor](./00-marketing-and-branding/12-component-consistency-refactor.md)
-- [ ] [Marketing Sharpness & Landing Page Improvements](./00-marketing-and-branding/13-marketing-sharpness-landing-page.md)
+- [x] [Marketing Sharpness & Landing Page Improvements](./00-marketing-and-branding/13-marketing-sharpness-landing-page.md)
 - [ ] [Metadata & OpenGraph Marketing Alignment](./00-marketing-and-branding/14-metadata-og-alignment.md)
 
 ### Epic: Authentication & User Accounts
