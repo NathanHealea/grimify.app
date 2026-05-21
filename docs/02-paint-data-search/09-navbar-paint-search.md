@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/navbar-paint-search`
 **Merge into:** `main`
 
@@ -12,13 +12,13 @@ Add a compact search input to the desktop navbar that lets users type a query an
 
 ## Acceptance Criteria
 
-- [ ] A search input renders in the desktop navbar (`lg:flex`, hidden below `lg`)
-- [ ] Submitting a non-empty query navigates to `/paints?q=<trimmed value>`
-- [ ] Submitting an empty query navigates to `/paints` (no `q` param)
-- [ ] Pressing Enter submits the form
-- [ ] The search bar does not appear on mobile or tablet (below `lg` breakpoint)
-- [ ] The input is styled consistently with the rest of the navbar (compact, proportional)
-- [ ] No regressions to existing navbar links, auth section, or mobile menu
+- [x] A search input renders in the desktop navbar (`lg:flex`, hidden below `lg`)
+- [x] Submitting a non-empty query navigates to `/paints?q=<trimmed value>`
+- [x] Submitting an empty query navigates to `/paints` (no `q` param)
+- [x] Pressing Enter submits the form
+- [x] The search bar does not appear on mobile or tablet (below `lg` breakpoint)
+- [x] The input is styled consistently with the rest of the navbar (compact, proportional)
+- [x] No regressions to existing navbar links, auth section, or mobile menu
 
 ## Implementation Plan
 
