@@ -2,7 +2,7 @@
 
 **Epic:** Color Scheme Explorer
 **Type:** Enhancement
-**Status:** Todo
+**Status:** Completed
 **Branch:** `enhancement/paint-detail-brand-schemes`
 **Merge Into:** `main`
 
@@ -12,14 +12,14 @@ Add a brand filter to the color schemes section on the paint detail page so pain
 
 ## Acceptance Criteria
 
-- [ ] The "Schemes" panel on the paint detail page shows a brand filter control in its toolbar
-- [ ] By default, all brands are included (no filter applied)
-- [ ] Selecting one or more brands restricts the scheme partner rows to paints from those brands only
-- [ ] Selecting multiple brands shows results from all selected brands combined
-- [ ] A clear/reset control returns the filter to "all brands"
-- [ ] When the filtered paint pool is small (e.g., a brand with limited range), the partner rows display however many matches are available rather than erroring
-- [ ] The filter state is local to the schemes panel — switching to the "Similar" tab and back resets it
-- [ ] The brands list passed to the filter matches what's available in the full paint catalog (same `Brand[]` already fetched by the page)
+- [x] The "Schemes" panel on the paint detail page shows a brand filter control in its toolbar
+- [x] By default, all brands are included (no filter applied)
+- [x] Selecting one or more brands restricts the scheme partner rows to paints from those brands only
+- [x] Selecting multiple brands shows results from all selected brands combined
+- [x] A clear/reset control returns the filter to "all brands"
+- [x] When the filtered paint pool is small (e.g., a brand with limited range), the partner rows display however many matches are available rather than erroring
+- [x] The filter state is local to the schemes panel — switching to the "Similar" tab and back resets it
+- [x] The brands list passed to the filter matches what's available in the full paint catalog (same `Brand[]` already fetched by the page)
 
 ## Implementation Plan
 
