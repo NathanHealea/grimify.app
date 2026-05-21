@@ -33,5 +33,25 @@
     "icon": "🎨",
     "color": "#F57C00",
     "types": ["3rd Gen Acrylics", "3rd Gen Intense", "3rd Gen Metallic", "Abteilung 502", "Acrylics", "Acrylics AFV", "Acrylics Air", "Acrylics Figure", "Acrylics Naval", "Acrylics Primer"]
+  },
+  {
+    "id": "scale75",
+    "name": "Scale75",
+    "icon": "🎭",
+    "color": "#E8500A",
+    "types": [
+      "Drop & Paint",
+      "Instant Colors",
+      "Mystic Colors",
+      "Prism Effect",
+      "Scalecolor",
+      "Metal n' Alchemy",
+      "Inktensity",
+      "Fantasy & Games",
+      "Warfront",
+      "FX Fluor",
+      "Scalecolor Artist",
+      "Scalecolor Floww"
+    ]
   }
 ]
