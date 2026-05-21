@@ -1,43 +1,42 @@
-import { BookOpen, Layers, Palette, Search } from 'lucide-react'
+import { Archive, BookOpen, Building2, Layers, Search } from 'lucide-react'
 
 import type { Feature } from '@/modules/marketing/types/feature'
 
-/**
- * Static list of marketing features rendered on the homepage feature grid.
- *
- * @remarks Single source of truth — adding, removing, or reordering features
- *   is a one-file change. The `recipes` route is not yet shipped; the card
- *   will resolve to a 404 until that route lands.
- */
+/** Static list of marketing features rendered on the homepage feature grid. */
 export const features: Feature[] = [
   {
     slug: 'paints',
     title: 'Cross-Brand Search',
-    blurb: 'Search every supported paint range and find the closest match across brands.',
+    blurb: 'Search every major brand by name, hex code, or color and find the closest match.',
     icon: Search,
     href: '/paints',
   },
   {
-    slug: 'schemes',
-    title: 'Color Schemes',
-    blurb: 'Build complementary, split, and analogous schemes from any starting paint.',
-    icon: Palette,
-    href: '/schemes',
+    slug: 'brands',
+    title: 'Brand Browser',
+    blurb: 'Explore full paint lines from your favourite manufacturers side by side.',
+    icon: Building2,
+    href: '/brands',
   },
   {
     slug: 'palettes',
-    title: 'Palettes & Collection',
-    blurb:
-      'Save palettes for projects, track what\'s on your shelf, and share with the community.',
+    title: 'Palettes',
+    blurb: 'Build project palettes from any source, reorder freely, and share with the community.',
     icon: Layers,
     href: '/palettes',
   },
-  // {
-  //   slug: 'recipes',
-  //   title: 'Recipes',
-  //   blurb:
-  //     'Document and share step-by-step painting recipes with paints, layers, and notes.',
-  //   icon: BookOpen,
-  //   href: '/recipes',
-  // },
+  {
+    slug: 'recipes',
+    title: 'Painting Recipes',
+    blurb: 'Document step-by-step painting guides with paints, techniques, and notes.',
+    icon: BookOpen,
+    href: '/recipes',
+  },
+  {
+    slug: 'collection',
+    title: 'Collection Tracking',
+    blurb: 'Log the paints you own, plan your next purchase, and never buy a duplicate.',
+    icon: Archive,
+    href: '/collection',
+  },
 ]
