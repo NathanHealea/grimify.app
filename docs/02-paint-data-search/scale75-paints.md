@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Enhancement
-**Status:** Todo
+**Status:** Done
 **Branch:** `enhancement/scale75-paints`
 **Merge into:** `main`
 
@@ -35,15 +35,15 @@ Data sourced from paintpad.app. The `/paints/scalecolor` page covers multiple su
 
 ## Acceptance Criteria
 
-- [ ] Scale75 brand entry exists in `scripts/data/brands.json`
-- [ ] `scripts/data/paints/scale75.json` contains all 12 product lines with accurate names, brand paint IDs, types, and hex values
-- [ ] All hex values are sourced from Scale75 official product pages or paintpad.app individual paint pages — no placeholder values
-- [ ] `scripts/generate-seed.ts` is updated to include `scale75` in `PAINT_FILES` and `BRAND_WEBSITES`
-- [ ] `npm run db:seed:generate` runs without errors
-- [ ] `npm run db:reset` applies cleanly with no SQL errors
+- [x] Scale75 brand entry exists in `scripts/data/brands.json`
+- [x] `scripts/data/paints/scale75.json` contains all 12 product lines with accurate names, brand paint IDs, types, and hex values
+- [x] All hex values are sourced from Scale75 official product pages or paintpad.app individual paint pages — no placeholder values
+- [x] `scripts/generate-seed.ts` is updated to include `scale75` in `PAINT_FILES` and `BRAND_WEBSITES`
+- [x] `npm run db:seed:generate` runs without errors
+- [x] `npm run db:reset` applies cleanly with no SQL errors
 - [ ] Scale75 paints appear on the brands page and are searchable
-- [ ] Metal n' Alchemy paints are flagged `is_metallic = true` (automatic — generator detects "metal" in type name)
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Metal n' Alchemy paints are flagged `is_metallic = true` (automatic — generator detects "metal" in type name)
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Implementation Plan
 
