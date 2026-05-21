@@ -76,6 +76,7 @@ Core functionality:
 - [ ] [404 not-found page](./00-marketing-and-branding/11-404-not-found-page.md)
 - [x] [UI component consistency refactor](./00-marketing-and-branding/12-component-consistency-refactor.md)
 - [ ] [Marketing Sharpness & Landing Page Improvements](./00-marketing-and-branding/13-marketing-sharpness-landing-page.md)
+- [ ] [Metadata & OpenGraph Marketing Alignment](./00-marketing-and-branding/14-metadata-og-alignment.md)
 
 ### Epic: Authentication & User Accounts
 
@@ -108,6 +109,7 @@ Core functionality:
 - [x] [Paint search v2 (rearchitecture)](./02-paint-data-search/06-paint-search-v2.md)
 - [ ] [Paint details mobile action buttons](./02-paint-data-search/07-paint-details-mobile-buttons.md)
 - [x] [Paint detail sections toggle](./02-paint-data-search/08-paint-detail-sections-toggle.md)
+- [x] [Navbar paint search bar](./02-paint-data-search/09-navbar-paint-search.md)
 
 ### Epic: Interactive Color Wheel
 
