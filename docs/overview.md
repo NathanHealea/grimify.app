@@ -146,6 +146,7 @@ Core functionality:
 - [ ] [Public schemes catalog & user explorer move](./05-color-scheme-explorer/03-public-schema-page.md)
 - [x] [Scheme explorer refactor — hooks, services, and reusable components](./05-color-scheme-explorer/04-scheme-explorer-refactor.md)
 - [x] [Paint details color schemes section](./05-color-scheme-explorer/05-paint-details-color-schemes.md)
+- [ ] [Paint detail color schemes — brand filter](./05-color-scheme-explorer/06-paint-detail-brand-schemes.md)
 
 ### Epic: Collection Tracking
 
