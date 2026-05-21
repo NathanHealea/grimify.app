@@ -110,6 +110,7 @@ Core functionality:
 - [ ] [Paint details mobile action buttons](./02-paint-data-search/07-paint-details-mobile-buttons.md)
 - [x] [Paint detail sections toggle](./02-paint-data-search/08-paint-detail-sections-toggle.md)
 - [x] [Navbar paint search bar](./02-paint-data-search/09-navbar-paint-search.md)
+- [ ] [Scale75 paint indexing](./02-paint-data-search/scale75-paints.md)
 
 ### Epic: Interactive Color Wheel
 
