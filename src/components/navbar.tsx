@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Logo } from '@/components/logo'
 import { NavbarMobileMenu } from '@/components/navbar-mobile-menu'
 import { createClient } from '@/lib/supabase/server'
+import { NavbarSearchBar } from '@/modules/paints/components/navbar-search-bar'
 import { UserMenu } from '@/modules/user/components/user-menu'
 import { getUserRoles } from '@/modules/user/utils/roles'
 
@@ -58,22 +59,25 @@ export async function Navbar() {
           <Logo size="md" />
         </Link>
       </div>
-      <div className="navbar-center hidden grow justify-center align-center gap-2 lg:flex">
-        <Link href="/paints" className="btn btn-ghost btn-sm">
-          Paints
-        </Link>
-        <Link href="/brands" className="btn btn-ghost btn-sm">
-          Brands
-        </Link>
-        {/* <Link href="/schemes" className="btn btn-ghost btn-sm">
-          Schemes
-        </Link> */}
-        <Link href="/palettes" className="btn btn-ghost btn-sm">
-          Palettes
-        </Link>
-        <Link href="/recipes" className="btn btn-ghost btn-sm">
-          Recipes
-        </Link>
+      <div className="navbar-center hidden grow justify-between align-center gap-2 lg:flex">
+        <div className="flex gap-2">
+          <Link href="/paints" className="btn btn-ghost btn-sm">
+            Paints
+          </Link>
+          <Link href="/brands" className="btn btn-ghost btn-sm">
+            Brands
+          </Link>
+          {/* <Link href="/schemes" className="btn btn-ghost btn-sm">
+            Schemes
+          </Link> */}
+          <Link href="/palettes" className="btn btn-ghost btn-sm">
+            Palettes
+          </Link>
+          <Link href="/recipes" className="btn btn-ghost btn-sm">
+            Recipes
+          </Link>
+        </div>
+        <NavbarSearchBar className="w-56" />
       </div>
       <div className="navbar-end hidden gap-2 lg:flex">
         {isAdmin && (
