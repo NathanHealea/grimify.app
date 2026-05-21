@@ -2,28 +2,24 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { Main } from '@/components/main'
-import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { PageHeader, PageSubtitle, PageTitle } from '@/components/page-header'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
 import { listRoles } from '@/modules/admin/services/role-service'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+import { updateAvatarAsAdmin } from '@/modules/user/actions/update-avatar-as-admin'
+import { updateProfileAsAdmin } from '@/modules/user/actions/update-profile-as-admin'
 import { AdminDeleteUserSection } from '@/modules/user/components/admin-delete-user-section'
-import { AdminEditProfileForm } from '@/modules/user/components/admin-edit-profile-form'
 import { AdminUserRolesEditor } from '@/modules/user/components/admin-user-roles-editor'
+import { EditProfileForm } from '@/modules/user/components/edit-profile-form'
+import { getProfileById } from '@/modules/user/services/profile-service'
+import { getUserRoles } from '@/modules/user/services/user-roles-service'
 
 export const metadata = pageMetadata({
   title: 'Edit user',
   description: 'Edit user profile and roles.',
   noindex: true,
 })
-import { getProfileById } from '@/modules/user/services/profile-service'
-import { getUserRoles } from '@/modules/user/services/user-roles-service'
 
 export default async function AdminEditUserPage({
   params,
@@ -41,7 +37,6 @@ export default async function AdminEditUserPage({
     return null
   }
 
-  // Fetch profile, user's assigned roles, and all available roles in parallel
   const [profile, assignedRoles, allRoles] = await Promise.all([
     getProfileById(id),
     getUserRoles(id),
@@ -52,13 +47,15 @@ export default async function AdminEditUserPage({
     notFound()
   }
 
-  // Protect the owner account from edits by other admins
   const isOwner = assignedRoles.some((r) => r.name === 'owner')
   const isSelf = id === currentUser.id
 
   if (isOwner && !isSelf) {
     notFound()
   }
+
+  const profileAction = updateProfileAsAdmin.bind(null, id)
+  const avatarAction = updateAvatarAsAdmin.bind(null, id)
 
   return (
     <Main as="div">
@@ -79,22 +76,18 @@ export default async function AdminEditUserPage({
       </PageHeader>
 
       <div className="space-y-6">
-        {/* Profile */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Profile</CardTitle>
-            <CardDescription>
-              Avatars are synced from the user&apos;s OAuth provider.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <AdminEditProfileForm
-              userId={profile.id}
-              initialDisplayName={profile.display_name}
-              initialBio={profile.bio}
-            />
-          </CardContent>
-        </Card>
+        {/* Profile + Avatar */}
+        <EditProfileForm
+          defaultValues={{
+            display_name: profile.display_name ?? '',
+            bio: profile.bio ?? '',
+          }}
+          currentAvatarUrl={profile.avatar_url ?? null}
+          displayName={profile.display_name ?? ''}
+          hasEmailIdentity={false}
+          profileAction={profileAction}
+          avatarAction={avatarAction}
+        />
 
         {/* Roles */}
         <Card>

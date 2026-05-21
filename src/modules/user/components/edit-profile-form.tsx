@@ -1,21 +1,25 @@
 'use client'
 
-import { useEffect, useId, useRef, useState, useTransition, type ChangeEvent, type DragEvent } from 'react'
-import Image from 'next/image'
 import { Upload } from 'lucide-react'
+import Image from 'next/image'
+import { useEffect, useId, useRef, useState, useTransition, type ChangeEvent, type DragEvent } from 'react'
 
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
 import { MarkdownEditor } from '@/modules/markdown/components/markdown-editor'
 import { changePassword } from '@/modules/user/actions/change-password'
 import { updateAvatar } from '@/modules/user/actions/update-avatar'
 import { updateProfile } from '@/modules/user/actions/update-profile'
+import type { UpdateProfileFormState } from '@/modules/user/types/update-profile-form-state'
 import type { UpdateProfileFormValues } from '@/modules/user/types/update-profile-form-values'
 import { resizeImageToFit } from '@/modules/user/utils/resize-image-to-fit'
 import { validateDisplayName } from '@/modules/user/validation'
+
+type ProfileAction = (prev: UpdateProfileFormState, formData: FormData) => Promise<UpdateProfileFormState>
+type AvatarAction = (prev: { error?: string } | null, formData: FormData) => Promise<{ error?: string } | null>
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 
@@ -33,17 +37,23 @@ const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'
  * @param props.currentAvatarUrl - Existing avatar URL shown as the initial preview.
  * @param props.displayName - Used to generate the initials fallback avatar.
  * @param props.hasEmailIdentity - When `true`, the password change section is shown.
+ * @param props.profileAction - Server action for saving display name and bio. Defaults to {@link updateProfile}.
+ * @param props.avatarAction - Server action for uploading the avatar. Defaults to {@link updateAvatar}.
  */
 export function EditProfileForm({
   defaultValues,
   currentAvatarUrl,
   displayName: initialDisplayName,
   hasEmailIdentity,
+  profileAction = updateProfile,
+  avatarAction = updateAvatar,
 }: {
   defaultValues: UpdateProfileFormValues
   currentAvatarUrl: string | null
   displayName: string
   hasEmailIdentity: boolean
+  profileAction?: ProfileAction
+  avatarAction?: AvatarAction
 }) {
   const inputId = useId()
   const prevPreviewRef = useRef<string | null>(null)
@@ -161,7 +171,7 @@ export function EditProfileForm({
       const serverErrors: Record<string, string> = {}
       let generalErr: string | null = null
 
-      const profileResult = await updateProfile(null, formData)
+      const profileResult = await profileAction(null, formData)
       if (profileResult?.errors?.display_name) serverErrors.display_name = profileResult.errors.display_name
       if (profileResult?.errors?.bio) serverErrors.bio = profileResult.errors.bio
       if (profileResult?.error) generalErr = profileResult.error
@@ -169,7 +179,7 @@ export function EditProfileForm({
       if (processedBlob) {
         const avatarFormData = new FormData()
         avatarFormData.append('avatar', processedBlob, 'avatar.jpg')
-        const avatarResult = await updateAvatar(null, avatarFormData)
+        const avatarResult = await avatarAction(null, avatarFormData)
         if (avatarResult?.error) serverErrors.avatar = avatarResult.error
       }
 
@@ -202,7 +212,18 @@ export function EditProfileForm({
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-6">
-            <label htmlFor={inputId} className="shrink-0 cursor-pointer">
+            <label
+              htmlFor={inputId}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={cn(
+                'flex min-w-48 flex-1 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 text-center transition-colors select-none',
+                isDragOver
+                  ? 'border-primary bg-primary/5 text-primary'
+                  : 'border-border text-muted-foreground hover:border-muted-foreground/50 hover:text-foreground'
+              )}
+            >
               {previewUrl ? (
                 <Image
                   src={previewUrl}
@@ -215,21 +236,6 @@ export function EditProfileForm({
               ) : (
                 <span className="avatar avatar-lg avatar-placeholder">{initials}</span>
               )}
-            </label>
-
-            <label
-              htmlFor={inputId}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              className={cn(
-                'flex min-w-48 flex-1 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed p-6 text-center transition-colors select-none',
-                isDragOver
-                  ? 'border-primary bg-primary/5 text-primary'
-                  : 'border-border text-muted-foreground hover:border-muted-foreground/50 hover:text-foreground',
-              )}
-            >
-              <Upload className="size-6" aria-hidden />
               <span className="text-sm font-medium">Drop image here or click to browse</span>
               <span className="text-xs">JPEG, PNG, WebP, or GIF — max 800 × 800 px, 2 MB</span>
             </label>
@@ -324,9 +330,7 @@ export function EditProfileForm({
                 placeholder="••••••••"
                 autoComplete="new-password"
               />
-              {fieldErrors.password && (
-                <p className="text-sm text-destructive">{fieldErrors.password}</p>
-              )}
+              {fieldErrors.password && <p className="text-sm text-destructive">{fieldErrors.password}</p>}
             </div>
             <div className="form-item">
               <Label htmlFor="confirmPassword">Confirm new password</Label>
@@ -339,9 +343,7 @@ export function EditProfileForm({
                 placeholder="••••••••"
                 autoComplete="new-password"
               />
-              {fieldErrors.confirmPassword && (
-                <p className="text-sm text-destructive">{fieldErrors.confirmPassword}</p>
-              )}
+              {fieldErrors.confirmPassword && <p className="text-sm text-destructive">{fieldErrors.confirmPassword}</p>}
             </div>
           </CardContent>
         </Card>

@@ -1,7 +1,6 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase/server'
 import { getUserRoles } from '@/modules/user/services/user-roles-service'
@@ -17,6 +16,7 @@ import { validateDisplayName } from '@/modules/user/validation'
 export type AdminEditProfileState = {
   errors?: { display_name?: string; bio?: string }
   error?: string
+  success?: boolean
 } | null
 
 /**
@@ -79,5 +79,6 @@ export async function updateProfileAsAdmin(
 
   revalidatePath('/admin/users')
   revalidatePath(`/users/${userId}`)
-  redirect('/admin/users')
+
+  return { success: true }
 }
