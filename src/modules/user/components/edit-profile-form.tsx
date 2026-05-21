@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useEffect, useId, useRef, useState, useTransition, type ChangeEvent, type DragEvent } from 'react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -71,8 +72,6 @@ export function EditProfileForm({
 
   // Feedback
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
-  const [generalError, setGeneralError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
 
   const initials = initialDisplayName
     .split(/\s+/)
@@ -140,8 +139,6 @@ export function EditProfileForm({
     e.preventDefault()
 
     setFieldErrors({})
-    setGeneralError(null)
-    setSuccess(false)
 
     const formData = new FormData(e.currentTarget)
     const clientErrors: Record<string, string> = {}
@@ -190,19 +187,16 @@ export function EditProfileForm({
       clearPasswordFields()
 
       if (Object.keys(serverErrors).length === 0 && !generalErr) {
-        setSuccess(true)
+        toast.success('Profile updated successfully.')
       } else {
         setFieldErrors(serverErrors)
-        if (generalErr) setGeneralError(generalErr)
+        toast.error(generalErr ?? 'Failed to save profile. Please check the fields and try again.')
       }
     })
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {generalError && <p className="text-sm text-destructive">{generalError}</p>}
-      {success && <p className="text-sm text-green-600 dark:text-green-400">Profile updated successfully.</p>}
-
       {/* Avatar */}
       <Card>
         <CardHeader>
