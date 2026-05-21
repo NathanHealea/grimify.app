@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Enhancement
-**Status:** Todo
+**Status:** Completed
 **Branch:** `enhancement/marketing-landing-page-sharpness`
 **Merge Into:** `main`
 
@@ -12,16 +12,16 @@ Sharpen Grimify's homepage positioning based on a Product Hunt launch analysis. 
 
 ## Acceptance Criteria
 
-- [ ] Hero `<h1>` is updated to a sharper, action-oriented tagline that names the audience without using "research".
-- [ ] Hero sub-headline names at least two real paint brands (Citadel, Vallejo, Army Painter) and speaks to the cross-brand wedge.
-- [ ] A brand name strip is added below the hero search bar listing the major supported brands — visitors see "Citadel · Vallejo · Army Painter · …" in under 3 seconds.
-- [ ] Feature grid section heading and sub-copy are rewritten to address the miniature painter directly.
-- [ ] Feature card blurbs name specific brands where relevant (Cross-Brand Search, Brand Browser, Collection Tracking cards).
-- [ ] CTA section guest-state heading and sub-copy are sharpened — names brands, addresses the "buying duplicates" pain, makes the free-to-browse CTA prominent.
-- [ ] `page.tsx` metadata title and description are updated to match the new hero copy and include brand names for SEO.
-- [ ] A static social-proof row is added between the feature grid and the CTA — shows paint count, brand count, and a community nudge. Uses hardcoded values initially with a clear comment marking where to wire in dynamic counts.
-- [ ] No new dependencies introduced.
-- [ ] `npm run build` and `npm run lint` pass with no errors or warnings.
+- [x] Hero `<h1>` is updated to a sharper, action-oriented tagline that names the audience without using "research".
+- [x] Hero sub-headline names at least two real paint brands (Citadel, Vallejo, Army Painter) and speaks to the cross-brand wedge.
+- [x] A brand name strip is added below the hero search bar listing the major supported brands — visitors see "Citadel · Vallejo · Army Painter · …" in under 3 seconds.
+- [x] Feature grid section heading and sub-copy are rewritten to address the miniature painter directly.
+- [x] Feature card blurbs name specific brands where relevant (Cross-Brand Search, Brand Browser, Collection Tracking cards).
+- [x] CTA section guest-state heading and sub-copy are sharpened — names brands, addresses the "buying duplicates" pain, makes the free-to-browse CTA prominent.
+- [x] `page.tsx` metadata title and description are updated to match the new hero copy and include brand names for SEO.
+- [x] A static social-proof row is added between the feature grid and the CTA — shows paint count, brand count, and a community nudge. Uses hardcoded values initially with a clear comment marking where to wire in dynamic counts.
+- [x] No new dependencies introduced.
+- [x] `npm run build` and `npm run lint` pass with no errors or warnings.
 - [ ] All copy changes are visible in `npm run dev` on the homepage in both guest and authenticated states.
 
 ## Implementation Plan
