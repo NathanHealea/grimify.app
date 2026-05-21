@@ -13,11 +13,11 @@ export function Hero() {
     <section className="border-b border-border bg-gradient-to-b from-muted/40 to-background">
       <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 py-16 text-center sm:py-24">
         <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-          Color research for miniature painters
+          Find any miniature paint — across every brand
         </h1>
         <p className="text-lg text-muted-foreground text-balance sm:text-xl">
-          Search paints across every major brand, build palettes, track your collection, and share
-          recipes — Grimify is the painter&apos;s color companion.
+          Search Citadel, Vallejo, Army Painter, Scale75, and more — all in one place. Build
+          palettes, track your shelf, and share your recipes.
         </p>
         <div className="w-full pt-2">
           <HeroSearch />
