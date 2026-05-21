@@ -6,7 +6,7 @@
  */
 export function StatsStrip() {
   const stats = [
-    { value: '2,300+', label: 'paints indexed' },
+    { value: '2,300+', label: 'paints indexed — and growing' },
     { value: '5', label: 'supported brands' },
     { value: 'Free', label: 'to browse — always' },
   ]
