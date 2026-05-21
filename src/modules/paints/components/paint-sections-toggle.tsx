@@ -24,7 +24,7 @@ type PaintSection = 'similar' | 'schemes'
  * @param props.collectionPaintIds - IDs of paints in the user's collection, forwarded to {@link PaintColorSchemesSection}.
  * @param props.sourceBrandId - The source paint's brand ID, forwarded to {@link PaintSimilarSection}.
  * @param props.sourcePaintType - The source paint's type, forwarded to {@link PaintSimilarSection}.
- * @param props.brands - All brands for the Similar filter dropdown.
+ * @param props.brands - All brands, forwarded to the Similar filter dropdown and the Schemes brand filter.
  * @param props.paintTypes - All distinct paint types for the Similar filter dropdown.
  */
 export function PaintSectionsToggle({
@@ -87,6 +87,7 @@ export function PaintSectionsToggle({
           paint={paint}
           paints={paints}
           collectionPaintIds={collectionPaintIds}
+          brands={brands}
         />
       )}
     </div>
