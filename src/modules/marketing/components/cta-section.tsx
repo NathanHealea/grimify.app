@@ -20,12 +20,12 @@ export function CtaSection({ isAuthenticated }: { isAuthenticated: boolean }) {
     <section>
       <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 py-16 text-center sm:py-20">
         <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-          {isAuthenticated ? 'Pick up where you left off' : 'Start your color research today'}
+          {isAuthenticated ? 'Pick up where you left off' : 'Stop buying duplicate paints.'}
         </h2>
         <p className="text-base text-muted-foreground text-balance sm:text-lg">
           {isAuthenticated
             ? 'Jump back into your collection or build a palette for your next project.'
-            : 'Free to use — sign up to save palettes and track your collection, or browse the paint library as a guest.'}
+            : 'Search Citadel, Vallejo, Army Painter, and every major brand — free, no account needed. Sign up to save palettes and track your shelf.'}
         </p>
         <div className="flex flex-col items-center gap-3 pt-2 sm:flex-row sm:gap-4">
           <Link href={primary.href} className="btn btn-primary btn-lg">
