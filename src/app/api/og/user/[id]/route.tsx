@@ -105,10 +105,16 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
             padding: '0 32px',
           }}
         >
+          <div style={{ fontSize: 20, opacity: 0.5, letterSpacing: 3, marginBottom: 32, display: 'flex' }}>
+            GRIMIFY
+          </div>
           {bio ? (
-            <div style={{ fontSize: 32, opacity: 0.85, lineHeight: 1.35 }}>{bio}</div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ fontSize: 32, opacity: 0.85, lineHeight: 1.35, display: 'flex' }}>{bio}</div>
+              <div style={{ fontSize: 20, opacity: 0.45, marginTop: 20, display: 'flex' }}>on Grimify</div>
+            </div>
           ) : (
-            <div style={{ fontSize: 32, opacity: 0.6 }}>Grimify community member</div>
+            <div style={{ fontSize: 32, opacity: 0.6, display: 'flex' }}>Grimify community member</div>
           )}
         </div>
       </div>

@@ -56,8 +56,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
             padding: '0 64px',
           }}
         >
-          <div style={{ fontSize: 72, fontWeight: 600, lineHeight: 1.1 }}>{brand.name}</div>
-          <div style={{ fontSize: 28, opacity: 0.7, marginTop: 24 }}>
+          <div style={{ fontSize: 20, opacity: 0.5, letterSpacing: 3, marginBottom: 24, display: 'flex' }}>
+            GRIMIFY
+          </div>
+          <div style={{ fontSize: 72, fontWeight: 600, lineHeight: 1.1, display: 'flex' }}>{brand.name}</div>
+          <div style={{ fontSize: 28, opacity: 0.7, marginTop: 24, display: 'flex' }}>
             {`${paints.length} ${paints.length === 1 ? 'paint' : 'paints'} on Grimify`}
           </div>
         </div>
