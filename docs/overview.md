@@ -258,6 +258,7 @@ Core functionality:
 **High-Level Scope:**
 
 - [x] [Palette module refactor — DnD utilities, action guards, result types](./13-application-improvements/00-palette-module-refactor.md)
+- [ ] [Commit message format hook](./13-application-improvements/01-commit-message-hook.md)
 
 ### Epic: Army Management
 
