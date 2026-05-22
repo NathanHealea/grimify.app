@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Enhancement
-**Status:** Todo
+**Status:** Completed
 **Branch:** `enhancement/metadata-og-alignment`
 **Merge Into:** `main`
 
@@ -14,20 +14,20 @@ Update site-wide metadata and Open Graph copy to match the sharpened marketing p
 
 ## Acceptance Criteria
 
-- [ ] Root layout default description names at least three real paint brands and leads with cross-brand search.
-- [ ] Root layout `keywords` array includes brand names: Citadel, Vallejo, Army Painter, Scale75, Reaper, Warhammer.
-- [ ] Root layout OG and Twitter default title updated to include a tagline alongside "Grimify".
-- [ ] Root layout OG image `alt` text is updated to match the new tagline.
-- [ ] `/paints` page description names at least three brands and ends with a shelf/collection hook.
-- [ ] `/brands` page description names at least three brands and states the catalog value.
-- [ ] `/palettes` page description addresses the miniature painter directly.
-- [ ] `/recipes` page description addresses the miniature painter directly and names techniques/paints.
-- [ ] `/compare` page description names brands in the comparison context.
-- [ ] `/discontinued` page description names brands in the discontinuation context.
-- [ ] `/sign-up` page description names brands and leads with the free-account hook.
-- [ ] Dynamic brand detail `generateMetadata` description pattern is improved to name the brand, count, and cross-brand value.
-- [ ] `npm run build` and `npm run lint` pass with no errors or warnings.
-- [ ] No new dependencies introduced.
+- [x] Root layout default description names at least three real paint brands and leads with cross-brand search.
+- [x] Root layout `keywords` array includes brand names: Citadel, Vallejo, Army Painter, Scale75, Reaper, Warhammer.
+- [x] Root layout OG and Twitter default title updated to include a tagline alongside "Grimify".
+- [x] Root layout OG image `alt` text is updated to match the new tagline.
+- [x] `/paints` page description names at least three brands and ends with a shelf/collection hook.
+- [x] `/brands` page description names at least three brands and states the catalog value.
+- [x] `/palettes` page description addresses the miniature painter directly.
+- [x] `/recipes` page description addresses the miniature painter directly and names techniques/paints.
+- [x] `/compare` page description names brands in the comparison context.
+- [x] `/discontinued` page description names brands in the discontinuation context.
+- [x] `/sign-up` page description names brands and leads with the free-account hook.
+- [x] Dynamic brand detail `generateMetadata` description pattern is improved to name the brand, count, and cross-brand value.
+- [x] `npm run build` and `npm run lint` pass with no errors or warnings.
+- [x] No new dependencies introduced.
 
 ## Implementation Plan
 

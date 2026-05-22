@@ -11,6 +11,16 @@ export const metadata = pageMetadata({
   description:
     'Search Citadel, Vallejo, Army Painter, Scale75 and 10+ other brands in one place. Build palettes, track your collection, and share painting recipes — free to browse, no account needed.',
   path: '/',
+  image: { url: '/api/og/home', width: 1200, height: 630, alt: 'Grimify — Find any miniature paint across every brand' },
+  keywords: [
+    'miniature paint finder',
+    'Citadel paint search',
+    'Vallejo paint search',
+    'Army Painter',
+    'Scale75',
+    'paint comparison tool',
+    'miniature painting community',
+  ],
 })
 
 export default async function Home() {

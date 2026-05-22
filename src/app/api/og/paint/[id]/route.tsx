@@ -28,8 +28,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   }
 
   const brandName = paint.product_lines?.brands?.name ?? ''
-  const hex = paint.hex.toUpperCase()
-
+  
   return new ImageResponse(
     (
       <div
@@ -51,11 +50,16 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
             padding: '0 64px',
           }}
         >
+          <div style={{ fontSize: 20, opacity: 0.5, letterSpacing: 3, marginBottom: 24, display: 'flex' }}>
+            GRIMIFY
+          </div>
           {brandName ? (
-            <div style={{ fontSize: 32, opacity: 0.7, marginBottom: 24 }}>{brandName}</div>
+            <div style={{ fontSize: 32, opacity: 0.7, marginBottom: 16, display: 'flex' }}>{brandName}</div>
           ) : null}
-          <div style={{ fontSize: 72, fontWeight: 600, lineHeight: 1.1 }}>{paint.name}</div>
-          <div style={{ fontSize: 28, opacity: 0.6, marginTop: 32, letterSpacing: 4 }}>{hex}</div>
+          <div style={{ fontSize: 72, fontWeight: 600, lineHeight: 1.1, display: 'flex' }}>{paint.name}</div>
+          <div style={{ fontSize: 28, opacity: 0.6, marginTop: 32, letterSpacing: 4, display: 'flex' }}>
+            {paint.paint_type ? `${paint.paint_type} on Grimify` : 'on Grimify'}
+          </div>
         </div>
       </div>
     ),

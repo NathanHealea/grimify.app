@@ -9,8 +9,18 @@ import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 export const metadata = pageMetadata({
   title: 'Paints',
   description:
-    'Browse and search miniature paints across every supported brand. Filter by hue, compare swatches, and add to your collection.',
+    'Search Citadel, Vallejo, Army Painter, Scale75 and 10+ other brands by name, hex, or colour. Filter by hue, compare swatches, and track what you own.',
   path: '/paints',
+  image: { url: '/og-image.png', width: 1200, height: 630, alt: 'Grimify — Find any miniature paint across every brand' },
+  keywords: [
+    'miniature paints',
+    'Citadel paint database',
+    'Vallejo paint database',
+    'Army Painter paints',
+    'Scale75 paints',
+    'paint hex codes',
+    'miniature paint search',
+  ],
 })
 
 /** Valid page sizes that the paginated grid supports. */

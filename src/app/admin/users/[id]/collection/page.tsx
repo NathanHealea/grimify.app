@@ -12,7 +12,7 @@ const DEFAULT_PAGE_SIZE = 25
 
 export const metadata = pageMetadata({
   title: 'User collection',
-  description: 'Admin view of a user\'s paint collection.',
+  description: 'Admin: view a user\'s Grimify paint collection.',
   noindex: true,
 })
 

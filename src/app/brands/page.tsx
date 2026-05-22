@@ -6,8 +6,19 @@ import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
   title: 'Brands',
-  description: 'Browse miniature paint brands and their product lines on Grimify.',
+  description:
+    'Browse every Citadel, Vallejo, Army Painter, Scale75 and 10+ other miniature paint ranges — full product lines in one place.',
   path: '/brands',
+  image: { url: '/og-image.png', width: 1200, height: 630, alt: 'Grimify — Find any miniature paint across every brand' },
+  keywords: [
+    'miniature paint brands',
+    'Citadel',
+    'Vallejo',
+    'Army Painter',
+    'Scale75',
+    'Reaper',
+    'paint manufacturer comparison',
+  ],
 })
 
 export default async function BrandsPage() {

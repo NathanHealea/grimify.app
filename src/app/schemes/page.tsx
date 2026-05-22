@@ -11,6 +11,12 @@ export const metadata = pageMetadata({
   description:
     'Pick a base color and explore complementary, analogous, triadic, and split-complementary schemes — matched to real miniature paints.',
   path: '/schemes',
+  keywords: [
+    'colour theory miniature painting',
+    'complementary colour scheme',
+    'analogous scheme',
+    'paint colour wheel',
+  ],
 })
 
 export default async function SchemesPage() {

@@ -11,8 +11,17 @@ const PAGE_SIZE = 24
 
 export const metadata = pageMetadata({
   title: 'Community palettes',
-  description: 'Browse paint palettes shared by the Grimify community.',
+  description:
+    'Discover paint palettes built by miniature painters. Find inspiration for your next Citadel or Vallejo colour scheme.',
   path: '/palettes',
+  image: { url: '/og-image.png', width: 1200, height: 630, alt: 'Grimify — Find any miniature paint across every brand' },
+  keywords: [
+    'miniature paint palette',
+    'Citadel colour scheme',
+    'Vallejo colour scheme',
+    'community palettes',
+    'miniature painting inspiration',
+  ],
 })
 
 export default async function PalettesCatalogPage({

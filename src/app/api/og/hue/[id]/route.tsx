@@ -47,12 +47,13 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
             padding: '0 64px',
           }}
         >
-          <div style={{ fontSize: 72, fontWeight: 600, lineHeight: 1.1 }}>{hue.name}</div>
-          {parent ? (
-            <div style={{ fontSize: 32, opacity: 0.7, marginTop: 24 }}>
-              {`Itten: ${parent.name}`}
-            </div>
-          ) : null}
+          <div style={{ fontSize: 20, opacity: 0.5, letterSpacing: 3, marginBottom: 24, display: 'flex' }}>
+            GRIMIFY
+          </div>
+          <div style={{ fontSize: 72, fontWeight: 600, lineHeight: 1.1, display: 'flex' }}>{hue.name}</div>
+          <div style={{ fontSize: 32, opacity: 0.7, marginTop: 24, display: 'flex' }}>
+            {parent ? `Itten: ${parent.name} — on Grimify` : 'Explore hues on Grimify'}
+          </div>
         </div>
         <div style={{ width: 600, height: '100%', backgroundColor: hue.hex_code, display: 'flex' }} />
       </div>

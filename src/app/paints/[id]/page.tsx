@@ -23,12 +23,23 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 
   const brandName = paint.product_lines?.brands?.name
+  const productLineName = paint.product_lines?.name
+
+  const title = productLineName ? `${paint.name} — ${productLineName}` : paint.name
+
   const description = brandName
-    ? `${paint.name} by ${brandName}. Hex ${paint.hex.toUpperCase()}.`
-    : `${paint.name} miniature paint. Hex ${paint.hex.toUpperCase()}.`
+    ? productLineName
+      ? `${paint.name} is part of the ${productLineName} range by ${brandName} — hex codes, cross-brand substitutes and painting tips.`
+      : `${paint.name} by ${brandName} — hex codes, cross-brand substitutes and painting tips.`
+    : `${paint.name} miniature paint — hex codes, cross-brand substitutes and painting tips.`
+
+  const keywords = [paint.name]
+  if (brandName) keywords.push(`${brandName} paints`)
+  if (productLineName) keywords.push(productLineName)
+  keywords.push('miniature paint hex code', 'paint substitute')
 
   return pageMetadata({
-    title: paint.name,
+    title,
     description,
     path: `/paints/${id}`,
     image: {
@@ -37,6 +48,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       height: 630,
       alt: paint.name,
     },
+    keywords,
   })
 }
 

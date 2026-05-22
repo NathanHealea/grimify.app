@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import { JsonLd } from '@/components/json-ld'
 import { Main } from '@/components/main'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/server'
@@ -31,6 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     title: name,
     description,
     path: `/users/${id}`,
+    ogType: 'profile',
     image: profile.display_name
       ? {
           url: buildOgUrl('user', id),
@@ -39,6 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
           alt: name,
         }
       : undefined,
+    keywords: [name, 'Grimify painter', 'miniature painting community'],
   })
 }
 
@@ -74,8 +77,17 @@ export default async function UserProfilePage({
       })
     : null
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: profile.display_name ?? undefined,
+    description: profile.bio ?? undefined,
+    url: `https://grimify.app/users/${id}`,
+  }
+
   return (
     <Main>
+      <JsonLd data={jsonLd} />
       <Card>
         <CardHeader className="flex flex-row items-center gap-4">
           {profile.avatar_url ? (

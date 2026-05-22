@@ -35,11 +35,10 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     return new Response('Not found', { status: 404 })
   }
 
-  const { data: ownerProfile } = await supabase
-    .from('profiles')
-    .select('display_name')
-    .eq('id', palette.user_id)
-    .single()
+  const [{ data: ownerProfile }, { count: publicPaletteCount }] = await Promise.all([
+    supabase.from('profiles').select('display_name').eq('id', palette.user_id).single(),
+    supabase.from('palettes').select('*', { count: 'exact', head: true }).eq('is_public', true),
+  ])
 
   type PalettePaintRow = { position: number; paints: { hex: string } | null }
   const rows = (palette.palette_paints as unknown as PalettePaintRow[] | null) ?? []
@@ -74,12 +73,20 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
             padding: '0 64px',
           }}
         >
-          <div style={{ fontSize: 72, fontWeight: 600, lineHeight: 1.1 }}>{palette.name}</div>
-          <div style={{ fontSize: 28, opacity: 0.7, marginTop: 24 }}>
+          <div style={{ fontSize: 20, opacity: 0.5, letterSpacing: 3, marginBottom: 24, display: 'flex' }}>
+            GRIMIFY
+          </div>
+          <div style={{ fontSize: 72, fontWeight: 600, lineHeight: 1.1, display: 'flex' }}>{palette.name}</div>
+          <div style={{ fontSize: 28, opacity: 0.7, marginTop: 24, display: 'flex' }}>
             {`${swatches.length} ${swatches.length === 1 ? 'paint' : 'paints'}${
               ownerProfile?.display_name ? ` · by ${ownerProfile.display_name}` : ''
-            }`}
+            } on Grimify`}
           </div>
+          {publicPaletteCount != null && publicPaletteCount > 1 ? (
+            <div style={{ fontSize: 20, opacity: 0.4, marginTop: 12, display: 'flex' }}>
+              {`one of ${publicPaletteCount.toLocaleString('en-US')} community palettes`}
+            </div>
+          ) : null}
         </div>
         <div style={{ display: 'flex', height: 220, width: '100%' }}>
           {visibleSwatches.map((hex, i) => (

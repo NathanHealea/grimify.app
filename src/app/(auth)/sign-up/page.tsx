@@ -8,8 +8,11 @@ import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
   title: 'Create an account',
-  description: 'Sign up for Grimify to build your paint collection, palettes, and recipes.',
+  description:
+    'Create a free Grimify account to track your Citadel, Vallejo and Army Painter collection, build palettes, and share painting recipes.',
   path: '/sign-up',
+  image: { url: '/og-image.png', width: 1200, height: 630, alt: 'Grimify — Find any miniature paint across every brand' },
+  keywords: ['free miniature paint tracker', 'Grimify account', 'paint collection app'],
 })
 
 export default function SignUpPage() {
