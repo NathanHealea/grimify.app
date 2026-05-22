@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
+import { JsonLd } from '@/components/json-ld'
 import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { createRecipeService } from '@/modules/recipes/services/recipe-service'
@@ -43,6 +44,7 @@ export async function generateMetadata({
     description: recipe.summary?.slice(0, 200) ?? `${recipe.title} — a painting recipe on Grimify.`,
     path: `/recipes/${id}`,
     noindex: !recipe.isPublic,
+    ogType: 'article',
   })
 }
 
@@ -66,8 +68,19 @@ export default async function RecipeDetailPage({
 
   const canEdit = recipe.userId === user?.id
 
+  const jsonLd = recipe.isPublic
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'HowTo',
+        name: recipe.title,
+        description: recipe.summary ?? undefined,
+        url: `https://grimify.app/recipes/${id}`,
+      }
+    : null
+
   return (
     <Main>
+      {jsonLd && <JsonLd data={jsonLd} />}
       <RecipeDetail recipe={recipe} canEdit={canEdit} />
     </Main>
   )

@@ -10,8 +10,16 @@ import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 export const metadata = pageMetadata({
   title: 'Discontinued paints',
   description:
-    'Browse every discontinued miniature paint in the catalog and view cross-brand substitute suggestions ranked by perceptual color distance.',
+    'Every discontinued Citadel, Vallejo and Army Painter paint — with cross-brand substitute suggestions ranked by perceptual colour distance.',
+  image: { url: '/og-image.png', width: 1200, height: 630, alt: 'Grimify — Find any miniature paint across every brand' },
   path: '/discontinued',
+  keywords: [
+    'discontinued miniature paints',
+    'Citadel discontinued',
+    'Vallejo discontinued',
+    'paint substitute finder',
+    'out of print paints',
+  ],
 })
 
 /** Valid page sizes that the `/discontinued` route supports. */

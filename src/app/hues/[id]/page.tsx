@@ -31,6 +31,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     ? `${hue.name} (${parent.name}) — browse miniature paints in this hue on Grimify.`
     : `Browse miniature paints in the ${hue.name} hue on Grimify.`
 
+  const keywords = [`${hue.name} miniature paints`, `${hue.name} paint colours`, 'paint hue filter']
+  if (parent) keywords.push(`${parent.name} paints`)
+
   return pageMetadata({
     title: hue.name,
     description,
@@ -41,6 +44,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       height: 630,
       alt: hue.name,
     },
+    keywords,
   })
 }
 

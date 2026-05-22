@@ -9,8 +9,16 @@ import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 export const metadata = pageMetadata({
   title: 'Compare paints',
   description:
-    'Compare up to six miniature paints side by side. Inspect brand, product line, hex, and pairwise CIE76 ΔE color difference.',
+    'Compare Citadel, Vallejo, Army Painter and any other brand side by side — hex values, product lines, and perceptual colour distance at a glance.',
+  image: { url: '/og-image.png', width: 1200, height: 630, alt: 'Grimify — Find any miniature paint across every brand' },
   path: '/compare',
+  keywords: [
+    'compare miniature paints',
+    'Citadel vs Vallejo',
+    'paint substitute',
+    'cross-brand paint comparison',
+    'perceptual colour distance',
+  ],
 })
 
 export default async function ComparePage({

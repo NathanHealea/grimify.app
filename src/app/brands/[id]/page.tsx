@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { Breadcrumbs } from '@/components/breadcrumbs'
+import { JsonLd } from '@/components/json-ld'
 import { Main } from '@/components/main'
 import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   return pageMetadata({
     title: brand.name,
-    description: `${brand.name} miniature paints on Grimify. ${paintCount} ${paintCount === 1 ? 'paint' : 'paints'}.`,
+    description: `Browse ${paintCount} ${brand.name} miniature paints on Grimify — full product lines, hex codes, and cross-brand comparisons.`,
     path: `/brands/${id}`,
     image: {
       url: buildOgUrl('brand', numericId),
@@ -44,6 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       height: 630,
       alt: brand.name,
     },
+    keywords: [`${brand.name} paints`, `${brand.name} paint range`, `miniature paints by ${brand.name}`],
   })
 }
 
@@ -80,8 +82,17 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ id
     userPaintIds = await collectionService.getUserPaintIds(user.id)
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: brand.name,
+    url: `https://grimify.app/brands/${numericId}`,
+    description: `Browse ${brand.name} miniature paints on Grimify — full product lines, hex codes, and cross-brand comparisons.`,
+  }
+
   return (
     <Main>
+      <JsonLd data={jsonLd} />
       <Breadcrumbs items={[{ label: 'Brands', href: '/brands' }, { label: brand.name }]} />
       <PageHeader>
         <PageTitle>{brand.name}</PageTitle>

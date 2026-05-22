@@ -4,8 +4,17 @@ import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
   title: 'Browse Recipes',
-  description: 'Discover step-by-step painting recipes from the Grimify community.',
+  description:
+    'Discover step-by-step painting recipes from the miniature painting community — techniques, paint lists, and photos.',
   path: '/recipes',
+  image: { url: '/og-image.png', width: 1200, height: 630, alt: 'Grimify — Find any miniature paint across every brand' },
+  keywords: [
+    'miniature painting recipes',
+    'painting techniques',
+    'Citadel tutorial',
+    'miniature paint guide',
+    'step-by-step painting',
+  ],
 })
 
 /** Valid page sizes accepted via the `?size=` search param. */

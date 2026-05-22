@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
+import { JsonLd } from '@/components/json-ld'
 import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
@@ -27,9 +28,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return pageMetadata({ title: 'Palette not found', description: 'This palette could not be found.', noindex: true })
   }
 
+  const rawDescription = palette.description?.trim()
+  const description = rawDescription
+    ? `${rawDescription.slice(0, 175)} — on Grimify.`
+    : `${palette.name} — a miniature paint palette on Grimify.`
+
   return pageMetadata({
     title: palette.name,
-    description: palette.description?.slice(0, 200) ?? `${palette.name} — a paint palette on Grimify.`,
+    description,
     path: `/palettes/${id}`,
     noindex: !palette.isPublic,
     image: palette.isPublic
@@ -39,6 +45,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
           height: 630,
           alt: palette.name,
         }
+      : undefined,
+    keywords: palette.isPublic
+      ? ['miniature paint palette', palette.name, 'community palette', 'Grimify palette']
       : undefined,
   })
 }
@@ -67,8 +76,22 @@ export default async function PaletteDetailPage({
     .eq('id', palette.userId)
     .single()
 
+  const jsonLd = palette.isPublic
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'CreativeWork',
+        name: palette.name,
+        description: palette.description ?? undefined,
+        author: ownerProfile?.display_name
+          ? { '@type': 'Person', name: ownerProfile.display_name }
+          : undefined,
+        url: `https://grimify.app/palettes/${id}`,
+      }
+    : null
+
   return (
     <Main>
+      {jsonLd && <JsonLd data={jsonLd} />}
       <PaletteDetail
         palette={palette}
         viewer={user ? { id: user.id } : null}
