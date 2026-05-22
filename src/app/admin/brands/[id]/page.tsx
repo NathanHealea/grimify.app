@@ -15,8 +15,7 @@ import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
   title: 'Edit brand',
-  description: 'Admin: edit a paint brand.',
-  path: '/admin/brands',
+  description: 'Admin: edit a Grimify paint brand.',
   noindex: true,
 })
 

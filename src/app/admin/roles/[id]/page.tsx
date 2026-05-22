@@ -11,7 +11,7 @@ import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
   title: 'Role detail',
-  description: 'Admin role detail.',
+  description: 'Admin: Grimify role detail.',
   noindex: true,
 })
 

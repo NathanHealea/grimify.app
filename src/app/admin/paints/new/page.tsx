@@ -12,7 +12,7 @@ import type { Hue } from '@/types/color'
 
 export const metadata = pageMetadata({
   title: 'New paint',
-  description: 'Admin: create a new paint.',
+  description: 'Admin: create a new Grimify paint.',
   path: '/admin/paints/new',
   noindex: true,
 })

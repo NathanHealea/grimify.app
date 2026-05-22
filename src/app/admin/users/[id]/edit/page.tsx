@@ -17,7 +17,7 @@ import { getUserRoles } from '@/modules/user/services/user-roles-service'
 
 export const metadata = pageMetadata({
   title: 'Edit user',
-  description: 'Edit user profile and roles.',
+  description: 'Admin: edit Grimify user profile and roles.',
   noindex: true,
 })
 

@@ -12,7 +12,7 @@ import { getUserRoles } from '@/modules/user/services/user-roles-service'
 
 export const metadata = pageMetadata({
   title: 'User detail',
-  description: 'Admin user detail.',
+  description: 'Admin: Grimify user detail.',
   noindex: true,
 })
 

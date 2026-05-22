@@ -9,7 +9,7 @@ import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
   title: 'New brand',
-  description: 'Admin: create a new paint brand.',
+  description: 'Admin: create a new Grimify paint brand.',
   path: '/admin/brands/new',
   noindex: true,
 })

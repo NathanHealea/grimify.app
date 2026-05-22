@@ -15,8 +15,7 @@ import type { Hue } from '@/types/color'
 
 export const metadata = pageMetadata({
   title: 'Edit paint',
-  description: 'Admin: edit a paint.',
-  path: '/admin/paints',
+  description: 'Admin: edit a Grimify paint.',
   noindex: true,
 })
 
