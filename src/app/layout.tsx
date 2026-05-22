@@ -12,7 +12,7 @@ import './globals.css'
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 
 const description =
-  'Interactive color research and collection management for miniature painters — paint library, cross-brand comparisons, palettes, and recipes.'
+  'Search Citadel, Vallejo, Army Painter, Scale75 and 10+ other brands in one place. Build palettes, track your shelf, and share painting recipes — free to browse, no account needed.'
 
 /**
  * Default site metadata. Page-level `metadata` exports and `generateMetadata`
@@ -34,26 +34,32 @@ export const metadata: Metadata = {
   applicationName: 'Grimify',
   keywords: [
     'miniature painting',
-    'warhammer paints',
+    'Citadel paints',
+    'Vallejo paints',
+    'Army Painter',
+    'Scale75',
+    'Reaper paints',
+    'cross-brand paint search',
+    'paint collection tracker',
     'paint comparison',
-    'paint collection',
     'color palette',
-    'color wheel',
-    'recipes',
     'tabletop hobby',
+    'Warhammer paints',
+    'miniature paint database',
   ],
   authors: [{ name: 'Nathan Healea' }],
   manifest: '/branding/site.webmanifest',
   openGraph: {
     type: 'website',
     siteName: 'Grimify',
-    title: 'Grimify',
+    locale: 'en_US',
+    title: 'Grimify — Find any miniature paint',
     description,
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Grimify' }],
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Grimify — Find any miniature paint across every brand' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Grimify',
+    title: 'Grimify — Find any miniature paint',
     description,
     images: ['/og-image.png'],
   },
@@ -70,6 +76,18 @@ export const viewport: Viewport = {
   ],
 }
 
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Grimify',
+  url: 'https://grimify.app',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://grimify.app/paints?q={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -78,6 +96,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn('font-sans', geist.variable)}>
       <body className="flex min-h-dvh flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
         <Navbar />
         {children}
         <Footer />
