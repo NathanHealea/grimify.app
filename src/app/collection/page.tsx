@@ -29,7 +29,7 @@ export default async function CollectionPage() {
   ])
 
   return (
-    <Main>
+    <Main className="space-y-6">
       <PageHeader>
         <PageTitle>My Collection</PageTitle>
       </PageHeader>
