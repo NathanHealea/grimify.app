@@ -110,7 +110,12 @@ Core functionality:
 - [ ] [Paint details mobile action buttons](./02-paint-data-search/07-paint-details-mobile-buttons.md)
 - [x] [Paint detail sections toggle](./02-paint-data-search/08-paint-detail-sections-toggle.md)
 - [x] [Navbar paint search bar](./02-paint-data-search/09-navbar-paint-search.md)
+- [ ] [Paint explorer filters (brand, paint type, and more)](./02-paint-data-search/10-paint-explorer-filters.md)
+- [ ] [Paint explorer sort options (Hue, Lightness, Contrast)](./02-paint-data-search/11-paint-explorer-sort.md)
+- [ ] [Paint explorer compact list view](./02-paint-data-search/12-paint-explorer-list-view.md)
+- [ ] [Paint explorer reactive hue counts](./02-paint-data-search/13-paint-explorer-reactive-hue-counts.md)
 - [x] [Scale75 paint indexing](./02-paint-data-search/scale75-paints.md)
+- [ ] [Army Painter Effects paint line](./02-paint-data-search/army-painter-effects.md)
 
 ### Epic: Interactive Color Wheel
 
@@ -163,6 +168,7 @@ Core functionality:
 - [x] [Collection dashboard](./06-collection-tracking/02-collection-dashboard.md)
 - [x] [Collection toast feedback (add / remove)](./06-collection-tracking/03-collection-toast.md)
 - [ ] [Previously viewed palettes on the collection page](./06-collection-tracking/04-previously-viewed-palettes.md)
+- [ ] [Bulk paint import](./06-collection-tracking/05-bulk-paint-import.md)
 
 ### Epic: Community & Social
 
@@ -235,6 +241,7 @@ Core functionality:
 - [x] [Palette sort bar missing from edit page](./11-color-palettes/14-palette-sort-bar-missing.md)
 - [x] [Palette group dropdown with checkbox & add toast](./11-color-palettes/15-palette-group-dropdown-checkbox.md)
 - [x] [Palette edit UX improvements (no-refresh group toggles, group drag overlay, cross-zone DnD)](./11-color-palettes/16-palette-edit-ux.md)
+- [ ] [Show paint type in palette paint search results](./11-color-palettes/17-palette-paint-search-show-type.md)
 
 ### Epic: Painting Recipes
 
@@ -250,6 +257,7 @@ Core functionality:
 - [ ] [Public recipe sharing, browse, and OG previews](./12-painting-recipes/05-recipe-sharing.md)
 - [ ] [Migrate `RecipePaletteCombobox` to Radix Select](./12-painting-recipes/06-migrate-recipe-palette-combobox.md)
 - [x] [Recipe browse page — public paginated listing](./12-painting-recipes/07-recipe-browse-page.md)
+- [ ] [Recipe image thumbnails — faster photo loading via Supabase transforms](./12-painting-recipes/08-recipe-image-thumbnails.md)
 
 ### Epic: Application Improvements
 
@@ -259,6 +267,7 @@ Core functionality:
 
 - [x] [Palette module refactor — DnD utilities, action guards, result types](./13-application-improvements/00-palette-module-refactor.md)
 - [ ] [Commit message format hook](./13-application-improvements/01-commit-message-hook.md)
+- [ ] [Cross-domain UI audit — shared design system groundwork](./13-application-improvements/02-cross-domain-ui-audit.md)
 
 ### Epic: Army Management
 
@@ -266,7 +275,7 @@ Core functionality:
 
 **High-Level Scope:**
 
-- [ ] [Army database schema & module foundation](./14-army-management/00-army-schema.md)
+- [x] [Army database schema & module foundation](./14-army-management/00-army-schema.md)
 - [ ] [Admin army management](./14-army-management/01-admin-army-management.md)
 - [ ] [Palette army selection](./14-army-management/02-palette-army-selection.md)
 
