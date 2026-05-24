@@ -2,7 +2,7 @@
 
 **Epic:** Collection Tracking
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/collection-previously-viewed-palettes`
 **Merge into:** `main`
 
@@ -12,12 +12,12 @@ Replace the `RecentPalettesPlaceholder` stub on the My Collection page with a li
 
 ## Acceptance Criteria
 
-- [ ] Visiting a palette detail page records its ID in `localStorage` under the key `grimify:recently-viewed-palettes`
-- [ ] The stored list is deduplicated and capped at 10 IDs (most recent first)
-- [ ] The My Collection page shows a "Recently viewed palettes" section with up to 6 palette cards
-- [ ] Each card uses the existing `PaletteCard` component and links to the palette detail page
-- [ ] If no palettes have been viewed yet, an appropriate empty state is shown
-- [ ] The `RecentPalettesPlaceholder` component is removed
+- [x] Visiting a palette detail page records its ID in `localStorage` under the key `grimify:recently-viewed-palettes`
+- [x] The stored list is deduplicated and capped at 10 IDs (most recent first)
+- [x] The My Collection page shows a "Recently viewed palettes" section with up to 6 palette cards
+- [x] Each card uses the existing `PaletteCard` component and links to the palette detail page
+- [x] If no palettes have been viewed yet, an appropriate empty state is shown
+- [x] The `RecentPalettesPlaceholder` component is removed
 
 ## Implementation Plan
 
