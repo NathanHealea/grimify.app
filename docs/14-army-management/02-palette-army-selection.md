@@ -4,7 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `feature/palette-army-selection`
-**Merge Into:** `main`
+**Merge Into:** `epic/army-management`
 
 ## Summary
 

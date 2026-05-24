@@ -4,7 +4,7 @@
 **Type:** Feature
 **Status:** Todo
 **Branch:** `feature/admin-army-management`
-**Merge Into:** `main`
+**Merge Into:** `epic/army-management`
 
 ## Summary
 
