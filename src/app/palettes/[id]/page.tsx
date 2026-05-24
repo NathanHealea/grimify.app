@@ -6,6 +6,7 @@ import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { PaletteDetail } from '@/modules/palettes/components/palette-detail'
+import { PaletteViewTracker } from '@/modules/palettes/components/palette-view-tracker'
 import { buildOgUrl } from '@/modules/seo/utils/build-og-url'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
@@ -92,6 +93,7 @@ export default async function PaletteDetailPage({
   return (
     <Main>
       {jsonLd && <JsonLd data={jsonLd} />}
+      <PaletteViewTracker id={id} />
       <PaletteDetail
         palette={palette}
         viewer={user ? { id: user.id } : null}
