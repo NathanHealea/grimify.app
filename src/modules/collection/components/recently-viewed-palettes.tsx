@@ -22,12 +22,20 @@ export function RecentlyViewedPalettes() {
   const [summaries, setSummaries] = useState<PaletteSummary[] | null>(null)
 
   useEffect(() => {
-    const ids = getRecentlyViewedPaletteIds().slice(0, 6)
-    if (ids.length === 0) {
-      setSummaries([])
-      return
+    let cancelled = false
+
+    async function load() {
+      const ids = getRecentlyViewedPaletteIds().slice(0, 6)
+      if (ids.length === 0) {
+        if (!cancelled) setSummaries([])
+        return
+      }
+      const result = await getRecentPaletteSummaries(ids)
+      if (!cancelled) setSummaries(result)
     }
-    getRecentPaletteSummaries(ids).then(setSummaries)
+
+    load()
+    return () => { cancelled = true }
   }, [])
 
   return (
