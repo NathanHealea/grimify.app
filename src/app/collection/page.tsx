@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createCollectionService } from '@/modules/collection/services/collection-service'
 import { CollectionStats } from '@/modules/collection/components/collection-stats'
 import { CollectionSearch } from '@/modules/collection/components/collection-search'
-import { RecentPalettesPlaceholder } from '@/modules/collection/components/recent-palettes-placeholder'
+import { RecentlyViewedPalettes } from '@/modules/collection/components/recently-viewed-palettes'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
@@ -35,7 +35,7 @@ export default async function CollectionPage() {
       </PageHeader>
       <CollectionStats stats={stats} />
       <CollectionSearch initialPaints={recentPaints} />
-      <RecentPalettesPlaceholder />
+      <RecentlyViewedPalettes />
     </Main>
   )
 }
