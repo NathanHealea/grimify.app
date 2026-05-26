@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
+import type { Army } from '@/modules/armies/types/army'
 import type { Palette } from '@/modules/palettes/types/palette'
 import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import type { PaletteGroupPaint } from '@/modules/palettes/types/palette-group-paint'
@@ -39,7 +40,8 @@ export function createPaletteService(supabase: SupabaseClient) {
         .select(
           '*, ' +
           'palette_groups(id, name, position, created_at, palette_group_paints(id, palette_paint_id, position, added_at)), ' +
-          'palette_paints(id, position, paint_id, note, added_at, paints(*, product_lines(*, brands(*))))',
+          'palette_paints(id, position, paint_id, note, added_at, paints(*, product_lines(*, brands(*)))), ' +
+          'army:armies(*)',
         )
         .eq('id', id)
         .maybeSingle()
@@ -96,6 +98,7 @@ export function createPaletteService(supabase: SupabaseClient) {
         updated_at: string
         palette_groups: RawPaletteGroup[]
         palette_paints: RawPalettePaint[]
+        army: Army | null
       }
 
       const raw = data as unknown as RawPaletteData
@@ -172,6 +175,7 @@ export function createPaletteService(supabase: SupabaseClient) {
         updatedAt: raw.updated_at,
         groups,
         paints,
+        army: raw.army ?? null,
       }
     },
 
@@ -339,6 +343,7 @@ export function createPaletteService(supabase: SupabaseClient) {
       name: string
       description?: string | null
       isPublic?: boolean
+      armyId?: string | null
     }): Promise<Palette> {
       const { data, error } = await supabase
         .from('palettes')
@@ -347,6 +352,7 @@ export function createPaletteService(supabase: SupabaseClient) {
           name: input.name,
           description: input.description ?? null,
           is_public: input.isPublic ?? false,
+          army_id: input.armyId ?? null,
         })
         .select()
         .single()
@@ -363,6 +369,7 @@ export function createPaletteService(supabase: SupabaseClient) {
         updatedAt: data.updated_at,
         groups: [],
         paints: [],
+        army: null,
       }
     },
 
@@ -378,7 +385,7 @@ export function createPaletteService(supabase: SupabaseClient) {
      */
     async updatePalette(
       id: string,
-      patch: { name?: string; description?: string | null; isPublic?: boolean },
+      patch: { name?: string; description?: string | null; isPublic?: boolean; armyId?: string | null },
     ): Promise<Palette> {
       const { data, error } = await supabase
         .from('palettes')
@@ -386,6 +393,7 @@ export function createPaletteService(supabase: SupabaseClient) {
           ...(patch.name !== undefined && { name: patch.name }),
           ...(patch.description !== undefined && { description: patch.description }),
           ...(patch.isPublic !== undefined && { is_public: patch.isPublic }),
+          ...('armyId' in patch && { army_id: patch.armyId ?? null }),
         })
         .eq('id', id)
         .select()
@@ -403,6 +411,7 @@ export function createPaletteService(supabase: SupabaseClient) {
         updatedAt: data.updated_at,
         groups: [],
         paints: [],
+        army: null,
       }
     },
 
