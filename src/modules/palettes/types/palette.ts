@@ -1,3 +1,4 @@
+import type { Army } from '@/modules/armies/types/army'
 import type { PaletteGroup } from '@/modules/palettes/types/palette-group'
 import type { PalettePaint } from '@/modules/palettes/types/palette-paint'
 
@@ -33,4 +34,6 @@ export type Palette = {
   groups: PaletteGroup[]
   /** Master paint list, sorted by `position` ascending. */
   paints: PalettePaint[]
+  /** The army this palette is built for; `null` when no army is selected. */
+  army: Army | null
 }
