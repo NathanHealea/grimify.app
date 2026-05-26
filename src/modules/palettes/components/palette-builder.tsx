@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
+import type { Army } from '@/modules/armies/types/army'
 import type { Palette } from '@/modules/palettes/types/palette'
 import type { PaintSortDirection, PaintSortField } from '@/modules/paints/utils/sort-paints'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
@@ -30,15 +31,18 @@ import { PalettePaintPicker } from '@/modules/palettes/components/palette-paint-
  * @param props.palette - Fully hydrated palette to edit.
  * @param props.catalog - Full paint catalog for the picker's search.
  * @param props.collectionPaintIds - IDs of paints the viewer already owns; used to pre-filter the "save to collection" toggle.
+ * @param props.armies - Flat army list passed to {@link PaletteForm} for the army combobox.
  */
 export function PaletteBuilder({
   palette,
   catalog,
   collectionPaintIds,
+  armies = [],
 }: {
   palette: Palette
   catalog: ColorWheelPaint[]
   collectionPaintIds: string[]
+  armies?: Army[]
 }) {
   const [sortField, setSortField] = useState<PaintSortField>('name')
   const [sortDirection, setSortDirection] = useState<PaintSortDirection>('asc')
@@ -65,7 +69,7 @@ export function PaletteBuilder({
     <div className="card card-body flex flex-col gap-6">
       <div>
         <h2 className="mb-4 text-lg font-semibold">Details</h2>
-        <PaletteForm palette={palette} />
+        <PaletteForm palette={palette} armies={armies} />
       </div>
 
       <div>
