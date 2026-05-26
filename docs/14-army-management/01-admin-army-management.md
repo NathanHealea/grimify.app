@@ -2,7 +2,7 @@
 
 **Epic:** Army Management
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/admin-army-management`
 **Merge Into:** `epic/army-management`
 
@@ -12,17 +12,17 @@ Give administrators a full CRUD interface for managing the hierarchical army lis
 
 ## Acceptance Criteria
 
-- [ ] `/admin/armies` lists all armies in a hierarchical indented tree (root → children → grandchildren)
-- [ ] Each row shows the army name, its parent (if any), and action buttons (edit, delete)
-- [ ] `/admin/armies/new` renders a form to create a new army with name, slug (auto-generated, editable), optional parent, and optional sort order
-- [ ] `/admin/armies/[id]` renders the same form pre-filled for editing
-- [ ] Creating or editing an army validates uniqueness of slug at the correct level (top-level or within parent)
-- [ ] Deleting an army with children shows an error and does not delete
-- [ ] Deleting an army linked to one or more palettes shows a warning (or is blocked, per decision)
-- [ ] Admin sidebar includes an "Armies" navigation link
-- [ ] The army create/edit form includes an icon upload field that writes to the `army-icons` Supabase storage bucket
-- [ ] Uploaded icons are displayed as a thumbnail preview in the form and in the army list
-- [ ] All new actions, components, and types have JSDoc comments
+- [x] `/admin/armies` lists all armies in a hierarchical indented tree (root → children → grandchildren)
+- [x] Each row shows the army name, its parent (if any), and action buttons (edit, delete)
+- [x] `/admin/armies/new` renders a form to create a new army with name, slug (auto-generated, editable), optional parent, and optional sort order
+- [x] `/admin/armies/[id]` renders the same form pre-filled for editing
+- [x] Creating or editing an army validates uniqueness of slug at the correct level (top-level or within parent)
+- [x] Deleting an army with children shows an error and does not delete
+- [x] Deleting an army linked to one or more palettes shows a warning (or is blocked, per decision)
+- [x] Admin sidebar includes an "Armies" navigation link
+- [x] The army create/edit form includes an icon upload field that writes to the `army-icons` Supabase storage bucket
+- [x] Uploaded icons are displayed as a thumbnail preview in the form and in the army list
+- [x] All new actions, components, and types have JSDoc comments
 
 ## Implementation Plan
 
