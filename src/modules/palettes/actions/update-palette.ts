@@ -8,8 +8,8 @@ import { validatePaletteForm } from '@/modules/palettes/validation'
 import type { PaletteFormState } from '@/modules/palettes/types/palette-form-state'
 
 /**
- * Server action that updates an existing palette's name, description, or
- * visibility.
+ * Server action that updates an existing palette's name, description,
+ * visibility, and army association.
  *
  * Intended for use with React 19's `useActionState`. On success, revalidates
  * `/user/palettes` (owner dashboard), `/palettes` (public catalog), and the
@@ -28,8 +28,10 @@ export async function updatePalette(
   const name = ((formData.get('name') as string | null) ?? '').trim()
   const description = ((formData.get('description') as string | null) ?? '').trim()
   const isPublic = formData.get('isPublic') === 'true'
+  const rawArmyId = (formData.get('army_id') as string | null) ?? ''
+  const armyId = rawArmyId.trim() || null
 
-  const values: PaletteFormState['values'] = { name, description, isPublic }
+  const values: PaletteFormState['values'] = { name, description, isPublic, armyId }
 
   if (!id) {
     return { values, errors: { form: 'Palette ID is required.' } }
@@ -56,6 +58,7 @@ export async function updatePalette(
       name,
       description: description || null,
       isPublic,
+      armyId,
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to update palette.'

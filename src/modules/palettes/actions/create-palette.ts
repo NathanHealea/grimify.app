@@ -9,7 +9,7 @@ import { validatePaletteForm } from '@/modules/palettes/validation'
 import type { PaletteFormState } from '@/modules/palettes/types/palette-form-state'
 
 const DEFAULT_STATE: PaletteFormState = {
-  values: { name: '', description: '', isPublic: false },
+  values: { name: '', description: '', isPublic: false, armyId: null },
   errors: {},
 }
 
@@ -34,11 +34,13 @@ export async function createPalette(
   const rawName = (formData.get('name') as string | null) ?? ''
   const rawDescription = (formData.get('description') as string | null) ?? ''
   const isPublic = formData.get('isPublic') === 'true'
+  const rawArmyId = (formData.get('army_id') as string | null) ?? ''
+  const armyId = rawArmyId.trim() || null
 
   const name = rawName.trim() || 'Untitled palette'
   const description = rawDescription.trim()
 
-  const values: PaletteFormState['values'] = { name, description, isPublic }
+  const values: PaletteFormState['values'] = { name, description, isPublic, armyId }
 
   const fieldErrors = validatePaletteForm({ name, description })
   if (Object.keys(fieldErrors).length > 0) {
@@ -63,6 +65,7 @@ export async function createPalette(
       name,
       description: description || null,
       isPublic,
+      armyId,
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to create palette.'
