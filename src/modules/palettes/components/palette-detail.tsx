@@ -11,9 +11,9 @@ import { MarkdownRenderer } from '@/modules/markdown/components/markdown-rendere
  * Read-only body for a palette detail page.
  *
  * Renders the palette name, optional description, owner attribution, visibility
- * chip, a large swatch strip, and the ordered paint list. When the palette has
- * no paints, renders a guest empty-state instead of the list. An "Edit" link is
- * shown when the viewer owns the palette.
+ * chip, army association (when present), a large swatch strip, and the ordered
+ * paint list. When the palette has no paints, renders a guest empty-state
+ * instead of the list. An "Edit" link is shown when the viewer owns the palette.
  *
  * @param props.palette - Fully hydrated palette data.
  * @param props.viewer - The currently authenticated user, or `null` for guests.
@@ -52,6 +52,18 @@ export function PaletteDetail({
               <span className="badge badge-soft badge-sm">
                 {palette.isPublic ? 'Public' : 'Private'}
               </span>
+              {palette.army && (
+                <span className="flex items-center gap-1 text-sm text-muted-foreground">
+                  {palette.army.icon_url && (
+                    <img
+                      src={palette.army.icon_url}
+                      alt={palette.army.name}
+                      className="h-4 w-4 shrink-0 rounded object-contain"
+                    />
+                  )}
+                  {palette.army.name}
+                </span>
+              )}
             </div>
           </div>
           {isOwner && (
