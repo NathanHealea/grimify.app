@@ -2,7 +2,7 @@
 
 **Epic:** Application Improvements
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/breadcrumb-navigation`
 **Merge into:** `main`
 
