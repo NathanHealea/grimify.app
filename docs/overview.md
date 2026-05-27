@@ -167,7 +167,7 @@ Core functionality:
 - [ ] [Collection overview and statistics](./06-collection-tracking/01-collection-overview.md)
 - [x] [Collection dashboard](./06-collection-tracking/02-collection-dashboard.md)
 - [x] [Collection toast feedback (add / remove)](./06-collection-tracking/03-collection-toast.md)
-- [ ] [Previously viewed palettes on the collection page](./06-collection-tracking/04-previously-viewed-palettes.md)
+- [x] [Previously viewed palettes on the collection page](./06-collection-tracking/04-previously-viewed-palettes.md)
 - [ ] [Bulk paint import](./06-collection-tracking/05-bulk-paint-import.md)
 
 ### Epic: Community & Social
