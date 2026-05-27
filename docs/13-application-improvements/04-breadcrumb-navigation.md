@@ -2,7 +2,7 @@
 
 **Epic:** Application Improvements
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/breadcrumb-navigation`
 **Merge into:** `main`
 
@@ -20,16 +20,16 @@ Add consistent breadcrumb trails to every community domain that has a detail pag
 
 ## Acceptance Criteria
 
-- [ ] Palettes detail page (`/palettes/[id]`) shows `Palettes → [palette name]`
-- [ ] Palettes edit page (`/user/palettes/[id]/edit`) shows `Palettes → [palette name] → Edit`; the existing `← Back to palette` arrow link is removed
-- [ ] Recipes detail page (`/recipes/[id]`) shows `Recipes → [recipe title]`
-- [ ] Recipes edit page (`/user/recipes/[id]/edit`) shows `Recipes → [recipe title] → Edit`; the existing `← Back to recipe` arrow link is removed
-- [ ] Paints detail page (`/paints/[id]`) already correct — no change needed
-- [ ] Brands detail page (`/brands/[id]`) already correct — no change needed
-- [ ] Hues detail page (`/hues/[id]`) already correct — no change needed
-- [ ] All breadcrumb links are functional (clicking `Palettes` navigates to `/palettes`, etc.)
-- [ ] The `Edit` segment on edit pages is unlinked plain text (current page convention)
-- [ ] No `ArrowLeft` / `Link` back-link remnants on edit pages
+- [x] Palettes detail page (`/palettes/[id]`) shows `Palettes → [palette name]`
+- [x] Palettes edit page (`/user/palettes/[id]/edit`) shows `Palettes → [palette name] → Edit`; the existing `← Back to palette` arrow link is removed
+- [x] Recipes detail page (`/recipes/[id]`) shows `Recipes → [recipe title]`
+- [x] Recipes edit page (`/user/recipes/[id]/edit`) shows `Recipes → [recipe title] → Edit`; the existing `← Back to recipe` arrow link is removed
+- [x] Paints detail page (`/paints/[id]`) already correct — no change needed
+- [x] Brands detail page (`/brands/[id]`) already correct — no change needed
+- [x] Hues detail page (`/hues/[id]`) already correct — no change needed
+- [x] All breadcrumb links are functional (clicking `Palettes` navigates to `/palettes`, etc.)
+- [x] The `Edit` segment on edit pages is unlinked plain text (current page convention)
+- [x] No `ArrowLeft` / `Link` back-link remnants on edit pages
 
 ## Implementation Plan
 
