@@ -176,6 +176,53 @@ export function createPaletteService(supabase: SupabaseClient) {
     },
 
     /**
+     * Fetches `PaletteSummary` rows for an explicit list of palette IDs.
+     *
+     * Returns only palettes visible to the caller (RLS enforced). Palettes
+     * that have been deleted or made private since the IDs were stored will
+     * simply be absent from the result — no error is raised.
+     *
+     * The result order is unspecified relative to the input; callers should
+     * re-sort by input position if order matters.
+     *
+     * @param ids - Array of palette UUIDs to fetch. Returns `[]` immediately
+     *   when the array is empty to avoid issuing a vacuous `IN ()` query.
+     * @returns Array of {@link PaletteSummary} rows, possibly shorter than `ids`.
+     */
+    async listPalettesByIds(ids: string[]): Promise<PaletteSummary[]> {
+      if (ids.length === 0) return []
+
+      const { data, error } = await supabase
+        .from('palettes')
+        .select('id, name, is_public, updated_at, profiles(display_name), palette_paints(paint_id, paints(hex))')
+        .in('id', ids)
+
+      if (error || !data) return []
+
+      type RawSummaryRow = {
+        id: string
+        name: string
+        is_public: boolean
+        updated_at: string
+        profiles: { display_name: string | null } | null
+        palette_paints: { paint_id: string; paints: { hex: string } | null }[]
+      }
+
+      return (data as unknown as RawSummaryRow[]).map((row) => ({
+        id: row.id,
+        name: row.name,
+        isPublic: row.is_public,
+        paintCount: row.palette_paints.length,
+        swatches: row.palette_paints
+          .slice(0, 8)
+          .map((pp) => pp.paints?.hex ?? '')
+          .filter(Boolean),
+        updatedAt: row.updated_at,
+        ownerDisplayName: row.profiles?.display_name ?? null,
+      }))
+    },
+
+    /**
      * Lists all palettes owned by the given user, ordered by most recently
      * updated first.
      *
