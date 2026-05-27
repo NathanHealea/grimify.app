@@ -3467,3 +3467,58 @@ INSERT INTO public.paint_references (paint_id, related_paint_id, relationship, s
 -- ==========================================================
 -- Summary: 6 brands, 2885 paints, 334 references
 -- ==========================================================
+
+-- ----------------------------------------------------------
+-- Armies (29 canonical Warhammer 40,000 factions)
+-- ----------------------------------------------------------
+
+WITH roots AS (
+  INSERT INTO public.armies (name, slug, sort_order)
+  VALUES
+    ('Imperium', 'imperium', 1),
+    ('Chaos',    'chaos',    2),
+    ('Xenos',    'xenos',    3)
+  ON CONFLICT DO NOTHING
+  RETURNING id, slug
+),
+factions AS (
+  INSERT INTO public.armies (parent_id, name, slug)
+  SELECT r.id, f.name, f.slug
+  FROM (VALUES
+    ('imperium', 'Adepta Sororitas',    'adepta-sororitas'),
+    ('imperium', 'Adeptus Custodes',    'adeptus-custodes'),
+    ('imperium', 'Adeptus Mechanicus',  'adeptus-mechanicus'),
+    ('imperium', 'Astra Militarum',     'astra-militarum'),
+    ('imperium', 'Grey Knights',        'grey-knights'),
+    ('imperium', 'Imperial Knights',    'imperial-knights'),
+    ('imperium', 'Space Marines',       'space-marines'),
+    ('chaos',    'Chaos Daemons',       'chaos-daemons'),
+    ('chaos',    'Chaos Knights',       'chaos-knights'),
+    ('chaos',    'Chaos Space Marines', 'chaos-space-marines'),
+    ('chaos',    'Death Guard',         'death-guard'),
+    ('chaos',    'Thousand Sons',       'thousand-sons'),
+    ('chaos',    'World Eaters',        'world-eaters'),
+    ('xenos',    'Aeldari',             'aeldari'),
+    ('xenos',    'Drukhari',            'drukhari'),
+    ('xenos',    'Genestealer Cults',   'genestealer-cults'),
+    ('xenos',    'Leagues of Votann',   'leagues-of-votann'),
+    ('xenos',    'Necrons',             'necrons'),
+    ('xenos',    'Orks',                'orks'),
+    ('xenos',    'T''au Empire',        'tau-empire'),
+    ('xenos',    'Tyranids',            'tyranids')
+  ) AS f(parent_slug, name, slug)
+  JOIN roots r ON r.slug = f.parent_slug
+  ON CONFLICT DO NOTHING
+  RETURNING id, slug
+)
+INSERT INTO public.armies (parent_id, name, slug)
+SELECT f.id, sf.name, sf.slug
+FROM (VALUES
+  ('space-marines', 'Black Templars', 'black-templars'),
+  ('space-marines', 'Blood Angels',   'blood-angels'),
+  ('space-marines', 'Dark Angels',    'dark-angels'),
+  ('space-marines', 'Deathwatch',     'deathwatch'),
+  ('space-marines', 'Space Wolves',   'space-wolves')
+) AS sf(parent_slug, name, slug)
+JOIN factions f ON f.slug = sf.parent_slug
+ON CONFLICT DO NOTHING;
