@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
+import { Breadcrumbs } from '@/components/breadcrumbs'
 import { JsonLd } from '@/components/json-ld'
 import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
@@ -93,6 +94,7 @@ export default async function PaletteDetailPage({
   return (
     <Main>
       {jsonLd && <JsonLd data={jsonLd} />}
+      <Breadcrumbs items={[{ label: 'Palettes', href: '/palettes' }, { label: palette.name }]} />
       <PaletteViewTracker id={id} />
       <PaletteDetail
         palette={palette}
