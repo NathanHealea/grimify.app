@@ -2,9 +2,9 @@
 
 **Epic:** Army Management
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/army-schema`
-**Merge Into:** `main`
+**Merge Into:** `epic/army-management`
 
 ## Summary
 
@@ -12,15 +12,15 @@ Create the `armies` table with a self-referential `parent_id` to support unlimit
 
 ## Acceptance Criteria
 
-- [ ] `armies` table exists with `id`, `parent_id` (nullable self-ref FK), `name`, `slug`, `icon_url`, `sort_order`, and `created_at` columns
-- [ ] Slug uniqueness is enforced per level: top-level slugs are globally unique; child slugs are unique within their parent
-- [ ] `ON DELETE RESTRICT` on `parent_id` prevents deleting a parent that still has children
-- [ ] RLS is enabled: all authenticated and anonymous users can read armies; only admins can insert, update, or delete
-- [ ] A public Supabase storage bucket named `army-icons` exists for icon/image uploads
-- [ ] `src/modules/armies/` module exists with `types/army.ts`, `types/army-node.ts`, and `services/army-service.ts`
-- [ ] `ArmyService` exports: `getRootArmies()`, `getChildArmies(parentId)`, `getArmyTree()`, `getArmyById(id)`, `getAllArmiesFlat()`
-- [ ] All exported types and service functions have JSDoc comments
-- [ ] The 29 canonical armies from the seed data below are inserted by the migration
+- [x] `armies` table exists with `id`, `parent_id` (nullable self-ref FK), `name`, `slug`, `icon_url`, `sort_order`, and `created_at` columns
+- [x] Slug uniqueness is enforced per level: top-level slugs are globally unique; child slugs are unique within their parent
+- [x] `ON DELETE RESTRICT` on `parent_id` prevents deleting a parent that still has children
+- [x] RLS is enabled: all authenticated and anonymous users can read armies; only admins can insert, update, or delete
+- [x] A public Supabase storage bucket named `army-icons` exists for icon/image uploads
+- [x] `src/modules/armies/` module exists with `types/army.ts`, `types/army-node.ts`, and `services/army-service.ts`
+- [x] `ArmyService` exports: `getRootArmies()`, `getChildArmies(parentId)`, `getArmyTree()`, `getArmyById(id)`, `getAllArmiesFlat()`
+- [x] All exported types and service functions have JSDoc comments
+- [x] The 29 canonical armies from the seed data below are inserted by the migration
 
 ## Reference Army Hierarchy
 

@@ -9,6 +9,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { createPaintService } from '@/modules/paints/services/paint-service'
 import { createCollectionService } from '@/modules/collection/services/collection-service'
+import { createArmyService } from '@/modules/armies/services/army-service'
 import { PaletteBuilder } from '@/modules/palettes/components/palette-builder'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
@@ -40,9 +41,12 @@ export default async function UserPaletteEditPage({
   const paintService = createPaintService(supabase)
   const collectionService = createCollectionService(supabase)
 
-  const [catalog, collectionIds] = await Promise.all([
+  const armyService = createArmyService(supabase)
+
+  const [catalog, collectionIds, armies] = await Promise.all([
     paintService.getColorWheelPaints(),
     collectionService.getUserPaintIds(user.id),
+    armyService.getAllArmiesFlat(),
   ])
 
   return (
@@ -61,6 +65,7 @@ export default async function UserPaletteEditPage({
         palette={palette}
         catalog={catalog}
         collectionPaintIds={Array.from(collectionIds)}
+        armies={armies}
       />
     </Main>
   )

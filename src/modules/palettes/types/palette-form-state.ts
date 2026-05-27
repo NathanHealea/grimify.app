@@ -12,6 +12,8 @@ export type PaletteFormState = {
     name: string
     description: string
     isPublic: boolean
+    /** The selected army ID, or `null` when no army is selected. */
+    armyId: string | null
   }
   /** Per-field and form-level error messages. */
   errors: {

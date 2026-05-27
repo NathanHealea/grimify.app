@@ -2,9 +2,9 @@
 
 **Epic:** Army Management
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/palette-army-selection`
-**Merge Into:** `main`
+**Merge Into:** `epic/army-management`
 
 ## Summary
 
@@ -12,15 +12,15 @@ Allow users to associate a palette with an army when creating or editing it. Add
 
 ## Acceptance Criteria
 
-- [ ] `palettes.army_id` column exists as a nullable FK to `armies.id` with `ON DELETE SET NULL`
-- [ ] The palette create form includes an army selector (optional field)
-- [ ] The palette edit form pre-populates with the current army selection and allows changing or clearing it
-- [ ] The army selector shows all armies in a searchable combobox with ancestry breadcrumb labels (e.g., `Imperium › Space Marines › Dark Angels`)
-- [ ] Selecting a leaf node or any mid-level army is allowed — any army in the tree can be chosen
-- [ ] Palette detail/view page displays the associated army icon (if set) and name (with ancestry path) when set
-- [ ] `Palette` TypeScript type includes an optional `army` field
-- [ ] Palette service queries join `armies` so the army data is embedded in the returned `Palette`
-- [ ] All new components and types have JSDoc comments
+- [x] `palettes.army_id` column exists as a nullable FK to `armies.id` with `ON DELETE SET NULL`
+- [x] The palette create form includes an army selector (optional field)
+- [x] The palette edit form pre-populates with the current army selection and allows changing or clearing it
+- [x] The army selector shows all armies in a searchable combobox with ancestry breadcrumb labels (e.g., `Imperium › Space Marines › Dark Angels`)
+- [x] Selecting a leaf node or any mid-level army is allowed — any army in the tree can be chosen
+- [x] Palette detail/view page displays the associated army icon (if set) and name (with ancestry path) when set
+- [x] `Palette` TypeScript type includes an optional `army` field
+- [x] Palette service queries join `armies` so the army data is embedded in the returned `Palette`
+- [x] All new components and types have JSDoc comments
 
 ## Implementation Plan
 
