@@ -269,7 +269,7 @@ Core functionality:
 - [ ] [Commit message format hook](./13-application-improvements/01-commit-message-hook.md)
 - [ ] [Cross-domain UI component audit](./13-application-improvements/02-cross-domain-ui-audit.md)
 - [ ] [Footer version display](./13-application-improvements/03-footer-version-display.md)
-- [ ] [Domain breadcrumb navigation](./13-application-improvements/04-breadcrumb-navigation.md)
+- [x] [Domain breadcrumb navigation](./13-application-improvements/04-breadcrumb-navigation.md)
 
 ### Epic: Army Management
 
