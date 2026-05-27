@@ -276,8 +276,8 @@ Core functionality:
 **High-Level Scope:**
 
 - [x] [Army database schema & module foundation](./14-army-management/00-army-schema.md)
-- [ ] [Admin army management](./14-army-management/01-admin-army-management.md)
-- [ ] [Palette army selection](./14-army-management/02-palette-army-selection.md)
+- [x] [Admin army management](./14-army-management/01-admin-army-management.md)
+- [x] [Palette army selection](./14-army-management/02-palette-army-selection.md)
 
 ### Other
 
