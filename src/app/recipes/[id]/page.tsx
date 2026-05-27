@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
+import { Breadcrumbs } from '@/components/breadcrumbs'
 import { JsonLd } from '@/components/json-ld'
 import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
@@ -81,6 +82,7 @@ export default async function RecipeDetailPage({
   return (
     <Main>
       {jsonLd && <JsonLd data={jsonLd} />}
+      <Breadcrumbs items={[{ label: 'Recipes', href: '/recipes' }, { label: recipe.title }]} />
       <RecipeDetail recipe={recipe} canEdit={canEdit} />
     </Main>
   )

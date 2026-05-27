@@ -1,7 +1,6 @@
-import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
 
+import { Breadcrumbs } from '@/components/breadcrumbs'
 import { Main } from '@/components/main'
 import { PageTitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
@@ -40,13 +39,13 @@ export default async function UserRecipeEditPage({
 
   return (
     <Main>
-      <Link
-        href={`/recipes/${id}`}
-        className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        Back to recipe
-      </Link>
+      <Breadcrumbs
+        items={[
+          { label: 'Recipes', href: '/recipes' },
+          { label: recipe.title, href: `/recipes/${id}` },
+          { label: 'Edit' },
+        ]}
+      />
       <PageTitle className="mb-8">Edit recipe</PageTitle>
       <RecipeBuilder recipe={recipe} palettes={palettes} />
     </Main>

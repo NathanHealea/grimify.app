@@ -2,7 +2,7 @@
 
 **Epic:** Collection Tracking
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/collection-previously-viewed-palettes`
 **Merge into:** `main`
 
