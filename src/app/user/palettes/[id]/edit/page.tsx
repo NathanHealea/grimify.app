@@ -1,8 +1,7 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { notFound } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
 
+import { Breadcrumbs } from '@/components/breadcrumbs'
 import { Main } from '@/components/main'
 import { PageHeader, PageTitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
@@ -51,13 +50,13 @@ export default async function UserPaletteEditPage({
 
   return (
     <Main>
-      <Link
-        href={`/palettes/${id}`}
-        className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        Back to palette
-      </Link>
+      <Breadcrumbs
+        items={[
+          { label: 'Palettes', href: '/palettes' },
+          { label: palette.name, href: `/palettes/${id}` },
+          { label: 'Edit' },
+        ]}
+      />
       <PageHeader>
         <PageTitle>Edit palette</PageTitle>
       </PageHeader>
