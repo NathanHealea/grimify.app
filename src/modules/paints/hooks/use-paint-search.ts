@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { searchPaints } from '@/modules/paints/actions/search-paints'
 import type { PaintWithBrand } from '@/modules/paints/services/paint-service'
+import type { PaintFilterState } from '@/modules/paints/types/paint-filter-state'
 
 /**
  * Fetches paints via `searchPaintsUnified` with AbortController cancellation.
@@ -13,6 +14,7 @@ import type { PaintWithBrand } from '@/modules/paints/services/paint-service'
  *
  * @param params.query - Debounced search string.
  * @param params.hueIds - Active hue UUIDs (one for child, many for parent group).
+ * @param params.filters - Active dimension filters from {@link usePaintFilters}.
  * @param params.scope - Collection scope — `'all'` or `{ type: 'userCollection', userId }`.
  * @param params.pageSize - Number of results per page.
  * @param params.page - 1-based page number.
@@ -23,6 +25,7 @@ import type { PaintWithBrand } from '@/modules/paints/services/paint-service'
 export function usePaintSearch(params: {
   query?: string
   hueIds?: string[]
+  filters?: PaintFilterState
   scope?: 'all' | { type: 'userCollection'; userId: string }
   pageSize: number
   page: number
@@ -34,7 +37,7 @@ export function usePaintSearch(params: {
   isLoading: boolean
   error: string | null
 } {
-  const { query, hueIds, scope, pageSize, page, initialPaints, initialTotalCount } = params
+  const { query, hueIds, filters, scope, pageSize, page, initialPaints, initialTotalCount } = params
 
   const [paints, setPaints] = useState<PaintWithBrand[]>(initialPaints ?? [])
   const [totalCount, setTotalCount] = useState(initialTotalCount ?? 0)
@@ -52,7 +55,20 @@ export function usePaintSearch(params: {
     const limit = pageSize
     const offset = (page - 1) * pageSize
 
-    searchPaints({ query, hueIds, limit, offset })
+    searchPaints({
+      query,
+      hueIds,
+      brandIds: filters?.brandIds && filters.brandIds.length > 0 ? filters.brandIds : undefined,
+      paintTypes: filters?.paintTypes && filters.paintTypes.length > 0 ? filters.paintTypes : undefined,
+      productLineIds:
+        filters?.productLineIds && filters.productLineIds.length > 0
+          ? filters.productLineIds
+          : undefined,
+      discontinued: filters?.discontinued !== 'include' ? filters?.discontinued : undefined,
+      metallicOnly: filters?.metallicOnly || undefined,
+      limit,
+      offset,
+    })
       .then(({ paints: fetched, count }) => {
         if (signal.aborted) return
         setPaints(fetched)
@@ -66,7 +82,18 @@ export function usePaintSearch(params: {
       })
 
     return () => controller.abort()
-  }, [query, hueIds, scope, pageSize, page])
+  }, [
+    query,
+    hueIds,
+    filters?.brandIds,
+    filters?.paintTypes,
+    filters?.productLineIds,
+    filters?.discontinued,
+    filters?.metallicOnly,
+    scope,
+    pageSize,
+    page,
+  ])
 
   return { paints, totalCount, isLoading, error }
 }

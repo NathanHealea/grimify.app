@@ -7,13 +7,21 @@ import { Button } from '@/components/ui/button'
 import { CollectionPaintCard } from '@/modules/collection/components/collection-paint-card'
 import { HueFilterBar } from '@/modules/paints/components/hue-filter-bar'
 import { PaintCard } from '@/modules/paints/components/paint-card'
+import { PaintFilterBar } from '@/modules/paints/components/paint-filter-bar'
 import { PaintGrid } from '@/modules/paints/components/paint-grid'
 import { PaginationControls } from '@/modules/paints/components/pagination-controls'
 import { useDebouncedQuery } from '@/modules/paints/hooks/use-debounced-query'
 import { useHueFilter } from '@/modules/paints/hooks/use-hue-filter'
+import { usePaintFacetCounts } from '@/modules/paints/hooks/use-paint-facet-counts'
+import { usePaintFilters } from '@/modules/paints/hooks/use-paint-filters'
 import { usePaintSearch } from '@/modules/paints/hooks/use-paint-search'
 import { useSearchUrlState } from '@/modules/paints/hooks/use-search-url-state'
 import type { PaintWithBrand } from '@/modules/paints/services/paint-service'
+import type { PaintFacetCounts } from '@/modules/paints/types/paint-facet-counts'
+import {
+  EMPTY_PAINT_FILTER_STATE,
+  type PaintFilterState,
+} from '@/modules/paints/types/paint-filter-state'
 import type { Hue } from '@/types/color'
 
 /** Available page size options for the paint explorer. */
@@ -23,6 +31,11 @@ const PAGE_SIZE_OPTIONS = [25, 50, 100, 200] as const
 type ExplorerUrlState = {
   q: string
   hue: string
+  brand: string
+  type: string
+  line: string
+  disc: 'include' | 'exclude' | 'only'
+  metal: '0' | '1'
   page: number
   size: number
 }
@@ -30,9 +43,17 @@ type ExplorerUrlState = {
 function hydrate(sp: URLSearchParams): ExplorerUrlState {
   const sizeParam = Number(sp.get('size'))
   const size = (PAGE_SIZE_OPTIONS as readonly number[]).includes(sizeParam) ? sizeParam : 50
+  const discRaw = sp.get('disc')
+  const disc: ExplorerUrlState['disc'] =
+    discRaw === 'exclude' || discRaw === 'only' ? discRaw : 'include'
   return {
     q: sp.get('q') ?? '',
     hue: sp.get('hue') ?? '',
+    brand: sp.get('brand') ?? '',
+    type: sp.get('type') ?? '',
+    line: sp.get('line') ?? '',
+    disc,
+    metal: sp.get('metal') === '1' ? '1' : '0',
     page: Math.max(1, Number(sp.get('page') || 1)),
     size,
   }
@@ -42,39 +63,74 @@ function serialize(state: ExplorerUrlState): URLSearchParams {
   const sp = new URLSearchParams()
   if (state.q) sp.set('q', state.q)
   if (state.hue) sp.set('hue', state.hue)
+  if (state.brand) sp.set('brand', state.brand)
+  if (state.type) sp.set('type', state.type)
+  if (state.line) sp.set('line', state.line)
+  if (state.disc !== 'include') sp.set('disc', state.disc)
+  if (state.metal === '1') sp.set('metal', '1')
   if (state.page > 1) sp.set('page', String(state.page))
   if (state.size !== 50) sp.set('size', String(state.size))
   return sp
 }
 
+/** Converts a comma-separated string of numeric IDs to a number array. */
+function parseIds(raw: string): number[] {
+  return raw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map(Number)
+    .filter((n) => !isNaN(n) && n > 0)
+}
+
+/** Converts a comma-separated string of type names to a lowercased string array. */
+function parseTypes(raw: string): string[] {
+  return raw
+    .split(',')
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean)
+}
+
 /**
  * Smart container for the public paint explorer on `/paints`.
  *
- * Composes {@link useDebouncedQuery}, {@link useHueFilter}, {@link usePaintSearch},
- * and {@link useSearchUrlState} to manage all search, filter, and pagination state.
- * Renders {@link SearchInput}, {@link HueFilterBar}, {@link PaintGrid}, and
- * {@link PaginationControls}.
+ * Composes {@link useDebouncedQuery}, {@link useHueFilter}, {@link usePaintFilters},
+ * {@link usePaintFacetCounts}, {@link usePaintSearch}, and {@link useSearchUrlState}
+ * to manage all search, filter, and pagination state.
+ *
+ * Renders {@link SearchInput}, {@link PaintFilterBar}, {@link HueFilterBar},
+ * {@link PaintGrid}, and {@link PaginationControls}.
  *
  * URL history strategy: debounced query ticks use `replaceState` (no history
- * entry); hue, page, and size changes use `pushState` so Back retraces
+ * entry); hue, filter, page, and size changes use `pushState` so Back retraces
  * committed filter states.
  *
  * @param props.initialPaints - SSR-prefetched first page of paints.
  * @param props.initialTotalCount - SSR-prefetched total paint count.
  * @param props.hues - All top-level hues (server-fetched).
  * @param props.huePaintCounts - Paint count per top-level hue name (lowercased key).
- * @param props.initialQuery - Server-parsed `q` search param (prevents hydration mismatch).
+ * @param props.brands - All brands available for filtering.
+ * @param props.paintTypes - All distinct paint type strings.
+ * @param props.productLines - All product lines (for the brand-gated line popover).
+ * @param props.initialFilters - Server-parsed filter state from URL params.
+ * @param props.initialFacetCounts - SSR-prefetched per-option paint counts.
+ * @param props.initialQuery - Server-parsed `q` search param.
  * @param props.initialHue - Server-parsed `hue` search param.
  * @param props.initialPage - Server-parsed `page` search param.
  * @param props.initialSize - Server-parsed `size` search param.
- * @param props.isAuthenticated - Whether the current user is signed in; shows collection toggles when true.
- * @param props.userPaintIds - Set of paint IDs already in the user's collection (used to set initial toggle state).
+ * @param props.isAuthenticated - Whether the current user is signed in.
+ * @param props.userPaintIds - Set of paint IDs already in the user's collection.
  */
 export function PaintExplorer({
   initialPaints,
   initialTotalCount,
   hues,
   huePaintCounts,
+  brands = [],
+  paintTypes = [],
+  productLines = [],
+  initialFilters = EMPTY_PAINT_FILTER_STATE,
+  initialFacetCounts,
   initialQuery = '',
   initialHue = '',
   initialPage = 1,
@@ -86,6 +142,11 @@ export function PaintExplorer({
   initialTotalCount: number
   hues: Hue[]
   huePaintCounts: Record<string, number>
+  brands?: { id: number; name: string }[]
+  paintTypes?: string[]
+  productLines?: { id: number; brand_id: number; name: string }[]
+  initialFilters?: PaintFilterState
+  initialFacetCounts?: PaintFacetCounts
   initialQuery?: string
   initialHue?: string
   initialPage?: number
@@ -94,11 +155,31 @@ export function PaintExplorer({
   userPaintIds?: Set<string>
 }) {
   const { state, update } = useSearchUrlState<ExplorerUrlState>({
-    keys: { q: 'replace', hue: 'push', page: 'push', size: 'push' },
+    keys: {
+      q: 'replace',
+      hue: 'push',
+      brand: 'push',
+      type: 'push',
+      line: 'push',
+      disc: 'push',
+      metal: 'push',
+      page: 'push',
+      size: 'push',
+    },
     hydrate,
     serialize,
     basePath: '/paints',
-    initialState: { q: initialQuery, hue: initialHue, page: initialPage, size: initialSize },
+    initialState: {
+      q: initialQuery,
+      hue: initialHue,
+      brand: initialFilters.brandIds.join(','),
+      type: initialFilters.paintTypes.join(','),
+      line: initialFilters.productLineIds.join(','),
+      disc: initialFilters.discontinued,
+      metal: initialFilters.metallicOnly ? '1' : '0',
+      page: initialPage,
+      size: initialSize,
+    },
   })
 
   // rawQuery tracks the live input value independently from the debounced URL state
@@ -147,9 +228,32 @@ export function PaintExplorer({
     return undefined
   }, [hueFilter.selectedChildId, hueFilter.selectedParentId, hueFilter.childHues])
 
+  // Hydrate PaintFilterState from URL state once at mount
+  const hydratedInitialFilters = useMemo((): PaintFilterState => ({
+    brandIds: parseIds(state.brand),
+    paintTypes: parseTypes(state.type),
+    productLineIds: parseIds(state.line),
+    discontinued: state.disc,
+    metallicOnly: state.metal === '1',
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [])
+
+  const paintFilters = usePaintFilters({
+    initial: hydratedInitialFilters,
+    productLines,
+  })
+
+  const { counts: facetCounts } = usePaintFacetCounts({
+    query: state.q,
+    hueIds,
+    filters: paintFilters.state,
+    initialCounts: initialFacetCounts,
+  })
+
   const { paints, totalCount, isLoading } = usePaintSearch({
     query: state.q,
     hueIds,
+    filters: paintFilters.state,
     scope: 'all',
     pageSize: state.size,
     page: state.page,
@@ -183,12 +287,101 @@ export function PaintExplorer({
     [hueFilter, update]
   )
 
+  // --- Filter handlers ---
+
+  const handleToggleBrand = useCallback(
+    (id: number) => {
+      paintFilters.toggleBrand(id)
+      // Re-derive after toggle and push to URL; use functional approach to read state
+      // The URL update is done via a separate effect below that syncs paintFilters.state
+    },
+    [paintFilters]
+  )
+
+  const handleTogglePaintType = useCallback(
+    (name: string) => {
+      paintFilters.togglePaintType(name)
+    },
+    [paintFilters]
+  )
+
+  const handleToggleProductLine = useCallback(
+    (id: number) => {
+      paintFilters.toggleProductLine(id)
+    },
+    [paintFilters]
+  )
+
+  const handleCycleDiscontinued = useCallback(() => {
+    paintFilters.cycleDiscontinued()
+  }, [paintFilters])
+
+  const handleToggleMetallicOnly = useCallback(() => {
+    paintFilters.toggleMetallicOnly()
+  }, [paintFilters])
+
+  const handleRemoveFilter = useCallback(
+    (kind: 'brand' | 'type' | 'line' | 'disc' | 'metal', value?: string | number) => {
+      if (kind === 'brand' && typeof value === 'number') {
+        paintFilters.toggleBrand(value)
+      } else if (kind === 'type' && typeof value === 'string') {
+        paintFilters.togglePaintType(value)
+      } else if (kind === 'line' && typeof value === 'number') {
+        paintFilters.toggleProductLine(value)
+      } else if (kind === 'disc') {
+        // Reset discontinued to include
+        paintFilters.setState({ ...paintFilters.state, discontinued: 'include' })
+      } else if (kind === 'metal') {
+        paintFilters.setState({ ...paintFilters.state, metallicOnly: false })
+      }
+    },
+    [paintFilters]
+  )
+
+  // Sync paintFilters.state back to the URL whenever it changes
+  useEffect(() => {
+    const { brandIds, paintTypes: types, productLineIds, discontinued, metallicOnly } =
+      paintFilters.state
+    update(
+      {
+        brand: brandIds.join(','),
+        type: types.join(','),
+        line: productLineIds.join(','),
+        disc: discontinued,
+        metal: metallicOnly ? '1' : '0',
+        page: 1,
+      },
+      { commit: true }
+    )
+    // update is stable; intentionally only re-run when filter state changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    paintFilters.state.brandIds,
+    paintFilters.state.paintTypes,
+    paintFilters.state.productLineIds,
+    paintFilters.state.discontinued,
+    paintFilters.state.metallicOnly,
+  ])
+
   const handleClearAll = useCallback(() => {
     setRawQuery('')
     setPopstateKey((k) => k + 1)
     hueFilter.clear()
-    update({ q: '', hue: '', page: 1 }, { commit: true })
-  }, [hueFilter, update])
+    paintFilters.clear()
+    update(
+      {
+        q: '',
+        hue: '',
+        brand: '',
+        type: '',
+        line: '',
+        disc: 'include',
+        metal: '0',
+        page: 1,
+      },
+      { commit: true }
+    )
+  }, [hueFilter, paintFilters, update])
 
   const handlePageChange = useCallback(
     (page: number) => update({ page }, { commit: true }),
@@ -200,7 +393,14 @@ export function PaintExplorer({
     [update]
   )
 
-  const hasActiveFilters = !!rawQuery || !!hueFilter.selectedParent
+  const hasActiveFilters =
+    !!rawQuery ||
+    !!hueFilter.selectedParent ||
+    paintFilters.state.brandIds.length > 0 ||
+    paintFilters.state.paintTypes.length > 0 ||
+    paintFilters.state.productLineIds.length > 0 ||
+    paintFilters.state.discontinued !== 'include' ||
+    paintFilters.state.metallicOnly
 
   return (
     <div className="flex flex-col gap-6">
@@ -219,6 +419,20 @@ export function PaintExplorer({
         )}
       </div>
 
+      <PaintFilterBar
+        state={paintFilters.state}
+        counts={facetCounts}
+        brands={brands}
+        paintTypes={paintTypes}
+        productLines={productLines}
+        onToggleBrand={handleToggleBrand}
+        onTogglePaintType={handleTogglePaintType}
+        onToggleProductLine={handleToggleProductLine}
+        onCycleDiscontinued={handleCycleDiscontinued}
+        onToggleMetallicOnly={handleToggleMetallicOnly}
+        onRemoveFilter={handleRemoveFilter}
+      />
+
       <HueFilterBar
         hues={hues}
         huePaintCounts={huePaintCounts}
@@ -230,34 +444,47 @@ export function PaintExplorer({
         onSelectChild={handleSelectChild}
       />
 
-      <div className={isLoading ? 'opacity-50 transition-opacity' : ''}>
-        <PaintGrid
-          paints={paints}
-          renderCard={(paint) =>
-            isAuthenticated ? (
-              <CollectionPaintCard
-                id={paint.id}
-                name={paint.name}
-                hex={paint.hex}
-                brand={paint.product_lines?.brands?.name}
-                paintType={paint.paint_type}
-                isInCollection={userPaintIds?.has(paint.id) ?? false}
-                isAuthenticated
-                revalidatePath="/paints"
-              />
-            ) : (
-              <PaintCard
-                id={paint.id}
-                name={paint.name}
-                hex={paint.hex}
-                brand={paint.product_lines?.brands?.name}
-                paintType={paint.paint_type}
-                isDiscontinued={paint.is_discontinued}
-              />
-            )
-          }
-        />
-      </div>
+      {paints.length === 0 && !isLoading ? (
+        <div className="flex flex-col items-start gap-2">
+          <p className="rounded-lg border border-dashed border-border bg-muted/30 p-4 text-sm text-muted-foreground">
+            No paints match the current filters.
+          </p>
+          {hasActiveFilters && (
+            <Button type="button" onClick={handleClearAll} className="btn-ghost btn-sm">
+              Clear all filters
+            </Button>
+          )}
+        </div>
+      ) : (
+        <div className={isLoading ? 'opacity-50 transition-opacity' : ''}>
+          <PaintGrid
+            paints={paints}
+            renderCard={(paint) =>
+              isAuthenticated ? (
+                <CollectionPaintCard
+                  id={paint.id}
+                  name={paint.name}
+                  hex={paint.hex}
+                  brand={paint.product_lines?.brands?.name}
+                  paintType={paint.paint_type}
+                  isInCollection={userPaintIds?.has(paint.id) ?? false}
+                  isAuthenticated
+                  revalidatePath="/paints"
+                />
+              ) : (
+                <PaintCard
+                  id={paint.id}
+                  name={paint.name}
+                  hex={paint.hex}
+                  brand={paint.product_lines?.brands?.name}
+                  paintType={paint.paint_type}
+                  isDiscontinued={paint.is_discontinued}
+                />
+              )
+            }
+          />
+        </div>
+      )}
 
       <PaginationControls
         currentPage={state.page}
