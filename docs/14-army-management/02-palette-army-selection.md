@@ -2,7 +2,7 @@
 
 **Epic:** Army Management
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/palette-army-selection`
 **Merge Into:** `epic/army-management`
 

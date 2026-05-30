@@ -2,7 +2,7 @@
 
 **Epic:** Interactive Color Wheel
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/wheel-filters`
 **Merge into:** `v1/main`
 

@@ -236,7 +236,7 @@ Core functionality:
 - [x] [Public palettes catalog & user routes move](./11-color-palettes/08-public-palettes-page.md)
 - [x] [Color palette groups](./11-color-palettes/09-color-palette-groups.md)
 - [x] [Color palette paint sorting](./11-color-palettes/10-color-palette-sorting.md)
-- [x] [Paint group references (multi-group memberships)](./11-color-palettes/11-paint-group-references.md)
+- [ ] [Paint group references (multi-group memberships)](./11-color-palettes/11-paint-group-references.md)
 - [x] [Edit palette — paint combobox](./11-color-palettes/13-edit-palette-paint-combobox.md)
 - [x] [Palette sort bar missing from edit page](./11-color-palettes/14-palette-sort-bar-missing.md)
 - [x] [Palette group dropdown with checkbox & add toast](./11-color-palettes/15-palette-group-dropdown-checkbox.md)
@@ -286,4 +286,4 @@ Core functionality:
 | | Name | Type | Status |
 |---|------|------|--------|
 | [ ] | [Button Component Props Refactor](./other/button-component-props.md) | Refactor | Todo |
-| [ ] | [Input & Textarea Component Props Refactor](./other/input-component-props.md) | Refactor | Todo |
+| [x] | [Input & Textarea Component Props Refactor](./other/input-component-props.md) | Refactor | Completed |

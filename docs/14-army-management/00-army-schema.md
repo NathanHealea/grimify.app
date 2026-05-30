@@ -2,7 +2,7 @@
 
 **Epic:** Army Management
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/army-schema`
 **Merge Into:** `epic/army-management`
 

@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Enhancement
-**Status:** Done
+**Status:** Completed
 **Branch:** `v1/enhancement/new-loading-screen`
 **Merge into:** `v1/main`
 

@@ -2,7 +2,7 @@
 
 **Epic:** Other
 **Type:** Refactor
-**Status:** Done
+**Status:** Completed
 **Branch:** `refactor/input-component-props`
 **Merge into:** `main`
 

@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Bug
-**Status:** Done
+**Status:** Completed
 **Branch:** `bug/prevent-duplicate-paint-add`
 **Merge into:** `v1/main`
 

@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Enhancement
-**Status:** Done
+**Status:** Completed
 **Branch:** `enhancement/palette-group-dropdown-checkbox`
 **Merge into:** `main`
 
