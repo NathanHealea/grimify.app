@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/navbar-user-menu`
 **Merge into:** `v1/main`
 
