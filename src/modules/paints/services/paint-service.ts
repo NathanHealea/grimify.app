@@ -1,6 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import type { PaintFacetCounts } from '@/modules/paints/types/paint-facet-counts'
+import { UNTYPED_PAINT_TYPE } from '@/modules/paints/types/similar-paints-filter-state'
 import type { Brand, Paint, PaintReference, ProductLine } from '@/types/paint'
 
 /** Page size for paginating the full color-wheel paint fetch. PostgREST caps a single response at 1000 rows by default. */
@@ -57,6 +59,34 @@ export type PaintHueSaturation = {
  * @returns An object with paint query methods.
  */
 export function createPaintService(supabase: SupabaseClient) {
+  /** Paginates through all paints to collect every distinct non-null paint_type string. */
+  async function fetchDistinctPaintTypes(): Promise<string[]> {
+    const seen = new Set<string>()
+    const pageSize = COLOR_WHEEL_PAGE_SIZE
+    let offset = 0
+
+    while (true) {
+      const { data } = await supabase
+        .from('paints')
+        .select('paint_type')
+        .not('paint_type', 'is', null)
+        .order('paint_type', { ascending: true })
+        .range(offset, offset + pageSize - 1)
+
+      if (!data || data.length === 0) break
+
+      for (const row of data) {
+        const t = (row as { paint_type: string | null }).paint_type
+        if (t != null && t.trim().length > 0) seen.add(t.trim())
+      }
+
+      if (data.length < pageSize) break
+      offset += pageSize
+    }
+
+    return Array.from(seen).sort((a, b) => a.localeCompare(b))
+  }
+
   return {
     /**
      * Fetches hue and saturation values for all paints.
@@ -379,6 +409,13 @@ export function createPaintService(supabase: SupabaseClient) {
      * @param options.query - Search string matched against name, paint type, and brand name via ilike.
      * @param options.hueIds - Hue UUIDs to filter by. Pass a single ID for a child hue, multiple for a parent group.
      * @param options.scope - `'all'` (default) searches all paints; `{ type: 'userCollection', userId }` scopes to one user's collection.
+     * @param options.brandIds - Brand IDs to filter by (OR within dimension).
+     * @param options.paintTypes - `paint_type` strings to filter by (OR within dimension).
+     *   Use `'Untyped'` to represent paints with `paint_type === null`.
+     * @param options.productLineIds - Product-line IDs to filter by (OR within dimension).
+     * @param options.discontinued - Tri-state for `is_discontinued`:
+     *   `'include'` (default, no constraint) | `'exclude'` (active only) | `'only'`.
+     * @param options.metallicOnly - When `true`, only `is_metallic = true` paints are returned.
      * @param options.limit - Maximum number of results (default 50).
      * @param options.offset - Number of results to skip (default 0).
      * @param options.signal - AbortSignal for request cancellation.
@@ -388,11 +425,28 @@ export function createPaintService(supabase: SupabaseClient) {
       query?: string
       hueIds?: string[]
       scope?: 'all' | { type: 'userCollection'; userId: string }
+      brandIds?: number[]
+      paintTypes?: string[]
+      productLineIds?: number[]
+      discontinued?: 'include' | 'exclude' | 'only'
+      metallicOnly?: boolean
       limit?: number
       offset?: number
       signal?: AbortSignal
     }): Promise<{ paints: PaintWithBrand[]; count: number }> {
-      const { query, hueIds, scope, limit = 50, offset = 0, signal } = options
+      const {
+        query,
+        hueIds,
+        scope,
+        brandIds,
+        paintTypes,
+        productLineIds,
+        discontinued,
+        metallicOnly,
+        limit = 50,
+        offset = 0,
+        signal,
+      } = options
 
       // Resolve the base paint ID set for userCollection scope
       let scopePaintIds: string[] | null = null
@@ -404,12 +458,82 @@ export function createPaintService(supabase: SupabaseClient) {
         if (scopePaintIds.length === 0) return { paints: [], count: 0 }
       }
 
+      /**
+       * Applies shared dimension filters (brand, type, line, discontinued,
+       * metallic) to a Supabase query. Both browse and search paths call this
+       * to ensure consistent filter behaviour.
+       */
+      function applyDimensionFilters(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        q: any,
+        opts: {
+          brandIds?: number[]
+          paintTypes?: string[]
+          productLineIds?: number[]
+          discontinued?: 'include' | 'exclude' | 'only'
+          metallicOnly?: boolean
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ): any {
+        // Brand filter via product_lines join
+        if (opts.brandIds && opts.brandIds.length > 0) {
+          q = q.in('product_lines.brand_id', opts.brandIds)
+        }
+
+        // Paint type filter — handle Untyped sentinel and mixed null+value cases
+        if (opts.paintTypes && opts.paintTypes.length > 0) {
+          const hasUntyped = opts.paintTypes.includes(UNTYPED_PAINT_TYPE)
+          const concreteTypes = opts.paintTypes.filter((t) => t !== UNTYPED_PAINT_TYPE)
+
+          if (hasUntyped && concreteTypes.length > 0) {
+            q = q.or(`paint_type.in.(${concreteTypes.join(',')}),paint_type.is.null`)
+          } else if (hasUntyped) {
+            q = q.is('paint_type', null)
+          } else {
+            q = q.in('paint_type', concreteTypes)
+          }
+        }
+
+        // Product line filter
+        if (opts.productLineIds && opts.productLineIds.length > 0) {
+          q = q.in('product_line_id', opts.productLineIds)
+        }
+
+        // Discontinued tri-state
+        if (opts.discontinued === 'exclude') {
+          q = q.eq('is_discontinued', false)
+        } else if (opts.discontinued === 'only') {
+          q = q.eq('is_discontinued', true)
+        }
+
+        // Metallic only
+        if (opts.metallicOnly) {
+          q = q.eq('is_metallic', true)
+        }
+
+        return q
+      }
+
+      const dimFilters = { brandIds, paintTypes, productLineIds, discontinued, metallicOnly }
+      const hasBrandFilter = brandIds && brandIds.length > 0
+
       if (!query) {
-        // Browse mode — no text search, just scope + hue filters
-        let countQuery = supabase.from('paints').select('*', { count: 'exact', head: true })
+        // Browse mode — no text search, just scope + hue + dimension filters.
+        // Use product_lines!inner when brand filtering is active so the join
+        // works correctly; fall back to a regular join otherwise.
+        const selectFragment = hasBrandFilter
+          ? '*, product_lines!inner(brand_id, brands(name))'
+          : '*, product_lines(brands(name))'
+
+        const countSelectFragment = hasBrandFilter
+          ? '*, product_lines!inner(brand_id)'
+          : '*'
+        let countQuery = supabase
+          .from('paints')
+          .select(countSelectFragment, { count: 'exact', head: true })
         let dataQuery = supabase
           .from('paints')
-          .select('*, product_lines(brands(name))')
+          .select(selectFragment)
           .order('name')
           .range(offset, offset + limit - 1)
 
@@ -424,6 +548,10 @@ export function createPaintService(supabase: SupabaseClient) {
           countQuery = countQuery.in('hue_id', hueIds)
           dataQuery = dataQuery.in('hue_id', hueIds)
         }
+
+        countQuery = applyDimensionFilters(countQuery, dimFilters)
+        dataQuery = applyDimensionFilters(dataQuery, dimFilters)
+
         if (signal) {
           countQuery = countQuery.abortSignal(signal)
           dataQuery = dataQuery.abortSignal(signal)
@@ -455,14 +583,21 @@ export function createPaintService(supabase: SupabaseClient) {
       }
       const orFilter = orParts.join(',')
 
+      const searchSelectFragment = hasBrandFilter
+        ? '*, product_lines!inner(brand_id, brands(name))'
+        : '*, product_lines(brands(name))'
+
       let countQuery = supabase
         .from('paints')
-        .select('*', { count: 'exact', head: true })
+        .select(
+          hasBrandFilter ? '*, product_lines!inner(brand_id)' : '*',
+          { count: 'exact', head: true }
+        )
         .or(orFilter)
 
       let dataQuery = supabase
         .from('paints')
-        .select('*, product_lines(brands(name))')
+        .select(searchSelectFragment)
         .or(orFilter)
         .order('name')
         .range(offset, offset + limit - 1)
@@ -480,6 +615,10 @@ export function createPaintService(supabase: SupabaseClient) {
         countQuery = countQuery.in('hue_id', hueIds)
         dataQuery = dataQuery.in('hue_id', hueIds)
       }
+
+      countQuery = applyDimensionFilters(countQuery, dimFilters)
+      dataQuery = applyDimensionFilters(dataQuery, dimFilters)
+
       if (signal) {
         countQuery = countQuery.abortSignal(signal)
         dataQuery = dataQuery.abortSignal(signal)
@@ -489,6 +628,224 @@ export function createPaintService(supabase: SupabaseClient) {
       return {
         paints: (data as PaintWithBrand[] | null) ?? [],
         count: count ?? 0,
+      }
+    },
+
+    /**
+     * Computes per-option paint counts for each filter dimension, given a
+     * current filter context with each dimension held out in turn.
+     *
+     * Each count reflects how many paints would match if the user added that
+     * specific option to the existing active filters for all OTHER dimensions.
+     * All per-option queries run in parallel for minimal wall-clock latency.
+     *
+     * @remarks
+     * This uses the strategy-A (server-recompute) approach described in the
+     * Paint Explorer Filters feature doc. If per-option count latency becomes
+     * a problem, this can be replaced with a client-side narrowing approach
+     * (strategy B) without changing the caller API or URL contract.
+     *
+     * @param filters.query - Optional text search string.
+     * @param filters.hueIds - Active hue UUIDs.
+     * @param filters.brandIds - Active brand IDs (held out when counting brand options).
+     * @param filters.paintTypes - Active paint type strings (held out when counting type options).
+     * @param filters.productLineIds - Active product line IDs (held out when counting line options).
+     * @param filters.discontinued - Active discontinued tri-state.
+     * @param filters.metallicOnly - Active metallic filter.
+     * @returns {@link PaintFacetCounts} with per-option counts for brand, type, and line.
+     */
+    async getPaintFacetCounts(filters: {
+      query?: string
+      hueIds?: string[]
+      brandIds?: number[]
+      paintTypes?: string[]
+      productLineIds?: number[]
+      discontinued?: 'include' | 'exclude' | 'only'
+      metallicOnly?: boolean
+    }): Promise<PaintFacetCounts> {
+      const {
+        query,
+        hueIds,
+        brandIds,
+        paintTypes,
+        productLineIds,
+        discontinued,
+        metallicOnly,
+      } = filters
+
+      // Fetch option lists needed for counting
+      const [allBrands, allPaintTypes, allProductLines] = await Promise.all([
+        // All brands for the brand counts
+        supabase.from('brands').select('id, name').order('name').then(({ data }) => data ?? []),
+        // All distinct non-null paint types (paginated — avoids PostgREST row-limit truncation)
+        fetchDistinctPaintTypes(),
+        // Product lines for selected brands only (line popover is brand-gated)
+        brandIds && brandIds.length > 0
+          ? supabase
+              .from('product_lines')
+              .select('id, brand_id, name')
+              .in('brand_id', brandIds)
+              .order('name')
+              .then(({ data }) => data ?? [])
+          : Promise.resolve([] as { id: number; brand_id: number; name: string }[]),
+      ])
+
+      // Brand counts: hold out brandIds, apply all other dimension filters
+      const brandCountEntries = await Promise.all(
+        allBrands.map(async (brand) => {
+          let q = supabase
+            .from('paints')
+            .select('*, product_lines!inner(brand_id)', { count: 'exact', head: true })
+            .eq('product_lines.brand_id', brand.id)
+
+          if (hueIds && hueIds.length === 1) q = q.eq('hue_id', hueIds[0])
+          else if (hueIds && hueIds.length > 1) q = q.in('hue_id', hueIds)
+
+          if (query) {
+            const pattern = `%${query}%`
+            q = q.or(`name.ilike.${pattern},paint_type.ilike.${pattern}`)
+          }
+
+          if (paintTypes && paintTypes.length > 0) {
+            const hasUntyped = paintTypes.includes(UNTYPED_PAINT_TYPE)
+            const concreteTypes = paintTypes.filter((t) => t !== UNTYPED_PAINT_TYPE)
+            if (hasUntyped && concreteTypes.length > 0) {
+              q = q.or(`paint_type.in.(${concreteTypes.join(',')}),paint_type.is.null`)
+            } else if (hasUntyped) {
+              q = q.is('paint_type', null)
+            } else {
+              q = q.in('paint_type', concreteTypes)
+            }
+          }
+
+          if (productLineIds && productLineIds.length > 0) q = q.in('product_line_id', productLineIds)
+          if (discontinued === 'exclude') q = q.eq('is_discontinued', false)
+          else if (discontinued === 'only') q = q.eq('is_discontinued', true)
+          if (metallicOnly) q = q.eq('is_metallic', true)
+
+          const { count: c } = await q
+          return [String(brand.id), c ?? 0] as const
+        })
+      )
+
+      // Type counts: hold out paintTypes, keep all others
+      const typeCountEntries = await Promise.all(
+        allPaintTypes.map(async (type) => {
+          let q = supabase
+            .from('paints')
+            .select(
+              brandIds && brandIds.length > 0
+                ? '*, product_lines!inner(brand_id)'
+                : '*',
+              { count: 'exact', head: true }
+            )
+            .eq('paint_type', type)
+
+          // Brand filter
+          if (brandIds && brandIds.length > 0) {
+            q = q.in('product_lines.brand_id', brandIds)
+          }
+
+          // Hue filter
+          if (hueIds && hueIds.length === 1) q = q.eq('hue_id', hueIds[0])
+          else if (hueIds && hueIds.length > 1) q = q.in('hue_id', hueIds)
+
+          // Text search
+          if (query) {
+            const pattern = `%${query}%`
+            q = q.or(`name.ilike.${pattern},paint_type.ilike.${pattern}`)
+          }
+
+          // Product line filter
+          if (productLineIds && productLineIds.length > 0) {
+            q = q.in('product_line_id', productLineIds)
+          }
+
+          // Discontinued
+          if (discontinued === 'exclude') q = q.eq('is_discontinued', false)
+          else if (discontinued === 'only') q = q.eq('is_discontinued', true)
+
+          // Metallic
+          if (metallicOnly) q = q.eq('is_metallic', true)
+
+          const { count: c } = await q
+          return [type.toLowerCase(), c ?? 0] as const
+        })
+      )
+
+      // Also count paints with null paint_type (the "Untyped" sentinel)
+      const untypedCount = await (async () => {
+        let q = supabase
+          .from('paints')
+          .select(
+            brandIds && brandIds.length > 0
+              ? '*, product_lines!inner(brand_id)'
+              : '*',
+            { count: 'exact', head: true }
+          )
+          .is('paint_type', null)
+
+        if (brandIds && brandIds.length > 0) q = q.in('product_lines.brand_id', brandIds)
+        if (hueIds && hueIds.length === 1) q = q.eq('hue_id', hueIds[0])
+        else if (hueIds && hueIds.length > 1) q = q.in('hue_id', hueIds)
+        if (query) {
+          const pattern = `%${query}%`
+          q = q.or(`name.ilike.${pattern}`)
+        }
+        if (productLineIds && productLineIds.length > 0) q = q.in('product_line_id', productLineIds)
+        if (discontinued === 'exclude') q = q.eq('is_discontinued', false)
+        else if (discontinued === 'only') q = q.eq('is_discontinued', true)
+        if (metallicOnly) q = q.eq('is_metallic', true)
+
+        const { count: c } = await q
+        return c ?? 0
+      })()
+
+      // Line counts: hold out productLineIds, keep all others (only when brands selected).
+      // product_line_id already implies the brand — no join needed for the count query.
+      const lineCountEntries = await Promise.all(
+        allProductLines.map(async (line) => {
+          let q = supabase
+            .from('paints')
+            .select('*', { count: 'exact', head: true })
+            .eq('product_line_id', line.id)
+
+          if (hueIds && hueIds.length === 1) q = q.eq('hue_id', hueIds[0])
+          else if (hueIds && hueIds.length > 1) q = q.in('hue_id', hueIds)
+
+          if (query) {
+            const pattern = `%${query}%`
+            q = q.or(`name.ilike.${pattern},paint_type.ilike.${pattern}`)
+          }
+
+          if (paintTypes && paintTypes.length > 0) {
+            const hasUntyped = paintTypes.includes(UNTYPED_PAINT_TYPE)
+            const concreteTypes = paintTypes.filter((t) => t !== UNTYPED_PAINT_TYPE)
+            if (hasUntyped && concreteTypes.length > 0) {
+              q = q.or(`paint_type.in.(${concreteTypes.join(',')}),paint_type.is.null`)
+            } else if (hasUntyped) {
+              q = q.is('paint_type', null)
+            } else {
+              q = q.in('paint_type', concreteTypes)
+            }
+          }
+
+          if (discontinued === 'exclude') q = q.eq('is_discontinued', false)
+          else if (discontinued === 'only') q = q.eq('is_discontinued', true)
+          if (metallicOnly) q = q.eq('is_metallic', true)
+
+          const { count: c } = await q
+          return [String(line.id), c ?? 0] as const
+        })
+      )
+
+      return {
+        brand: Object.fromEntries(brandCountEntries),
+        type: {
+          ...Object.fromEntries(typeCountEntries),
+          [UNTYPED_PAINT_TYPE.toLowerCase()]: untypedCount,
+        },
+        line: Object.fromEntries(lineCountEntries),
       }
     },
 
@@ -613,34 +970,8 @@ export function createPaintService(supabase: SupabaseClient) {
      * @returns Distinct paint-type strings, sorted alphabetically. Excludes
      *   `null` and empty strings.
      */
-    async listDistinctPaintTypes(): Promise<string[]> {
-      const seen = new Set<string>()
-      const pageSize = COLOR_WHEEL_PAGE_SIZE
-      let offset = 0
-
-      while (true) {
-        const { data } = await supabase
-          .from('paints')
-          .select('paint_type')
-          .not('paint_type', 'is', null)
-          .order('paint_type', { ascending: true })
-          .range(offset, offset + pageSize - 1)
-
-        if (!data || data.length === 0) break
-
-        for (const row of data) {
-          const raw = (row as { paint_type: string | null }).paint_type
-          if (raw == null) continue
-          const trimmed = raw.trim()
-          if (trimmed.length === 0) continue
-          seen.add(trimmed)
-        }
-
-        if (data.length < pageSize) break
-        offset += pageSize
-      }
-
-      return Array.from(seen).sort((a, b) => a.localeCompare(b))
+    listDistinctPaintTypes(): Promise<string[]> {
+      return fetchDistinctPaintTypes()
     },
 
     /**
