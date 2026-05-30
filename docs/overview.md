@@ -77,6 +77,7 @@ Core functionality:
 - [x] [UI component consistency refactor](./00-marketing-and-branding/12-component-consistency-refactor.md)
 - [x] [Marketing Sharpness & Landing Page Improvements](./00-marketing-and-branding/13-marketing-sharpness-landing-page.md)
 - [x] [Metadata & OpenGraph Marketing Alignment](./00-marketing-and-branding/14-metadata-og-alignment.md)
+- [ ] [Public Changelog Page](./00-marketing-and-branding/16-changelog-page.md)
 
 ### Epic: Authentication & User Accounts
 
