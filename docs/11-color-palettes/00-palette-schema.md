@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/palette-schema`
 **Merge into:** `v1/main`
 

@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Refactor
-**Status:** Done
+**Status:** Completed
 **Branch:** `v1/refactor/title-and-subtitle-component`
 **Merge into:** `v1/main`
 
