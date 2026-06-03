@@ -111,7 +111,7 @@ Core functionality:
 - [x] [Paint detail sections toggle](./02-paint-data-search/08-paint-detail-sections-toggle.md)
 - [x] [Navbar paint search bar](./02-paint-data-search/09-navbar-paint-search.md)
 - [x] [Paint explorer filters (brand, type, line, discontinued, metallic)](./02-paint-data-search/10-paint-explorer-filters.md)
-- [ ] [Paint explorer sort options (Hue, Lightness, Contrast)](./02-paint-data-search/11-paint-explorer-sort.md)
+- [x] [Paint explorer sort options (Hue, Lightness, Contrast)](./02-paint-data-search/11-paint-explorer-sort.md)
 - [ ] [Paint explorer compact list view](./02-paint-data-search/12-paint-explorer-list-view.md)
 - [ ] [Reactive hue filter counts](./02-paint-data-search/13-paint-explorer-reactive-hue-counts.md)
 - [x] [Scale75 paint indexing](./02-paint-data-search/scale75-paints.md)

@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import type { ChangeEvent } from 'react'
 
 import SearchInput from '@/components/search'
 import { Button } from '@/components/ui/button'
@@ -9,6 +10,7 @@ import { HueFilterBar } from '@/modules/paints/components/hue-filter-bar'
 import { PaintCard } from '@/modules/paints/components/paint-card'
 import { PaintFilterBar } from '@/modules/paints/components/paint-filter-bar'
 import { PaintGrid } from '@/modules/paints/components/paint-grid'
+import { PaintSortBar } from '@/modules/paints/components/paint-sort-bar'
 import { PaginationControls } from '@/modules/paints/components/pagination-controls'
 import { useDebouncedQuery } from '@/modules/paints/hooks/use-debounced-query'
 import { useHueFilter } from '@/modules/paints/hooks/use-hue-filter'
@@ -22,10 +24,15 @@ import {
   EMPTY_PAINT_FILTER_STATE,
   type PaintFilterState,
 } from '@/modules/paints/types/paint-filter-state'
+import { parseSortDir, parseSortField } from '@/modules/paints/utils/parse-sort-params'
+import type { PaintSortDirection, PaintSortField } from '@/modules/paints/utils/sort-paints'
 import type { Hue } from '@/types/color'
 
 /** Available page size options for the paint explorer. */
 const PAGE_SIZE_OPTIONS = [25, 50, 100, 200] as const
+
+/** Sort field values available on the paint explorer. */
+const EXPLORER_SORT_FIELDS = ['name', 'hue', 'lightness', 'contrast'] as const satisfies readonly PaintSortField[]
 
 /** URL-synced state shape for the paint explorer. */
 type ExplorerUrlState = {
@@ -38,7 +45,10 @@ type ExplorerUrlState = {
   metal: '0' | '1'
   page: number
   size: number
+  sort: 'name' | 'hue' | 'lightness' | 'contrast'
+  dir: PaintSortDirection
 }
+
 
 function hydrate(sp: URLSearchParams): ExplorerUrlState {
   const sizeParam = Number(sp.get('size'))
@@ -56,6 +66,8 @@ function hydrate(sp: URLSearchParams): ExplorerUrlState {
     metal: sp.get('metal') === '1' ? '1' : '0',
     page: Math.max(1, Number(sp.get('page') || 1)),
     size,
+    sort: parseSortField(sp.get('sort')),
+    dir: parseSortDir(sp.get('dir')),
   }
 }
 
@@ -70,6 +82,9 @@ function serialize(state: ExplorerUrlState): URLSearchParams {
   if (state.metal === '1') sp.set('metal', '1')
   if (state.page > 1) sp.set('page', String(state.page))
   if (state.size !== 50) sp.set('size', String(state.size))
+  // Omit defaults to keep shareable URLs short
+  if (state.sort !== 'name') sp.set('sort', state.sort)
+  if (state.dir !== 'asc') sp.set('dir', state.dir)
   return sp
 }
 
@@ -96,14 +111,14 @@ function parseTypes(raw: string): string[] {
  *
  * Composes {@link useDebouncedQuery}, {@link useHueFilter}, {@link usePaintFilters},
  * {@link usePaintFacetCounts}, {@link usePaintSearch}, and {@link useSearchUrlState}
- * to manage all search, filter, and pagination state.
+ * to manage all search, filter, sort, and pagination state.
  *
- * Renders {@link SearchInput}, {@link PaintFilterBar}, {@link HueFilterBar},
- * {@link PaintGrid}, and {@link PaginationControls}.
+ * Renders {@link SearchInput}, {@link PaintFilterBar}, {@link PaintSortBar},
+ * {@link HueFilterBar}, {@link PaintGrid}, and {@link PaginationControls}.
  *
  * URL history strategy: debounced query ticks use `replaceState` (no history
- * entry); hue, filter, page, and size changes use `pushState` so Back retraces
- * committed filter states.
+ * entry); hue, filter, sort, page, and size changes use `pushState` so Back
+ * retraces committed filter and sort states.
  *
  * @param props.initialPaints - SSR-prefetched first page of paints.
  * @param props.initialTotalCount - SSR-prefetched total paint count.
@@ -118,8 +133,10 @@ function parseTypes(raw: string): string[] {
  * @param props.initialHue - Server-parsed `hue` search param.
  * @param props.initialPage - Server-parsed `page` search param.
  * @param props.initialSize - Server-parsed `size` search param.
- * @param props.isAuthenticated - Whether the current user is signed in.
- * @param props.userPaintIds - Set of paint IDs already in the user's collection.
+ * @param props.initialSort - Server-parsed `sort` search param (default `'name'`).
+ * @param props.initialDir - Server-parsed `dir` search param (default `'asc'`).
+ * @param props.isAuthenticated - Whether the current user is signed in; shows collection toggles when true.
+ * @param props.userPaintIds - Set of paint IDs already in the user's collection (used to set initial toggle state).
  */
 export function PaintExplorer({
   initialPaints,
@@ -135,6 +152,8 @@ export function PaintExplorer({
   initialHue = '',
   initialPage = 1,
   initialSize = 50,
+  initialSort = 'name',
+  initialDir = 'asc',
   isAuthenticated = false,
   userPaintIds,
 }: {
@@ -151,6 +170,8 @@ export function PaintExplorer({
   initialHue?: string
   initialPage?: number
   initialSize?: number
+  initialSort?: 'name' | 'hue' | 'lightness' | 'contrast'
+  initialDir?: PaintSortDirection
   isAuthenticated?: boolean
   userPaintIds?: Set<string>
 }) {
@@ -165,6 +186,8 @@ export function PaintExplorer({
       metal: 'push',
       page: 'push',
       size: 'push',
+      sort: 'push',
+      dir: 'push',
     },
     hydrate,
     serialize,
@@ -179,6 +202,8 @@ export function PaintExplorer({
       metal: initialFilters.metallicOnly ? '1' : '0',
       page: initialPage,
       size: initialSize,
+      sort: initialSort,
+      dir: initialDir,
     },
   })
 
@@ -259,11 +284,13 @@ export function PaintExplorer({
     page: state.page,
     initialPaints,
     initialTotalCount,
+    sortBy: state.sort,
+    sortDir: state.dir,
   })
 
   const totalPages = Math.max(1, Math.ceil(totalCount / state.size))
 
-  const handleQueryChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleQueryChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setRawQuery(e.target.value)
   }, [])
 
@@ -363,6 +390,14 @@ export function PaintExplorer({
     paintFilters.state.metallicOnly,
   ])
 
+
+  const handleSortChange = useCallback(
+    (sort: PaintSortField, dir: PaintSortDirection) => {
+      update({ sort: sort as 'name' | 'hue' | 'lightness' | 'contrast', dir, page: 1 }, { commit: true })
+    },
+    [update]
+  )
+
   const handleClearAll = useCallback(() => {
     setRawQuery('')
     setPopstateKey((k) => k + 1)
@@ -377,6 +412,8 @@ export function PaintExplorer({
         line: '',
         disc: 'include',
         metal: '0',
+        sort: 'name',
+        dir: 'asc',
         page: 1,
       },
       { commit: true }
@@ -400,11 +437,13 @@ export function PaintExplorer({
     paintFilters.state.paintTypes.length > 0 ||
     paintFilters.state.productLineIds.length > 0 ||
     paintFilters.state.discontinued !== 'include' ||
-    paintFilters.state.metallicOnly
+    paintFilters.state.metallicOnly ||
+    state.sort !== 'name' ||
+    state.dir !== 'asc'
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <div className="flex-1">
           <SearchInput
             key={popstateKey}
@@ -412,6 +451,12 @@ export function PaintExplorer({
             onChange={handleQueryChange}
           />
         </div>
+        <PaintSortBar
+          fields={EXPLORER_SORT_FIELDS}
+          field={state.sort}
+          direction={state.dir}
+          onChange={handleSortChange}
+        />
         {hasActiveFilters && (
           <Button onClick={handleClearAll} className="btn-ghost shrink-0">
             Clear All

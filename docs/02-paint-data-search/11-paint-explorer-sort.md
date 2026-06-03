@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/paint-explorer-sort`
 **Merge into:** `main`
 
