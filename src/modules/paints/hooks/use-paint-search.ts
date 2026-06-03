@@ -20,6 +20,8 @@ import type { PaintFilterState } from '@/modules/paints/types/paint-filter-state
  * @param params.page - 1-based page number.
  * @param params.initialPaints - SSR-prefetched paints shown before the first fetch resolves.
  * @param params.initialTotalCount - SSR-prefetched total count.
+ * @param params.sortBy - Primary sort field forwarded to {@link searchPaints} (default `'name'`).
+ * @param params.sortDir - Sort direction forwarded to {@link searchPaints} (default `'asc'`).
  * @returns `{ paints, totalCount, isLoading, error }`.
  */
 export function usePaintSearch(params: {
@@ -31,13 +33,15 @@ export function usePaintSearch(params: {
   page: number
   initialPaints?: PaintWithBrand[]
   initialTotalCount?: number
+  sortBy?: 'name' | 'hue' | 'lightness' | 'contrast'
+  sortDir?: 'asc' | 'desc'
 }): {
   paints: PaintWithBrand[]
   totalCount: number
   isLoading: boolean
   error: string | null
 } {
-  const { query, hueIds, filters, scope, pageSize, page, initialPaints, initialTotalCount } = params
+  const { query, hueIds, filters, scope, pageSize, page, initialPaints, initialTotalCount, sortBy, sortDir } = params
 
   const [paints, setPaints] = useState<PaintWithBrand[]>(initialPaints ?? [])
   const [totalCount, setTotalCount] = useState(initialTotalCount ?? 0)
@@ -68,6 +72,8 @@ export function usePaintSearch(params: {
       metallicOnly: filters?.metallicOnly || undefined,
       limit,
       offset,
+      sortBy,
+      sortDir,
     })
       .then(({ paints: fetched, count }) => {
         if (signal.aborted) return
@@ -93,6 +99,8 @@ export function usePaintSearch(params: {
     scope,
     pageSize,
     page,
+    sortBy,
+    sortDir,
   ])
 
   return { paints, totalCount, isLoading, error }

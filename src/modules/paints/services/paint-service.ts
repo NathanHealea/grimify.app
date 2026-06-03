@@ -50,6 +50,57 @@ export type PaintHueSaturation = {
 }
 
 /**
+ * Applies `ORDER BY` clauses to a Supabase query based on the requested sort
+ * field and direction.
+ *
+ * Tie-breakers are appended after the primary column so results are stable
+ * across pages when many paints share the same primary value:
+ *
+ * - `hue` → `hue`, `lightness`, `name`, `id`
+ * - `lightness` → `lightness`, `hue`, `name`, `id`
+ * - `contrast` → `relative_luminance` (generated column), `hue`, `name`, `id`
+ * - `name` (default) → `name`, `id`
+ *
+ * @param query - The PostgREST query builder to chain orders onto.
+ * @param sortBy - Primary sort field (default `'name'`).
+ * @param sortDir - Sort direction (default `'asc'`).
+ * @returns The same query with all `.order()` calls appended.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function applySort<Q extends { order: (...args: any[]) => Q }>(
+  query: Q,
+  sortBy: 'name' | 'hue' | 'lightness' | 'contrast' = 'name',
+  sortDir: 'asc' | 'desc' = 'asc',
+): Q {
+  const asc = sortDir === 'asc'
+  if (sortBy === 'hue') {
+    return query
+      .order('hue', { ascending: asc })
+      .order('lightness', { ascending: true })
+      .order('name', { ascending: true })
+      .order('id', { ascending: true })
+  }
+  if (sortBy === 'lightness') {
+    return query
+      .order('lightness', { ascending: asc })
+      .order('hue', { ascending: true })
+      .order('name', { ascending: true })
+      .order('id', { ascending: true })
+  }
+  if (sortBy === 'contrast') {
+    return query
+      .order('relative_luminance', { ascending: asc })
+      .order('hue', { ascending: true })
+      .order('name', { ascending: true })
+      .order('id', { ascending: true })
+  }
+  // Default: name
+  return query
+    .order('name', { ascending: asc })
+    .order('id', { ascending: true })
+}
+
+/**
  * Creates a paint service bound to the given Supabase client.
  *
  * All paint-related queries are encapsulated here. Use the `.server.ts`
@@ -419,6 +470,10 @@ export function createPaintService(supabase: SupabaseClient) {
      * @param options.limit - Maximum number of results (default 50).
      * @param options.offset - Number of results to skip (default 0).
      * @param options.signal - AbortSignal for request cancellation.
+     * @param options.sortBy - Column to sort results by (default `'name'`).
+     *   `'contrast'` maps to the generated `relative_luminance` column
+     *   (`0.2126·r + 0.7152·g + 0.0722·b`). See {@link applySort}.
+     * @param options.sortDir - Sort direction (default `'asc'`).
      * @returns `{ paints, count }` where `count` is the total matching rows (for pagination).
      */
     async searchPaintsUnified(options: {
@@ -433,6 +488,8 @@ export function createPaintService(supabase: SupabaseClient) {
       limit?: number
       offset?: number
       signal?: AbortSignal
+      sortBy?: 'name' | 'hue' | 'lightness' | 'contrast'
+      sortDir?: 'asc' | 'desc'
     }): Promise<{ paints: PaintWithBrand[]; count: number }> {
       const {
         query,
@@ -446,6 +503,8 @@ export function createPaintService(supabase: SupabaseClient) {
         limit = 50,
         offset = 0,
         signal,
+        sortBy = 'name',
+        sortDir = 'asc',
       } = options
 
       // Resolve the base paint ID set for userCollection scope
@@ -531,11 +590,11 @@ export function createPaintService(supabase: SupabaseClient) {
         let countQuery = supabase
           .from('paints')
           .select(countSelectFragment, { count: 'exact', head: true })
-        let dataQuery = supabase
-          .from('paints')
-          .select(selectFragment)
-          .order('name')
-          .range(offset, offset + limit - 1)
+        let dataQuery = applySort(
+          supabase.from('paints').select(selectFragment),
+          sortBy,
+          sortDir,
+        ).range(offset, offset + limit - 1)
 
         if (scopePaintIds) {
           countQuery = countQuery.in('id', scopePaintIds)
@@ -595,12 +654,11 @@ export function createPaintService(supabase: SupabaseClient) {
         )
         .or(orFilter)
 
-      let dataQuery = supabase
-        .from('paints')
-        .select(searchSelectFragment)
-        .or(orFilter)
-        .order('name')
-        .range(offset, offset + limit - 1)
+      let dataQuery = applySort(
+        supabase.from('paints').select(searchSelectFragment).or(orFilter),
+        sortBy,
+        sortDir,
+      ).range(offset, offset + limit - 1)
 
       // Scope to user collection if needed
       if (scopePaintIds) {

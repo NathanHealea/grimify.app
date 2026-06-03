@@ -20,9 +20,11 @@ const FIELD_LABELS: Record<PaintSortField, string> = {
   hue: 'Hue',
   saturation: 'Saturation',
   lightness: 'Lightness',
+  contrast: 'Contrast',
 }
 
-const FIELDS = Object.keys(FIELD_LABELS) as PaintSortField[]
+/** All sort fields in their default display order. */
+const ALL_FIELDS = Object.keys(FIELD_LABELS) as PaintSortField[]
 
 /**
  * Controlled or uncontrolled sort field + direction bar for paint lists.
@@ -30,10 +32,18 @@ const FIELDS = Object.keys(FIELD_LABELS) as PaintSortField[]
  * Emits `onChange(field, direction)` on every change. Does not own persistence
  * or include an Apply button — consumers handle the commit semantics.
  *
+ * When `fields` is provided, only those options are rendered in the select
+ * (useful for showing a subset of fields on a specific surface, e.g. the
+ * explorer shows `['name', 'hue', 'lightness', 'contrast']` while the palette
+ * builder omits the prop to show all fields). When `fields` is omitted, all
+ * fields are rendered — this is the backward-compatible default.
+ *
  * @param props.field - Controlled field value (omit for uncontrolled).
  * @param props.direction - Controlled direction value (omit for uncontrolled).
  * @param props.defaultField - Initial field when uncontrolled (default `'name'`).
  * @param props.defaultDirection - Initial direction when uncontrolled (default `'asc'`).
+ * @param props.fields - Subset of {@link PaintSortField} values to render as options.
+ *   When omitted, all fields are shown (backward-compatible default).
  * @param props.onChange - Called with the new field and direction on any change.
  * @param props.disabled - Disables all controls.
  * @param props.className - Additional class names for the root element.
@@ -43,6 +53,7 @@ export function PaintSortBar({
   direction: controlledDirection,
   defaultField = 'name',
   defaultDirection = 'asc',
+  fields,
   onChange,
   disabled,
   className,
@@ -51,6 +62,8 @@ export function PaintSortBar({
   direction?: PaintSortDirection
   defaultField?: PaintSortField
   defaultDirection?: PaintSortDirection
+  /** Subset of sort fields to render. Omit to render all fields. */
+  fields?: readonly PaintSortField[]
   onChange: (field: PaintSortField, direction: PaintSortDirection) => void
   disabled?: boolean
   className?: string
@@ -60,6 +73,7 @@ export function PaintSortBar({
 
   const field = controlledField ?? internalField
   const direction = controlledDirection ?? internalDirection
+  const visibleFields = fields ?? ALL_FIELDS
 
   function handleFieldChange(next: PaintSortField) {
     if (controlledField === undefined) setInternalField(next)
@@ -83,7 +97,7 @@ export function PaintSortBar({
           <SelectValue>{FIELD_LABELS[field]}</SelectValue>
         </SelectTrigger>
         <SelectContent>
-          {FIELDS.map((f) => (
+          {visibleFields.map((f) => (
             <SelectItem key={f} value={f}>
               {FIELD_LABELS[f]}
             </SelectItem>

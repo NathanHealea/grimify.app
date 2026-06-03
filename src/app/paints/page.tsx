@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getBrandService } from '@/modules/brands/services/brand-service.server'
 import { getHueService } from '@/modules/hues/services/hue-service.server'
 import { PaintExplorer } from '@/modules/paints/components/paint-explorer'
+import { parseSortDir, parseSortField } from '@/modules/paints/utils/parse-sort-params'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
 import type { PaintFilterState } from '@/modules/paints/types/paint-filter-state'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
@@ -61,9 +62,11 @@ export default async function PaintsPage({
     line?: string
     disc?: string
     metal?: string
+    sort?: string
+    dir?: string
   }>
 }) {
-  const { page, size, q, hue, brand, type, line, disc, metal } = await searchParams
+  const { page, size, q, hue, brand, type, line, disc, metal, sort, dir } = await searchParams
 
   const pageSize = VALID_SIZES.includes(Number(size)) ? Number(size) : 50
   const currentPage = Math.max(1, parseInt(page ?? '1', 10) || 1)
@@ -72,6 +75,8 @@ export default async function PaintsPage({
   const [parentHueName, childHueName] = (hue ?? '')
     .split(',')
     .map((s) => s.trim().toLowerCase())
+  const sortBy = parseSortField(sort)
+  const sortDir = parseSortDir(dir)
 
   // Parse new filter params
   const brandIds = parseIds(brand)
@@ -145,6 +150,8 @@ export default async function PaintsPage({
       scope: 'all',
       limit: pageSize,
       offset,
+      sortBy,
+      sortDir,
     })
 
   // Fetch user's collection paint IDs for toggle state (authenticated users only)
@@ -202,6 +209,8 @@ export default async function PaintsPage({
         initialHue={hue ?? ''}
         initialPage={currentPage}
         initialSize={pageSize}
+        initialSort={sortBy}
+        initialDir={sortDir}
         isAuthenticated={!!user}
         userPaintIds={userPaintIds}
       />

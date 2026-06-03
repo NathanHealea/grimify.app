@@ -1,5 +1,17 @@
-/** Fields that can be used to sort a paint-like object. */
-export type PaintSortField = 'name' | 'paint_type' | 'hue' | 'saturation' | 'lightness'
+/**
+ * Fields that can be used to sort a paint-like object.
+ *
+ * - `name` — alphabetical by paint name.
+ * - `paint_type` — alphabetical by paint type string; nulls sort last.
+ * - `hue` — numeric HSL hue (0–360 degrees), red→violet ascending.
+ * - `saturation` — numeric HSL saturation (0–100 percent).
+ * - `lightness` — numeric HSL lightness (0–100 percent).
+ * - `contrast` — perceptual relative luminance via the WCAG formula
+ *   `0.2126·r + 0.7152·g + 0.0722·b` (sRGB 0-255 inputs).
+ *   Distinct from HSL lightness — e.g. pure blue and pure yellow share
+ *   the same HSL L (50 %) but have very different luminance (~7 % vs ~93 %).
+ */
+export type PaintSortField = 'name' | 'paint_type' | 'hue' | 'saturation' | 'lightness' | 'contrast'
 
 /** Sort direction for paint sorting. */
 export type PaintSortDirection = 'asc' | 'desc'
@@ -9,6 +21,15 @@ export type PaintSortDirection = 'asc' | 'desc'
  *
  * `ColorWheelPaint` and any other paint projection satisfy this structurally —
  * callers do not need to convert their data.
+ *
+ * The `r`, `g`, `b` fields are the sRGB component values in the 0–255 range,
+ * used when sorting by `'contrast'` (perceptual relative luminance:
+ * `0.2126·r + 0.7152·g + 0.0722·b`). See {@link PaintSortField}.
+ *
+ * These three fields are optional so that existing callers (e.g. the palette
+ * builder, which works with {@link ColorWheelPaint}) continue to satisfy this
+ * type without modification. When `r/g/b` are absent and the field is
+ * `'contrast'`, the sort falls back to 0 for both operands (stable/neutral).
  */
 export type SortablePaint = {
   name: string
@@ -16,6 +37,9 @@ export type SortablePaint = {
   hue: number
   saturation: number
   lightness: number
+  r?: number
+  g?: number
+  b?: number
 }
 
 /**
@@ -56,6 +80,13 @@ export function sortPaintsBy<T>(
       else if (aType === null) cmp = 1
       else if (bType === null) cmp = -1
       else cmp = aType.localeCompare(bType, undefined, { sensitivity: 'base' })
+    } else if (field === 'contrast') {
+      // Perceptual relative luminance: WCAG formula on sRGB 0-255 components.
+      // r/g/b are optional on SortablePaint; fall back to 0 when absent so that
+      // callers that don't supply RGB (e.g. palette builder) get a neutral sort.
+      const aLum = 0.2126 * (a.paint.r ?? 0) + 0.7152 * (a.paint.g ?? 0) + 0.0722 * (a.paint.b ?? 0)
+      const bLum = 0.2126 * (b.paint.r ?? 0) + 0.7152 * (b.paint.g ?? 0) + 0.0722 * (b.paint.b ?? 0)
+      cmp = aLum - bLum
     } else {
       cmp = a.paint[field] - b.paint[field]
     }
