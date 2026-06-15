@@ -2,7 +2,7 @@
 
 **Epic:** Color Management
 **Type:** Feature
-**Status:** Completed
+**Status:** In Progress
 **Branch:** `feature/brand-management`
 **Merge into:** `main`
 
@@ -16,7 +16,7 @@ Provide an admin interface for managing paint brands and their product lines. Ad
 - [x] A create brand page at `/admin/brands/new` allows creating a new brand with name, slug, website URL, and logo URL
 - [x] An edit brand page at `/admin/brands/[id]` allows updating brand fields
 - [x] The edit brand page displays the brand's product lines with name, slug, and paint count
-- [x] Product lines can be created, edited, and deleted from the brand edit page
+- [ ] Product lines can be created, edited, and deleted from the brand edit page
 - [x] Deleting a brand shows a confirmation dialog warning about cascading deletion of product lines and paints
 - [x] Deleting a product line shows a confirmation dialog warning about cascading deletion of paints
 - [x] Form validation prevents empty names and duplicate slugs

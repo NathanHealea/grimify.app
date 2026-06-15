@@ -2,7 +2,7 @@
 
 **Epic:** Collection Tracking
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 **Branch:** `feature/collection-overview`
 **Merge into:** `main`
 
@@ -12,10 +12,10 @@ Provide users with an overview of their paint collection, including statistics, 
 
 ## Acceptance Criteria
 
-- [ ] Users can view all paints in their collection on a dedicated page
+- [x] Users can view all paints in their collection on a dedicated page
 - [ ] Collection paints can be sorted by name, brand, date added, or hue
 - [ ] Collection paints can be filtered by brand or paint type
-- [ ] Statistics are displayed: total paints, breakdown by brand, breakdown by paint type
+- [x] Statistics are displayed: total paints, breakdown by brand, breakdown by paint type
 - [ ] A mini color wheel visualization shows the user's collection coverage
 - [ ] Users can export their collection as a shareable list
 - [ ] `npm run build` and `npm run lint` pass with no errors

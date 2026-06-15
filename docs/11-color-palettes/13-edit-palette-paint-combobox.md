@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Enhancement
-**Status:** Done
+**Status:** Completed
 **Branch:** `enhancement/edit-palette-paint-combo-box`
 **Merge into:** `main`
 

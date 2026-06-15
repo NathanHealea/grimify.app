@@ -2,7 +2,7 @@
 
 **Epic:** Community & Social
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 **Branch:** `feature/user-profiles`
 **Merge into:** `main`
 
@@ -13,7 +13,7 @@ Provide public user profile pages where painters can showcase their recipes, pal
 ## Acceptance Criteria
 
 - [ ] Each user has a public profile page accessible by display name
-- [ ] Profile shows display name, avatar, bio, and join date
+- [x] Profile shows display name, avatar, bio, and join date
 - [ ] Profile lists the user's public recipes and palettes
 - [ ] Users can optionally share their paint collection publicly
 - [ ] Profile edit page allows updating display name, bio, and avatar

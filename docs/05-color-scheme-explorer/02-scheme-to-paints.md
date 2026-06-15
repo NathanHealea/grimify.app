@@ -13,9 +13,9 @@ For each color in a generated scheme, find and suggest the closest matching real
 ## Acceptance Criteria
 
 - [x] Each scheme color shows the top 3-5 closest matching paints
-- [x] Matches are ranked by Delta E (perceptual distance)
-- [x] Users can filter suggested paints by brand
-- [x] Users can filter to show only paints they own (if authenticated)
+- [ ] Matches are ranked by Delta E (perceptual distance)
+- [ ] Users can filter suggested paints by brand
+- [ ] Users can filter to show only paints they own (if authenticated)
 - [x] Clicking a suggested paint opens its detail view
 - [ ] The entire scheme can be saved as a palette (links to Community & Social epic) — deferred; depends on `07-community-social/01-palette-sharing.md`
 - [x] `npm run build` and `npm run lint` pass with no errors

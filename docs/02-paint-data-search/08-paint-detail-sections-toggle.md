@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/paint-detail-sections-toggle`
 **Merge into:** `main`
 

@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** Completed
+**Status:** In Progress
 **Branch:** `v1/feature/branding-images`
 **Merge into:** `v1/main`
 
@@ -12,7 +12,7 @@ Create and integrate the core branding assets for Grimify — logo, icon, and ke
 
 ## Acceptance Criteria
 
-- [x] Primary logo exists in SVG and PNG formats
+- [ ] Primary logo exists in SVG and PNG formats
 - [x] Icon/mark version exists for small contexts (favicon, app icon, avatar)
 - [x] Logo renders in the app header/navbar
 - [x] Logo has light and dark mode variants (or works on both backgrounds)

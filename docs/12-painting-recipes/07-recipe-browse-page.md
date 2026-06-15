@@ -2,7 +2,7 @@
 
 **Epic:** Painting Recipes
 **Type:** Feature
-**Status:** Completed
+**Status:** In Progress
 **Branch:** `feature/recipe-browse-page`
 **Merge into:** `main`
 
@@ -12,10 +12,10 @@ Public landing page at `/recipes/browse` that lists all `is_public` recipes, sor
 
 ## Acceptance Criteria
 
-- [x] `/recipes/browse` renders all public recipes without authentication
+- [ ] `/recipes/browse` renders all public recipes without authentication
 - [x] Cards are sorted by `created_at DESC` (newest first) by default
 - [x] Page is paginated with 24 cards per page (configurable via `?size=`)
-- [x] Active page is driven by `?page=` URL param; navigating to page 2 produces `/recipes/browse?page=2`
+- [ ] Active page is driven by `?page=` URL param; navigating to page 2 produces `/recipes/browse?page=2`
 - [x] Pagination controls show Prev / page numbers / Next and a per-page selector
 - [x] Changing page or page size updates the URL and re-fetches server-side
 - [x] `npm run build` and `npm run lint` pass with no errors

@@ -64,15 +64,15 @@ Core functionality:
 
 - [x] [Color scheme and theme](./00-marketing-and-branding/00-color-scheme-and-theme.md)
 - [x] [Metadata and OpenGraph](./00-marketing-and-branding/01-metadata-and-opengraph.md)
-- [x] [Branding images](./00-marketing-and-branding/02-branding-images.md)
+- [ ] [Branding images](./00-marketing-and-branding/02-branding-images.md)
 - [x] [Terms of Use](./00-marketing-and-branding/03-terms-of-use.md)
 - [x] [Code of Conduct](./00-marketing-and-branding/04-code-of-conduct.md)
-- [x] [Homepage marketing landing page](./00-marketing-and-branding/05-homepage-marketing.md)
+- [ ] [Homepage marketing landing page](./00-marketing-and-branding/05-homepage-marketing.md)
 - [x] [Per-page skeleton loading screens](./00-marketing-and-branding/06-new-loading-screen.md)
 - [x] [Shared `<Main>` page wrapper component](./00-marketing-and-branding/07-main-component-refactor.md)
 - [x] [Shared `<PageHeader>` title and subtitle component](./00-marketing-and-branding/08-title-and-subtitle-component-refactor.md)
-- [x] [Mobile-friendly navbar](./00-marketing-and-branding/09-mobile-friendly-navbar.md)
-- [x] [Navbar user menu](./00-marketing-and-branding/10-navbar-user-menu.md)
+- [ ] [Mobile-friendly navbar](./00-marketing-and-branding/09-mobile-friendly-navbar.md)
+- [ ] [Navbar user menu](./00-marketing-and-branding/10-navbar-user-menu.md)
 - [ ] [404 not-found page](./00-marketing-and-branding/11-404-not-found-page.md)
 - [x] [UI component consistency refactor](./00-marketing-and-branding/12-component-consistency-refactor.md)
 - [x] [Marketing Sharpness & Landing Page Improvements](./00-marketing-and-branding/13-marketing-sharpness-landing-page.md)
@@ -204,9 +204,9 @@ Core functionality:
 **High-Level Scope:**
 
 - [x] [Admin layout and navigation](./09-color-management/00-admin-layout-navigation.md)
-- [x] [Brand management](./09-color-management/01-brand-management.md)
-- [x] [Hue management](./09-color-management/02-hue-management.md)
-- [x] [Paint management](./09-color-management/03-paint-management.md)
+- [ ] [Brand management](./09-color-management/01-brand-management.md)
+- [ ] [Hue management](./09-color-management/02-hue-management.md)
+- [ ] [Paint management](./09-color-management/03-paint-management.md)
 
 ### Epic: Purchase List
 
@@ -236,7 +236,7 @@ Core functionality:
 - [x] [Public palettes catalog & user routes move](./11-color-palettes/08-public-palettes-page.md)
 - [x] [Color palette groups](./11-color-palettes/09-color-palette-groups.md)
 - [x] [Color palette paint sorting](./11-color-palettes/10-color-palette-sorting.md)
-- [x] [Paint group references (multi-group memberships)](./11-color-palettes/11-paint-group-references.md)
+- [ ] [Paint group references (multi-group memberships)](./11-color-palettes/11-paint-group-references.md)
 - [x] [Edit palette — paint combobox](./11-color-palettes/13-edit-palette-paint-combobox.md)
 - [x] [Palette sort bar missing from edit page](./11-color-palettes/14-palette-sort-bar-missing.md)
 - [x] [Palette group dropdown with checkbox & add toast](./11-color-palettes/15-palette-group-dropdown-checkbox.md)
@@ -251,7 +251,7 @@ Core functionality:
 
 - [x] [Recipe database schema and module scaffold](./12-painting-recipes/00-recipe-schema.md)
 - [x] [Recipe builder (sections, steps, instructions)](./12-painting-recipes/01-recipe-builder.md)
-- [x] [Recipe step paints (palette-aware picker, ratios)](./12-painting-recipes/02-recipe-step-paints.md)
+- [ ] [Recipe step paints (palette-aware picker, ratios)](./12-painting-recipes/02-recipe-step-paints.md)
 - [x] [Recipe photos (upload, cover, lightbox)](./12-painting-recipes/03-recipe-photos.md)
 - [x] [Recipe notes (multiple notes per recipe and per step)](./12-painting-recipes/04-recipe-notes.md)
 - [ ] [Public recipe sharing, browse, and OG previews](./12-painting-recipes/05-recipe-sharing.md)

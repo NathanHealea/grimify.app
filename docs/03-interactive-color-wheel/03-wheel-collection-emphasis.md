@@ -2,7 +2,7 @@
 
 **Epic:** Interactive Color Wheel
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 **Branch:** `feature/wheel-collection-emphasis`
 **Merge into:** `main`
 
@@ -15,8 +15,8 @@ When a user is authenticated, paint markers on both the Munsell and HSL wheels t
 - [ ] Collection paints are visually distinguished on both the Munsell and HSL wheels
 - [ ] The emphasis ring scales correctly with zoom (stays the same apparent screen size)
 - [ ] Collection paints render on top of non-collection paints so the ring is never obscured
-- [ ] Unauthenticated users see no visual difference (no ring, no layout change)
-- [ ] Emphasis is compatible with active filters — only visible emphasized markers remain when filters are applied
+- [x] Unauthenticated users see no visual difference (no ring, no layout change)
+- [x] Emphasis is compatible with active filters — only visible emphasized markers remain when filters are applied
 - [ ] `npm run build` and `npm run lint` pass with no errors
 
 ## Key Files

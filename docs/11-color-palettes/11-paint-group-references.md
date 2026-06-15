@@ -2,7 +2,7 @@
 
 **Epic:** Color Palettes
 **Type:** Feature
-**Status:** Done
+**Status:** In Progress
 **Branch:** `feature/paint-group-references`
 **Merge into:** `main`
 

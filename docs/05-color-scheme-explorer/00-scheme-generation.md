@@ -2,7 +2,7 @@
 
 **Epic:** Color Scheme Explorer
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/scheme-generation`
 **Merge into:** `v1/main`
 
