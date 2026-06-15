@@ -14,10 +14,10 @@ Public landing page at `/recipes/browse` that lists all `is_public` recipes, sor
 
 - [ ] `/recipes/browse` renders all public recipes without authentication
 - [x] Cards are sorted by `created_at DESC` (newest first) by default
-- [x] Page is paginated with 24 cards per page (configurable via `?size=`)
+- [ ] Page is paginated with 24 cards per page (configurable via `?size=`)
 - [ ] Active page is driven by `?page=` URL param; navigating to page 2 produces `/recipes/browse?page=2`
 - [x] Pagination controls show Prev / page numbers / Next and a per-page selector
-- [x] Changing page or page size updates the URL and re-fetches server-side
+- [ ] Changing page or page size updates the URL and re-fetches server-side
 - [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Routes

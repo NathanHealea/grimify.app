@@ -2,7 +2,7 @@
 
 **Epic:** Painting Recipes
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 **Branch:** `feature/recipe-sharing`
 **Merge into:** `v1/feature/paint-recipes`
 
@@ -21,7 +21,7 @@ By the end of this feature: a public recipe is reachable to anonymous users at `
 - [ ] Sort options: newest, recently updated, most paints (basic; popularity comes later when likes/views ship)
 - [ ] `/recipes/[id]` exposes OpenGraph + Twitter meta tags (title, description, cover image)
 - [ ] The recipe detail page has a "Copy share link" button
-- [ ] When the recipe is private, the URL 404s for non-owners (no leaking of existence)
+- [x] When the recipe is private, the URL 404s for non-owners (no leaking of existence)
 - [ ] When the user makes a recipe public, the builder shows a small "Share" panel with the URL + copy button
 - [ ] Recipes the user owns appear on their public profile (when `07-community-social/03-user-profiles.md` ships) — this feature ships only the data hook the profile needs
 - [ ] `npm run build` and `npm run lint` pass with no errors

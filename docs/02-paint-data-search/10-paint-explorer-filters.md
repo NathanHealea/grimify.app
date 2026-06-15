@@ -353,20 +353,20 @@ Phased so each phase is self-contained, ships green types/lint, and can be split
 
 ## Acceptance Criteria
 
-- [ ] Brand multi-select popover on `/paints` filters the grid; URL reflects `?brand=<comma-sep IDs>`.
-- [ ] Paint type multi-select popover filters the grid; URL reflects `?type=<comma-sep values>`.
-- [ ] Product line popover is disabled when no brand is selected, lists only product lines for the selected brand(s) when ≥1 brand is selected, and filters via `?line=<comma-sep IDs>`.
-- [ ] Discontinued tri-state chip cycles `include / exclude / only` and writes `?disc=…` (omitted when `include`).
-- [ ] Metallic-only chip toggles `?metal=1`.
-- [ ] All new filters AND with each other and with the existing hue + query filters; multiple selections within one dimension OR.
-- [ ] Per-option counts shown on each popover row reflect the result count if that option were added to the current filter set (filter-aware counts).
-- [ ] Active-filter chip row below the popovers lets users remove any single filter.
-- [ ] Clear All resets every dimension + the query.
-- [ ] When zero paints match, an empty-state panel renders with a single Clear-all-filters button.
-- [ ] Shareable URL with all filter params hydrates the UI to that exact state on first paint (SSR).
-- [ ] Back / Forward navigates through filter changes correctly (each filter change is a `pushState` entry).
-- [ ] No new TypeScript or lint errors.
-- [ ] All new exports have JSDoc per `CLAUDE.md`.
+- [x] Brand multi-select popover on `/paints` filters the grid; URL reflects `?brand=<comma-sep IDs>`.
+- [x] Paint type multi-select popover filters the grid; URL reflects `?type=<comma-sep values>`.
+- [x] Product line popover is disabled when no brand is selected, lists only product lines for the selected brand(s) when ≥1 brand is selected, and filters via `?line=<comma-sep IDs>`.
+- [x] Discontinued tri-state chip cycles `include / exclude / only` and writes `?disc=…` (omitted when `include`).
+- [x] Metallic-only chip toggles `?metal=1`.
+- [x] All new filters AND with each other and with the existing hue + query filters; multiple selections within one dimension OR.
+- [x] Per-option counts shown on each popover row reflect the result count if that option were added to the current filter set (filter-aware counts).
+- [x] Active-filter chip row below the popovers lets users remove any single filter.
+- [x] Clear All resets every dimension + the query.
+- [x] When zero paints match, an empty-state panel renders with a single Clear-all-filters button.
+- [x] Shareable URL with all filter params hydrates the UI to that exact state on first paint (SSR).
+- [x] Back / Forward navigates through filter changes correctly (each filter change is a `pushState` entry).
+- [x] No new TypeScript or lint errors.
+- [x] All new exports have JSDoc per `CLAUDE.md`.
 
 ## Risks & Considerations
 

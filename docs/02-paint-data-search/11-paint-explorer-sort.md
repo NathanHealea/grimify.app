@@ -274,21 +274,21 @@ Phased so each phase ships green types/lint and can be split into a small PR if 
 
 ## Acceptance Criteria
 
-- [ ] **Open Question resolved** with the user before implementation begins. Doc updated to record which interpretation of "Contrast" was chosen.
-- [ ] Sort control rendered on `/paints` next to the search input, offering at minimum Name, Hue, Lightness, and Contrast (contingent on Open Question).
-- [ ] Sort field selection writes `?sort=<field>` to the URL (omitted when `name`).
-- [ ] Direction toggle writes `?dir=<asc|desc>` to the URL (omitted when `asc`).
-- [ ] Sort applies server-side via `ORDER BY` on the paginated query; results across pages are globally ordered (not just per-page).
-- [ ] Hue sort orders by `paints.hue` numerically, asc and desc both functional, with stable tie-breakers (lightness, then name, then id).
-- [ ] Lightness sort orders by `paints.lightness`, asc and desc both functional.
-- [ ] Contrast sort orders by relative luminance derived from `r`, `g`, `b` (contingent on Open Question A); asc and desc both functional.
-- [ ] Sort composes with the existing query, hue filter, and pagination — changing sort resets `page` to 1 but leaves `q` and `hue` intact.
-- [ ] Shareable URL with `?sort=…&dir=…` hydrates the UI to that exact sort on first paint (SSR).
-- [ ] Back / Forward navigates through sort changes correctly (each sort change is a `pushState` entry).
-- [ ] Clear All resets sort to the default (`name asc`) in addition to clearing query and hue.
-- [ ] `PaintSortBar` accepts an optional `fields` prop; the palette builder's behavior is unchanged when the prop is omitted.
-- [ ] No new TypeScript or lint errors.
-- [ ] All new exports / new options have JSDoc per `CLAUDE.md`.
+- [x] **Open Question resolved** with the user before implementation begins. Doc updated to record which interpretation of "Contrast" was chosen.
+- [x] Sort control rendered on `/paints` next to the search input, offering at minimum Name, Hue, Lightness, and Contrast (contingent on Open Question).
+- [x] Sort field selection writes `?sort=<field>` to the URL (omitted when `name`).
+- [x] Direction toggle writes `?dir=<asc|desc>` to the URL (omitted when `asc`).
+- [x] Sort applies server-side via `ORDER BY` on the paginated query; results across pages are globally ordered (not just per-page).
+- [x] Hue sort orders by `paints.hue` numerically, asc and desc both functional, with stable tie-breakers (lightness, then name, then id).
+- [x] Lightness sort orders by `paints.lightness`, asc and desc both functional.
+- [x] Contrast sort orders by relative luminance derived from `r`, `g`, `b` (contingent on Open Question A); asc and desc both functional.
+- [x] Sort composes with the existing query, hue filter, and pagination — changing sort resets `page` to 1 but leaves `q` and `hue` intact.
+- [x] Shareable URL with `?sort=…&dir=…` hydrates the UI to that exact sort on first paint (SSR).
+- [x] Back / Forward navigates through sort changes correctly (each sort change is a `pushState` entry).
+- [x] Clear All resets sort to the default (`name asc`) in addition to clearing query and hue.
+- [x] `PaintSortBar` accepts an optional `fields` prop; the palette builder's behavior is unchanged when the prop is omitted.
+- [x] No new TypeScript or lint errors.
+- [x] All new exports / new options have JSDoc per `CLAUDE.md`.
 
 ## Risks & Considerations
 

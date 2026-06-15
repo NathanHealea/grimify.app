@@ -2,7 +2,7 @@
 
 **Epic:** Painting Recipes
 **Type:** Feature
-**Status:** Completed
+**Status:** In Progress
 **Branch:** `feature/recipe-notes`
 **Merge into:** `v1/feature/paint-recipes`
 
@@ -16,8 +16,8 @@ The user's request specifically called out "I should be able to add as many note
 
 - [x] The builder has a "Notes" panel at the recipe level: add, edit, reorder, delete
 - [x] Each step in the builder has a "Notes" panel: add, edit, reorder, delete
-- [x] Notes accept markdown (same renderer as `summary` and `instructions` from `01-recipe-builder`)
-- [x] Notes auto-save on blur with optimistic UI
+- [ ] Notes accept markdown (same renderer as `summary` and `instructions` from `01-recipe-builder`)
+- [ ] Notes auto-save on blur with optimistic UI
 - [x] Notes can be reordered via drag/drop
 - [x] Read view renders recipe-level notes as a callout block under the summary, and step-level notes as small callouts inside each step
 - [x] Notes have no character limit beyond the schema's max (5000)

@@ -2,7 +2,7 @@
 
 **Epic:** Army Management
 **Type:** Feature
-**Status:** Done
+**Status:** In Progress
 **Branch:** `feature/palette-army-selection`
 **Merge Into:** `epic/army-management`
 
@@ -17,7 +17,7 @@ Allow users to associate a palette with an army when creating or editing it. Add
 - [x] The palette edit form pre-populates with the current army selection and allows changing or clearing it
 - [x] The army selector shows all armies in a searchable combobox with ancestry breadcrumb labels (e.g., `Imperium › Space Marines › Dark Angels`)
 - [x] Selecting a leaf node or any mid-level army is allowed — any army in the tree can be chosen
-- [x] Palette detail/view page displays the associated army icon (if set) and name (with ancestry path) when set
+- [ ] Palette detail/view page displays the associated army icon (if set) and name (with ancestry path) when set
 - [x] `Palette` TypeScript type includes an optional `army` field
 - [x] Palette service queries join `armies` so the army data is embedded in the returned `Palette`
 - [x] All new components and types have JSDoc comments

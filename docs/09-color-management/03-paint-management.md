@@ -23,7 +23,7 @@ Provide an admin interface for managing individual paints. Administrators can cr
 - [x] Changing the parent hue clears any previously selected child sub-hue (if it doesn't belong to the new parent)
 - [x] Removing the parent hue also removes any child sub-hue assignment
 - [x] The hue assignment is stored as `hue_id` pointing to the child sub-hue (when both parent and child are selected) or to the parent hue (when only parent is selected)
-- [ ] Deleting a paint shows a confirmation dialog warning about cascade deletion of paint references
+- [x] Deleting a paint shows a confirmation dialog warning about cascade deletion of paint references
 - [x] The product line dropdown is filtered by the selected brand
 - [x] `npm run build` and `npm run lint` pass with no errors
 

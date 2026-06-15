@@ -18,10 +18,10 @@ Replace the placeholder paint section on every recipe step with a real, ordered 
 - [x] Selected paints render as rows on the step, in order, each with: paint swatch, name, brand, technique chip (inherited from the step), ratio field, note field
 - [x] Ratio and note fields auto-save on blur
 - [x] Rows can be removed; rows can be reordered within the step (drag/drop, same dnd-kit pattern)
-- [x] When a paint added came from the palette, the row stores `palette_slot_id` so future palette swaps can propagate (via swap UX in `palette-hue-swap`)
+- [ ] When a paint added came from the palette, the row stores `palette_slot_id` so future palette swaps can propagate (via swap UX in `palette-hue-swap`)
 - [ ] If a step's paint references a palette slot whose `paint_id` later changes, the recipe's read view shows the **current** paint (live join through `palette_slot_id`) — **deferred**: schema stores `palette_slot_id` as an unfk'd uuid; live-join requires a follow-up FK + view change documented in `getRecipeById`
 - [x] If the linked palette is deleted, existing step paints continue to render (the `paint_id` column denormalizes the paint)
-- [x] The read view shows step paints with their swatches, brands, and ratios; clicking a paint opens its detail page
+- [ ] The read view shows step paints with their swatches, brands, and ratios; clicking a paint opens its detail page
 - [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Module additions

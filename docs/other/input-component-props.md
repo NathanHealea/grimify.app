@@ -2,7 +2,7 @@
 
 **Epic:** Other
 **Type:** Refactor
-**Status:** Done
+**Status:** Todo
 **Branch:** `refactor/input-component-props`
 **Merge into:** `main`
 
@@ -16,23 +16,23 @@ Refactor the `Input` and `Textarea` UI components to accept explicit typed props
 
 ### Input
 
-- [x] `Input` accepts a `color` prop (`'primary' | 'secondary' | 'accent' | 'error'`) that maps to the corresponding `input-{color}` class; optional with no default (base `.input` uses a neutral border)
-- [x] `Input` accepts a `size` prop (`'xs' | 'sm' | 'md' | 'lg'`) that maps to the corresponding `input-{size}` class; optional with no default (falls back to base `.input` default height of `h-9`)
-- [x] `Input` accepts a `variant` prop (`'ghost'`) that maps to `input-ghost`; optional with no default
-- [x] `className` continues to work as an override — classes merged via `cn()` and applied after generated prop classes
-- [x] All existing `Input` call sites that pass raw class names via `className` continue to work unchanged
-- [x] `Input` is fully JSDoc-documented per project conventions
+- [ ] `Input` accepts a `color` prop (`'primary' | 'secondary' | 'accent' | 'error'`) that maps to the corresponding `input-{color}` class; optional with no default (base `.input` uses a neutral border)
+- [ ] `Input` accepts a `size` prop (`'xs' | 'sm' | 'md' | 'lg'`) that maps to the corresponding `input-{size}` class; optional with no default (falls back to base `.input` default height of `h-9`)
+- [ ] `Input` accepts a `variant` prop (`'ghost'`) that maps to `input-ghost`; optional with no default
+- [ ] `className` continues to work as an override — classes merged via `cn()` and applied after generated prop classes
+- [ ] All existing `Input` call sites that pass raw class names via `className` continue to work unchanged
+- [ ] `Input` is fully JSDoc-documented per project conventions
 
 ### Textarea
 
-- [x] `Textarea` accepts a `size` prop (`'xs' | 'sm' | 'md' | 'lg'`) that maps to the corresponding `textarea-{size}` class; optional with no default (falls back to base `.textarea` min-height of `5rem`)
-- [x] `className` continues to work as an override — classes merged via `cn()` and applied after generated prop classes
-- [x] All existing `Textarea` call sites that pass raw class names via `className` continue to work unchanged
-- [x] `Textarea` is fully JSDoc-documented per project conventions
+- [ ] `Textarea` accepts a `size` prop (`'xs' | 'sm' | 'md' | 'lg'`) that maps to the corresponding `textarea-{size}` class; optional with no default (falls back to base `.textarea` min-height of `5rem`)
+- [ ] `className` continues to work as an override — classes merged via `cn()` and applied after generated prop classes
+- [ ] All existing `Textarea` call sites that pass raw class names via `className` continue to work unchanged
+- [ ] `Textarea` is fully JSDoc-documented per project conventions
 
 ### Shared
 
-- [x] No CSS changes required — all classes already exist in `src/styles/input.css`
+- [ ] No CSS changes required — all classes already exist in `src/styles/input.css`
 
 ## Implementation Plan
 

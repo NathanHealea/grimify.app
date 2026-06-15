@@ -16,7 +16,7 @@ Provide public user profile pages where painters can showcase their recipes, pal
 - [x] Profile shows display name, avatar, bio, and join date
 - [ ] Profile lists the user's public recipes and palettes
 - [ ] Users can optionally share their paint collection publicly
-- [ ] Profile edit page allows updating display name, bio, and avatar
+- [x] Profile edit page allows updating display name, bio, and avatar
 - [ ] Privacy toggle for collection visibility (private by default)
 - [ ] `npm run build` and `npm run lint` pass with no errors
 
