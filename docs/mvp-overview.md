@@ -105,10 +105,10 @@ Required to present Grimify as a real, trustworthy product at launch.
 - [x] Code of Conduct
 - [x] Per-page skeleton loading screens
 - [x] Shared `<Main>` and `<PageHeader>` components
+- [x] Mobile-friendly navbar
+- [x] Navbar user menu
+- [x] 404 not-found page
 - [ ] **Homepage marketing landing page** — first impression for new visitors
-- [ ] **Mobile-friendly navbar** — core navigation on phones
-- [ ] **Navbar user menu** — account/owned-content access
-- [ ] **404 not-found page** — baseline UX completeness
 - [ ] Branding images — _desirable for polish; soft-MVP_
 
 ### 🟡 Epic: Color Management (Admin) — _MVP (operationally required)_
@@ -116,9 +116,9 @@ Required to present Grimify as a real, trustworthy product at launch.
 Someone must be able to maintain the paint/brand/hue data the entire app depends on.
 
 - [x] Admin layout and navigation
-- [~] **Brand management**
-- [~] **Hue management**
-- [~] **Paint management**
+- [ ] **Brand management**
+- [ ] **Hue management**
+- [ ] **Paint management**
 
 ### 🟡 Epic: User Management (Admin) — _MVP (core complete)_
 
@@ -149,23 +149,31 @@ These epics are intentionally excluded from the MVP. They add value but are not 
 
 ---
 
-## Path to MVP — Remaining Work
+## Implementation Group Order
 
-Everything below is **in MVP scope but not yet complete**. This is the actionable backlog to reach a shippable MVP:
+Everything below is **in MVP scope but not yet complete**. Work the groups top-to-bottom; items within a group are listed in their recommended implementation order. Check items off as they ship.
 
-**Launch presentation & navigation**
+### Group 1 — Admin Data Management
+
+_Operationally required: someone must be able to maintain the paint/brand/hue data the entire app depends on. Implemented in dependency order — brands and hues exist before paints reference them._
+
+- [ ] Brand management
+- [ ] Hue management
+- [ ] Paint management
+
+### Group 2 — Launch Presentation
+
+_The public first impression and visual polish needed to present Grimify as a real, trustworthy product at launch._
+
 - [ ] Homepage marketing landing page
-- [ ] Mobile-friendly navbar
-- [ ] Navbar user menu
-- [ ] 404 not-found page
-- [ ] Branding images _(soft)_
+- [ ] Branding images _(soft — desirable for polish, not strictly launch-blocking)_
 
-**Admin data management** (needed to maintain core data)
-- [~] Brand management
-- [~] Hue management
-- [~] Paint management
+### Group 3 — Data Quality (ongoing)
 
-**Data quality** (ongoing, non-blocking)
-- [~] Paint database data improvement
+_Non-blocking; continues after launch as a rolling data-quality effort._
 
-Once these close, the core loop — search → compare → scheme → track → palette — is fully supported behind authentication, with admin tooling to maintain the data and a presentable public shell. That constitutes the Grimify MVP.
+- [ ] Paint database data improvement
+
+---
+
+Once Groups 1 and 2 close, the core loop — search → compare → scheme → track → palette — is fully supported behind authentication, with admin tooling to maintain the data and a presentable public shell. That constitutes the Grimify MVP.
