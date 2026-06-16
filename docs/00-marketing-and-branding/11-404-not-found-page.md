@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** In Progress
+**Status:** Done
 **Branch:** `feature/404-not-found-page`
 **Merge into:** `main`
 
@@ -26,13 +26,14 @@ The page will:
 - [x] Visual layout matches the design language of `src/app/page.tsx`: a hero-style heading band on top of the `<Main>` shell, then a CTA band of action buttons below.
 - [x] Copy is on-brand for Grimify (no Next.js boilerplate text). At minimum: an H1 "Page not found", a sub-headline explaining the route doesn't exist, and a contextual line nudging the user toward what's working.
 - [x] Primary CTA links to `/` (button uses `btn btn-primary btn-lg`).
-- [ ] Secondary destinations are surfaced as a short list/grid of links: `/paints`, `/wheel`, `/palettes`. When the viewer is signed in, also surface `/collection` and `/user/palettes`.
+- [x] Secondary destinations are surfaced as a short list/grid of links: `/paints`, `/brands`, `/palettes`. When the viewer is signed in, also surface `/collection` and `/user/palettes`.
 - [x] Metadata sets `robots: { index: false, follow: false }` via `pageMetadata({ noindex: true })`.
 - [x] Page works in light and dark mode — no hardcoded colors; everything uses theme tokens (`bg-muted`, `text-muted-foreground`, etc.).
 - [x] Page is responsive — heading scales like the marketing hero (`text-4xl sm:text-5xl lg:text-6xl`), CTA buttons stack on mobile and lay out in a row on `sm:` and up.
 - [x] No new dependencies introduced.
 - [x] `npm run build` and `npm run lint` pass with no errors or warnings.
 - [x] Manual smoke test: hitting `/this-route-does-not-exist` shows the new 404 page with chrome intact. Triggering `notFound()` from an existing detail page (e.g. `/paints/00000000-0000-0000-0000-000000000000`) also renders the same page.
+- [x] The 404 page is reachable by **unauthenticated** visitors — hitting an unknown route while signed out renders the 404 rather than redirecting to `/sign-in`. The middleware treats any path matching no real top-level route as non-existent and lets it fall through to the public 404, while still gating signed-out access to real protected routes.
 
 ## Affected pages that call `notFound()`
 
@@ -59,13 +60,13 @@ Out of scope for this feature: shipping per-segment `not-found.tsx` files for an
 | ------ | ----------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | Create | `src/app/not-found.tsx`                               | Root `not-found.tsx` — thin page that imports the marketing module's content component.      |
 | Create | `src/modules/marketing/components/not-found-content.tsx` | Server component rendering the heading band, CTA buttons, and contextual links. Owns all 404-specific markup. |
-| Modify | *(none — root layout already provides Navbar/Footer/Toaster)* | The 404 page is rendered as a child of `RootLayout` automatically.                  |
+| Modify | `src/middleware.ts`                                   | Add a `KNOWN_ROUTES` inventory; let unauthenticated requests to unknown paths fall through to the public 404 instead of redirecting to `/sign-in`. |
 
 No new CSS files. The page composes existing utilities (`btn`, `btn-primary`, `btn-ghost`, page shell utilities) and Tailwind classes — adding a `not-found.css` would be over-engineering for one page.
 
 ## Implementation Plan
 
-**Status: In Progress.** The two core files are already built and wired; the remaining work is reconciling the secondary-destinations list with the routes that actually exist and running the final verification pass.
+**Status: Done.** The two core files are built and wired, the secondary-destinations criterion was reconciled with the routes that actually exist, and the final verification pass is complete.
 
 ### Module placement (implemented)
 
@@ -79,6 +80,7 @@ The 404 follows the marketing-component pattern: `src/app/not-found.tsx` is a th
   - A primary `btn btn-primary btn-lg` "Back to home" CTA linking to `/`.
   - A responsive destinations grid (`grid-cols-1 sm:grid-cols-3`) of `card`-style links using `CardHeader` / `CardTitle` / `CardDescription` from `@/components/ui/card`, with `hover:bg-accent`. Always shows **Browse paints (`/paints`)**, **Explore brands (`/brands`)**, **Discover palettes (`/palettes`)**; when `isAuthenticated`, also shows **Your collection (`/collection`)** and **Your palettes (`/user/palettes`)**.
 - All theme tokens (`bg-muted`, `text-muted-foreground`, `bg-accent`, etc.) — no hardcoded colors; light/dark safe. No new dependencies, no new CSS file.
+- **`src/middleware.ts`** — the auth middleware ran a default-deny model: any unauthenticated request not on the public allowlist was redirected to `/sign-in`, so signed-out visitors hitting a non-existent URL never reached the 404. Fixed by adding a `KNOWN_ROUTES` inventory of every real top-level route prefix; an unauthenticated request matching no known route now falls through to render the public 404, while signed-out access to real protected routes still redirects to `/sign-in`. The default-deny posture is preserved — only genuinely non-existent paths change behavior.
 
 This covers all acceptance criteria except the secondary-destinations criterion, which is the only remaining gap.
 
@@ -86,14 +88,11 @@ This covers all acceptance criteria except the secondary-destinations criterion,
 
 #### Phase 1 — Reconcile the secondary destinations (`src/modules/marketing/components/not-found-content.tsx`)
 
-The lone unchecked acceptance criterion lists `/paints`, `/wheel`, `/palettes` as the signed-out destinations. The current implementation surfaces `/paints`, `/brands`, `/palettes` instead. **There is no `/wheel` route in `src/app/`** — `/brands` is the correct, live route — so the implementation is right and the acceptance criterion's `/wheel` reference is stale. Decide and align in one pass:
+The acceptance criterion originally listed `/paints`, `/wheel`, `/palettes` as the signed-out destinations. The implementation surfaces `/paints`, `/brands`, `/palettes`. **There is no `/wheel` route in `src/app/`** (confirmed: `src/app/` contains `brands`, `paints`, `palettes`, `collection`, `user/palettes`, but no `wheel`) — `/brands` is the correct, live route — so the implementation was right and the criterion's `/wheel` reference was stale.
 
-- **Recommended:** keep `/brands` in the code (it exists; `/wheel` does not) and update the acceptance criterion wording to read `/paints`, `/brands`, `/palettes`. This is a doc-only edit to the criterion text.
-- If a color-wheel route is genuinely intended, that is a separate feature (the route does not yet exist) and is out of scope here — do not add a dead link to a non-existent route.
+**Resolution (applied):** kept `/brands` in the code (it exists; `/wheel` does not) and corrected the acceptance criterion wording to read `/paints`, `/brands`, `/palettes`. This was a doc-only edit; no code change was needed. A color-wheel route, if ever intended, is a separate out-of-scope feature — no dead link was added.
 
-Confirm the signed-in additions (`/collection`, `/user/palettes`) match the criterion — they already do.
-
-This phase touches only the component's link set (if any) plus the doc criterion. Types/lint stay green throughout.
+The signed-in additions (`/collection`, `/user/palettes`) match the criterion and were already present.
 
 #### Phase 2 — Final verification (no code changes expected)
 

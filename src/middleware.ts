@@ -20,6 +20,39 @@ const PUBLIC_EXACT_ROUTES = ['/']
 const ADMIN_ROUTES = ['/admin']
 
 /**
+ * Inventory of every real top-level route prefix the app serves.
+ *
+ * @remarks
+ * Used to distinguish protected-but-real routes from genuinely non-existent
+ * paths. An unauthenticated request to a path matching none of these falls
+ * through to the public 404 page instead of being redirected to sign-in.
+ * Add new top-level routes here so signed-out visitors are still gated on them.
+ */
+const KNOWN_ROUTES = [
+  '/admin',
+  '/api',
+  '/auth',
+  '/brands',
+  '/code-of-conduct',
+  '/collection',
+  '/compare',
+  '/discontinued',
+  '/forgot-password',
+  '/hues',
+  '/paints',
+  '/palettes',
+  '/profile',
+  '/recipes',
+  '/reset-password',
+  '/schemes',
+  '/sign-in',
+  '/sign-up',
+  '/terms',
+  '/user',
+  '/users',
+]
+
+/**
  * Next.js middleware that handles Supabase session refresh, authentication
  * enforcement, profile-setup enforcement, and admin route protection.
  *
@@ -31,12 +64,14 @@ const ADMIN_ROUTES = ['/admin']
  * 2. Auth routes — return immediately (no checks at all).
  * 3. Get user via `supabase.auth.getUser()`.
  * 4. No user + public route — allow (unauthenticated browsing).
- * 5. No user + protected route — redirect to `/sign-in?next={pathname}`.
- * 6. User exists — check `has_setup_profile`:
+ * 5. No user + unknown (non-existent) route — allow through so the public
+ *    404 page renders instead of redirecting to sign-in.
+ * 6. No user + known protected route — redirect to `/sign-in?next={pathname}`.
+ * 7. User exists — check `has_setup_profile`:
  *    - If `false` and not on `/profile/setup` — redirect to `/profile/setup`.
  *    - If `true` and on `/profile/setup` — redirect to `/`.
- * 7. Admin route — check roles via `get_user_roles` RPC.
- * 8. Return response.
+ * 8. Admin route — check roles via `get_user_roles` RPC.
+ * 9. Return response.
  */
 export async function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
@@ -92,12 +127,21 @@ export async function middleware(request: NextRequest) {
     PUBLIC_ROUTES.some((route) => pathname.startsWith(route)) ||
     PUBLIC_EXACT_ROUTES.some((route) => pathname === route)
 
+  const isKnownRoute = KNOWN_ROUTES.some((route) => pathname === route || pathname.startsWith(`${route}/`))
+
   // Unauthenticated user on a public route — allow without profile checks
   if (!user && isPublicRoute) {
     return supabaseResponse
   }
 
-  // Unauthenticated user on a protected route — redirect to sign-in
+  // Unauthenticated user on a non-existent path — allow through so Next.js
+  // renders the public 404 page rather than redirecting to sign-in for a
+  // page that doesn't exist.
+  if (!user && !isKnownRoute) {
+    return supabaseResponse
+  }
+
+  // Unauthenticated user on a known protected route — redirect to sign-in
   if (!user) {
     const url = request.nextUrl.clone()
     url.pathname = '/sign-in'
