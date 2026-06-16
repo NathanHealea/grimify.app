@@ -56,9 +56,14 @@ export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
 
   // Defensive: a programmatic redirect (e.g. signOut) should also close the
   // drawer. SheetClose handles user link taps; this covers navigation that
-  // does not originate from a tapped link.
+  // does not originate from a tapped link. Guarding on `open` avoids a
+  // synchronous no-op setState on every navigation.
   useEffect(() => {
-    setOpen(false)
+    if (open) {
+      setOpen(false)
+    }
+    // Only re-run when the path changes; `open` is read, not tracked.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
   return (
