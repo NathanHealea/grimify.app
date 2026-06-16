@@ -15,6 +15,26 @@ export type PaintWithRelations = Paint & {
   }
 }
 
+/**
+ * Paint row returned by {@link searchPaints} for the admin list view.
+ *
+ * Includes product line name and the assigned hue for rendering the full
+ * admin paint table. `hues` is `null` when no hue is assigned to the paint.
+ */
+export type PaintListRow = Paint & {
+  product_lines: {
+    name: string
+    brands: {
+      name: string
+    }
+  }
+  /** The hue assigned to this paint. `null` when no hue has been assigned. */
+  hues: {
+    name: string
+    hex_code: string
+  } | null
+}
+
 /** Subset of hue fields returned when joining from a paint row. */
 export type PaintHueJoin = {
   id: string
@@ -356,7 +376,7 @@ export function createPaintService(supabase: SupabaseClient) {
       brandId?: number
       limit?: number
       offset?: number
-    }): Promise<{ paints: PaintWithBrand[]; count: number }> {
+    }): Promise<{ paints: PaintListRow[]; count: number }> {
       const { search, brandId, limit = 50, offset = 0 } = options
 
       let countQuery = supabase
@@ -365,7 +385,7 @@ export function createPaintService(supabase: SupabaseClient) {
 
       let dataQuery = supabase
         .from('paints')
-        .select('*, product_lines!inner(brands(name))')
+        .select('*, product_lines!inner(name, brands(name)), hues(name, hex_code)')
         .order('name')
         .range(offset, offset + limit - 1)
 
@@ -381,7 +401,7 @@ export function createPaintService(supabase: SupabaseClient) {
 
       const [{ count }, { data }] = await Promise.all([countQuery, dataQuery])
       return {
-        paints: (data as PaintWithBrand[] | null) ?? [],
+        paints: (data as PaintListRow[] | null) ?? [],
         count: count ?? 0,
       }
     },
