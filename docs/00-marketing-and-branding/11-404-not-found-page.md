@@ -33,6 +33,7 @@ The page will:
 - [x] No new dependencies introduced.
 - [x] `npm run build` and `npm run lint` pass with no errors or warnings.
 - [x] Manual smoke test: hitting `/this-route-does-not-exist` shows the new 404 page with chrome intact. Triggering `notFound()` from an existing detail page (e.g. `/paints/00000000-0000-0000-0000-000000000000`) also renders the same page.
+- [x] The 404 page is reachable by **unauthenticated** visitors — hitting an unknown route while signed out renders the 404 rather than redirecting to `/sign-in`. The middleware treats any path matching no real top-level route as non-existent and lets it fall through to the public 404, while still gating signed-out access to real protected routes.
 
 ## Affected pages that call `notFound()`
 
@@ -59,7 +60,7 @@ Out of scope for this feature: shipping per-segment `not-found.tsx` files for an
 | ------ | ----------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | Create | `src/app/not-found.tsx`                               | Root `not-found.tsx` — thin page that imports the marketing module's content component.      |
 | Create | `src/modules/marketing/components/not-found-content.tsx` | Server component rendering the heading band, CTA buttons, and contextual links. Owns all 404-specific markup. |
-| Modify | *(none — root layout already provides Navbar/Footer/Toaster)* | The 404 page is rendered as a child of `RootLayout` automatically.                  |
+| Modify | `src/middleware.ts`                                   | Add a `KNOWN_ROUTES` inventory; let unauthenticated requests to unknown paths fall through to the public 404 instead of redirecting to `/sign-in`. |
 
 No new CSS files. The page composes existing utilities (`btn`, `btn-primary`, `btn-ghost`, page shell utilities) and Tailwind classes — adding a `not-found.css` would be over-engineering for one page.
 
@@ -79,6 +80,7 @@ The 404 follows the marketing-component pattern: `src/app/not-found.tsx` is a th
   - A primary `btn btn-primary btn-lg` "Back to home" CTA linking to `/`.
   - A responsive destinations grid (`grid-cols-1 sm:grid-cols-3`) of `card`-style links using `CardHeader` / `CardTitle` / `CardDescription` from `@/components/ui/card`, with `hover:bg-accent`. Always shows **Browse paints (`/paints`)**, **Explore brands (`/brands`)**, **Discover palettes (`/palettes`)**; when `isAuthenticated`, also shows **Your collection (`/collection`)** and **Your palettes (`/user/palettes`)**.
 - All theme tokens (`bg-muted`, `text-muted-foreground`, `bg-accent`, etc.) — no hardcoded colors; light/dark safe. No new dependencies, no new CSS file.
+- **`src/middleware.ts`** — the auth middleware ran a default-deny model: any unauthenticated request not on the public allowlist was redirected to `/sign-in`, so signed-out visitors hitting a non-existent URL never reached the 404. Fixed by adding a `KNOWN_ROUTES` inventory of every real top-level route prefix; an unauthenticated request matching no known route now falls through to render the public 404, while signed-out access to real protected routes still redirects to `/sign-in`. The default-deny posture is preserved — only genuinely non-existent paths change behavior.
 
 This covers all acceptance criteria except the secondary-destinations criterion, which is the only remaining gap.
 
