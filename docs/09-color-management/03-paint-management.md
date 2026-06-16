@@ -2,7 +2,7 @@
 
 **Epic:** Color Management
 **Type:** Feature
-**Status:** In Progress
+**Status:** Done
 **Branch:** `feature/paint-management`
 **Merge into:** `main`
 
@@ -12,7 +12,7 @@ Provide an admin interface for managing individual paints. Administrators can cr
 
 ## Acceptance Criteria
 
-- [ ] An admin paints list page at `/admin/paints` displays paints with color swatch, name, brand, product line, hue assignment, and action links
+- [x] An admin paints list page at `/admin/paints` displays paints with color swatch, name, brand, product line, hue assignment, and action links
 - [x] The paints list supports search by name and filtering by brand
 - [x] The paints list supports pagination
 - [x] A create paint page at `/admin/paints/new` allows creating a new paint with all required fields
