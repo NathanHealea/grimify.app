@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** In Progress
+**Status:** Done
 **Branch:** `feature/mobile-friendly-navbar`
 **Merge into:** `v1/main`
 
@@ -20,7 +20,7 @@ This feature adds a mobile-friendly navbar that, below the `lg` breakpoint (≤ 
 - [x] The drawer contains, in order: a header row (brand or "Menu" label + close button), the full navigation link list, a separator, and an auth section (Sign In / Sign Up for guests, user identity + sign-out for authenticated users)
 - [x] The drawer is keyboard-accessible: Escape closes it, focus is trapped inside while open, focus returns to the hamburger trigger on close
 - [x] The drawer auto-closes when the user clicks any link inside it (so route changes feel one-step)
-- [ ] The drawer auto-closes on route change (defensive, in case a child component navigates programmatically)
+- [x] The drawer auto-closes on route change (defensive, in case a child component navigates programmatically)
 - [x] The hamburger trigger has `aria-label="Open navigation menu"` and the drawer panel uses Radix Dialog semantics (`role="dialog"`, `aria-modal="true"`)
 - [x] Admin users see the `Admin` link inside the drawer (mirrors the desktop admin badge), gated by the same `isAdmin` check
 - [x] Authenticated-only links (`Collection`, `My palettes`) are present in the drawer only for signed-in users — same gating as the desktop center cluster

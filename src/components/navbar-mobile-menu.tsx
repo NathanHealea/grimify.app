@@ -3,7 +3,8 @@
 import { Menu } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
+import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 import { Logo } from '@/components/logo'
 import {
@@ -41,7 +42,9 @@ type Viewer =
  * component with `lg:hidden`). The drawer covers the full viewport. Links are
  * center-aligned on phones and left-aligned on tablets (`md` breakpoint).
  *
- * Auto-closes when the user taps any link (via {@link SheetClose} wrappers).
+ * Auto-closes when the user taps any link (via {@link SheetClose} wrappers),
+ * and defensively on every route change to cover programmatic navigation
+ * (e.g. the `signOut` server action redirect).
  *
  * @param props.viewer - Either `{ kind: 'guest' }` or a fully resolved user
  *   descriptor with display name, avatar URL, and admin flag. The parent
@@ -49,6 +52,19 @@ type Viewer =
  */
 export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
   const [open, setOpen] = useState(false)
+  const pathname = usePathname()
+
+  // Defensive: a programmatic redirect (e.g. signOut) should also close the
+  // drawer. SheetClose handles user link taps; this covers navigation that
+  // does not originate from a tapped link. Guarding on `open` avoids a
+  // synchronous no-op setState on every navigation.
+  useEffect(() => {
+    if (open) {
+      setOpen(false)
+    }
+    // Only re-run when the path changes; `open` is read, not tracked.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname])
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
