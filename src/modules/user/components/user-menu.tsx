@@ -16,8 +16,7 @@ import { signOut } from '@/modules/auth/actions/sign-out';
 /** A navigation item in the "Mine" owned-content group of the user dropdown. */
 type OwnedItem = {
   label: string
-  href: string | null
-  disabledReason?: string
+  href: string
 }
 
 /** Owned-content destinations shown in the user dropdown under the "Mine" heading. */
@@ -31,8 +30,10 @@ const OWNED_ITEMS: OwnedItem[] = [
  * User avatar dropdown menu for the navbar.
  *
  * Displays the user's profile picture (or initials fallback) as a trigger
- * button. Opens a Radix dropdown with four sections: profile link, a "Mine"
- * group (My collection, My palettes, disabled My recipes placeholder), a
+ * button. Opens a Radix dropdown with these sections: a profile link
+ * (display name → `/users/{userId}`) and an `Edit profile` link
+ * (`/profile/edit`), a separator, a "Mine" group of owned-content links
+ * (My collection, My palettes, My recipes — all live routes), another
  * separator, and the sign-out action.
  *
  * @param props.userId - The user's ID, used to construct the profile details link.
@@ -81,27 +82,11 @@ export function UserMenu({
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuLabel className="text-xs text-muted-foreground">Mine</DropdownMenuLabel>
-        {OWNED_ITEMS.map((item) =>
-          item.href ? (
-            <DropdownMenuItem key={item.label} asChild>
-              <Link href={item.href}>{item.label}</Link>
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem
-              key={item.label}
-              disabled
-              aria-disabled="true"
-              className="cursor-not-allowed opacity-60"
-            >
-              {item.label}
-              {item.disabledReason && (
-                <span className="ml-auto text-xs text-muted-foreground">
-                  {item.disabledReason}
-                </span>
-              )}
-            </DropdownMenuItem>
-          ),
-        )}
+        {OWNED_ITEMS.map((item) => (
+          <DropdownMenuItem key={item.label} asChild>
+            <Link href={item.href}>{item.label}</Link>
+          </DropdownMenuItem>
+        ))}
         <DropdownMenuSeparator />
         <form action={signOut}>
           <button
