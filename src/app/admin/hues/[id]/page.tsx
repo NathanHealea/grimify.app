@@ -5,6 +5,7 @@ import { Main } from '@/components/main'
 import { PageHeader, PageSubtitle, PageTitle } from '@/components/page-header'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { updateHue } from '@/modules/admin/actions/hue-actions'
+import { AddPaintsToHue } from '@/modules/admin/components/add-paints-to-hue'
 import { DeleteHueButton } from '@/modules/admin/components/delete-hue-button'
 import { HueForm } from '@/modules/admin/components/hue-form'
 import { HuePaintList } from '@/modules/admin/components/hue-paint-list'
@@ -134,6 +135,16 @@ export default async function AdminHueDetailPage({ params }: { params: Promise<{
             </CardContent>
           </Card>
         )}
+
+        {/* Add paints to hue */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Add Paints to Hue</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <AddPaintsToHue hueId={hue.id} />
+          </CardContent>
+        </Card>
 
         {/* Associated paints */}
         <Card>
