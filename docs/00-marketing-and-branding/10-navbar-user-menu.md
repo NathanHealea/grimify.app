@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Feature
-**Status:** In Progress
+**Status:** Done
 **Branch:** `feature/navbar-user-menu`
 **Merge into:** `v1/main`
 
@@ -14,15 +14,17 @@ This feature reorganizes the top navigation so the dropdown becomes the dedicate
 
 The same reorganization carries through to the mobile drawer (`<NavbarMobileMenu>`): public links in the body, owned links in a clearly-labeled footer group above sign-out.
 
+The dropdown also surfaces a profile-management pair at the top — the display-name link (`/users/{userId}`) plus an `Edit profile` link (`/profile/edit`) — above the first separator, so account-level destinations sit apart from the owned-content `Mine` group.
+
 ## Acceptance Criteria
 
 - [x] On the desktop navbar (`≥ lg`), the center cluster contains only social/public destinations: `Paints`, `Brands`, `Schemes`, `Palettes` — no `Collection` or `My palettes` link inline.
-- [x] On the desktop navbar (`≥ lg`), the avatar dropdown contains, in order: profile link (display name → `/users/{userId}`), separator, owned-content group (`My collection` → `/collection`, `My palettes` → `/user/palettes`, `My recipes` → disabled "Coming soon" placeholder), separator, sign-out button.
-- [x] The `My collection` and `My palettes` items in the dropdown are full-width interactive `<Link>`s that close the dropdown on click and navigate as expected.
-- [x] The `My recipes` item renders as a disabled menu row (greyed text, no link wrapper, `aria-disabled="true"`) until the `12-painting-recipes` epic ships a `/user/recipes` route.
+- [x] On the desktop navbar (`≥ lg`), the avatar dropdown contains, in order: profile link (display name → `/users/{userId}`), `Edit profile` link (`/profile/edit`), separator, `Mine` label, owned-content group (`My collection` → `/collection`, `My palettes` → `/user/palettes`, `My recipes` → `/user/recipes`), separator, sign-out button.
+- [x] The `My collection`, `My palettes`, and `My recipes` items in the dropdown are full-width interactive `<Link>`s that close the dropdown on click and navigate as expected.
+- [x] `My recipes` links to the live `/user/recipes` route shipped by the `12-painting-recipes` epic — the original disabled "Coming soon" placeholder was removed once the route landed.
 - [x] The dropdown groups are visually separated by `<DropdownMenuSeparator />` so the user can scan profile → owned items → sign-out.
 - [x] On the mobile drawer (`< lg`), the body contains only public/social links (`Paints`, `Brands`, `Schemes`, `Palettes`); the footer contains a `Mine` group (user identity row, `My collection`, `My palettes`, disabled `My recipes`) and the sign-out form, in that order.
-- [ ] `Admin` link continues to render exactly where it does today: in the desktop `navbar-end` cluster (above the avatar dropdown) when `isAdmin === true`, and inside the mobile drawer body for admin users. It is **not** moved into the dropdown — it's a role-gated app surface, not a personal collection.
+- [x] `Admin` link renders in the desktop `navbar-end` cluster (above the avatar dropdown) when `isAdmin === true`, and at the **top of the mobile drawer footer** (gated on `viewer.kind === 'user' && viewer.isAdmin`) for admin users. It is **not** moved into the dropdown — it's a role-gated app surface, not a personal collection. (Reconciled to shipped footer placement per Implementation Plan Phase 2, Option B.)
 - [x] Authenticated-only items are hidden for guests on every breakpoint (no "My …" entries appear unless `viewer.kind === 'user'`).
 - [x] All dropdown items support keyboard navigation (Tab/Shift+Tab, Enter to activate, Escape to close) — inherited from Radix `DropdownMenu`, no additional handlers.
 - [x] No new routes are added or removed. The doc explicitly defers the `/user/recipes` page to the recipes epic.
