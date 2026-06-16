@@ -1,6 +1,8 @@
 # Grimify
 
-Interactive color research and collection management app for miniature painters. Combines a visual paint library, cross-brand comparison tools, color theory exploration, and a social community for sharing recipes, palettes, and collections.
+Interactive color research and collection management app for miniature painters. Combines cross-brand comparison tools, color theory exploration, personal collection tracking, and palette building, with a social community for sharing recipes, palettes, and collections.
+
+**Core loop:** search → compare → scheme → track → palette.
 
 ## Docs
 
