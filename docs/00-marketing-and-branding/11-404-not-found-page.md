@@ -65,122 +65,52 @@ No new CSS files. The page composes existing utilities (`btn`, `btn-primary`, `b
 
 ## Implementation Plan
 
-### Module placement
+**Status: In Progress.** The two core files are already built and wired; the remaining work is reconciling the secondary-destinations list with the routes that actually exist and running the final verification pass.
 
-A 404 page is app-wide chrome — there's no domain in `src/modules/<module>/` that "owns" 404s. Two reasonable options:
+### Module placement (implemented)
 
-1. **Inline in `src/app/not-found.tsx`** (matches what `src/app/loading.tsx` does today).
-2. **Extract a `NotFoundContent` component** under `src/modules/marketing/components/` (matches what the homepage does with `Hero`, `FeatureGrid`, `CtaSection`).
+The 404 follows the marketing-component pattern: `src/app/not-found.tsx` is a thin async shim that does the Supabase auth lookup at the route boundary and delegates all markup to `NotFoundContent` in `src/modules/marketing/components/`. This matches the project rule that route files stay thin and domain markup lives in a module.
 
-This plan picks **option 2** because:
+### Already implemented
 
-- The 404 is a *visual* page with copy, headings, and CTAs — the same shape as the marketing hero/CTA pair. Putting it in `src/modules/marketing/components/` keeps the marketing visual language in one place and lets future marketing tweaks (e.g. a sitewide font/color refresh) update the 404 by association.
-- It aligns with the project rule: "Route pages (`src/app/**/page.tsx`) only handle layout and data fetching — they import components, actions, and services from the module." A 404 page that's anything more than 2 lines of layout belongs in a module.
-- It keeps `src/app/not-found.tsx` a true 1-import-and-render shim, matching the spirit of `src/app/page.tsx`.
+- **`src/app/not-found.tsx`** — async server component. Calls `createClient()` + `auth.getUser()` (the same auth dance as `src/app/page.tsx`), wraps the body in `<Main>`, and passes `isAuthenticated={!!user}` to `NotFoundContent`. Exports `metadata = pageMetadata({ title: 'Page not found', description: ..., noindex: true })` — no `path`, so the page has no canonical URL and is `noindex, nofollow`.
+- **`src/modules/marketing/components/not-found-content.tsx`** — server component with `NotFoundContentProps { isAuthenticated: boolean }`, both exports carrying JSDoc. Renders:
+  - A hero-style heading band (`text-4xl sm:text-5xl lg:text-6xl`, `text-balance`) with "Page not found" + a muted sub-headline, on a `bg-gradient-to-b from-muted/40 to-background` section.
+  - A primary `btn btn-primary btn-lg` "Back to home" CTA linking to `/`.
+  - A responsive destinations grid (`grid-cols-1 sm:grid-cols-3`) of `card`-style links using `CardHeader` / `CardTitle` / `CardDescription` from `@/components/ui/card`, with `hover:bg-accent`. Always shows **Browse paints (`/paints`)**, **Explore brands (`/brands`)**, **Discover palettes (`/palettes`)**; when `isAuthenticated`, also shows **Your collection (`/collection`)** and **Your palettes (`/user/palettes`)**.
+- All theme tokens (`bg-muted`, `text-muted-foreground`, `bg-accent`, etc.) — no hardcoded colors; light/dark safe. No new dependencies, no new CSS file.
 
-`auth-awareness` for the CTA list is a simple Supabase user lookup, same pattern used in `src/app/page.tsx`. Keep that in the route page (boundary), not in the module component — pass `isAuthenticated: boolean` as a prop. This mirrors `CtaSection` in `src/modules/marketing/components/cta-section.tsx`.
+This covers all acceptance criteria except the secondary-destinations criterion, which is the only remaining gap.
 
-### Step 1 — Create the marketing `NotFoundContent` component
+### Remaining work
 
-File: `src/modules/marketing/components/not-found-content.tsx`
+#### Phase 1 — Reconcile the secondary destinations (`src/modules/marketing/components/not-found-content.tsx`)
 
-Server component. Props: `{ isAuthenticated: boolean }`.
+The lone unchecked acceptance criterion lists `/paints`, `/wheel`, `/palettes` as the signed-out destinations. The current implementation surfaces `/paints`, `/brands`, `/palettes` instead. **There is no `/wheel` route in `src/app/`** — `/brands` is the correct, live route — so the implementation is right and the acceptance criterion's `/wheel` reference is stale. Decide and align in one pass:
 
-Structure (mirrors `Hero` + `CtaSection`):
+- **Recommended:** keep `/brands` in the code (it exists; `/wheel` does not) and update the acceptance criterion wording to read `/paints`, `/brands`, `/palettes`. This is a doc-only edit to the criterion text.
+- If a color-wheel route is genuinely intended, that is a separate feature (the route does not yet exist) and is out of scope here — do not add a dead link to a non-existent route.
 
-```tsx
-import Link from 'next/link'
+Confirm the signed-in additions (`/collection`, `/user/palettes`) match the criterion — they already do.
 
-import { PageHeader, PageSubtitle, PageTitle } from '@/components/page-header'
+This phase touches only the component's link set (if any) plus the doc criterion. Types/lint stay green throughout.
 
-/**
- * Props for {@link NotFoundContent}.
- */
-export interface NotFoundContentProps {
-  /** Whether the current viewer has a Supabase session. Drives which secondary destinations render. */
-  isAuthenticated: boolean
-}
+#### Phase 2 — Final verification (no code changes expected)
 
-/**
- * 404 page body rendered by the root `not-found.tsx` segment.
- *
- * Lays out a hero-style heading band (Page not found / subtitle), a primary
- * "Back to home" CTA, and a contextual list of common destinations. The
- * destination list grows by one row when the viewer is signed in.
- *
- * @param props - See {@link NotFoundContentProps}.
- */
-export function NotFoundContent({ isAuthenticated }: NotFoundContentProps) {
-  // 1. <PageHeader> with PageTitle "Page not found" + PageSubtitle copy.
-  // 2. Primary CTA row: Link to "/" with .btn .btn-primary .btn-lg.
-  // 3. Destinations grid: /paints, /wheel, /palettes — plus /collection and /user/palettes when isAuthenticated.
-}
-```
-
-Visual rules:
-
-- Outer wrapper: a vertically-stacked column with generous gap. Use the existing `page-header` class for the heading row, not bespoke `text-4xl ...` — this stays consistent with every other page header in the app.
-- Sub-copy: `<PageSubtitle>` (uses `page-subtitle` class, already muted).
-- Primary CTA: `<Link href="/" className="btn btn-primary btn-lg">Back to home</Link>`.
-- Destinations: a small grid (`grid grid-cols-1 sm:grid-cols-2 gap-3`) of `card-style` link cards or simple `btn btn-ghost` links — each row shows a label and a short hint ("Browse paints", "Explore the color wheel", etc.). Use `btn btn-ghost` to keep the implementation tiny; no new card variants needed.
-
-JSDoc: every export gets a one-line `/** ... */` per project convention.
-
-### Step 2 — Create the root `not-found.tsx` page
-
-File: `src/app/not-found.tsx`
-
-```tsx
-import { Main } from '@/components/main'
-import { createClient } from '@/lib/supabase/server'
-import { NotFoundContent } from '@/modules/marketing/components/not-found-content'
-import { pageMetadata } from '@/modules/seo/utils/page-metadata'
-
-export const metadata = pageMetadata({
-  title: 'Page not found',
-  description: 'We couldn’t find that page on Grimify. Try one of the popular destinations below.',
-  noindex: true,
-})
-
-export default async function NotFound() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  return (
-    <Main>
-      <NotFoundContent isAuthenticated={!!user} />
-    </Main>
-  )
-}
-```
-
-Notes:
-
-- **`async` + Supabase lookup is fine here.** Next.js renders `not-found.tsx` as a server component and supports async — same pattern as `src/app/page.tsx`.
-- **Do not pass `path` to `pageMetadata`.** The 404 page has no canonical URL.
-- **Always `noindex`.** A 404 page must not be indexable.
-- **Use `<Main>`, not a bespoke wrapper.** Keeps width and padding consistent with every other page; no layout shift between the surrounding chrome of the previous page and the 404.
-
-### Step 3 — Verify
-
-1. **Build/lint.** `npm run build` and `npm run lint` pass.
-2. **Unmatched route.** `npm run dev`, then visit `/this-route-does-not-exist`. Expect: Navbar at top, footer at bottom, the new 404 body in between.
-3. **HTTP status.** `curl -I http://localhost:3000/this-route-does-not-exist` → expect `HTTP/1.1 404 Not Found`. This is automatic for `not-found.tsx` — if the status is 200, the file is misnamed/misplaced.
-4. **`notFound()` trigger.** Visit `/paints/00000000-0000-0000-0000-000000000000` — a clearly-invalid UUID. The detail page calls `notFound()` (see `src/app/paints/[id]/page.tsx`), which should now render the new global 404.
-5. **Auth-aware CTAs.** Visit the 404 signed-out — the destinations list omits `/collection` and `/user/palettes`. Sign in and revisit — those two destinations now appear.
-6. **Dark mode.** Toggle the theme. No hardcoded colors should regress.
-7. **Mobile.** Resize to ~375px wide. Heading wraps cleanly; CTA buttons stack.
-8. **Metadata.** View page source — `<meta name="robots" content="noindex,nofollow">` must be present.
+1. **Build/lint.** `npm run build` and `npm run lint` pass clean.
+2. **Unmatched route.** `npm run dev`, visit `/this-route-does-not-exist` — Navbar/Footer chrome intact, 404 body between.
+3. **HTTP status.** `curl -I http://localhost:3000/this-route-does-not-exist` → `HTTP/1.1 404`. (Catches an accidental Pages-router `404.tsx` rename that would return 200.)
+4. **`notFound()` trigger.** Visit `/paints/00000000-0000-0000-0000-000000000000` — the detail page's `notFound()` should render this same global 404.
+5. **Auth-aware CTAs.** Signed-out omits `/collection` + `/user/palettes`; signed-in shows them.
+6. **Dark mode + mobile.** Toggle theme (no color regressions); resize to ~375px (heading wraps, CTA stacks).
+7. **Metadata.** Page source contains `<meta name="robots" content="noindex,nofollow">`.
 
 ### Order of operations
 
-1. Step 1 — `NotFoundContent` (the only component with real markup).
-2. Step 2 — `src/app/not-found.tsx` shim.
-3. Step 3 — verify in dev.
+1. Phase 1 — reconcile destinations / criterion wording.
+2. Phase 2 — verification pass.
 
-Both files are net-new; there's nothing to refactor.
+No refactor of the existing two files is expected beyond Phase 1's destination reconciliation.
 
 ## Risks & Considerations
 

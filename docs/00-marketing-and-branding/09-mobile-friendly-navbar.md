@@ -73,538 +73,81 @@ No new module under `src/modules/` is created. The navbar remains a global cross
 
 ## Implementation Plan
 
+> **Status: In Progress — substantially complete.** The `<Sheet>` primitive, the
+> `<NavbarMobileMenu>` drawer, the CSS, and the navbar wire-up are all built and
+> live. The drawer also diverged from the original side-sheet design into a
+> **full-screen** overlay. Only one acceptance criterion remains: auto-close on
+> route change (defensive, for programmatic navigation). The phases below
+> document what shipped and scope the remaining work.
+
 ### Module placement
 
-`<Navbar>` is a global app-shell component (`src/components/navbar.tsx`), not a domain module. The mobile menu is a sibling concern — a presentational variation of the same shell — so it lives next to the navbar at `src/components/navbar-mobile-menu.tsx`. Per `CLAUDE.md`, this matches the placement of the other cross-cutting primitives (`footer.tsx`, `breadcrumbs.tsx`, `logo.tsx`, `main.tsx`).
+`<Navbar>` is a global app-shell component (`src/components/navbar.tsx`), not a domain module. The mobile menu is a sibling concern — a presentational variation of the same shell — so it lives next to the navbar at `src/components/navbar-mobile-menu.tsx`, matching the placement of the other cross-cutting primitives (`footer.tsx`, `logo.tsx`). The `<Sheet>` primitive lives in `src/components/ui/` as a low-level Radix-based building block alongside `dialog.tsx`, `dropdown-menu.tsx`, and `popover.tsx`. No `src/modules/` module is created.
 
-The new `<Sheet>` primitive belongs in `src/components/ui/` because it is a low-level Radix-based building block in the same family as `dialog.tsx`, `dropdown-menu.tsx`, and `popover.tsx`. It is reusable across the app for any future side-panel UI (filter drawers, settings panels, etc.).
+### Already implemented
 
-### Step 1 — Sheet primitive (`src/components/ui/sheet.tsx` + `src/styles/sheet.css`)
+All of the following landed in earlier work on this branch and verify green:
 
-The sheet wraps `@radix-ui/react-dialog` (already a dependency — used by `dialog.tsx`). It mirrors the API of `dialog.tsx` but renders the content panel anchored to a screen edge instead of centered.
+- **`src/components/ui/sheet.tsx`** — Radix-Dialog-based sheet primitive. Exports `Sheet`, `SheetTrigger`, `SheetClose`, `SheetPortal` (internal), `SheetOverlay` (internal), `SheetContent` (with `side: 'left' | 'right'` default `'right'`, and `showCloseButton` default `true`), `SheetHeader`, `SheetBody`, `SheetFooter`, `SheetTitle`, `SheetDescription`. Inherits focus-trap, scroll-lock, overlay-click, and Escape-to-close from Radix. JSDoc on every export per `CLAUDE.md`. No barrel file — imports are direct.
+- **`src/styles/sheet.css`** — daisyUI-style classes with the project header convention: `.sheet-overlay`, `.sheet-content`, `.sheet-content-right`, `.sheet-content-left`, `.sheet-header`, `.sheet-body`, `.sheet-footer`. Class inventory and `/* --- */` section dividers present. Imported in `src/app/globals.css` via `@import '../styles/sheet.css' layer(components);`.
+- **`src/styles/navbar.css`** — adds the `.navbar-mobile-trigger` hamburger-button class (sized `h-9 w-9`, ghost-style hover, focus-visible ring).
+- **`src/components/navbar-mobile-menu.tsx`** — `'use client'` component. Hamburger `<SheetTrigger>` with `aria-label="Open navigation menu"` and a `<Menu>` lucide icon, opening a right-anchored `<SheetContent>`. Local `useState` controls the open state. Accepts a `Viewer` discriminated union prop (`{ kind: 'guest' }` | `{ kind: 'user', userId, displayName, avatarUrl, isAdmin }`) resolved server-side by the parent. Every link is wrapped in `<SheetClose asChild>` so taps auto-close the drawer.
+- **`src/components/navbar.tsx`** — server component resolves auth + admin, builds the `viewer` descriptor, gates the desktop `.navbar-center` / `.navbar-end` clusters with `hidden lg:flex`, and renders `<NavbarMobileMenu viewer={viewer} />` inside an `ml-auto … lg:hidden` wrapper.
 
-Create `src/styles/sheet.css` with the daisyUI-style header convention used by every other file in `src/styles/`:
+Drift from the original plan that is now the source of truth (do **not** revert these):
 
-```css
-/*
- * Sheet
- *
- * Side-anchored modal panel that slides in from a screen edge. Built on
- * Radix Dialog, so it inherits focus-trap, scroll-lock, overlay click,
- * and Escape-to-close behavior.
- *
- * Loosely modeled on the daisyUI Drawer component.
- * https://daisyui.com/components/drawer/
- *
- * Classes:
- *   Overlay:   .sheet-overlay              — Fixed translucent backdrop
- *   Content:   .sheet-content              — Base side panel (fixed, full viewport height)
- *   Sides:     .sheet-content-right        — Anchored to right edge, slides in from right
- *              .sheet-content-left         — Anchored to left edge, slides in from left
- *   Header:    .sheet-header               — Top row inside the panel (title + close button)
- *   Body:      .sheet-body                 — Scrollable content area
- *   Footer:    .sheet-footer               — Bottom row inside the panel
- */
+- **Full-screen drawer, not a 3/4 side-sheet.** `<SheetContent>` is rendered with `className="w-full max-w-none"`, overriding the `.sheet-content` width. The original `w-3/4 max-w-sm` design was superseded.
+- **Responsive link alignment.** Links use `w-full justify-center md:justify-start` — centered on phones, left-aligned at `md`+.
+- **Current nav set.** `Schemes` is commented out in both the desktop navbar and the drawer (route not shipped). `Recipes` was added to the desktop navbar. A `<NavbarSearchBar>` lives in the desktop `.navbar-center`.
+- **Drawer footer holds the auth + "Mine" section.** For signed-in users the footer shows: `Admin Dashboard` (admin-gated), the profile link (avatar + display name), a "Mine" label, then `My collection`, `My palettes`, `My recipes`, and a `signOut` form. Guests get `Sign In` / `Sign Up`. Sign-out uses `<Button>` from `@/components/ui/button` inside `<form action={signOut}>`.
+- **Admin label** is `Admin Dashboard` (matches the desktop cluster), not `Admin`.
 
-.sheet-overlay {
-  @apply fixed inset-0 z-50 bg-black/50 backdrop-blur-sm
-    data-[state=open]:animate-in data-[state=closed]:animate-out
-    data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0;
-}
+### Phase 1 — Auto-close on route change (remaining)
 
-/* --- */
+This is the only open acceptance criterion. Today the drawer auto-closes on link **taps** (via `<SheetClose>`), but a programmatic redirect (e.g. the `signOut` server action, or any child that navigates) leaves the `open` state stale. Close the drawer whenever the path changes.
 
-.sheet-content {
-  @apply fixed z-50 flex h-full w-3/4 max-w-sm flex-col gap-4
-    border-border bg-background p-6 shadow-lg
-    transition ease-in-out
-    data-[state=open]:animate-in data-[state=closed]:animate-out
-    data-[state=closed]:duration-200 data-[state=open]:duration-300;
-}
+**File:** `src/components/navbar-mobile-menu.tsx` (modify)
 
-.sheet-content-right {
-  @apply inset-y-0 right-0 border-l
-    data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right;
-}
+- Add `import { usePathname } from 'next/navigation'` and pull `useEffect` into the existing `react` import (currently only `useState`).
+- Read `const pathname = usePathname()`.
+- Add an effect that resets the open state on every path change:
 
-.sheet-content-left {
-  @apply inset-y-0 left-0 border-r
-    data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left;
-}
-
-/* --- */
-
-.sheet-header {
-  @apply flex items-center justify-between gap-4;
-}
-
-.sheet-body {
-  @apply flex flex-1 flex-col gap-2 overflow-y-auto;
-}
-
-.sheet-footer {
-  @apply mt-auto flex flex-col gap-2;
-}
-```
-
-Wire into `src/app/globals.css`:
-
-```css
-@import '../styles/sheet.css' layer(components);
-```
-
-Create `src/components/ui/sheet.tsx` mirroring `dialog.tsx`'s structure:
-
-```tsx
-'use client'
-
-import type { ComponentProps } from 'react'
-import { X } from 'lucide-react'
-import * as DialogPrimitive from '@radix-ui/react-dialog'
-
-import { cn } from '@/lib/utils'
-
-/** Root sheet provider. */
-function Sheet(props: ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="sheet" {...props} />
-}
-
-/** Element that opens the sheet. */
-function SheetTrigger(props: ComponentProps<typeof DialogPrimitive.Trigger>) {
-  return <DialogPrimitive.Trigger data-slot="sheet-trigger" {...props} />
-}
-
-/** Close button element. */
-function SheetClose(props: ComponentProps<typeof DialogPrimitive.Close>) {
-  return <DialogPrimitive.Close data-slot="sheet-close" {...props} />
-}
-
-function SheetPortal(props: ComponentProps<typeof DialogPrimitive.Portal>) {
-  return <DialogPrimitive.Portal data-slot="sheet-portal" {...props} />
-}
-
-function SheetOverlay({ className, ...props }: ComponentProps<typeof DialogPrimitive.Overlay>) {
-  return (
-    <DialogPrimitive.Overlay
-      data-slot="sheet-overlay"
-      className={cn('sheet-overlay', className)}
-      {...props}
-    />
-  )
-}
-
-/**
- * Sheet content panel — anchored to the left or right edge of the viewport.
- *
- * @param props.side - Which edge the sheet slides in from. Default `'right'`.
- * @param props.showCloseButton - Whether to render the default ✕ close button (default `true`).
- */
-function SheetContent({
-  className,
-  children,
-  side = 'right',
-  showCloseButton = true,
-  ...props
-}: ComponentProps<typeof DialogPrimitive.Content> & {
-  side?: 'left' | 'right'
-  showCloseButton?: boolean
-}) {
-  return (
-    <SheetPortal>
-      <SheetOverlay />
-      <DialogPrimitive.Content
-        data-slot="sheet-content"
-        className={cn('sheet-content', `sheet-content-${side}`, className)}
-        {...props}
-      >
-        {children}
-        {showCloseButton && (
-          <DialogPrimitive.Close
-            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background
-              transition-opacity hover:opacity-100 focus:outline-none focus:ring-2
-              focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
-            aria-label="Close"
-          >
-            <X className="size-4" />
-          </DialogPrimitive.Close>
-        )}
-      </DialogPrimitive.Content>
-    </SheetPortal>
-  )
-}
-
-function SheetHeader({ className, ...props }: ComponentProps<'div'>) {
-  return <div data-slot="sheet-header" className={cn('sheet-header', className)} {...props} />
-}
-
-function SheetBody({ className, ...props }: ComponentProps<'div'>) {
-  return <div data-slot="sheet-body" className={cn('sheet-body', className)} {...props} />
-}
-
-function SheetFooter({ className, ...props }: ComponentProps<'div'>) {
-  return <div data-slot="sheet-footer" className={cn('sheet-footer', className)} {...props} />
-}
-
-function SheetTitle({ className, ...props }: ComponentProps<typeof DialogPrimitive.Title>) {
-  return (
-    <DialogPrimitive.Title
-      data-slot="sheet-title"
-      className={cn('text-lg font-semibold', className)}
-      {...props}
-    />
-  )
-}
-
-function SheetDescription({
-  className,
-  ...props
-}: ComponentProps<typeof DialogPrimitive.Description>) {
-  return (
-    <DialogPrimitive.Description
-      data-slot="sheet-description"
-      className={cn('text-sm text-muted-foreground', className)}
-      {...props}
-    />
-  )
-}
-
-export {
-  Sheet,
-  SheetTrigger,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetBody,
-  SheetFooter,
-  SheetTitle,
-  SheetDescription,
-}
-```
-
-JSDoc per `CLAUDE.md` conventions on each named export.
-
-### Step 2 — `<NavbarMobileMenu>` client component
-
-Create `src/components/navbar-mobile-menu.tsx`. Because the parent `<Navbar>` is a server component that resolves the auth state, this child receives the resolved data via props rather than re-fetching it client-side:
-
-```tsx
-'use client'
-
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { usePathname } from 'next/navigation'
-import { Menu } from 'lucide-react'
-
-import { Logo } from '@/components/logo'
-import {
-  Sheet,
-  SheetBody,
-  SheetClose,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
-import { signOut } from '@/modules/auth/actions/sign-out'
-
-type Viewer =
-  | { kind: 'guest' }
-  | {
-      kind: 'user'
-      userId: string
-      displayName: string
-      avatarUrl: string | null
-      isAdmin: boolean
-    }
-
-/**
- * Mobile/tablet navbar menu — hamburger button + side-sheet drawer.
- *
- * Renders only below the `lg` breakpoint (the parent gates this with
- * `lg:hidden`). The drawer slides in from the right and contains the same
- * navigation links as the desktop navbar plus an auth section.
- *
- * Auto-closes on route change so a tap-then-navigate flow feels like one step.
- *
- * @param props.viewer - Either `{ kind: 'guest' }` or a fully resolved user
- *                       descriptor with display name, avatar, and admin flag.
- *                       The parent `<Navbar>` (a server component) computes this.
- */
-export function NavbarMobileMenu({ viewer }: { viewer: Viewer }) {
-  const [open, setOpen] = useState(false)
-  const pathname = usePathname()
-
-  // Defensive: programmatic navigation should also close the drawer.
-  // Wrapping link clicks in a SheetClose handles user clicks; this covers redirects.
+  ```tsx
+  // Defensive: a programmatic redirect (e.g. signOut) should also close the
+  // drawer. SheetClose handles user link taps; this covers navigation that
+  // does not originate from a tapped link.
   useEffect(() => {
     setOpen(false)
   }, [pathname])
+  ```
 
-  return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger
-        className="navbar-mobile-trigger"
-        aria-label="Open navigation menu"
-      >
-        <Menu className="size-5" aria-hidden />
-      </SheetTrigger>
-      <SheetContent side="right">
-        <SheetHeader>
-          <SheetTitle>
-            <Logo size="sm" />
-          </SheetTitle>
-        </SheetHeader>
-        <SheetBody>
-          <SheetClose asChild>
-            <Link href="/paints" className="btn btn-ghost justify-start">
-              Paints
-            </Link>
-          </SheetClose>
-          <SheetClose asChild>
-            <Link href="/brands" className="btn btn-ghost justify-start">
-              Brands
-            </Link>
-          </SheetClose>
-          <SheetClose asChild>
-            <Link href="/schemes" className="btn btn-ghost justify-start">
-              Schemes
-            </Link>
-          </SheetClose>
-          <SheetClose asChild>
-            <Link href="/palettes" className="btn btn-ghost justify-start">
-              Palettes
-            </Link>
-          </SheetClose>
-          {viewer.kind === 'user' && (
-            <>
-              <SheetClose asChild>
-                <Link href="/collection" className="btn btn-ghost justify-start">
-                  Collection
-                </Link>
-              </SheetClose>
-              <SheetClose asChild>
-                <Link href="/user/palettes" className="btn btn-ghost justify-start">
-                  My palettes
-                </Link>
-              </SheetClose>
-              {viewer.isAdmin && (
-                <SheetClose asChild>
-                  <Link href="/admin" className="btn btn-ghost justify-start">
-                    Admin
-                  </Link>
-                </SheetClose>
-              )}
-            </>
-          )}
-        </SheetBody>
-        <SheetFooter>
-          {viewer.kind === 'user' ? (
-            <>
-              <SheetClose asChild>
-                <Link
-                  href={`/users/${viewer.userId}`}
-                  className="btn btn-ghost justify-start"
-                >
-                  {viewer.avatarUrl ? (
-                    <Image
-                      src={viewer.avatarUrl}
-                      alt={viewer.displayName}
-                      width={24}
-                      height={24}
-                      className="size-6 rounded-full"
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : null}
-                  <span className="ml-2">{viewer.displayName}</span>
-                </Link>
-              </SheetClose>
-              <form action={signOut}>
-                <button type="submit" className="btn btn-ghost btn-destructive justify-start w-full">
-                  Sign out
-                </button>
-              </form>
-            </>
-          ) : (
-            <>
-              <SheetClose asChild>
-                <Link href="/sign-in" className="btn btn-ghost justify-start">
-                  Sign In
-                </Link>
-              </SheetClose>
-              <SheetClose asChild>
-                <Link href="/sign-up" className="btn btn-primary justify-start">
-                  Sign Up
-                </Link>
-              </SheetClose>
-            </>
-          )}
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
-  )
-}
-```
+- Keep the existing `<SheetClose>` wrappers — they remain the primary close path for taps; the effect is the defensive backstop the criterion calls for.
 
-Add `.navbar-mobile-trigger` to `src/styles/navbar.css`:
+After this lands, check the corresponding Acceptance Criteria box (the drawer auto-closes on route change).
 
-```css
-/* -------------------------------------------------------------------------
- * Mobile menu trigger
- * ----------------------------------------------------------------------- */
-.navbar-mobile-trigger {
-  @apply inline-flex h-9 w-9 items-center justify-center rounded-md
-    text-foreground transition-colors
-    hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
-}
-```
+### Phase 2 — Verify & finalize
 
-### Step 3 — Wire into `<Navbar>`
+Self-contained verification pass; no code beyond Phase 1.
 
-Modify `src/components/navbar.tsx` to:
-1. Continue resolving auth state and admin status server-side (no behavior change there).
-2. Build a `viewer` descriptor matching the `Viewer` discriminated union from Step 2.
-3. Render `<NavbarMobileMenu viewer={viewer} />` with `lg:hidden`.
-4. Gate the existing `.navbar-center` and `.navbar-end` clusters with `hidden lg:flex` so they only render on desktop.
-
-```tsx
-import Link from 'next/link'
-
-import { Logo } from '@/components/logo'
-import { NavbarMobileMenu } from '@/components/navbar-mobile-menu'
-import { createClient } from '@/lib/supabase/server'
-import { UserMenu } from '@/modules/user/components/user-menu'
-import { getUserRoles } from '@/modules/user/utils/roles'
-
-/**
- * Top-level navigation bar (server component).
- *
- * Above the `lg` breakpoint, renders the brand link, center navigation
- * cluster, and auth-state-dependent right cluster (sign-in/up for guests,
- * avatar dropdown for authenticated users).
- *
- * Below `lg`, renders the brand link plus a hamburger trigger that opens
- * a side-sheet drawer containing every navigation link and the auth section.
- */
-export async function Navbar() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  let displayName: string | null = null
-  let avatarUrl: string | null = null
-  let isAdmin = false
-
-  if (user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('display_name, avatar_url')
-      .eq('id', user.id)
-      .single()
-
-    displayName = profile?.display_name ?? null
-    avatarUrl = profile?.avatar_url ?? null
-
-    const roles = await getUserRoles(user.id)
-    isAdmin = roles.includes('admin')
-  }
-
-  const viewer =
-    user && displayName
-      ? ({
-          kind: 'user' as const,
-          userId: user.id,
-          displayName,
-          avatarUrl,
-          isAdmin,
-        })
-      : ({ kind: 'guest' as const })
-
-  return (
-    <nav className="navbar sticky top-0 z-50 gap-2 bg-background">
-      <div className="navbar-start gap-2">
-        <Link href="/" className="navbar-brand inline-flex items-center" aria-label="Grimify home">
-          <Logo size="md" />
-        </Link>
-      </div>
-      <div className="navbar-center hidden grow justify-center align-center gap-2 lg:flex">
-        <Link href="/paints" className="btn btn-ghost btn-sm">
-          Paints
-        </Link>
-        <Link href="/brands" className="btn btn-ghost btn-sm">
-          Brands
-        </Link>
-        <Link href="/schemes" className="btn btn-ghost btn-sm">
-          Schemes
-        </Link>
-        <Link href="/palettes" className="btn btn-ghost btn-sm">
-          Palettes
-        </Link>
-        {user && (
-          <Link href="/collection" className="btn btn-ghost btn-sm">
-            Collection
-          </Link>
-        )}
-        {user && (
-          <Link href="/user/palettes" className="btn btn-ghost btn-sm">
-            My palettes
-          </Link>
-        )}
-      </div>
-      <div className="navbar-end hidden gap-2 lg:flex">
-        {isAdmin && (
-          <Link href="/admin" className="btn btn-ghost btn-sm">
-            Admin
-          </Link>
-        )}
-        {user && displayName ? (
-          <UserMenu userId={user.id} displayName={displayName} avatarUrl={avatarUrl} />
-        ) : (
-          <>
-            <Link href="/sign-in" className="btn btn-ghost btn-sm">
-              Sign In
-            </Link>
-            <Link href="/sign-up" className="btn btn-primary btn-sm">
-              Sign Up
-            </Link>
-          </>
-        )}
-      </div>
-      <div className="ml-auto flex items-center lg:hidden">
-        <NavbarMobileMenu viewer={viewer} />
-      </div>
-    </nav>
-  )
-}
-```
-
-The `ml-auto` on the mobile-only wrapper pushes the hamburger to the right edge once `.navbar-center` and `.navbar-end` are hidden — they no longer occupy flex space below `lg`.
-
-### Step 4 — Verify
-
-1. `npm run build` and `npm run lint` pass with no errors.
-2. `npm run dev`. Use Chrome devtools' device toolbar to walk through these widths and confirm the layout transitions cleanly:
-   - 320 (iPhone SE) — hamburger only on right
-   - 768 (iPad portrait) — still hamburger
-   - 1023 — still hamburger (one px below `lg`)
-   - 1024 — desktop nav appears (the breakpoint flip)
-   - 1280 — full desktop nav, no change vs. today
-3. With the drawer open, tab through every focusable element — focus stays inside the drawer; Shift+Tab from the first wraps to the last; Escape closes; focus returns to the hamburger trigger.
-4. Tap a link inside the drawer — the drawer closes and the new route renders.
-5. Sign in and re-test: the drawer footer shows the user's avatar/name and a "Sign out" form button. The "Collection" and "My palettes" links appear in the body. If admin, "Admin" appears.
-6. Sign out and re-test: the drawer footer shows "Sign In" and "Sign Up" buttons; auth-only links are absent.
-7. View source on `/` at desktop width and confirm the rendered DOM exactly matches the pre-feature output for the existing center/end clusters (no regression to authenticated flows).
+1. `npm run build` and `npm run lint` — must pass clean.
+2. `npm run dev`, then exercise via the Chrome devtools device toolbar:
+   - 320 / 768 / 1023 px — hamburger only on the right.
+   - 1024 / 1280 px — full desktop nav, no regression vs. today.
+3. Open the drawer and confirm: Tab is trapped inside; Escape closes; focus returns to the hamburger; the ✕ close button works.
+4. Tap a link — drawer closes and the route renders.
+5. Trigger a programmatic redirect: signed in, open the drawer, submit **Sign out**. After the redirect the drawer must be closed (Phase 1 backstop) — confirm no lingering overlay.
+6. Auth-state matrix:
+   - Guest — footer shows `Sign In` / `Sign Up`; no `Mine` section.
+   - Signed-in non-admin — profile row, `My collection` / `My palettes` / `My recipes`, `Sign out`; no `Admin Dashboard`.
+   - Signed-in admin — same plus `Admin Dashboard`.
+7. Desktop DOM (`≥ lg`) unchanged vs. pre-feature for the existing center/end clusters.
 
 ### Order of operations
 
-1. Step 1 (Sheet primitive + CSS) — must land first; the navbar mobile menu depends on it.
-2. Step 2 (`<NavbarMobileMenu>`) — second; can be staged independently because it's not yet imported anywhere.
-3. Step 3 (Navbar wire-up) — third; this is the user-visible change. Until this commits, the mobile menu is dormant.
-4. Step 4 — verification across viewports and auth states.
+1. Phase 1 — single edit to `navbar-mobile-menu.tsx`; ships green on its own.
+2. Phase 2 — verification only.
 
-Each step is its own commit so the diff stays reviewable.
+One commit for Phase 1; the diff is small and self-contained.
 
 ## Risks & Considerations
 

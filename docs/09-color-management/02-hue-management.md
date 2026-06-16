@@ -28,140 +28,64 @@ Provide an admin interface for managing the Munsell hue hierarchy (parent hues a
 
 ## Implementation Plan
 
-### Step 1: Create hue server actions
+The hue admin module already exists under `src/modules/admin/` (alongside the brand/paint/product-line admin features) and the public-facing hue domain lives in `src/modules/hues/`. Most of this feature is built and shipping green; the single outstanding piece is the **"add paints to a hue"** flow (Acceptance Criterion: _Paints can be added to a hue from the hue edit page_).
 
-Create `src/modules/admin/actions/hue-actions.ts`:
+### Already Implemented
 
-- `createHue(prevState, formData)` — Insert a new hue (parent or child based on `parent_id` field)
-- `updateHue(prevState, formData)` — Update hue name, slug, hex_code, sort_order
-- `deleteHue(prevState, formData)` — Delete hue by ID (DB cascades: child hues deleted, paint hue_id set to NULL)
-- `removePaintHueAssociation(prevState, formData)` — Set `hue_id = NULL` on a single paint
-- `bulkRemovePaintHueAssociations(prevState, formData)` — Set `hue_id = NULL` on multiple paints by IDs
-- `addPaintsToHue(prevState, formData)` — Set `hue_id` on selected paints to the given hue ID
+The following are complete and verified against the codebase.
 
-Each action validates input, performs the DB operation via Supabase client, handles errors, and calls `revalidatePath`.
+**Server actions** — `src/modules/admin/actions/hue-actions.ts`
+- `createHue` — inserts a parent or child hue (branches on `parent_id`), auto-derives slug via `toSlug`, maps Postgres `23505` to a duplicate-slug field error, revalidates `/admin/hues`, and redirects to the new hue.
+- `updateHue` — updates `name`, `slug`, `hex_code`, `sort_order`; same duplicate-slug handling; revalidates the list and detail paths.
+- `deleteHue` — deletes the row and relies on the DB (`ON DELETE CASCADE` for children, `ON DELETE SET NULL` for paints); redirects to `/admin/hues`.
+- `removePaintHueAssociation` — clears `hue_id` on one paint; revalidates the referring hue detail page.
+- `bulkRemovePaintHueAssociations` — clears `hue_id` for a comma-separated `paint_ids` set via `.in('id', …)`; returns `removed_count`.
 
-#### Affected Files
+**Types** — `src/modules/admin/types/`
+- `hue-form-state.ts` (`HueFormState`) and `paint-hue-action-state.ts` (`PaintHueActionState`) exist as specified.
 
-| File | Changes |
-|------|---------|
-| `src/modules/admin/actions/hue-actions.ts` | **New** — Hue CRUD and paint-hue association server actions |
+**Components** — `src/modules/admin/components/`
+- `hue-form.tsx` — create/edit form with hex swatch preview, slug auto-derivation, parent-only `sort_order`, hidden `parent_id`.
+- `hue-paint-list.tsx` — checkbox table of associated paints with select-all, per-row remove, and bulk "Remove Selected" via `useActionState` over the two removal actions.
+- `delete-hue-button.tsx` — confirmation control surfacing child-hue and paint-association impact counts.
+- `hue-selector.tsx` — dependent parent/child hue dropdowns used by the **paint** form (not part of the add-to-hue flow).
 
-### Step 2: Create hue form state types
+**Pages** — `src/app/admin/hues/`
+- `page.tsx` — parent-hue table fed by `getParentHuesWithCounts()` (swatch, name, slug, `child_count`, `paint_count`).
+- `[id]/page.tsx` — detail/edit page: edit form, child-hue table (parent only) with "Add Child Hue" link, aggregated associated-paints list (parent aggregates across children via `getPaintsByHueIds`), and a danger zone.
+- `new/page.tsx` — create page honoring an optional `parent_id` query param.
 
-Create `src/modules/admin/types/hue-form-state.ts`:
+**Services**
+- `src/modules/hues/services/hue-service.server.ts` — `getHueById`, `getChildHues`, `getParentHuesWithCounts` (counts queries already exist; the originally-planned per-hue count helpers were unnecessary).
+- `src/modules/paints/services/paint-service.server.ts` — `getPaintsByHueIds` powers the associated-paints view.
 
-```typescript
-export type HueFormState = {
-  errors?: {
-    name?: string
-    slug?: string
-    hex_code?: string
-    sort_order?: string
-  }
-  error?: string
-  success?: boolean
-} | null
-```
+### Remaining Work
 
-Create `src/modules/admin/types/paint-hue-action-state.ts` for association actions:
+#### Phase 1 — "Add paints to a hue" flow (only outstanding AC)
 
-```typescript
-export type PaintHueActionState = {
-  error?: string
-  success?: boolean
-  removed_count?: number
-} | null
-```
+This phase is self-contained and ships green types/lint on its own.
 
-#### Affected Files
+**`services/` — `src/modules/paints/services/paint-service.server.ts`** (Modify)
+- Add `getPaintsWithoutHue({ query, limit, offset })` returning `{ paints, count }` filtered to `hue_id IS NULL`, with an optional case-insensitive name search (`ilike`). This is the candidate pool for assignment and keeps the picker scoped to unassigned paints. Reuse the existing select shape used by `getPaintsByHueIds` so the picker and association list render identical paint rows. Add JSDoc.
 
-| File | Changes |
-|------|---------|
-| `src/modules/admin/types/hue-form-state.ts` | **New** — Hue form state type |
-| `src/modules/admin/types/paint-hue-action-state.ts` | **New** — Paint-hue association action state type |
+**`actions/` — `src/modules/admin/actions/hue-actions.ts`** (Modify)
+- Add `addPaintsToHue(prevState, formData)`: read `hue_id` and comma-separated `paint_ids`, validate non-empty selection, `UPDATE paints SET hue_id = <hue_id> WHERE id IN (…)`, return `PaintHueActionState` with `success`/`removed_count` (reuse the existing state type, or rename its `removed_count` usage to a generic `affected_count` only if it does not break `hue-paint-list.tsx`). Revalidate `/admin/hues/<hue_id>`. Add JSDoc covering side effects.
+- For a child hue, the target `hue_id` is the hue itself. For a parent hue, decide the assignment target: either disallow direct assignment to a parent (assign only to child hues) or assign the parent `hue_id` directly. Match whatever the data model intends — confirm against how `paints.hue_id` references parent vs. child hues in `createPaint`/`updatePaint` (which set `hue_id` to the child when present, else the parent).
 
-### Step 3: Create hue form components
+**`components/` — `src/modules/admin/components/add-paints-to-hue.tsx`** (New)
+- Client component: a search input (debounced) over unassigned paints, results rendered as a checkbox list with swatch/name/brand, an "Add Selected to Hue" button, and `useActionState(addPaintsToHue, null)`.
+- Reuse the existing `useAdminPaintSearch` hook pattern (`src/modules/admin/hooks/use-admin-paint-search.ts`) for debounced server-driven search; pass a search server action scoped to unassigned paints. Submit the selected IDs as a comma-separated `paint_ids` hidden field plus the `hue_id`. Follow form conventions (named imports, `import type`, `useActionState` from `react`, swatch styling via existing utility classes). Add JSDoc with `@param` for each prop.
+- If the search needs a server action wrapper around `getPaintsWithoutHue`, add it as `src/modules/admin/actions/search-unassigned-paints.ts` (one action per file) returning `{ paints, count }` to satisfy the hook's `serverAction` contract.
 
-**`src/modules/admin/components/hue-form.tsx`** — Client component for creating/editing a hue:
-- Fields: name, slug (auto-derived), hex_code (with color picker/swatch preview), sort_order (for parent hues only)
-- `parent_id` passed as hidden field when creating a child hue
-- Slug auto-generation from name
+**`app/` — `src/app/admin/hues/[id]/page.tsx`** (Modify)
+- Render `<AddPaintsToHue hueId={hue.id} … />` in (or just above) the "Associated Paints" card so admins can assign paints from the edit page. Keep the page thin — pass only the data the component needs.
 
-**`src/modules/admin/components/hue-paint-list.tsx`** — Client component displaying paints associated with a hue:
-- Table with columns: checkbox, color swatch, name, brand, paint type
-- Select all / deselect all
-- "Remove Selected" bulk action button
-- Individual "Remove" action per row
-- Uses `useActionState` for removal actions
-
-**`src/modules/admin/components/add-paints-to-hue.tsx`** — Client component for adding paints to a hue:
-- Search input to find paints by name
-- Displays search results with checkboxes
-- "Add Selected to Hue" button
-- Filters out paints already associated with this hue
-
-**`src/modules/admin/components/delete-hue-button.tsx`** — Client component with confirmation dialog:
-- Shows count of child hues (if parent) and associated paints that will be affected
-- Requires confirmation before deletion
-
-#### Affected Files
-
-| File | Changes |
-|------|---------|
-| `src/modules/admin/components/hue-form.tsx` | **New** — Hue create/edit form |
-| `src/modules/admin/components/hue-paint-list.tsx` | **New** — Paint-hue association management list |
-| `src/modules/admin/components/add-paints-to-hue.tsx` | **New** — Add paints to hue component |
-| `src/modules/admin/components/delete-hue-button.tsx` | **New** — Delete hue with confirmation |
-
-### Step 4: Create hue admin pages
-
-**`src/app/admin/hues/page.tsx`** — Server component:
-- Fetches all parent hues using `getHues()` from hue service
-- For each parent hue, fetches child count and associated paint count
-- Renders a table with columns: Swatch, Name, Slug, Child Hues, Paints, Actions
-- "Create Hue" button
-
-**`src/app/admin/hues/[id]/page.tsx`** — Server component:
-- Fetches the hue by ID
-- If parent hue: shows details, child sub-hues list, and aggregated associated paints
-- If child hue: shows details and directly associated paints
-- Renders the hue edit form, child hue management (if parent), and paint association management
-
-**`src/app/admin/hues/new/page.tsx`** — Server component:
-- Renders the hue form in create mode
-- Optional `parent_id` query param for creating child hues
-
-#### Affected Files
-
-| File | Changes |
-|------|---------|
-| `src/app/admin/hues/page.tsx` | **New** — Hue list page |
-| `src/app/admin/hues/[id]/page.tsx` | **New** — Hue detail/edit page with paint associations |
-| `src/app/admin/hues/new/page.tsx` | **New** — Create hue page |
-
-### Step 5: Extend hue and paint services
-
-Add methods for admin queries:
-
-**Hue service additions:**
-- `getHueWithChildCount(id)` — Hue with count of children
-- `getHueWithPaintCount(id)` — Hue with count of associated paints
-
-**Paint service additions:**
-- `getPaintsWithoutHue(options)` — Paints where `hue_id IS NULL` (useful for the "add paints to hue" flow)
-
-#### Affected Files
-
-| File | Changes |
-|------|---------|
-| `src/modules/hues/services/hue-service.ts` | **Modify** — Add admin query methods |
-| `src/modules/paints/services/paint-service.ts` | **Modify** — Add `getPaintsWithoutHue` method |
+After this phase: flip Acceptance Criterion _"Paints can be added to a hue from the hue edit page"_ to checked, and confirm `npm run build` and `npm run lint` pass.
 
 ### Risks & Considerations
 
-- **Cascade on parent hue deletion** — Deleting a parent hue cascades to delete all child hues (`ON DELETE CASCADE`), and each child hue's deletion sets `hue_id = NULL` on associated paints (`ON DELETE SET NULL`). The confirmation dialog must communicate the full impact.
-- **Bulk operations performance** — Removing hue associations from many paints at once requires an `UPDATE paints SET hue_id = NULL WHERE id IN (...)` query. For large selections, this should be efficient with the existing indexes.
-- **Paint search for "add to hue"** — The search component needs to be responsive. Consider debouncing the search input and limiting results.
-- **Hex color input** — The hex_code field should support both manual entry and a color picker. Use an HTML `<input type="color">` alongside the text input for convenience.
-- **Sort order** — Parent hues have a `sort_order` for display ordering. The admin should be able to change sort order. Child hues inherit their parent's sort order context.
+- **Parent vs. child assignment target** — `paints.hue_id` is set to the child hue when one exists, else the parent (per `createPaint`/`updatePaint`). The add-to-hue flow must mirror this so assignments are queryable the same way the rest of the app expects. Resolve this before building the action.
+- **Candidate scoping** — Limiting the picker to `hue_id IS NULL` avoids silently re-homing a paint already assigned elsewhere. If reassignment from another hue is desired later, it should be an explicit, separate affordance.
+- **State type reuse** — `PaintHueActionState.removed_count` is consumed by `hue-paint-list.tsx`. Reuse the type for `addPaintsToHue` as-is rather than renaming the field, to avoid touching the working removal UI.
+- **Search responsiveness** — Reuse the existing debounced `useAdminPaintSearch` hook and cap result counts rather than introducing a new search mechanism.
+- **Hex color input** — `hue-form.tsx` already provides manual hex entry with a swatch preview; no change needed here.

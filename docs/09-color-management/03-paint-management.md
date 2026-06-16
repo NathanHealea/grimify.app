@@ -29,183 +29,64 @@ Provide an admin interface for managing individual paints. Administrators can cr
 
 ## Implementation Plan
 
-### Step 1: Create paint server actions
+**Target module:** `src/modules/admin` (paint CRUD), with thin route pages under `src/app/admin/paints/`. Reads brand/product-line data from `src/modules/brands` and hue data from `src/modules/hues` via their server services. Shared color math lives in `src/lib/color-utils.ts`.
 
-Create `src/modules/admin/actions/paint-actions.ts`:
+The core CRUD flow is **already built and type-clean**. The remaining work is small: completing the list-page columns (AC #1, the only unchecked criterion) and adding the cascade warning to the delete dialog. Phases below are ordered so each ships green types and lint.
 
-- `createPaint(prevState, formData)` — Insert a new paint with all fields computed:
-  - Validate required fields (name, hex, product_line_id)
-  - Compute RGB from hex
-  - Compute HSL from RGB
-  - Auto-generate slug from name
-  - Enforce hue constraint: if `child_hue_id` is set, verify it belongs to the selected parent hue
-  - Insert into `paints` table
-  - Redirect to edit page on success
+### Already Implemented (Done)
 
-- `updatePaint(prevState, formData)` — Update a paint:
-  - Recompute RGB/HSL if hex changed
-  - Enforce hue constraint
-  - Update the `paints` row
+| Area | File | Notes |
+|------|------|-------|
+| Color utilities | `src/lib/color-utils.ts` | `hexToRgb`, `rgbToHsl` extracted and shared. |
+| Slug helper | `src/modules/admin/utils/to-slug.ts` | Used by create/update actions. |
+| Server actions | `src/modules/admin/actions/paint-actions.ts` | `createPaint`, `updatePaint`, `deletePaint`. Validate required fields (name, hex 6-digit, product_line_id, brand_paint_id), compute RGB/HSL, auto-slug, enforce the child-belongs-to-parent hue constraint server-side, derive `hue_id` (child when both selected, else parent), revalidate `/admin/paints`, redirect/return success. Duplicate-slug → field error. |
+| Form state type | `src/modules/admin/types/paint-form-state.ts` | `PaintFormState` with field-level + form-level errors. |
+| Paint form | `src/modules/admin/components/paint-form.tsx` | `useActionState`, brand → product-line cascade (preloaded), live hex swatch + native color picker + computed RGB/HSL readout, auto-slug with manual-override, metallic/discontinued flags, paint type, embeds `HueSelector`. |
+| Hue selector | `src/modules/admin/components/hue-selector.tsx` | Two-step parent → child dropdowns, child disabled until parent chosen, parent change clears non-matching child, hidden `parent_hue_id` / `child_hue_id` inputs, swatch previews. |
+| Delete button | `src/modules/admin/components/delete-paint-button.tsx` | Native `<dialog>` confirmation bound to `deletePaint`. |
+| New page | `src/app/admin/paints/new/page.tsx` | Loads brands-with-product-lines + parent hues + child-hue map; renders form in create mode. |
+| Edit page | `src/app/admin/paints/[id]/page.tsx` | Loads paint by id with relations, dropdown data, renders form in edit mode + Danger Zone delete card. |
+| List page (partial) | `src/app/admin/paints/page.tsx` | Search-by-name, brand filter, pagination (50/page), swatch/name/brand/type columns, "New Paint" link. |
+| Brand service | `src/modules/brands/services/brand-service.ts` | `getAllBrandsWithProductLines()` and `getAllBrands()` already present. |
+| Paint search | `src/modules/paints/services/paint-service.ts` | `searchPaints({ search, brandId, limit, offset })` returns paints + count; selects `product_lines!inner(brands(name))`. |
 
-- `deletePaint(prevState, formData)` — Delete a paint by ID (cascades paint_references)
+### Phase 1 — Complete the paints list columns (AC #1)
 
-Each action follows the `useActionState` pattern with field-level errors.
+The list page exists but does not yet satisfy AC #1: it has **no Hue column**, and its "Product Line" column actually renders `paint.slug` because `searchPaints` does not select the product-line name or the hue relation.
 
-#### Color Computation Logic
+- **`src/modules/paints/services/paint-service.ts`** (`services/`) — Widen the `searchPaints` data-query select to include the product-line name and the assigned hue:
+  - Change the select from `*, product_lines!inner(brands(name))` to also pull `product_lines(name)` and `hues(name, hex_code)` (keep the `!inner` join when `brandId` filtering is active so the brand filter still works).
+  - Extend the row type returned by `searchPaints` (or the existing `PaintWithRelations`/list-row type in `types/`) so `product_lines.name` and the `hues` relation are typed — one type per file, JSDoc each field including the `null` hue state.
+- **`src/app/admin/paints/page.tsx`** (route page, thin) — Update the table to match AC #1 columns exactly: Swatch, Name, Brand, **Product Line** (render `product_lines.name`, not `slug`), **Hue** (render hue name + small swatch, or "—" when unassigned), Type, Actions. No business logic in the page — only read from the widened service result.
 
-```typescript
-// Hex → RGB
-function hexToRgb(hex: string): { r: number; g: number; b: number }
+Ships green: type change + presentational update only.
 
-// RGB → HSL
-function rgbToHsl(r: number, g: number, b: number): { h: number; s: number; l: number }
-```
+### Phase 2 — Cascade warning in delete confirmation (AC #11 wording)
 
-These utilities already exist in `scripts/generate-seed.ts`. Extract them into a shared utility at `src/lib/color-utils.ts` for reuse in both the seed generator and server actions.
+AC #11 requires the delete confirmation to **warn about cascade deletion of paint references**. The current dialog only says "This action cannot be undone."
 
-#### Hue Constraint Validation
+- **`src/modules/admin/components/delete-paint-button.tsx`** (`components/`) — Add explicit copy to the dialog body stating that deleting the paint will also remove all of its paint references (recipe/collection/comparison references) via `ON DELETE CASCADE`, and that this cannot be undone. Pure copy/markup change; no action or type changes.
 
-```typescript
-// Server-side validation in paint actions:
-if (childHueId) {
-  // Fetch the child hue to verify its parent_id
-  const childHue = await supabase
-    .from('hues')
-    .select('parent_id')
-    .eq('id', childHueId)
-    .single()
+Ships green: presentational only.
 
-  if (!childHue.data) {
-    return { errors: { hue: 'Invalid child hue' } }
-  }
+### Phase 3 — Verification
 
-  // The selected parent hue must match the child's actual parent
-  if (childHue.data.parent_id !== parentHueId) {
-    return { errors: { hue: 'Child hue does not belong to the selected parent hue' } }
-  }
-}
-```
+- Run `npm run build` and `npm run lint`; resolve any issues (AC: build + lint pass).
+- Manually exercise: create → edit (hex recompute, hue constraint clearing) → delete (cascade warning) and confirm the list page shows Brand, Product Line, and Hue correctly with search + brand filter + pagination.
 
-#### Affected Files
+#### Affected Files (remaining work)
 
-| File | Changes |
-|------|---------|
-| `src/modules/admin/actions/paint-actions.ts` | **New** — Paint CRUD server actions |
-| `src/lib/color-utils.ts` | **New** — Shared hex/RGB/HSL conversion utilities |
-
-### Step 2: Create paint form state types
-
-Create `src/modules/admin/types/paint-form-state.ts`:
-
-```typescript
-export type PaintFormState = {
-  errors?: {
-    name?: string
-    slug?: string
-    hex?: string
-    brand_id?: string
-    product_line_id?: string
-    hue?: string
-    brand_paint_id?: string
-  }
-  error?: string
-  success?: boolean
-} | null
-```
-
-#### Affected Files
-
-| File | Changes |
-|------|---------|
-| `src/modules/admin/types/paint-form-state.ts` | **New** — Paint form state type |
-
-### Step 3: Create paint form components
-
-**`src/modules/admin/components/paint-form.tsx`** — Client component for creating/editing a paint:
-- Fields:
-  - Name (text, required)
-  - Slug (text, auto-derived from name)
-  - Brand (select dropdown, required) — populated from brands list
-  - Product Line (select dropdown, required) — filtered by selected brand, dynamically updated
-  - Brand Paint ID (text, required) — the brand's internal paint identifier
-  - Hex (text with color preview swatch, required) — on change, computes and displays RGB and HSL
-  - Is Metallic (checkbox)
-  - Is Discontinued (checkbox)
-  - Paint Type (text)
-  - Parent Hue (select dropdown, optional) — populated from parent hues
-  - Child Sub-Hue (select dropdown, optional) — populated from child hues of the selected parent; disabled when no parent is selected
-- Color preview: live swatch that updates as hex changes
-- RGB/HSL display: read-only computed values shown below hex input
-- `useActionState` bound to `createPaint` or `updatePaint`
-
-**`src/modules/admin/components/hue-selector.tsx`** — Client component for the two-step hue selection:
-- Parent hue dropdown (all 11 parent hues + empty option)
-- Child sub-hue dropdown (children of selected parent + empty option)
-- Changing parent clears child if the current child doesn't belong to the new parent
-- Removing parent clears child
-- Hidden inputs for `parent_hue_id` and `child_hue_id` (or `hue_id` pointing to the final selection)
-- Shows color swatch previews next to hue options
-
-**`src/modules/admin/components/delete-paint-button.tsx`** — Client component with confirmation:
-- Warns about cascading deletion of paint references
-
-#### Affected Files
-
-| File | Changes |
-|------|---------|
-| `src/modules/admin/components/paint-form.tsx` | **New** — Paint create/edit form |
-| `src/modules/admin/components/hue-selector.tsx` | **New** — Two-step hue selection with constraints |
-| `src/modules/admin/components/delete-paint-button.tsx` | **New** — Delete paint with confirmation |
-
-### Step 4: Create paint admin pages
-
-**`src/app/admin/paints/page.tsx`** — Server component:
-- Fetches paints with pagination using `getAllPaints()` or `searchPaints()`
-- Supports search query param and brand filter query param
-- Renders a table with columns: Swatch, Name, Brand, Product Line, Hue, Type, Actions
-- "Create Paint" button linking to `/admin/paints/new`
-- Pagination controls
-
-**`src/app/admin/paints/new/page.tsx`** — Server component:
-- Fetches brands list and hues list for dropdowns
-- Renders the paint form in create mode
-
-**`src/app/admin/paints/[id]/page.tsx`** — Server component:
-- Fetches the paint by ID with relations
-- Fetches brands list and hues list for dropdowns
-- Renders the paint form in edit mode with current values
-- Displays paint references below the form (read-only for now)
-
-#### Affected Files
-
-| File | Changes |
-|------|---------|
-| `src/app/admin/paints/page.tsx` | **New** — Paint list page with search and filters |
-| `src/app/admin/paints/new/page.tsx` | **New** — Create paint page |
-| `src/app/admin/paints/[id]/page.tsx` | **New** — Edit paint page |
-
-### Step 5: Create brand-product line dynamic loading
-
-The paint form needs to dynamically load product lines when the brand selection changes. Two approaches:
-
-**Option A: Client-side fetch** — Use the client paint service to fetch product lines when brand changes. This requires a new client-accessible endpoint or using the existing service.
-
-**Option B: Preload all** — Fetch all brands with their product lines server-side, pass as props, filter client-side.
-
-Prefer Option B for simplicity since the total number of brands (5) and product lines (~50) is small.
-
-#### Affected Files
-
-| File | Changes |
-|------|---------|
-| `src/modules/brands/services/brand-service.ts` | **Modify** — Add `getAllBrandsWithProductLines()` if not already available |
+| File | Phase | Changes |
+|------|-------|---------|
+| `src/modules/paints/services/paint-service.ts` | 1 | **Modify** — Widen `searchPaints` select to include product-line name + hue relation; update return type. |
+| `src/modules/paints/types/*` | 1 | **Modify/New** — Extend or add the list-row type for product-line name + hue. |
+| `src/app/admin/paints/page.tsx` | 1 | **Modify** — Render Product Line (name) and add Hue column per AC #1. |
+| `src/modules/admin/components/delete-paint-button.tsx` | 2 | **Modify** — Add cascade-deletion warning copy. |
 
 ### Risks & Considerations
 
-- **Hue constraint complexity** — The two-step hue selection (parent → child) adds UI complexity. The constraint that a child must belong to its parent is enforced both client-side (for UX) and server-side (for data integrity).
-- **Color computation accuracy** — The hex → RGB → HSL conversion must match what the seed generator uses. Extracting to a shared utility ensures consistency.
-- **Product line filtering** — The product line dropdown must update dynamically when the brand changes. Since the dataset is small, preloading all options is preferable to API calls.
-- **Paint list performance** — With 2,337+ paints, the list page needs pagination. The existing `getAllPaints()` method supports `limit` and `offset`.
-- **Hex validation** — The hex input must validate format (`#RRGGBB`). Consider allowing entry without the `#` prefix and normalizing automatically.
-- **Paint references on delete** — Deleting a paint cascades to `paint_references` (via `ON DELETE CASCADE`). The confirmation dialog should mention this.
-- **`hue_id` storage decision** — When both parent and child hue are selected, `hue_id` should point to the child sub-hue (more specific). When only a parent is selected, `hue_id` points to the parent hue. This matches the current seed generator behavior.
+- **Brand filter join** — `searchPaints` uses `product_lines!inner` only when `brandId` is set so the brand filter keeps working. When widening the select, preserve the conditional `!inner` vs. plain join so unfiltered queries still return paints whose product line happens to be absent from the inner-join set.
+- **Hue null state** — A paint's `hue_id` may be null, or point to a parent or child hue. The list Hue column must handle the null case ("—") and render whatever the joined `hues` row provides.
+- **`hue_id` storage decision** — When both parent and child hue are selected, `hue_id` points to the child sub-hue; when only a parent is selected, it points to the parent. This is already implemented in the actions and the edit form's `defaultParentHueId`/`defaultChildHueId` derivation; the list join must follow the same single `hue_id` reference.
+- **Hex validation** — Already enforced (`/^[0-9a-fA-F]{6}$/`, `#` stripped/normalized). No change needed.
+- **Paint list performance** — Pagination (50/page) is already in place via `searchPaints` `limit`/`offset`; widening the select adds two joined columns and should not materially affect performance.

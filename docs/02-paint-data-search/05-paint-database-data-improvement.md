@@ -44,152 +44,153 @@ Improve the quality and accuracy of paint data in the Grimify database. The curr
 
 ## Implementation Plan
 
-### Step 1: Establish reference data sources
+> This is ongoing data-quality work, not a one-shot code feature. The pipeline that
+> sources and applies color data is built and the bulk of the original 5-brand
+> corpus is corrected. What remains is (a) extending the pipeline to brands and
+> paints added since the first pass, (b) closing known coverage gaps, and (c) the
+> one unaddressed data dimension — discontinued status. Phases below are ordered so
+> each is self-contained and ends with a regenerated, verified seed.
 
-Identify and document the authoritative sources for each brand's paint hex values. The user will provide example sites and data. Potential sources include:
+### Data pipeline (built — reference)
 
-- **Citadel** — Games Workshop product pages, Citadel Colour app exports, community databases
-  - https://paintpad.app/paints/citadel-painting-system
-- **Army Painter** — The Army Painter website swatches, Fanatic paint range data
-  - https://paintpad.app/paints/the-army-painter-masterclass
-  - https://paintpad.app/paints/the-army-painter-speedpaint-2-0
-  - https://paintpad.app/paints/the-army-painter-warpaints
-  - https://paintpad.app/paints/the-army-painter-warpaints-air
-  - https://paintpad.app/paints/the-army-painter-warpaints-fanatic
-- **Vallejo** — Vallejo official color charts, acrylicosvallejo.com product pages
-  - https://paintpad.app/paints/vallejo-auxiliaries
-  - https://paintpad.app/paints/vallejo-game-air
-  - https://paintpad.app/paints/vallejo-game-color
-  - https://paintpad.app/paints/vallejo-hobby-spray-paint
-  - https://paintpad.app/paints/vallejo-liquid-gold
-  - https://paintpad.app/paints/vallejo-mecha-color
-  - https://paintpad.app/paints/vallejo-metal-color
-  - https://paintpad.app/paints/vallejo-model-air
-  - https://paintpad.app/paints/vallejo-model-color
-  - https://paintpad.app/paints/vallejo-model-wash
-  - https://paintpad.app/paints/vallejo-panzer-aces
-  - https://paintpad.app/paints/vallejo-surface-primer
-  - https://paintpad.app/paints/vallejo-the-shifters
-  - https://paintpad.app/paints/vallejo-xpress
-- **Green Stuff World** — greenstuffworld.com product listings
-  - https://paintpad.app/paints/green-stuff-world
-- **AK Interactive** — ak-interactive.com product catalog
-  - https://paintpad.app/paints/ak-interactive
-  - https://paintpad.app/paints/ak-interactive-3rd-gen-acrylics
-  - https://paintpad.app/paints/ak-interactive-acrylics
-  - https://paintpad.app/paints/ak-interactive-real-color
-  - https://paintpad.app/paints/amsterdam-acrylic-ink
+The end-to-end mechanism is implemented and reproducible from npm scripts:
 
-Create a reference document at `scripts/data/REFERENCES.md` listing the sources used for each brand's color data.
+| Stage | Mechanism | Artifact |
+|-------|-----------|----------|
+| Source paint hex per brand | PaintPad.app brand pages parsed, hex written back into JSON | `scripts/data/paints/*.json` |
+| Source ISCC-NBS sub-hue per paint | `scripts/fetch-paintpad-hues.ts` parses 29 by-colour pages | `scripts/data/paintpad-hue-assignments.json` |
+| Resolve paint → sub-hue overrides | `scripts/apply-paintpad-hue-overrides.ts` matches by brand+name, resolves multi-page conflicts by hex distance | `scripts/data/hue-overrides.json`, `scripts/data/paintpad-section-colors.json` |
+| Generate seed | `npm run db:seed:generate` (`scripts/generate-seed.ts`) computes `r/g/b`, `hue/saturation/lightness`, derives `is_metallic` from type, applies hue overrides (else `findClosestColor()`) | `supabase/seed.sql` |
+| Recompute live DB in place | `npm run db:paints:recalculate` (`--dry` to preview) re-derives color + `hue_id` for an already-seeded DB | `public.paints` rows |
+| Sourcing record | manually maintained | `scripts/data/REFERENCES.md` |
 
-#### Affected Files
+### Already done (original 5-brand pass)
 
-| File | Changes |
-|------|---------|
-| `scripts/data/REFERENCES.md` | New or updated — document all reference sources |
+- Hex sourced from PaintPad for Citadel (100%), Army Painter (99.8%), Vallejo (94%), AK Interactive (94%), Green Stuff World (75%) — overall ~95% of the original corpus.
+- `r/g/b` and `hue/saturation/lightness` recomputed from corrected hex in the generator (`hexToRgb` → `rgbToHsl`, rounded to 2dp).
+- Sub-hue (`hue_id`) sourced from PaintPad's ISCC-NBS by-colour pages; 2,193 paints in the original pass use PaintPad overrides, remainder fall back to `findClosestColor()`.
+- `COLOR_CATALOG` ISCC-NBS centroid hexes updated from PaintPad section swatches (99/121 sub-hues).
+- `is_metallic` derived from the paint type string in `generate-seed.ts`.
+- Metallic and translucent (wash/ink/contrast/speedpaint) hex conventions documented in `REFERENCES.md`.
+- Seed generator produces `supabase/seed.sql`; `npm run build` and `npm run lint` pass.
 
-#### HTML Parsing for paintpad.app
+### Known gaps in current data (drives remaining work)
 
-##### Paint Type (Section)
+1. **Scale75 is uncovered by the hue-override pipeline.** The brand was added after the
+   first pass — it is in `brands.json`, has `scripts/data/paints/scale75.json`, and is
+   seeded — but it is **absent from `PAINTPAD_BRAND_MAP` and the `brandFiles` map in
+   `apply-paintpad-hue-overrides.ts`**, absent from `REFERENCES.md`, and its
+   `brand_paint_id`s are not in `hue-overrides.json`. All ~548 Scale75 paints therefore
+   fall back to algorithmic `findClosestColor()` hue assignment, and their hex values are
+   unverified against any documented source.
+2. **Corpus grew beyond the documented 2,337.** The seed now contains **6 brands / 2,885 paints**
+   (Citadel 508, Army Painter 568, Vallejo 823, AK 650, GSW 122, Scale75 548). The paints added
+   since the original sourcing pass have not been re-run through hex verification, so
+   `REFERENCES.md` coverage figures are stale.
+3. **`is_discontinued` is unpopulated.** `generate-seed.ts` hardcodes `is_discontinued = false`
+   for every paint; the column and the discontinued UI (`discontinued-badge.tsx`,
+   `discontinued-service*.ts`) exist but no paint is ever flagged. This data dimension has
+   no source yet.
+4. **Residual unmatched paints from the original brands** (~118): Abteilung 502 oils (AK, 38),
+   Vallejo Game Color Ink/Wash naming mismatches (~12), newer Vallejo Xpress (~17+), newer GSW
+   acrylics (~31) — all retain original/estimated hex and algorithmic hue.
 
-Heading 2 Content contains paint type.
+### Phase 1 — Bring Scale75 into the hue-override pipeline
 
-```html
-<h2 class="paint-collection__paint_type___heading">...</h2>
-```
+Mechanism: data sourcing + override script. Self-contained; ends with regenerated seed.
 
-##### Visual Color Representing  
-
-`style="background: rgb(DDD,DDD,DDD)` can be parsed from
-
-```html
-<span class="paint-swatch__sample" style="background: rgb(74, 176, 106); color: rgb(74, 176, 106);"></span>
-```
-
-Value that can transformed to application Paint `r`, `g`, `b`, `hex` and `hue`, `saturation`, and `lightness` values.
-
-Metallic and some other paints use a variety of colors to as representation
-
-```html
-<span class="paint-swatch__sample" style="background: linear-gradient(90deg, rgb(70, 61, 34) 0%, rgb(125, 107, 61) 50%, rgb(228, 195, 112) 100%); color: rgb(70, 61, 34);"></span>
-```
-
-### Step 2: Update paint JSON data files
-
-For each brand, update the hex values in `scripts/data/paints/*.json`:
-
-1. Cross-reference each paint's current hex value against the reference sources
-2. Replace inaccurate hex values with sourced values
-3. For paints where no authoritative hex exists (e.g., discontinued, technical), document the decision in the JSON's `description` field or a separate notes file
-4. Validate hex format consistency (`#RRGGBB` uppercase)
-
-This is the most labor-intensive step and may be done brand-by-brand.
+1. Verify `scripts/data/paints/scale75.json` hex values against a documented source (PaintPad Scale75 pages where listed, else manufacturer charts); fix `#RRGGBB` uppercase consistency.
+2. Add Scale75's PaintPad brand-page slugs to the `COLOUR_SLUGS`/brand coverage in `fetch-paintpad-hues.ts` if not already captured, and re-fetch so Scale75 paints appear in `paintpad-hue-assignments.json` with brand attribution.
+3. Add Scale75 entries to `PAINTPAD_BRAND_MAP` and `brandFiles` in `apply-paintpad-hue-overrides.ts`, then regenerate `hue-overrides.json`.
+4. Regenerate seed and verify Scale75 paints now carry PaintPad sub-hue overrides instead of pure algorithmic assignment.
 
 #### Affected Files
 
 | File | Changes |
 |------|---------|
-| `scripts/data/paints/citadel.json` | Update hex values |
-| `scripts/data/paints/army-painter.json` | Update hex values |
-| `scripts/data/paints/vallejo.json` | Update hex values |
-| `scripts/data/paints/green-stuff-world.json` | Update hex values |
-| `scripts/data/paints/ak-interactive.json` | Update hex values |
+| `scripts/data/paints/scale75.json` | Verify/correct hex values |
+| `scripts/apply-paintpad-hue-overrides.ts` | Add Scale75 to `PAINTPAD_BRAND_MAP` and `brandFiles` |
+| `scripts/fetch-paintpad-hues.ts` | Ensure Scale75 brand attribution is captured |
+| `scripts/data/hue-overrides.json` | Regenerated to include Scale75 |
+| `scripts/data/REFERENCES.md` | Add Scale75 section + per-line sources |
 
-### Step 3: Verify and improve hue assignment algorithm
+### Phase 2 — Re-verify paints added since the original pass
 
-After hex corrections, re-evaluate the hue assignment quality:
+Mechanism: data audit + JSON hex updates. Reconciles the corpus against current source data.
 
-1. Run the seed generator to recompute all HSL values and hue assignments
-2. Spot-check a sample of paints per hue group to verify assignments make sense
-3. Identify systematic misclassifications (e.g., dark browns consistently landing in wrong hue group)
-4. If needed, adjust:
-   - `NEUTRAL_SATURATION_THRESHOLD` in `generate-seed.ts` (currently 15%)
-   - `HUE_ANGLE_RANGES` boundaries for better Munsell hue family mapping
-   - `COLOR_CATALOG` hex values for sub-hues to improve RGB distance matching
+1. Diff the current per-brand paint counts against the figures recorded in `REFERENCES.md` (now 6 brands / 2,885 paints) to identify paints added after the first sourcing run.
+2. Re-run hex sourcing for the brands whose counts grew (Citadel, Army Painter, Vallejo) and write corrected hex back into the JSON files.
+3. Re-run `fetch-paintpad-hues.ts` + `apply-paintpad-hue-overrides.ts` so the new paints get sub-hue overrides.
+4. Update `REFERENCES.md` coverage tables to the new totals and re-record the "data sourced" date.
 
 #### Affected Files
 
 | File | Changes |
 |------|---------|
-| `scripts/generate-seed.ts` | Potential tuning of thresholds and ranges |
+| `scripts/data/paints/*.json` | Hex updates for newly added paints |
+| `scripts/data/paintpad-hue-assignments.json` | Re-fetched |
+| `scripts/data/hue-overrides.json` | Regenerated |
+| `scripts/data/REFERENCES.md` | Updated coverage tables + date |
 
-### Step 4: Regenerate seed data and verify
+### Phase 3 — Populate the discontinued dimension
 
-1. Run `npm run db:seed:generate` to produce updated `supabase/seed.sql`
-2. Run `npm run db:reset` to apply migration + seed
-3. Visually verify a sample of paints in the UI (paint explorer, hue groups)
-4. Run `npm run build` and `npm run lint`
+Mechanism: new data source + generator change. The only data dimension with no current source.
 
-#### Affected Files
-
-| File | Changes |
-|------|---------|
-| `supabase/seed.sql` | Regenerated with corrected color data |
-
-### Step 5: Document data quality decisions
-
-Update documentation to capture:
-
-- Which paints have estimated vs. sourced hex values
-- How metallic/translucent paints were handled
-- Any manual hue assignment overrides
-- Known remaining data quality gaps
+1. Establish a discontinued-status source per brand (manufacturer "discontinued" listings, community trackers, or a manually curated `scripts/data/discontinued.json` keyed by brand `id` + paint `id`).
+2. Load that source in `generate-seed.ts` and replace the hardcoded `false` with the looked-up value when emitting the `is_discontinued` column.
+3. Mirror the same lookup in `recalculate-paint-colors.ts` if discontinued status should be patchable on a live DB without a full reset.
+4. Regenerate seed; verify the discontinued badge/listing UI now renders flagged paints.
 
 #### Affected Files
 
 | File | Changes |
 |------|---------|
-| `scripts/data/REFERENCES.md` | Updated with per-brand sourcing notes |
+| `scripts/data/discontinued.json` | New — curated discontinued status per paint |
+| `scripts/generate-seed.ts` | Source `is_discontinued` from the new file instead of hardcoding `false` |
+| `scripts/recalculate-paint-colors.ts` | Optionally apply discontinued status to a live DB |
+
+### Phase 4 — Close residual coverage gaps & tune edge cases
+
+Mechanism: targeted JSON corrections + algorithm/catalog tuning.
+
+1. Resolve the documented unmatched paints: Abteilung 502 oils, Vallejo Game Color Ink/Wash name mismatches, newer Vallejo Xpress, newer GSW acrylics — either by adding name aliases for matching or sourcing hex manually and documenting the decision.
+2. Spot-check hue distribution per family; for any systematic misclassification, tune `findClosestColor()` thresholds (e.g. neutral-saturation cutoff) or the remaining 22 synthetic `COLOR_CATALOG` sub-hue hexes rather than the algorithm shape.
+3. Update `REFERENCES.md` "Known Remaining Gaps" to reflect what is now resolved vs. outstanding.
+
+#### Affected Files
+
+| File | Changes |
+|------|---------|
+| `scripts/data/paints/*.json` | Hex/alias corrections for residual unmatched paints |
+| `scripts/generate-seed.ts` / color-wheel catalog | Threshold / synthetic-hex tuning if needed |
+| `scripts/data/REFERENCES.md` | Updated gap list |
+
+### Phase 5 — Regenerate, verify, and confirm clean reset
+
+Mechanism: build/verify pass. Run after any of the above phases.
+
+1. `npm run db:seed:generate` to rebuild `supabase/seed.sql`.
+2. `npm run db:reset` — **must apply cleanly with no errors** (the one outstanding acceptance criterion).
+3. Spot-check paints in the UI (paint explorer, hue groups, discontinued listing, cross-brand compare).
+4. `npm run build` and `npm run lint`.
+5. Optionally `npm run db:paints:recalculate -- --dry` against a running DB to confirm the live data matches the generator's output.
+
+#### Affected Files
+
+| File | Changes |
+|------|---------|
+| `supabase/seed.sql` | Regenerated |
 
 ### Risks & Considerations
 
-- **Volume of work** — 2,337 paints across 5 brands is a significant data verification effort. Prioritize by brand (Citadel and Vallejo are the most widely used) or by paint type (base/layer paints are most important for color accuracy).
-- **Hex subjectivity** — Different reference sites may disagree on the "correct" hex for a paint. Photography lighting, monitor calibration, and paint opacity all affect perceived color. Document which source was used.
-- **Translucent paints** — Shades, washes, contrast, and ink paints are translucent and don't have a single "correct" solid color. The hex value should represent the paint's appearance over a white or medium-grey primer — document this convention.
-- **Metallic paints** — Metallic paints cannot be accurately represented by a single hex value. Use the dominant base color (ignoring the metallic sheen) for classification purposes.
-- **Hue boundary edge cases** — Paints near the boundary between two Munsell hue families (e.g., a warm brown at the Red/Yellow-Red border) may flip between hue groups after hex correction. This is expected and acceptable.
-- **Seed reproducibility** — The seed generator uses `randomUUID()` for paint IDs, so each regeneration produces new UUIDs. Any external references to paint UUIDs will break. This is acceptable pre-production.
-- **Data freshness** — Paint ranges change over time (new paints released, old ones discontinued). This enhancement focuses on correcting existing data, not adding new paints.
+- **Reproducibility vs. live DB drift** — `generate-seed.ts` mints fresh `randomUUID()` paint IDs on every run, so a full `db:reset` reseed changes all paint UUIDs and breaks any external references; `db:paints:recalculate` exists to patch color/hue on a live DB in place without that churn. Choose the right tool per phase (Phases 1–2/4 → reseed; Phase 3 discontinued-only → recalculate path).
+- **Volume of work** — ~2,885 paints across 6 brands. Prioritize by brand usage (Citadel, Vallejo) and by paint type (base/layer over technical) where verification time is limited.
+- **Hex subjectivity** — Reference sites disagree on a paint's "correct" hex; lighting, calibration, and opacity all shift perceived color. Always record the source used in `REFERENCES.md`.
+- **Translucent paints** — Shades, washes, contrast, inks, and speedpaints have no single solid color; the convention (appearance over white/medium primer, taken from the PaintPad solid swatch) is documented and should be kept consistent for new entries.
+- **Metallic paints** — Represented by the dominant base tone (PaintPad's gradient `color:` value), with the sheen ignored for classification. `is_metallic` is derived from the type string, so new metallic product lines must use a type name containing "metal".
+- **Discontinued source reliability** — Manufacturers rarely publish authoritative discontinued lists; a curated file will be best-effort and needs periodic review as ranges change.
+- **Hue boundary edge cases** — Paints near a Munsell family boundary may flip groups after hex correction; this is expected and acceptable.
+- **Data freshness** — Paint ranges evolve (new releases, discontinuations). This enhancement maintains and corrects existing data; net-new range additions follow the same pipeline.
 
 ## Notes
 

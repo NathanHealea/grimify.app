@@ -75,150 +75,97 @@ The navbar shell components (`src/components/navbar.tsx`, `src/components/navbar
 
 ## Implementation Plan
 
-### Step 1 — Define a `UserMenuItem` shape (inline, not a new file)
+> **Status note (refreshed):** The core reorganization is **built and live** across all three files. The desktop dropdown, the desktop center-cluster cleanup, and the mobile drawer footer all match the design intent. Several details have **diverged from the original plan** because routes that were deferred at planning time now exist — this section reflects the *current* code state and the small amount of remaining work.
 
-Inside `user-menu.tsx`, define a small inline type for the "Mine" rows so the JSX stays readable. No need for a new file under `types/` — the type is purely presentational and only used by this component.
+### What is already implemented (done)
 
-```tsx
-type OwnedItem = {
-  label: string
-  href: string | null  // null → render as disabled placeholder
-  disabledReason?: string  // tooltip / aria-description for the disabled state
-}
+**`src/modules/user/components/user-menu.tsx`** — fully built:
 
-const OWNED_ITEMS: OwnedItem[] = [
-  { label: 'My collection', href: '/collection' },
-  { label: 'My palettes', href: '/user/palettes' },
-  { label: 'My recipes', href: null, disabledReason: 'Coming soon' },
-]
-```
+- `OwnedItem` type and module-level `OWNED_ITEMS` const are present, with JSDoc on both.
+- `DropdownMenuContent align="end" className="min-w-56"` renders: profile link (`/users/{userId}`), an **`Edit profile`** link (`/profile/edit`), a `<DropdownMenuSeparator />`, a `<DropdownMenuLabel>Mine</DropdownMenuLabel>`, the mapped `OWNED_ITEMS` rows, a second separator, and the sign-out `<form>` using `dropdown-item dropdown-item-destructive`.
+- `DropdownMenuLabel` **is** exported by `src/components/ui/dropdown-menu.tsx` (it maps to the `.dropdown-label` class) — the prerequisite flagged at plan time is satisfied, no wrapper change needed.
+- The map still carries the `href === null` → disabled-placeholder branch (with `disabled`, `aria-disabled`, `disabledReason`). **This branch is now dead code** because all three owned routes exist (see remaining work).
 
-Keep `OWNED_ITEMS` as a module-level `const` inside `user-menu.tsx`. When `/user/recipes` ships, swap `href: null` to `href: '/user/recipes'` and drop `disabledReason` — single-line change.
+**`src/components/navbar.tsx`** — fully built:
 
-### Step 2 — Extend `<UserMenu>` content
+- The center cluster contains only public destinations: `Paints`, `Brands`, `Palettes`, `Recipes` (a `Recipes` public link was added beyond the original four; `Schemes` is commented out). No `Collection` / `My palettes` links inline. ✔
+- `Admin Dashboard` renders in `navbar-end` (above the avatar dropdown) when `isAdmin === true`. ✔
+- `<UserMenu>` receives `userId` / `displayName` / `avatarUrl` — no signature change. ✔
 
-Replace the current `DropdownMenuContent` body with the four-section layout:
+**`src/components/navbar-mobile-menu.tsx`** — mostly built:
 
-```tsx
-<DropdownMenuContent align="end" className="min-w-56">
-  <DropdownMenuItem asChild>
-    <Link href={`/users/${userId}`}>{displayName}</Link>
-  </DropdownMenuItem>
-  <DropdownMenuSeparator />
-  <DropdownMenuLabel className="text-xs text-muted-foreground">Mine</DropdownMenuLabel>
-  {OWNED_ITEMS.map((item) =>
-    item.href ? (
-      <DropdownMenuItem key={item.label} asChild>
-        <Link href={item.href}>{item.label}</Link>
-      </DropdownMenuItem>
-    ) : (
-      <DropdownMenuItem
-        key={item.label}
-        disabled
-        aria-disabled="true"
-        className="cursor-not-allowed opacity-60"
-      >
-        {item.label}
-        {item.disabledReason && (
-          <span className="ml-auto text-xs text-muted-foreground">
-            {item.disabledReason}
-          </span>
-        )}
-      </DropdownMenuItem>
-    ),
-  )}
-  <DropdownMenuSeparator />
-  <form action={signOut}>
-    <button type="submit" className="dropdown-item dropdown-item-destructive w-full text-left">
-      Sign out
-    </button>
-  </form>
-</DropdownMenuContent>
-```
+- `SheetBody` holds only public links (`Paints`, `Brands`, `Palettes`; `Schemes` commented out). ✔
+- `SheetFooter` holds, in order: the user-identity `<Link>` (avatar + display name → `/users/{userId}`), a centered `Mine` label, `My collection`, `My palettes`, `My recipes` (live links), and the sign-out form. ✔
+- Guest footer shows `Sign In` / `Sign Up` only. ✔
 
-Notes:
+**Styling** — the dropdown CSS already defines `.dropdown-content`, `.dropdown-item`, `.dropdown-item-destructive`, `.dropdown-label`, and `.dropdown-separator`. The file lives at **`src/styles/dropdown.css`** (the original Key Files table mislabels it `dropdown-menu.css`). No CSS work remains.
 
-- `DropdownMenuLabel` is exported by Radix's wrapper at `src/components/ui/dropdown-menu.tsx` — confirm during implementation. If it isn't, add the export or use a `<div className="dropdown-label">` styled via the CSS file.
-- `min-w-56` keeps the panel wide enough that "My collection" doesn't wrap on shorter display names. Tune during manual QA if it looks too wide.
-- The disabled `My recipes` row uses `disabled` (Radix prop) so it isn't keyboard-focusable, plus `aria-disabled` for screen readers and a "Coming soon" affordance on the right.
+**Routes** — `/collection`, `/user/palettes`, `/user/recipes`, `/recipes`, `/profile/edit`, and `/users/{userId}` all exist. The recipes routes that the original plan deferred to epic 12 have since shipped.
 
-### Step 3 — Strip `Collection` and `My palettes` from the desktop center cluster
+`npm run lint` passes with **0 errors** (only pre-existing warnings in unrelated `armies` / `paints` / `brands` files). The navbar and user-menu files are clean.
 
-In `src/components/navbar.tsx`, delete these two `<Link>` blocks from the `.navbar-center` div:
+### Remaining work
 
-```tsx
-{user && (
-  <Link href="/collection" className="btn btn-ghost btn-sm">
-    Collection
-  </Link>
-)}
-{user && (
-  <Link href="/user/palettes" className="btn btn-ghost btn-sm">
-    My palettes
-  </Link>
-)}
-```
+#### Phase 1 — Reconcile `My recipes` with its now-live route
 
-The center cluster is left with only the four public destinations. No other navbar code changes — the existing `<UserMenu>` already gets `userId`/`displayName`/`avatarUrl` and that's all Step 2 needs.
+The original plan modeled `My recipes` as a disabled "Coming soon" placeholder because `/user/recipes` did not exist. **It now exists**, and the desktop `OWNED_ITEMS` already points `My recipes` at `/user/recipes` (a live link). The placeholder machinery is now dead weight.
 
-### Step 4 — Reorganize the mobile drawer
+In `src/modules/user/components/user-menu.tsx`:
 
-In `src/components/navbar-mobile-menu.tsx`:
-
-1. **Body** keeps only public links: `Paints`, `Brands`, `Schemes`, `Palettes`. For admin users, `Admin` stays here too (role-gated app surface).
-2. **Footer** gets a new section above the existing user identity row:
+1. Drop the `href: string | null` union back to `href: string` and remove `disabledReason` from the `OwnedItem` type (and its JSDoc note about the `null` state).
+2. Delete the `item.href ? (...) : (...)` ternary in the render, collapsing to the link-only branch:
 
    ```tsx
-   {viewer.kind === 'user' && (
-     <>
-       <p className="text-xs uppercase tracking-wide text-muted-foreground px-3 pt-2">
-         Mine
-       </p>
-       <SheetClose asChild>
-         <Link href="/collection" className="btn btn-ghost justify-start">
-           My collection
-         </Link>
-       </SheetClose>
-       <SheetClose asChild>
-         <Link href="/user/palettes" className="btn btn-ghost justify-start">
-           My palettes
-         </Link>
-       </SheetClose>
-       <button
-         type="button"
-         disabled
-         aria-disabled="true"
-         className="btn btn-ghost justify-start opacity-60 cursor-not-allowed"
-       >
-         My recipes <span className="ml-auto text-xs">Coming soon</span>
-       </button>
-     </>
-   )}
+   {OWNED_ITEMS.map((item) => (
+     <DropdownMenuItem key={item.label} asChild>
+       <Link href={item.href}>{item.label}</Link>
+     </DropdownMenuItem>
+   ))}
    ```
+3. Update the `<UserMenu>` JSDoc body: it currently says "disabled My recipes placeholder" — change to describe `My recipes` as a live link, and document the `Edit profile` row.
 
-3. The existing user identity `<Link>` (avatar + display name → `/users/{userId}`) and the sign-out `<form>` stay below the `Mine` group. Result reading top-to-bottom: profile row → Mine group → sign out.
-4. Guest footer is unchanged — `Sign In` / `Sign Up` only.
+Self-contained: type narrows, dead branch removed, JSDoc accurate. Ships green types/lint.
 
-### Step 5 — Verify
+> If the product decision is instead to **keep** a deferred-placeholder pattern for some future surface, leave the union in place but the JSDoc must stop describing `My recipes` as disabled, since it is wired to a real route. Phase 1 assumes the simpler "all owned routes are live" reality.
 
-1. `npm run build` and `npm run lint` pass.
-2. `npm run dev` and walk through:
-   - **Authenticated, desktop ≥ lg:** center cluster shows `Paints / Brands / Schemes / Palettes` only. Open the avatar dropdown — see profile name → `Mine` group with `My collection`, `My palettes`, disabled `My recipes` → sign-out. Click `My collection` → drops to `/collection` and dropdown closes.
-   - **Authenticated, mobile < lg:** open hamburger. Body shows `Paints / Brands / Schemes / Palettes` (and `Admin` if admin). Footer shows the `Mine` group above sign-out.
-   - **Authenticated admin:** `Admin` link still appears in `navbar-end` (desktop) and in the mobile drawer body. It does **not** appear inside the user dropdown.
-   - **Guest, desktop:** no avatar dropdown; center cluster shows the four public links; right cluster shows `Sign In` / `Sign Up`.
-   - **Guest, mobile:** drawer body has the four public links; footer has `Sign In` / `Sign Up`. No `Mine` group, no sign-out.
-3. Keyboard test: `Tab` to the avatar trigger, `Enter` opens it, arrow keys move focus between rows, the disabled `My recipes` row is **not** keyboard-focusable (Radix should skip it for `disabled` items), `Escape` closes.
-4. Screen reader test (VoiceOver / NVDA): the `Mine` label is announced as a group heading; the disabled row announces "My recipes, dimmed" or equivalent.
+#### Phase 2 — Resolve the `Admin`-in-mobile-body acceptance criterion
+
+This is the **only unchecked acceptance criterion** (line 25): "`Admin` link continues to render … inside the mobile drawer body for admin users."
+
+Current code places the admin link in `SheetFooter` (top of the footer, gated on `viewer.kind === 'user' && viewer.isAdmin`), **not** in `SheetBody`. Two ways to close this:
+
+- **Option A (move code to match the doc):** relocate the `Admin Dashboard` `<SheetClose><Link/></SheetClose>` block from `SheetFooter` into `SheetBody`, after the public links and gated on the same admin condition.
+- **Option B (amend the doc to match code):** if the footer placement is the deliberate, shipped design, update the acceptance criterion + Non-Goals wording to say the admin link lives at the **top of the mobile footer** rather than the body. (Do not edit Acceptance Criteria as part of this plan refresh — flag for the doc owner.)
+
+Pick one during implementation. Either way the box at line 25 can then be checked. Self-contained, single-file change for Option A.
+
+#### Phase 3 — Decide on the unplanned `Edit profile` row
+
+The shipped dropdown includes an `Edit profile` link (`/profile/edit`) that the original design did not mention. It sits between the profile link and the first separator. This is an enhancement, not a regression, but it is undocumented:
+
+- If it stays, add a brief line to the Summary / Acceptance Criteria describing the profile-management rows (profile link + edit profile) so the doc matches reality. (Flag for the doc owner — not edited here.)
+- If it should not be in this feature's scope, remove the `Edit profile` `<DropdownMenuItem>` from `user-menu.tsx`.
+
+No code is strictly required if the team accepts the addition; this phase is a documentation-alignment decision.
+
+#### Phase 4 — Verify
+
+1. `npm run build` and `npm run lint` pass (lint already green for these files).
+2. `npm run dev` walkthrough:
+   - **Authenticated, desktop ≥ lg:** center cluster shows public links only (`Paints / Brands / Palettes / Recipes`). Open the avatar dropdown — profile name → `Edit profile` → `Mine` group (`My collection`, `My palettes`, `My recipes`, all live) → sign-out. Click `My recipes` → navigates to `/user/recipes` and the dropdown closes.
+   - **Authenticated, mobile < lg:** open hamburger. Body shows public links (and `Admin` if Option A landed). Footer shows profile row → `Mine` group → sign-out.
+   - **Authenticated admin:** `Admin Dashboard` appears in `navbar-end` (desktop); on mobile it appears wherever Phase 2 resolves it. It does **not** appear inside the user dropdown.
+   - **Guest, desktop / mobile:** no dropdown / no `Mine` group; `Sign In` / `Sign Up` shown.
+3. Keyboard: `Tab` to the avatar trigger, `Enter` opens, arrows move between rows, `Escape` closes. With Phase 1 done there is no disabled row to skip.
 
 ### Order of operations
 
-1. **Step 2** lands first — extends the dropdown. Standalone change; no callers break.
-2. **Step 3** lands second — strips the two links from the desktop center cluster. After this commit, the only entry point for `/collection` and `/user/palettes` on desktop is the dropdown, so Step 2 must already be in place.
-3. **Step 4** lands third — mirrors the reorganization to mobile.
-4. **Step 5** is the verification sweep across both breakpoints and both auth states.
+1. **Phase 1** — narrow the type and remove the dead placeholder branch (standalone; no callers affected).
+2. **Phase 2** — close the open admin-placement acceptance criterion (Option A code move, or doc amendment by the owner).
+3. **Phase 3** — documentation-alignment decision on the `Edit profile` row (doc owner; code only if removing).
+4. **Phase 4** — verification sweep across breakpoints and auth states.
 
-Each step is its own commit (conventional format).
+Each code phase is its own commit (conventional format). Phases 2 and 3 may be purely documentation if the shipped behavior is accepted as-is.
 
 ## Risks & Considerations
 

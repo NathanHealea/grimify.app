@@ -26,109 +26,62 @@ Provide an admin interface for managing paint brands and their product lines. Ad
 
 ## Implementation Plan
 
-### Step 1: Create brand server actions
+**Target module:** `src/modules/admin` (actions, components, types, validation) with admin route pages under `src/app/admin/brands` and admin queries on the existing `src/modules/brands` service. The brand CRUD path is fully built; the remaining work is wiring product-line *editing* into the brand detail page (`updateProductLine` exists but has no UI).
 
-Create server actions in `src/modules/admin/actions/`:
+### Already Implemented
 
-**`brand-actions.ts`** — Server actions for brand CRUD:
-- `createBrand(prevState, formData)` — Insert into `brands` table, redirect to edit page on success
-- `updateBrand(prevState, formData)` — Update `brands` row by ID
-- `deleteBrand(prevState, formData)` — Delete `brands` row by ID (cascade handled by DB), redirect to list
+The following is complete and shipping with passing `npm run build` / `npm run lint`:
 
-**`product-line-actions.ts`** — Server actions for product line CRUD:
-- `createProductLine(prevState, formData)` — Insert into `product_lines` with `brand_id`
-- `updateProductLine(prevState, formData)` — Update `product_lines` row
-- `deleteProductLine(prevState, formData)` — Delete `product_lines` row
+**Actions** (`src/modules/admin/actions/`)
+- `brand-actions.ts` — `createBrand`, `updateBrand`, `deleteBrand` with validation, slug-uniqueness (`23505`) handling, `revalidatePath`, and redirects.
+- `product-line-actions.ts` — `createProductLine`, `updateProductLine`, `deleteProductLine`. All three read `brand_id`/`id` from hidden fields, validate name + slug pattern, handle duplicate-slug errors, and revalidate the brand detail page. **`updateProductLine` is implemented but not yet called by any UI.**
 
-Each action follows the existing pattern: validate input → perform DB operation → handle errors → `revalidatePath` → redirect.
+**Types** (`src/modules/admin/types/`)
+- `brand-form-state.ts` (`BrandFormState`), `product-line-form-state.ts` (`ProductLineFormState`).
 
-#### Affected Files
+**Components** (`src/modules/admin/components/`)
+- `brand-form.tsx` — create/edit form with `useActionState`, slug auto-generation + manual override, field-level errors, pending state.
+- `product-line-form.tsx` — supports both `create` and `edit` modes already (accepts `defaultValues`, renders hidden `id`, toggles button labels). Currently only mounted in `create` mode.
+- `delete-brand-button.tsx` and `delete-product-line-button.tsx` — confirmation dialogs warning about cascading deletion.
 
-| File | Changes |
-|------|---------|
-| `src/modules/admin/actions/brand-actions.ts` | **New** — Brand CRUD server actions |
-| `src/modules/admin/actions/product-line-actions.ts` | **New** — Product line CRUD server actions |
+**Service** (`src/modules/brands/services/brand-service.ts`)
+- `getBrandWithProductLineCounts(id)` — brand + product lines with per-line paint counts.
 
-### Step 2: Create brand form state types
+**Route pages** (`src/app/admin/brands/`)
+- `page.tsx` (list), `new/page.tsx` (create), `[id]/page.tsx` (edit). The detail page renders the brand form, a product-lines table (Name / Slug / Paints / Actions), an "Add Product Line" create form, and a Danger Zone delete card. The table's only action today is **delete**.
 
-Create `src/modules/admin/types/brand-form-state.ts`:
+### Remaining Work
 
-```typescript
-export type BrandFormState = {
-  errors?: {
-    name?: string
-    slug?: string
-    website_url?: string
-  }
-  error?: string
-  success?: boolean
-} | null
-```
+#### Phase 1: Editable product lines on the brand detail page
 
-Create `src/modules/admin/types/product-line-form-state.ts` similarly.
+Wire the already-built `updateProductLine` action and `ProductLineForm` edit mode into the product-lines table so each row can be edited inline, satisfying the one open acceptance criterion (create + edit + delete from the brand edit page).
 
-#### Affected Files
+**components/** (`src/modules/admin/components/`)
+- **New** `edit-product-line-row.tsx` — client component owning a single product-line row's view/edit toggle. Renders the read-only cells (name, slug, paint count) plus an "Edit" button; when toggled, swaps in `ProductLineForm` bound to `updateProductLine` (`mode="edit"`, `defaultValues={productLine}`) alongside the existing `DeleteProductLineButton`. Collapse back to read-only on `state.success`. Keep this purely presentational/stateful — no DB access; it composes the existing form + delete button. Add JSDoc to the component and its props type.
+  - Alternative (simpler) if a separate component is undesirable: lift the per-row expand/collapse state into `[id]/page.tsx`. Prefer the dedicated client component to keep the route page thin per project conventions.
 
-| File | Changes |
-|------|---------|
-| `src/modules/admin/types/brand-form-state.ts` | **New** — Brand form state type |
-| `src/modules/admin/types/product-line-form-state.ts` | **New** — Product line form state type |
+**types/** (`src/modules/admin/types/`)
+- No new types required. If `EditProductLineRow` needs a prop shape beyond the existing `ProductLine` type, define it inline in the component file (props types are co-located, not separate type files).
 
-### Step 3: Create brand form components
+**route** (`src/app/admin/brands/[id]/page.tsx`)
+- Replace the inline `<tr>` map body's action cell so each row renders `<EditProductLineRow productLine={pl} brandId={brand.id} />` (the new component renders the full `<tr>` or the row's cells). Import `updateProductLine` inside the client component, not the server page, so the page stays a server component.
+- No service changes needed — `getBrandWithProductLineCounts` already supplies `id`, `name`, `slug`, and `paint_count` per line.
 
-**`src/modules/admin/components/brand-form.tsx`** — Client component with:
-- `useActionState` bound to `createBrand` or `updateBrand`
-- Fields: name (text), slug (text, auto-derived), website URL (url), logo URL (url)
-- Slug auto-generation from name (with manual override)
-- Field-level error display from server action state
-- Submit button with pending state
+Ships green: the new component reuses existing actions/forms; types and lint remain clean.
 
-**`src/modules/admin/components/product-line-form.tsx`** — Client component for creating/editing product lines within the brand edit page.
+#### Phase 2: Verification
 
-**`src/modules/admin/components/delete-brand-button.tsx`** — Client component with confirmation dialog before deletion.
+- Manually exercise create / edit / delete of a product line from `/admin/brands/[id]`, confirming revalidation refreshes the table and counts.
+- Confirm duplicate-slug-within-brand and empty-name validation surface on the edit form (already enforced server-side).
+- Re-run `npm run build` and `npm run lint`.
+- Check off the open acceptance criterion (product lines can be created, edited, and deleted from the brand edit page).
 
 #### Affected Files
 
 | File | Changes |
 |------|---------|
-| `src/modules/admin/components/brand-form.tsx` | **New** — Brand create/edit form |
-| `src/modules/admin/components/product-line-form.tsx` | **New** — Product line create/edit form |
-| `src/modules/admin/components/delete-brand-button.tsx` | **New** — Delete brand with confirmation |
-
-### Step 4: Create brand admin pages
-
-**`src/app/admin/brands/page.tsx`** — Server component:
-- Fetches all brands using `getAllBrands()` from brand service
-- Renders a table with columns: Name, Slug, Paints, Actions (Edit, Delete)
-- "Create Brand" button linking to `/admin/brands/new`
-
-**`src/app/admin/brands/new/page.tsx`** — Server component:
-- Renders the brand form in create mode
-
-**`src/app/admin/brands/[id]/page.tsx`** — Server component:
-- Fetches brand by ID and its product lines
-- Renders the brand form in edit mode with current values
-- Below the form, renders the product lines table with inline create/edit/delete
-
-#### Affected Files
-
-| File | Changes |
-|------|---------|
-| `src/app/admin/brands/page.tsx` | **New** — Brand list page |
-| `src/app/admin/brands/new/page.tsx` | **New** — Create brand page |
-| `src/app/admin/brands/[id]/page.tsx` | **New** — Edit brand page with product lines |
-
-### Step 5: Extend brand service with admin queries
-
-Add methods to the brand service (or create admin-specific service methods) for:
-- `getBrandWithProductLineCounts(id)` — Brand + product lines with paint counts per line
-- Any additional queries needed for the admin views
-
-#### Affected Files
-
-| File | Changes |
-|------|---------|
-| `src/modules/brands/services/brand-service.ts` | **Modify** — Add admin query methods |
+| `src/modules/admin/components/edit-product-line-row.tsx` | **New** — Inline view/edit toggle for a product-line table row, composing `ProductLineForm` (edit mode) + `DeleteProductLineButton` |
+| `src/app/admin/brands/[id]/page.tsx` | **Modify** — Render `EditProductLineRow` per product line so rows support inline editing |
 
 ### Risks & Considerations
 
