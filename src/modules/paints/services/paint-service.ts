@@ -387,6 +387,50 @@ export function createPaintService(supabase: SupabaseClient) {
     },
 
     /**
+     * Fetches paints that have no hue assignment (`hue_id IS NULL`), with optional
+     * name search and pagination.
+     *
+     * Used by the admin add-paints-to-hue flow to present candidate paints for
+     * assignment. Scoping to unassigned paints prevents silently re-homing a
+     * paint already assigned to another hue.
+     *
+     * @param options.query - Optional case-insensitive name search via ilike.
+     * @param options.limit - Maximum number of paints to return (default 50).
+     * @param options.offset - Number of paints to skip (default 0).
+     * @returns `{ paints, count }` where `count` is the total unassigned matching rows.
+     */
+    async getPaintsWithoutHue(options: {
+      query?: string
+      limit?: number
+      offset?: number
+    }): Promise<{ paints: PaintWithBrand[]; count: number }> {
+      const { query, limit = 50, offset = 0 } = options
+
+      let countQuery = supabase
+        .from('paints')
+        .select('*', { count: 'exact', head: true })
+        .is('hue_id', null)
+
+      let dataQuery = supabase
+        .from('paints')
+        .select('*, product_lines(brands(name))')
+        .is('hue_id', null)
+        .order('name')
+        .range(offset, offset + limit - 1)
+
+      if (query) {
+        countQuery = countQuery.ilike('name', `%${query}%`)
+        dataQuery = dataQuery.ilike('name', `%${query}%`)
+      }
+
+      const [{ count }, { data }] = await Promise.all([countQuery, dataQuery])
+      return {
+        paints: (data as PaintWithBrand[] | null) ?? [],
+        count: count ?? 0,
+      }
+    },
+
+    /**
      * Fetches all paints whose `hue_id` is in the provided list of hue IDs.
      *
      * Used by the admin hue detail page to show paints associated with a hue
