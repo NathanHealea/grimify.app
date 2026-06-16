@@ -48,8 +48,11 @@ export function AddPaintsToHue({ hueId }: AddPaintsToHueProps) {
   const debouncedQuery = useDebouncedQuery(inputValue, { delay: 250, minChars: 1 })
 
   // Stable ref required by useAdminPaintSearch to avoid re-triggering the effect on every render.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const stableServerAction = useCallback(searchUnassignedPaints, [])
+  const stableServerAction = useCallback(
+    (options: { query?: string; hueIds?: string[]; limit: number; offset: number }) =>
+      searchUnassignedPaints(options),
+    []
+  )
 
   const { paints, isLoading } = useAdminPaintSearch({
     serverAction: stableServerAction,
@@ -62,7 +65,9 @@ export function AddPaintsToHue({ hueId }: AddPaintsToHueProps) {
   // After a successful add, clear selection and re-fetch the unassigned list.
   useEffect(() => {
     if (state?.success) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedIds(new Set())
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRefreshKey((k) => k + 1)
     }
   }, [state])
