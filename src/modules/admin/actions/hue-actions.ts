@@ -108,10 +108,11 @@ export async function updateHue(
  * Deletes a hue and all its children/paint associations (cascade).
  *
  * Reads `id` from the hidden form field, deletes the row, revalidates
- * `/admin/hues`, and redirects there.
+ * `/admin/hues`, and redirects. An optional `redirect_to` field overrides
+ * the default redirect target of `/admin/hues`.
  *
  * @param prevState - The previous action state.
- * @param formData - Form data containing `id`.
+ * @param formData - Form data containing `id` and optionally `redirect_to`.
  * @returns Updated {@link HueFormState} on error, or redirects on success.
  */
 export async function deleteHue(
@@ -119,6 +120,7 @@ export async function deleteHue(
   formData: FormData
 ): Promise<HueFormState> {
   const id = (formData.get('id') as string | null)?.trim() ?? ''
+  const redirectTo = (formData.get('redirect_to') as string | null)?.trim() || '/admin/hues'
 
   const supabase = await createClient()
   const { error } = await supabase.from('hues').delete().eq('id', id)
@@ -128,7 +130,7 @@ export async function deleteHue(
   }
 
   revalidatePath('/admin/hues')
-  redirect('/admin/hues')
+  redirect(redirectTo)
 }
 
 /**

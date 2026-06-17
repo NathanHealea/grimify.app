@@ -88,6 +88,7 @@ export function EditChildHueRow({ childHue }: EditChildHueRowProps) {
                     hueId={childHue.id}
                     hueName={childHue.name}
                     triggerClassName=""
+                    redirectTo={childHue.parent_id ? `/admin/hues/${childHue.parent_id}` : undefined}
                   />
                   <div className="flex items-center gap-2">
                     <Button
@@ -135,6 +136,7 @@ export function EditChildHueRow({ childHue }: EditChildHueRowProps) {
             hueId={childHue.id}
             hueName={childHue.name}
             triggerClassName="btn-outline"
+            redirectTo={childHue.parent_id ? `/admin/hues/${childHue.parent_id}` : undefined}
           />
         </div>
       </td>

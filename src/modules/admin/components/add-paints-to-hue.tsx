@@ -1,14 +1,13 @@
 'use client'
 
-import { useActionState, useCallback, useEffect, useState } from 'react'
+import { useActionState, useEffect, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 
 import { Button } from '@/components/ui/button'
 import { addPaintsToHue } from '@/modules/admin/actions/hue-actions'
-import { searchUnassignedPaints } from '@/modules/admin/actions/search-unassigned-paints'
-import { useAdminPaintSearch } from '@/modules/admin/hooks/use-admin-paint-search'
 import type { PaintHueActionState } from '@/modules/admin/types/paint-hue-action-state'
 import { useDebouncedQuery } from '@/modules/paints/hooks/use-debounced-query'
+import { usePaintSearch } from '@/modules/paints/hooks/use-paint-search'
 
 const PAGE_SIZE = 20
 
@@ -31,44 +30,32 @@ type AddPaintsToHueProps = {
 }
 
 /**
- * Client component that lets admins search for unassigned paints and add them to a hue.
+ * Client component that lets admins search for paints and add them to a hue.
  *
- * Renders a debounced search input over paints with no hue assignment, a
- * checkbox list of results (swatch, name, brand), and an "Add Selected to Hue"
- * submit button. Uses {@link addPaintsToHue} to persist assignments.
+ * Renders a debounced search input over all paints, a checkbox list of results
+ * (swatch, name, brand), and an "Add Selected to Hue" submit button.
+ * Uses {@link addPaintsToHue} to persist assignments.
  *
  * @param props - {@link AddPaintsToHueProps}
  */
 export function AddPaintsToHue({ hueId }: AddPaintsToHueProps) {
   const [inputValue, setInputValue] = useState('')
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
-  const [refreshKey, setRefreshKey] = useState(0)
   const [state, formAction] = useActionState<PaintHueActionState, FormData>(addPaintsToHue, null)
 
   const debouncedQuery = useDebouncedQuery(inputValue, { delay: 250, minChars: 1 })
 
-  // Stable ref required by useAdminPaintSearch to avoid re-triggering the effect on every render.
-  const stableServerAction = useCallback(
-    (options: { query?: string; hueIds?: string[]; limit: number; offset: number }) =>
-      searchUnassignedPaints(options),
-    []
-  )
-
-  const { paints, isLoading } = useAdminPaintSearch({
-    serverAction: stableServerAction,
+  const { paints, isLoading } = usePaintSearch({
     query: debouncedQuery || undefined,
     pageSize: PAGE_SIZE,
     page: 1,
-    refreshKey,
   })
 
-  // After a successful add, clear selection and re-fetch the unassigned list.
+  // After a successful add, clear the selection.
   useEffect(() => {
     if (state?.success) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedIds(new Set())
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setRefreshKey((k) => k + 1)
     }
   }, [state])
 
@@ -88,11 +75,11 @@ export function AddPaintsToHue({ hueId }: AddPaintsToHueProps) {
     <div className="flex flex-col gap-4">
       <input
         type="text"
-        placeholder="Search unassigned paints…"
+        placeholder="Search paints…"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         className="input input-sm w-full max-w-sm"
-        aria-label="Search unassigned paints"
+        aria-label="Search paints"
       />
 
       {isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
@@ -163,14 +150,12 @@ export function AddPaintsToHue({ hueId }: AddPaintsToHueProps) {
 
       {!isLoading && paints.length === 0 && debouncedQuery && (
         <p className="text-sm text-muted-foreground">
-          No unassigned paints match &quot;{debouncedQuery}&quot;.
+          No paints match &quot;{debouncedQuery}&quot;.
         </p>
       )}
 
       {!isLoading && paints.length === 0 && !debouncedQuery && (
-        <p className="text-sm text-muted-foreground">
-          Search for paints to assign to this hue.
-        </p>
+        <p className="text-sm text-muted-foreground">No paints found.</p>
       )}
     </div>
   )

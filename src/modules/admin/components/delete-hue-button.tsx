@@ -27,6 +27,12 @@ type DeleteHueButtonProps = {
    * full-size `btn-destructive` used in danger-zone contexts.
    */
   triggerClassName?: string
+  /**
+   * Path to redirect to after a successful deletion. Defaults to `/admin/hues`
+   * (the hue list). Override when deleting a child hue from a parent's detail
+   * page so the user stays on the parent page instead.
+   */
+  redirectTo?: string
 }
 
 /**
@@ -49,7 +55,7 @@ function ConfirmDeleteButton() {
  *
  * @param props - {@link DeleteHueButtonProps}
  */
-export function DeleteHueButton({ hueId, hueName, childCount, paintCount, triggerClassName }: DeleteHueButtonProps) {
+export function DeleteHueButton({ hueId, hueName, childCount, paintCount, triggerClassName, redirectTo }: DeleteHueButtonProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [state, formAction] = useActionState(deleteHue, null as HueFormState)
 
@@ -105,6 +111,7 @@ export function DeleteHueButton({ hueId, hueName, childCount, paintCount, trigge
 
             <form action={formAction}>
               <input type="hidden" name="id" value={hueId} />
+              {redirectTo && <input type="hidden" name="redirect_to" value={redirectTo} />}
               <ConfirmDeleteButton />
             </form>
           </div>
