@@ -1,12 +1,23 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import { useFormStatus } from 'react-dom'
 
 import { Button } from '@/components/ui/button'
 import { updateProductLine } from '@/modules/admin/actions/product-line-actions'
 import { DeleteProductLineButton } from '@/modules/admin/components/delete-product-line-button'
 import { ProductLineForm } from '@/modules/admin/components/product-line-form'
 import type { ProductLineFormState } from '@/modules/admin/types/product-line-form-state'
+
+/** Submit button for the inline edit form with pending-state feedback. */
+function SaveButton() {
+  const { pending } = useFormStatus()
+  return (
+    <Button type="submit" disabled={pending} className="btn-primary btn-sm">
+      {pending ? 'Saving…' : 'Save Changes'}
+    </Button>
+  )
+}
 
 /**
  * Data shape for a product line as displayed in the admin table row.
@@ -62,29 +73,38 @@ export function EditProductLineRow({ productLine, brandId }: EditProductLineRowP
 
   if (isEditing) {
     return (
-      <tr className="border-b border-border/50">
-        <td colSpan={4} className="py-3 pr-2">
-          <div className="flex flex-col gap-3">
+      <tr>
+        <td colSpan={4} className="py-3">
+          <div className="rounded-lg border border-border bg-card p-4 flex flex-col gap-3 shadow-sm">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Editing: {productLine.name}
+            </p>
             <ProductLineForm
               action={editAction}
               brandId={brandId}
               defaultValues={productLine}
               mode="edit"
+              footer={
+                <div className="flex items-center justify-between border-t border-border pt-3">
+                  <DeleteProductLineButton
+                    productLineId={productLine.id}
+                    productLineName={productLine.name}
+                    brandId={brandId}
+                    triggerClassName=""
+                  />
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      className="btn-ghost btn-sm"
+                      onClick={() => setIsEditing(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <SaveButton />
+                  </div>
+                </div>
+              }
             />
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                className="btn-ghost btn-sm"
-                onClick={() => setIsEditing(false)}
-              >
-                Cancel
-              </Button>
-              <DeleteProductLineButton
-                productLineId={productLine.id}
-                productLineName={productLine.name}
-                brandId={brandId}
-              />
-            </div>
           </div>
         </td>
       </tr>

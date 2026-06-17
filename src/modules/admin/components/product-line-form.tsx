@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import type { ChangeEvent } from 'react'
+import type { ChangeEvent, ReactNode } from 'react'
 import { useFormStatus } from 'react-dom'
 
 import { Button } from '@/components/ui/button'
@@ -21,6 +21,13 @@ type ProductLineFormProps = {
   defaultValues?: Partial<ProductLine>
   /** Whether the form is creating a new product line or editing an existing one. */
   mode: 'create' | 'edit'
+  /**
+   * Optional footer rendered inside the `<form>` in place of the default submit button row.
+   * Use this to compose custom action bars (e.g. inline edit rows with Delete + Cancel + Save).
+   * Any submit button placed here has access to {@link useFormStatus} because it renders
+   * inside the form element.
+   */
+  footer?: ReactNode
 }
 
 /**
@@ -62,7 +69,7 @@ function toSlug(value: string): string {
  *
  * @param props - {@link ProductLineFormProps}
  */
-export function ProductLineForm({ action, brandId, defaultValues, mode }: ProductLineFormProps) {
+export function ProductLineForm({ action, brandId, defaultValues, mode, footer }: ProductLineFormProps) {
   const [state, formAction] = useActionState(action, null)
   const [slugValue, setSlugValue] = useState(defaultValues?.slug ?? '')
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(mode === 'edit')
@@ -133,9 +140,11 @@ export function ProductLineForm({ action, brandId, defaultValues, mode }: Produc
         )}
       </div>
 
-      <div className="flex justify-end">
-        <SubmitButton mode={mode} />
-      </div>
+      {footer !== undefined ? footer : (
+        <div className="flex justify-end">
+          <SubmitButton mode={mode} />
+        </div>
+      )}
     </form>
   )
 }
