@@ -205,7 +205,7 @@ Core functionality:
 **High-Level Scope:**
 
 - [x] [Admin layout and navigation](./09-color-management/00-admin-layout-navigation.md)
-- [ ] [Brand management](./09-color-management/01-brand-management.md)
+- [x] [Brand management](./09-color-management/01-brand-management.md)
 - [ ] [Hue management](./09-color-management/02-hue-management.md)
 - [ ] [Paint management](./09-color-management/03-paint-management.md)
 
