@@ -71,6 +71,11 @@
     hover:bg-muted hover:text-foreground;
 }
 
+.btn-destructive.btn-outline {
+  @apply border border-destructive/30 bg-background text-destructive
+    hover:bg-destructive/10 hover:text-destructive;
+}
+
 .btn-soft {
   @apply bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground;
 }

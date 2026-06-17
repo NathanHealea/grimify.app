@@ -2,7 +2,7 @@
 
 **Epic:** Color Management
 **Type:** Feature
-**Status:** In Progress
+**Status:** Done
 **Branch:** `feature/hue-management`
 **Merge into:** `main`
 
@@ -19,7 +19,7 @@ Provide an admin interface for managing the Munsell hue hierarchy (parent hues a
 - [x] The hue edit page displays all paints associated with that hue (for parent hues: paints associated with any of its child hues)
 - [x] Individual paint-hue associations can be removed (sets `hue_id = NULL` on the paint)
 - [x] Bulk removal of paint-hue associations is supported (select multiple paints, remove all at once)
-- [ ] Paints can be added to a hue from the hue edit page (search/select paints, assign the hue)
+- [x] Paints can be added to a hue from the hue edit page (search/select paints, assign the hue)
 - [x] Deleting a parent hue warns that all child hues and paint associations will be removed
 - [x] Deleting a child hue warns that paint associations will be removed
 - [x] Hex color swatches are displayed next to hue names throughout the admin interface

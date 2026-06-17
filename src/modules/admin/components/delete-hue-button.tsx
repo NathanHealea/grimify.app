@@ -3,9 +3,10 @@
 import { useRef, useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import { cn } from '@/lib/utils'
 import { deleteHue } from '@/modules/admin/actions/hue-actions'
 import type { HueFormState } from '@/modules/admin/types/hue-form-state'
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 
 /**
  * Props for {@link DeleteHueButton}.
@@ -19,6 +20,19 @@ type DeleteHueButtonProps = {
   childCount?: number
   /** Number of paints associated with this hue that will lose their assignment. */
   paintCount?: number
+  /**
+   * Additional classes applied to the trigger button. When provided, `btn-sm`
+   * is also added automatically. Pass `""` for a solid destructive button (no
+   * outline), or `"btn-outline"` for an outline variant. Omit for the default
+   * full-size `btn-destructive` used in danger-zone contexts.
+   */
+  triggerClassName?: string
+  /**
+   * Path to redirect to after a successful deletion. Defaults to `/admin/hues`
+   * (the hue list). Override when deleting a child hue from a parent's detail
+   * page so the user stays on the parent page instead.
+   */
+  redirectTo?: string
 }
 
 /**
@@ -41,7 +55,7 @@ function ConfirmDeleteButton() {
  *
  * @param props - {@link DeleteHueButtonProps}
  */
-export function DeleteHueButton({ hueId, hueName, childCount, paintCount }: DeleteHueButtonProps) {
+export function DeleteHueButton({ hueId, hueName, childCount, paintCount, triggerClassName, redirectTo }: DeleteHueButtonProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [state, formAction] = useActionState(deleteHue, null as HueFormState)
 
@@ -50,14 +64,14 @@ export function DeleteHueButton({ hueId, hueName, childCount, paintCount }: Dele
   return (
     <>
       <Button
-        className='btn-destructive'
-
+        type="button"
+        className={cn('btn-destructive', triggerClassName !== undefined && 'btn-sm', triggerClassName)}
         onClick={() => dialogRef.current?.showModal()}
       >
         Delete
       </Button>
 
-      <dialog ref={dialogRef} className="m-auto rounded-lg border border-border bg-background p-0 shadow-lg backdrop:bg-black/50">
+      <dialog ref={dialogRef} className="m-auto w-full max-w-md rounded-lg border border-border bg-background p-0 shadow-lg backdrop:bg-black/50">
         <div className="p-6 flex flex-col gap-4">
           <h3 className="text-lg font-semibold">Delete Hue</h3>
           <p className="text-sm text-muted-foreground">
@@ -97,6 +111,7 @@ export function DeleteHueButton({ hueId, hueName, childCount, paintCount }: Dele
 
             <form action={formAction}>
               <input type="hidden" name="id" value={hueId} />
+              {redirectTo && <input type="hidden" name="redirect_to" value={redirectTo} />}
               <ConfirmDeleteButton />
             </form>
           </div>
