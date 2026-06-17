@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from 'react'
 import { useFormStatus } from 'react-dom'
+import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -140,13 +141,18 @@ export function HuePaintList({ paints, hueId }: HuePaintListProps) {
                   {paint.product_lines?.brands?.name ?? '—'}
                 </td>
                 <td className="py-2">
-                  <form action={singleFormAction}>
-                    <input type="hidden" name="paint_id" value={paint.id} />
-                    <input type="hidden" name="hue_id" value={hueId} />
-                    <Button type="submit" className="btn-destructive btn-sm btn-outline">
-                      Remove
-                    </Button>
-                  </form>
+                  <div className="flex items-center gap-2">
+                    <Link href={`/admin/paints/${paint.id}`} className="btn btn-ghost btn-sm">
+                      View
+                    </Link>
+                    <form action={singleFormAction}>
+                      <input type="hidden" name="paint_id" value={paint.id} />
+                      <input type="hidden" name="hue_id" value={hueId} />
+                      <Button type="submit" className="btn-destructive btn-sm btn-outline">
+                        Remove
+                      </Button>
+                    </form>
+                  </div>
                 </td>
               </tr>
             ))}
