@@ -3,6 +3,7 @@
 import { useRef, useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { deleteProductLine } from '@/modules/admin/actions/product-line-actions'
 import type { ProductLineFormState } from '@/modules/admin/types/product-line-form-state'
@@ -17,6 +18,8 @@ type DeleteProductLineButtonProps = {
   productLineName: string
   /** The brand ID used to revalidate the brand detail page after deletion. */
   brandId: number
+  /** Additional classes applied to the trigger button. Defaults to `btn-destructive btn-sm btn-outline`. */
+  triggerClassName?: string
 }
 
 /**
@@ -43,6 +46,7 @@ export function DeleteProductLineButton({
   productLineId,
   productLineName,
   brandId,
+  triggerClassName,
 }: DeleteProductLineButtonProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [state, formAction] = useActionState(
@@ -54,13 +58,13 @@ export function DeleteProductLineButton({
     <>
       <Button
         type="button"
-        className="btn-destructive btn-sm btn-outline"
+        className={cn('btn-destructive btn-sm', triggerClassName === undefined && 'btn-outline', triggerClassName)}
         onClick={() => dialogRef.current?.showModal()}
       >
         Delete
       </Button>
 
-      <dialog ref={dialogRef} className="rounded-lg border border-border bg-background p-0 shadow-lg backdrop:bg-black/50">
+      <dialog ref={dialogRef} className="m-auto w-full max-w-md rounded-lg border border-border bg-background p-0 shadow-lg backdrop:bg-black/50">
         <div className="p-6 flex flex-col gap-4">
           <h3 className="text-lg font-semibold">Delete Product Line</h3>
           <p className="text-sm text-muted-foreground">
