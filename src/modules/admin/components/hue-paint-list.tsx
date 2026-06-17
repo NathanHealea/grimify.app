@@ -143,7 +143,7 @@ export function HuePaintList({ paints, hueId }: HuePaintListProps) {
                   <form action={singleFormAction}>
                     <input type="hidden" name="paint_id" value={paint.id} />
                     <input type="hidden" name="hue_id" value={hueId} />
-                    <Button type="submit" className="btn-ghost btn-sm text-destructive">
+                    <Button type="submit" className="btn-destructive btn-sm btn-outline">
                       Remove
                     </Button>
                   </form>
