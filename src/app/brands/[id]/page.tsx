@@ -94,7 +94,15 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ id
     <Main>
       <JsonLd data={jsonLd} />
       <Breadcrumbs items={[{ label: 'Brands', href: '/brands' }, { label: brand.name }]} />
-      <PageHeader>
+      <PageHeader
+        actions={
+          isAdmin ? (
+            <Link href={`/admin/brands/${numericId}`} className="btn btn-outline btn-sm">
+              Edit
+            </Link>
+          ) : undefined
+        }
+      >
         <PageTitle>{brand.name}</PageTitle>
         {brand.website_url && (
           <PageSubtitle>
@@ -107,11 +115,6 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ id
               {brand.website_url}
             </a>
           </PageSubtitle>
-        )}
-        {isAdmin && (
-          <Link href={`/admin/brands/${numericId}`} className="btn btn-outline btn-sm self-start">
-            Edit
-          </Link>
         )}
       </PageHeader>
 
