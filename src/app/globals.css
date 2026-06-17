@@ -1,6 +1,11 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
+
+@source "../app/**/*.{ts,tsx}";
+@source "../modules/**/*.{ts,tsx}";
+@source "../components/**/*.{ts,tsx}";
+@source "../lib/**/*.{ts,tsx}";
 @import '../styles/variables.css';
 @import '../styles/button.css' layer(components);
 @import '../styles/card.css' layer(components);

@@ -8,7 +8,7 @@ import { getBrandService } from '@/modules/brands/services/brand-service.server'
 import { BrandForm } from '@/modules/admin/components/brand-form'
 import { ProductLineForm } from '@/modules/admin/components/product-line-form'
 import { DeleteBrandButton } from '@/modules/admin/components/delete-brand-button'
-import { DeleteProductLineButton } from '@/modules/admin/components/delete-product-line-button'
+import { EditProductLineRow } from '@/modules/admin/components/edit-product-line-row'
 import { updateBrand } from '@/modules/admin/actions/brand-actions'
 import { createProductLine } from '@/modules/admin/actions/product-line-actions'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
@@ -85,20 +85,11 @@ export default async function AdminBrandDetailPage({
                   </thead>
                   <tbody>
                     {brand.product_lines.map((pl) => (
-                      <tr key={pl.id} className="border-b border-border/50">
-                        <td className="py-2 pr-4 font-medium">{pl.name}</td>
-                        <td className="py-2 pr-4 font-mono text-xs text-muted-foreground">
-                          {pl.slug}
-                        </td>
-                        <td className="py-2 pr-4 text-right tabular-nums">{pl.paint_count}</td>
-                        <td className="py-2">
-                          <DeleteProductLineButton
-                            productLineId={pl.id}
-                            productLineName={pl.name}
-                            brandId={brand.id}
-                          />
-                        </td>
-                      </tr>
+                      <EditProductLineRow
+                        key={pl.id}
+                        productLine={pl}
+                        brandId={brand.id}
+                      />
                     ))}
                   </tbody>
                 </table>

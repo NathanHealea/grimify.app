@@ -77,6 +77,7 @@ Core functionality:
 - [x] [UI component consistency refactor](./00-marketing-and-branding/12-component-consistency-refactor.md)
 - [x] [Marketing Sharpness & Landing Page Improvements](./00-marketing-and-branding/13-marketing-sharpness-landing-page.md)
 - [x] [Metadata & OpenGraph Marketing Alignment](./00-marketing-and-branding/14-metadata-og-alignment.md)
+- [ ] [Public Changelog Page](./00-marketing-and-branding/16-changelog-page.md)
 
 ### Epic: Authentication & User Accounts
 
@@ -204,7 +205,7 @@ Core functionality:
 **High-Level Scope:**
 
 - [x] [Admin layout and navigation](./09-color-management/00-admin-layout-navigation.md)
-- [ ] [Brand management](./09-color-management/01-brand-management.md)
+- [x] [Brand management](./09-color-management/01-brand-management.md)
 - [ ] [Hue management](./09-color-management/02-hue-management.md)
 - [ ] [Paint management](./09-color-management/03-paint-management.md)
 
@@ -286,4 +287,4 @@ Core functionality:
 | | Name | Type | Status |
 |---|------|------|--------|
 | [ ] | [Button Component Props Refactor](./other/button-component-props.md) | Refactor | Todo |
-| [ ] | [Input & Textarea Component Props Refactor](./other/input-component-props.md) | Refactor | Todo |
+| [x] | [Input & Textarea Component Props Refactor](./other/input-component-props.md) | Refactor | Completed |
