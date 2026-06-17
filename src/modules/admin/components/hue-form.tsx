@@ -7,6 +7,8 @@ import { useFormStatus } from 'react-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
+import type { ReactNode } from 'react'
+
 import type { HueFormState } from '@/modules/admin/types/hue-form-state'
 import type { Hue } from '@/types/color'
 
@@ -22,6 +24,12 @@ type HueFormProps = {
   defaultValues?: Partial<Hue>
   /** Whether the form is creating a new hue or editing an existing one. */
   mode: 'create' | 'edit'
+  /**
+   * Optional footer rendered inside the `<form>` element, replacing the default
+   * submit button row. Use this to inject action bars that need access to
+   * {@link useFormStatus} (e.g. inline edit rows with Delete/Cancel/Save).
+   */
+  footer?: ReactNode
 }
 
 /**
@@ -63,7 +71,7 @@ function toSlug(value: string): string {
  *
  * @param props - {@link HueFormProps}
  */
-export function HueForm({ action, parentId, defaultValues, mode }: HueFormProps) {
+export function HueForm({ action, parentId, defaultValues, mode, footer }: HueFormProps) {
   const [state, formAction] = useActionState(action, null)
   const [slugValue, setSlugValue] = useState(defaultValues?.slug ?? '')
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(mode === 'edit')
@@ -199,9 +207,11 @@ export function HueForm({ action, parentId, defaultValues, mode }: HueFormProps)
         </div>
       )}
 
-      <div className="flex justify-end">
-        <SubmitButton mode={mode} />
-      </div>
+      {footer !== undefined ? footer : (
+        <div className="flex justify-end">
+          <SubmitButton mode={mode} />
+        </div>
+      )}
     </form>
   )
 }

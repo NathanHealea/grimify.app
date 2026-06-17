@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { updateHue } from '@/modules/admin/actions/hue-actions'
 import { AddPaintsToHue } from '@/modules/admin/components/add-paints-to-hue'
 import { DeleteHueButton } from '@/modules/admin/components/delete-hue-button'
+import { EditChildHueRow } from '@/modules/admin/components/edit-child-hue-row'
 import { HueForm } from '@/modules/admin/components/hue-form'
 import { HuePaintList } from '@/modules/admin/components/hue-paint-list'
 import { getHueService } from '@/modules/hues/services/hue-service.server'
@@ -111,22 +112,7 @@ export default async function AdminHueDetailPage({ params }: { params: Promise<{
                     </thead>
                     <tbody>
                       {childHues.map((child) => (
-                        <tr key={child.id} className="border-b border-border/50">
-                          <td className="py-2 pr-3">
-                            <span
-                              className="inline-block h-5 w-5 rounded border border-border"
-                              style={{ backgroundColor: child.hex_code }}
-                              aria-hidden="true"
-                            />
-                          </td>
-                          <td className="py-2 pr-4 font-medium">{child.name}</td>
-                          <td className="py-2 pr-4 font-mono text-xs text-muted-foreground">{child.slug}</td>
-                          <td className="py-2">
-                            <Link href={`/admin/hues/${child.id}`} className="btn btn-ghost btn-sm">
-                              Edit
-                            </Link>
-                          </td>
-                        </tr>
+                        <EditChildHueRow key={child.id} childHue={child} />
                       ))}
                     </tbody>
                   </table>
