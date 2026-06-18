@@ -27,6 +27,8 @@
 @import '../styles/skeleton.css' layer(components);
 @import '../styles/main.css' layer(components);
 @import '../styles/page-header.css' layer(components);
+@import '../styles/hero.css' layer(components);
+@import '../styles/marketing.css' layer(components);
 
 @custom-variant dark (&:is(.dark *));
 

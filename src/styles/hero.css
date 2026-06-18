@@ -1,0 +1,82 @@
+/*
+ * Hero Section
+ *
+ * Based on the Grimify DESIGN.md specification.
+ * https://grimify.app — see DESIGN.md § Marketing, Agent Prompt Guide
+ *
+ * Fixed dark-surface marketing hero for the homepage. Background is always
+ * zinc-950 (~oklch 0.09) regardless of the user's OS colour-scheme preference.
+ * Add the `.dark` class to the `<section>` element so child semantic tokens
+ * (input borders, button gold, muted text) resolve to their dark-mode values.
+ *
+ * Classes:
+ *   Base:     .hero               — Full-width fixed-dark section wrapper
+ *   Layout:   .hero-content       — Centred column, max-w-3xl
+ *   Text:     .hero-eyebrow       — Small uppercase label above the heading
+ *             .hero-title         — Primary h1 — white, bold, responsive scale
+ *             .hero-description   — Muted body copy below the heading
+ *   Actions:  .hero-actions       — Wrapper for search bar and brand strip
+ *   Swatches: .hero-swatch-strip  — Decorative flex row of paint colour circles
+ *             .hero-swatch        — Individual swatch circle (color set inline)
+ */
+
+/* --- */
+/* Base */
+/* --- */
+
+.hero {
+  @apply relative overflow-hidden;
+  /* Fixed dark — does not invert in dark OS mode */
+  background-color: oklch(0.09 0 0);
+  border-bottom: 1px solid oklch(0.2 0 0);
+}
+
+/* --- */
+/* Layout */
+/* --- */
+
+.hero-content {
+  @apply mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 py-16 text-center;
+  @apply sm:py-24;
+}
+
+/* --- */
+/* Text */
+/* --- */
+
+.hero-eyebrow {
+  @apply text-xs font-medium uppercase tracking-widest;
+  color: oklch(0.45 0 0);
+}
+
+.hero-title {
+  @apply text-balance text-4xl font-bold tracking-tight text-white;
+  @apply sm:text-5xl;
+  @apply lg:text-6xl;
+}
+
+.hero-description {
+  @apply text-balance text-lg;
+  @apply sm:text-xl;
+  color: oklch(0.6 0 0);
+}
+
+/* --- */
+/* Actions */
+/* --- */
+
+.hero-actions {
+  @apply flex w-full flex-col gap-3 pt-2;
+}
+
+/* --- */
+/* Paint swatch strip */
+/* --- */
+
+.hero-swatch-strip {
+  @apply flex flex-wrap justify-center gap-2 pt-2;
+}
+
+.hero-swatch {
+  @apply size-4 rounded-full opacity-75;
+}
