@@ -1,0 +1,171 @@
+/*
+ * Marketing Section
+ *
+ * Based on the Grimify DESIGN.md specification.
+ * https://grimify.app — see DESIGN.md § Layout Principles, § Visual Theme
+ *
+ * Shared layout primitives for homepage marketing sections (feature grid,
+ * core loop, stats strip, CTA). Each section manages its own background
+ * and foreground colours; this file handles structural layout only.
+ *
+ * Classes:
+ *   Section:  .marketing-section         — Bordered section wrapper with vertical rhythm
+ *             .marketing-section-muted   — Modifier: muted/secondary background surface
+ *   Header:   .marketing-section-header  — Centred heading block, max-w-2xl
+ *             .marketing-section-eyebrow — Tiny label above the section heading
+ *             .marketing-section-heading — h2 display text, bold, responsive
+ *             .marketing-section-desc    — Muted body copy below the heading
+ *   Content:  .marketing-section-body    — Inner content container, max-w-6xl
+ *             .marketing-section-body-sm — Narrow variant, max-w-3xl (stats, CTA)
+ *   Steps:    .marketing-steps           — Horizontal step list (core loop)
+ *             .marketing-step            — Individual step column
+ *             .marketing-step-number     — Circular gold step-number badge
+ *             .marketing-step-icon       — Lucide icon, primary colour
+ *             .marketing-step-title      — Step label text
+ *             .marketing-step-desc       — Step description, muted
+ *   Stats:    .marketing-stats           — Flex row of stat items
+ *             .marketing-stat            — Individual stat (value + label)
+ *             .marketing-stat-value      — Large number, primary colour
+ *             .marketing-stat-label      — Small muted label
+ *   Swatch:   .marketing-swatch-grid     — Grid of paint swatch circles
+ *             .marketing-swatch-circle   — Individual swatch circle (color set inline)
+ */
+
+/* --- */
+/* Section wrappers */
+/* --- */
+
+.marketing-section {
+  @apply border-b border-border;
+}
+
+.marketing-section-muted {
+  @apply bg-muted/20;
+}
+
+/* --- */
+/* Section header */
+/* --- */
+
+.marketing-section-header {
+  @apply mx-auto mb-10 max-w-2xl text-center;
+}
+
+.marketing-section-eyebrow {
+  /* Inlined from .badge + .badge-outline — @apply cannot compose custom component classes */
+  @apply mb-3 inline-flex items-center gap-1 rounded-md border border-border bg-transparent
+    px-2 py-0.5 text-xs font-medium whitespace-nowrap text-foreground;
+}
+
+.marketing-section-heading {
+  @apply text-balance text-3xl font-bold tracking-tight;
+  @apply sm:text-4xl;
+}
+
+.marketing-section-desc {
+  @apply mt-3 text-balance text-base text-muted-foreground;
+}
+
+/* --- */
+/* Content containers */
+/* --- */
+
+.marketing-section-body {
+  @apply mx-auto w-full max-w-6xl px-4 py-16;
+  @apply sm:py-24;
+}
+
+.marketing-section-body-sm {
+  @apply mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 py-16 text-center;
+  @apply sm:py-24;
+}
+
+/* --- */
+/* Core loop steps */
+/* --- */
+
+.marketing-steps {
+  @apply mt-10 flex flex-col gap-8;
+  @apply sm:flex-row sm:gap-6;
+}
+
+.marketing-step {
+  @apply flex flex-1 flex-col items-center gap-3 text-center;
+  @apply sm:items-start sm:text-left;
+}
+
+.marketing-step-number {
+  @apply inline-flex size-7 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary;
+}
+
+.marketing-step-icon {
+  @apply size-5 text-primary;
+}
+
+.marketing-step-title {
+  @apply text-base font-semibold;
+}
+
+.marketing-step-desc {
+  @apply text-sm text-muted-foreground;
+}
+
+/* --- */
+/* Stats */
+/* --- */
+
+.marketing-stats {
+  @apply flex flex-wrap justify-center gap-10;
+}
+
+.marketing-stat {
+  @apply flex flex-col items-center gap-1;
+}
+
+.marketing-stat-value {
+  @apply text-3xl font-bold tracking-tight text-primary;
+}
+
+.marketing-stat-label {
+  @apply text-sm text-muted-foreground;
+}
+
+/* --- */
+/* Paint swatch grid */
+/* --- */
+
+.marketing-swatch-grid {
+  @apply flex flex-wrap justify-center gap-2;
+}
+
+.marketing-swatch-circle {
+  @apply size-8 rounded-full;
+}
+
+/* --- */
+/* Feature cards */
+/* --- */
+
+.feature-grid {
+  @apply grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.feature-card {
+  @apply flex h-full flex-col gap-3 p-6 transition-colors;
+}
+
+.feature-card:hover {
+  @apply border-primary/50 bg-muted/40;
+}
+
+.feature-card-icon {
+  @apply inline-flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary;
+}
+
+.feature-card-title {
+  @apply text-lg font-semibold leading-none tracking-tight;
+}
+
+.feature-card-blurb {
+  @apply text-sm text-muted-foreground;
+}

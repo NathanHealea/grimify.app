@@ -6,19 +6,22 @@
  */
 export function StatsStrip() {
   const stats = [
-    { value: '2,300+', label: 'paints indexed — and growing' },
-    { value: '5', label: 'supported brands — expanding' },
-    { value: 'Free', label: 'to browse — always' },
+    { value: '2,800+', label: 'paints indexed — and growing' },
+    { value: '6',      label: 'supported brands — expanding' },
+    { value: 'Free',   label: 'to browse — always' },
   ]
+
   return (
-    <section className="border-b border-border">
-      <div className="mx-auto flex w-full max-w-3xl flex-wrap justify-center gap-8 px-4 py-10 text-center">
-        {stats.map(({ value, label }) => (
-          <div key={label} className="flex flex-col gap-1">
-            <span className="text-2xl font-semibold tracking-tight">{value}</span>
-            <span className="text-sm text-muted-foreground">{label}</span>
-          </div>
-        ))}
+    <section className="marketing-section marketing-section-muted">
+      <div className="marketing-section-body-sm">
+        <dl className="marketing-stats">
+          {stats.map(({ value, label }) => (
+            <div key={label} className="marketing-stat">
+              <dt className="marketing-stat-value">{value}</dt>
+              <dd className="marketing-stat-label">{label}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   )

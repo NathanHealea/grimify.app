@@ -17,21 +17,26 @@ export function CtaSection({ isAuthenticated }: { isAuthenticated: boolean }) {
     : { label: 'Browse paints', href: '/paints' }
 
   return (
-    <section>
-      <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 py-16 text-center sm:py-20">
-        <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-          {isAuthenticated ? 'Pick up where you left off' : 'Stop buying duplicate paints.'}
-        </h2>
-        <p className="text-base text-muted-foreground text-balance sm:text-lg">
-          {isAuthenticated
-            ? 'Jump back into your collection or build a palette for your next project.'
-            : 'Search Citadel, Vallejo, Army Painter, and every major brand — free, no account needed. Sign up to save palettes and track your shelf.'}
-        </p>
-        <div className="flex flex-col items-center gap-3 pt-2 sm:flex-row sm:gap-4">
+    <section className="marketing-section">
+      <div className="marketing-section-body-sm">
+        <header className="marketing-section-header">
+          <p className="marketing-section-eyebrow">
+            {isAuthenticated ? 'Welcome back' : 'Get started'}
+          </p>
+          <h2 className="marketing-section-heading">
+            {isAuthenticated ? 'Pick up where you left off' : 'Stop buying duplicate paints.'}
+          </h2>
+          <p className="marketing-section-desc">
+            {isAuthenticated
+              ? 'Jump back into your collection or build a palette for your next project.'
+              : 'Search Citadel, Vallejo, Army Painter, and every major brand — free, no account needed. Sign up to save palettes and track your shelf.'}
+          </p>
+        </header>
+        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
           <Link href={primary.href} className="btn btn-primary btn-lg">
             {primary.label}
           </Link>
-          <Link href={secondary.href} className="btn btn-ghost btn-lg">
+          <Link href={secondary.href} className="btn btn-outline btn-lg">
             {secondary.label}
           </Link>
         </div>
