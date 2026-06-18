@@ -206,7 +206,7 @@ Core functionality:
 
 - [x] [Admin layout and navigation](./09-color-management/00-admin-layout-navigation.md)
 - [x] [Brand management](./09-color-management/01-brand-management.md)
-- [ ] [Hue management](./09-color-management/02-hue-management.md)
+- [x] [Hue management](./09-color-management/02-hue-management.md)
 - [x] [Paint management](./09-color-management/03-paint-management.md)
 
 ### Epic: Purchase List

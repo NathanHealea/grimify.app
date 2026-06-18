@@ -111,14 +111,14 @@ Required to present Grimify as a real, trustworthy product at launch.
 - [ ] **Homepage marketing landing page** — first impression for new visitors
 - [ ] Branding images — _desirable for polish; soft-MVP_
 
-### 🟡 Epic: Color Management (Admin) — _MVP (operationally required)_
+### ✅ Epic: Color Management (Admin) — _MVP (complete)_
 
 Someone must be able to maintain the paint/brand/hue data the entire app depends on.
 
 - [x] Admin layout and navigation
-- [ ] **Brand management**
-- [ ] **Hue management**
-- [ ] **Paint management**
+- [x] Brand management
+- [x] Hue management
+- [x] Paint management
 
 ### 🟡 Epic: User Management (Admin) — _MVP (core complete)_
 
@@ -153,13 +153,13 @@ These epics are intentionally excluded from the MVP. They add value but are not 
 
 Everything below is **in MVP scope but not yet complete**. Work the groups top-to-bottom; items within a group are listed in their recommended implementation order. Check items off as they ship.
 
-### Group 1 — Admin Data Management
+### ~~Group 1 — Admin Data Management~~ ✅
 
 _Operationally required: someone must be able to maintain the paint/brand/hue data the entire app depends on. Implemented in dependency order — brands and hues exist before paints reference them._
 
-- [ ] Brand management
-- [ ] Hue management
-- [ ] Paint management
+- [x] Brand management
+- [x] Hue management
+- [x] Paint management
 
 ### Group 2 — Launch Presentation
 
