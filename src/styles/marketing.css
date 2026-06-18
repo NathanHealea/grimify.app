@@ -141,3 +141,31 @@
 .marketing-swatch-circle {
   @apply size-8 rounded-full;
 }
+
+/* --- */
+/* Feature cards */
+/* --- */
+
+.feature-grid {
+  @apply grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.feature-card {
+  @apply flex h-full flex-col gap-3 p-6 transition-colors;
+}
+
+.feature-card:hover {
+  @apply border-primary/50 bg-muted/40;
+}
+
+.feature-card-icon {
+  @apply inline-flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary;
+}
+
+.feature-card-title {
+  @apply text-lg font-semibold leading-none tracking-tight;
+}
+
+.feature-card-blurb {
+  @apply text-sm text-muted-foreground;
+}
