@@ -57,6 +57,11 @@ export function DeletePaintButton({ paintId, paintName }: DeletePaintButtonProps
             Are you sure you want to delete <strong>{paintName}</strong>? This action cannot
             be undone.
           </p>
+          <p className="text-sm text-muted-foreground">
+            Deleting this paint will also permanently remove all references to it — including
+            any recipe steps, collection entries, and comparison references — via cascading
+            deletion.
+          </p>
 
           {state?.error && (
             <p className="text-sm text-destructive">{state.error}</p>

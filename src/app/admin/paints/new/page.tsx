@@ -38,19 +38,18 @@ export default async function AdminPaintNewPage() {
 
   return (
     <Main as="div">
+      <div className="mb-6">
+        <Link href="/admin/paints" className="text-sm text-muted-foreground hover:text-foreground">
+          ← Back to paints
+        </Link>
+      </div>
+
       <PageHeader>
-        <div className="flex items-center gap-2">
-          <Link href="/admin/paints" className="btn btn-ghost btn-sm">
-            ← Paints
-          </Link>
-          <div>
-            <PageTitle>New Paint</PageTitle>
-            <PageSubtitle>Add a new paint to the catalog.</PageSubtitle>
-          </div>
-        </div>
+        <PageTitle>New Paint</PageTitle>
+        <PageSubtitle>Add a new paint to the catalog.</PageSubtitle>
       </PageHeader>
 
-      <Card className="max-w-2xl">
+      <Card>
         <CardHeader>
           <CardTitle>Paint Details</CardTitle>
         </CardHeader>

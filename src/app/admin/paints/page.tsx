@@ -6,6 +6,7 @@ import { Main } from '@/components/main'
 import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
 import { getBrandService } from '@/modules/brands/services/brand-service.server'
+import { DeletePaintButton } from '@/modules/admin/components/delete-paint-button'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
@@ -126,6 +127,7 @@ export default async function AdminPaintsPage({
                 <th className="pb-2 pr-4 font-medium">Name</th>
                 <th className="pb-2 pr-4 font-medium">Brand</th>
                 <th className="pb-2 pr-4 font-medium">Product Line</th>
+                <th className="pb-2 pr-4 font-medium">Hue</th>
                 <th className="pb-2 pr-4 font-medium">Type</th>
                 <th className="pb-2 font-medium">Actions</th>
               </tr>
@@ -142,18 +144,35 @@ export default async function AdminPaintsPage({
                   </td>
                   <td className="py-2 pr-4 font-medium">{paint.name}</td>
                   <td className="py-2 pr-4 text-muted-foreground">
-                    {(paint.product_lines as { brands?: { name: string } } | null)?.brands?.name ?? '—'}
+                    {paint.product_lines.brands.name}
                   </td>
                   <td className="py-2 pr-4 text-muted-foreground text-xs">
-                    {paint.slug}
+                    {paint.product_lines.name}
+                  </td>
+                  <td className="py-2 pr-4 text-xs text-muted-foreground">
+                    {paint.hues ? (
+                      <span className="flex items-center gap-1.5">
+                        <span
+                          className="inline-block h-3 w-3 rounded-full border border-border shrink-0"
+                          style={{ backgroundColor: paint.hues.hex_code }}
+                          aria-hidden="true"
+                        />
+                        {paint.hues.name}
+                      </span>
+                    ) : (
+                      '—'
+                    )}
                   </td>
                   <td className="py-2 pr-4 text-xs text-muted-foreground">
                     {paint.paint_type ?? '—'}
                   </td>
                   <td className="py-2">
-                    <Link href={`/admin/paints/${paint.id}`} className="btn btn-ghost btn-sm">
-                      Edit
-                    </Link>
+                    <div className="flex items-center gap-1">
+                      <Link href={`/admin/paints/${paint.id}`} className="btn btn-ghost btn-sm">
+                        Edit
+                      </Link>
+                      <DeletePaintButton paintId={paint.id} paintName={paint.name} />
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -36,6 +36,22 @@ export async function createPaint(
   const child_hue_id = (formData.get('child_hue_id') as string | null)?.trim() || null
   const is_metallic = formData.get('is_metallic') === 'on'
   const is_discontinued = formData.get('is_discontinued') === 'on'
+  const submittedSlug = (formData.get('slug') as string | null)?.trim() ?? ''
+  const submittedBrandId = (formData.get('brand_id') as string | null)?.trim() ?? ''
+
+  const submittedFields = {
+    name,
+    slug: submittedSlug,
+    hex,
+    brand_id: submittedBrandId,
+    product_line_id: product_line_id ?? '',
+    brand_paint_id,
+    paint_type: paint_type ?? '',
+    parent_hue_id: parent_hue_id ?? '',
+    child_hue_id: child_hue_id ?? '',
+    is_metallic,
+    is_discontinued,
+  }
 
   const fieldErrors: NonNullable<NonNullable<PaintFormState>['errors']> = {}
 
@@ -45,15 +61,16 @@ export async function createPaint(
   } else if (!/^[0-9a-fA-F]{6}$/.test(hex)) {
     fieldErrors.hex = 'Hex must be a valid 6-digit hex code.'
   }
+  if (!submittedBrandId) fieldErrors.brand_id = 'Brand is required.'
   if (!product_line_id) fieldErrors.product_line_id = 'Product line is required.'
   if (!brand_paint_id) fieldErrors.brand_paint_id = 'Brand paint ID is required.'
 
   if (Object.keys(fieldErrors).length > 0) {
-    return { errors: fieldErrors }
+    return { errors: fieldErrors, fields: submittedFields }
   }
 
   const rgb = hexToRgb(hex)
-  if (!rgb) return { errors: { hex: 'Invalid hex color.' } }
+  if (!rgb) return { errors: { hex: 'Invalid hex color.' }, fields: submittedFields }
   const { r, g, b } = rgb
   const { h, s, l } = rgbToHsl(r, g, b)
   const slug = toSlug(name)
@@ -71,7 +88,7 @@ export async function createPaint(
       .single()
 
     if (!childHue || childHue.parent_id !== parent_hue_id) {
-      return { errors: { hue: 'Selected child hue does not belong to the selected parent hue.' } }
+      return { errors: { hue: 'Selected child hue does not belong to the selected parent hue.' }, fields: submittedFields }
     }
     hue_id = child_hue_id
   } else if (parent_hue_id) {
@@ -102,9 +119,9 @@ export async function createPaint(
 
   if (error) {
     if (error.code === '23505') {
-      return { errors: { slug: 'A paint with this name/slug already exists.' } }
+      return { errors: { slug: 'A paint with this name/slug already exists.' }, fields: submittedFields }
     }
-    return { error: error.message }
+    return { error: error.message, fields: submittedFields }
   }
 
   revalidatePath('/admin/paints')
@@ -136,6 +153,22 @@ export async function updatePaint(
   const child_hue_id = (formData.get('child_hue_id') as string | null)?.trim() || null
   const is_metallic = formData.get('is_metallic') === 'on'
   const is_discontinued = formData.get('is_discontinued') === 'on'
+  const submittedSlug = (formData.get('slug') as string | null)?.trim() ?? ''
+  const submittedBrandId = (formData.get('brand_id') as string | null)?.trim() ?? ''
+
+  const submittedFields = {
+    name,
+    slug: submittedSlug,
+    hex,
+    brand_id: submittedBrandId,
+    product_line_id: product_line_id ?? '',
+    brand_paint_id,
+    paint_type: paint_type ?? '',
+    parent_hue_id: parent_hue_id ?? '',
+    child_hue_id: child_hue_id ?? '',
+    is_metallic,
+    is_discontinued,
+  }
 
   const fieldErrors: NonNullable<NonNullable<PaintFormState>['errors']> = {}
 
@@ -145,15 +178,16 @@ export async function updatePaint(
   } else if (!/^[0-9a-fA-F]{6}$/.test(hex)) {
     fieldErrors.hex = 'Hex must be a valid 6-digit hex code.'
   }
+  if (!submittedBrandId) fieldErrors.brand_id = 'Brand is required.'
   if (!product_line_id) fieldErrors.product_line_id = 'Product line is required.'
   if (!brand_paint_id) fieldErrors.brand_paint_id = 'Brand paint ID is required.'
 
   if (Object.keys(fieldErrors).length > 0) {
-    return { errors: fieldErrors }
+    return { errors: fieldErrors, fields: submittedFields }
   }
 
   const rgb = hexToRgb(hex)
-  if (!rgb) return { errors: { hex: 'Invalid hex color.' } }
+  if (!rgb) return { errors: { hex: 'Invalid hex color.' }, fields: submittedFields }
   const { r, g, b } = rgb
   const { h, s, l } = rgbToHsl(r, g, b)
   const slug = toSlug(name)
@@ -170,7 +204,7 @@ export async function updatePaint(
       .single()
 
     if (!childHue || childHue.parent_id !== parent_hue_id) {
-      return { errors: { hue: 'Selected child hue does not belong to the selected parent hue.' } }
+      return { errors: { hue: 'Selected child hue does not belong to the selected parent hue.' }, fields: submittedFields }
     }
     hue_id = child_hue_id
   } else if (parent_hue_id) {
@@ -199,7 +233,7 @@ export async function updatePaint(
     .eq('id', id)
 
   if (error) {
-    return { error: error.message }
+    return { error: error.message, fields: submittedFields }
   }
 
   revalidatePath('/admin/paints')
