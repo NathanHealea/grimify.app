@@ -49,7 +49,7 @@ export function PaletteSwatchStrip({
       {overflow > 0 && (
         <div
           style={{ height: px }}
-          className="badge badge-soft flex items-center px-1 text-xs"
+          className="flex items-center rounded-md bg-muted px-1 text-xs text-muted-foreground"
         >
           +{overflow}
         </div>
