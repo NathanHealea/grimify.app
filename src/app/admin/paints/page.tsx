@@ -6,6 +6,7 @@ import { Main } from '@/components/main'
 import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import { getPaintService } from '@/modules/paints/services/paint-service.server'
 import { getBrandService } from '@/modules/brands/services/brand-service.server'
+import { DeletePaintButton } from '@/modules/admin/components/delete-paint-button'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 
 export const metadata = pageMetadata({
@@ -166,9 +167,12 @@ export default async function AdminPaintsPage({
                     {paint.paint_type ?? '—'}
                   </td>
                   <td className="py-2">
-                    <Link href={`/admin/paints/${paint.id}`} className="btn btn-ghost btn-sm">
-                      Edit
-                    </Link>
+                    <div className="flex items-center gap-1">
+                      <Link href={`/admin/paints/${paint.id}`} className="btn btn-ghost btn-sm">
+                        Edit
+                      </Link>
+                      <DeletePaintButton paintId={paint.id} paintName={paint.name} />
+                    </div>
                   </td>
                 </tr>
               ))}
