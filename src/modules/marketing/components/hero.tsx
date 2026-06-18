@@ -9,17 +9,17 @@ import { HeroSearch } from '@/modules/marketing/components/hero-search'
  * midpoints for each hue group — chosen for visual variety, not data accuracy.
  */
 const HUE_SWATCHES = [
-  { hue: 'red',         hex: '#C41E3A' },
-  { hue: 'yellow-red',  hex: '#D4590A' },
-  { hue: 'yellow',      hex: '#D4AC0D' },
-  { hue: 'green-yellow',hex: '#7DB72A' },
-  { hue: 'green',       hex: '#27AE60' },
-  { hue: 'blue-green',  hex: '#1A8C7A' },
-  { hue: 'blue',        hex: '#2E86C1' },
-  { hue: 'purple-blue', hex: '#4A4FA8' },
-  { hue: 'purple',      hex: '#7D3C98' },
-  { hue: 'red-purple',  hex: '#A0366A' },
-  { hue: 'neutral',     hex: '#717D7E' },
+  { hue: 'red',          hex: '#FF0000' },
+  { hue: 'yellow-red',   hex: '#FF8C00' },
+  { hue: 'yellow',       hex: '#FFFF00' },
+  { hue: 'green-yellow', hex: '#9ACD32' },
+  { hue: 'green',        hex: '#008000' },
+  { hue: 'blue-green',   hex: '#008080' },
+  { hue: 'blue',         hex: '#0000FF' },
+  { hue: 'purple-blue',  hex: '#4B0082' },
+  { hue: 'purple',       hex: '#800080' },
+  { hue: 'red-purple',   hex: '#FF00FF' },
+  { hue: 'neutral',      hex: '#808080' },
 ]
 
 /**
