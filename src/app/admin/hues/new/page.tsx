@@ -29,21 +29,23 @@ export default async function AdminHueNewPage({
 
   return (
     <Main as="div">
+      <div className="mb-6">
+        <Link
+          href={parent_id ? `/admin/hues/${parent_id}` : '/admin/hues'}
+          className="text-sm text-muted-foreground hover:text-foreground"
+        >
+          {parent_id ? '← Back to hue' : '← Back to hues'}
+        </Link>
+      </div>
+
       <PageHeader>
-        <div className="flex items-center gap-2">
-          <Link href="/admin/hues" className="btn btn-ghost btn-sm">
-            ← Hues
-          </Link>
-          <div>
-            <PageTitle>{parent_id ? 'New Child Hue' : 'New Hue'}</PageTitle>
-            <PageSubtitle>
-              {parent_id ? 'Add an ISCC-NBS sub-hue.' : 'Add a Munsell principal hue.'}
-            </PageSubtitle>
-          </div>
-        </div>
+        <PageTitle>{parent_id ? 'New Child Hue' : 'New Hue'}</PageTitle>
+        <PageSubtitle>
+          {parent_id ? 'Add an ISCC-NBS sub-hue.' : 'Add a Munsell principal hue.'}
+        </PageSubtitle>
       </PageHeader>
 
-      <Card className="max-w-lg">
+      <Card>
         <CardHeader>
           <CardTitle>Hue Details</CardTitle>
         </CardHeader>

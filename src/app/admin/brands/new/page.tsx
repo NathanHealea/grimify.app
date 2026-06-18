@@ -18,19 +18,18 @@ export const metadata = pageMetadata({
 export default function AdminBrandNewPage() {
   return (
     <Main as="div">
+      <div className="mb-6">
+        <Link href="/admin/brands" className="text-sm text-muted-foreground hover:text-foreground">
+          ← Back to brands
+        </Link>
+      </div>
+
       <PageHeader>
-        <div className="flex items-center gap-2">
-          <Link href="/admin/brands" className="btn btn-ghost btn-sm">
-            ← Brands
-          </Link>
-          <div>
-            <PageTitle>New Brand</PageTitle>
-            <PageSubtitle>Add a new paint manufacturer.</PageSubtitle>
-          </div>
-        </div>
+        <PageTitle>New Brand</PageTitle>
+        <PageSubtitle>Add a new paint manufacturer.</PageSubtitle>
       </PageHeader>
 
-      <Card className="max-w-lg">
+      <Card>
         <CardHeader>
           <CardTitle>Brand Details</CardTitle>
         </CardHeader>
