@@ -1,33 +1,37 @@
+import Link from 'next/link'
+
 import { BrandStrip } from '@/modules/marketing/components/brand-strip'
 import { HeroSearch } from '@/modules/marketing/components/hero-search'
 
 /**
- * Representative paint hex values rendered as a decorative swatch strip.
- * Drawn from common miniature painting palettes across reds, blues, greens,
- * browns, purples, and neutrals to suggest the breadth of the colour database.
+ * One swatch per top-level hue. The `hue` value matches the lowercase hue
+ * name used by the `/paints?hue=` filter param. Hex values are representative
+ * midpoints for each hue group — chosen for visual variety, not data accuracy.
  */
-const HERO_PAINT_COLORS = [
-  '#8B0000', '#C41E3A', '#B03A2E', '#1B4F72',
-  '#2E86C1', '#1A5C38', '#27AE60', '#784212',
-  '#D4AC0D', '#7D3C98', '#717D7E', '#2C3E50',
+const HUE_SWATCHES = [
+  { hue: 'red',         hex: '#C41E3A' },
+  { hue: 'yellow-red',  hex: '#D4590A' },
+  { hue: 'yellow',      hex: '#D4AC0D' },
+  { hue: 'green-yellow',hex: '#7DB72A' },
+  { hue: 'green',       hex: '#27AE60' },
+  { hue: 'blue-green',  hex: '#1A8C7A' },
+  { hue: 'blue',        hex: '#2E86C1' },
+  { hue: 'purple-blue', hex: '#4A4FA8' },
+  { hue: 'purple',      hex: '#7D3C98' },
+  { hue: 'red-purple',  hex: '#A0366A' },
+  { hue: 'neutral',     hex: '#717D7E' },
 ]
 
 /**
- * Dark full-bleed marketing hero for the homepage.
+ * Marketing hero for the homepage.
  *
- * Rendered on a fixed dark surface (`.hero`) with the `.dark` context class so
- * all semantic tokens — input borders, primary gold CTA, muted text — resolve
- * to dark-mode values regardless of the visitor's OS colour-scheme preference.
- *
- * The {@link HERO_PAINT_COLORS} swatch strip visually communicates the breadth
- * of the paint database before the visitor types a character.
- *
- * @remarks The site navbar already shows the Grimify wordmark; this hero leads
- *   with copy rather than a duplicated logo.
+ * Uses semantic theme tokens so it adapts to both light and dark mode.
+ * The swatch strip links each colour circle to the paints page pre-filtered
+ * by the corresponding hue group.
  */
 export function Hero() {
   return (
-    <section className="dark hero">
+    <section className="hero">
       <div className="hero-content">
         <p className="hero-eyebrow">The miniature painter&apos;s toolkit</p>
         <h1 className="hero-title">Find any miniature paint — across every brand</h1>
@@ -39,9 +43,15 @@ export function Hero() {
           <HeroSearch />
           <BrandStrip />
         </div>
-        <div aria-hidden className="hero-swatch-strip">
-          {HERO_PAINT_COLORS.map((hex) => (
-            <div key={hex} className="hero-swatch" style={{ backgroundColor: hex }} />
+        <div className="hero-swatch-strip">
+          {HUE_SWATCHES.map(({ hue, hex }) => (
+            <Link
+              key={hue}
+              href={`/paints?hue=${hue}`}
+              aria-label={`Browse ${hue} paints`}
+              className="hero-swatch"
+              style={{ backgroundColor: hex }}
+            />
           ))}
         </div>
       </div>
