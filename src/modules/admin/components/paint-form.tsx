@@ -82,12 +82,20 @@ export function PaintForm({
   mode,
 }: PaintFormProps) {
   const [state, formAction] = useActionState(action, null)
-  const [slugManuallyEdited, setSlugManuallyEdited] = useState(mode === 'edit')
-  const [slugValue, setSlugValue] = useState(defaultValues?.slug ?? '')
-  const [selectedBrandId, setSelectedBrandId] = useState<number | ''>(
-    defaultValues?.product_lines?.brand_id ?? ''
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(
+    mode === 'edit' || !!state?.fields?.slug
   )
-  const [hexValue, setHexValue] = useState(defaultValues?.hex ?? '#000000')
+  const [slugValue, setSlugValue] = useState(
+    state?.fields?.slug ?? defaultValues?.slug ?? ''
+  )
+  const [selectedBrandId, setSelectedBrandId] = useState<number | ''>(
+    state?.fields?.brand_id
+      ? parseInt(state.fields.brand_id, 10)
+      : (defaultValues?.product_lines?.brand_id ?? '')
+  )
+  const [hexValue, setHexValue] = useState(
+    state?.fields?.hex ? `#${state.fields.hex}` : (defaultValues?.hex ?? '#000000')
+  )
 
   const computedColor = useMemo(() => {
     const rgb = hexToRgb(hexValue)
@@ -101,9 +109,14 @@ export function PaintForm({
       ? (brands.find((b) => b.id === selectedBrandId)?.product_lines ?? [])
       : []
 
-  const defaultParentHueId = defaultValues?.hues?.parent_id ?? defaultValues?.hue_id ?? undefined
+  const defaultParentHueId =
+    state?.fields?.parent_hue_id ||
+    defaultValues?.hues?.parent_id ||
+    defaultValues?.hue_id ||
+    undefined
   const defaultChildHueId =
-    defaultValues?.hues?.parent_id != null ? (defaultValues?.hue_id ?? undefined) : undefined
+    state?.fields?.child_hue_id ||
+    (defaultValues?.hues?.parent_id != null ? (defaultValues?.hue_id ?? undefined) : undefined)
 
   function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
     if (!slugManuallyEdited) {
@@ -137,6 +150,7 @@ export function PaintForm({
       {defaultValues?.id && (
         <input type="hidden" name="id" value={defaultValues.id} />
       )}
+      <input type="hidden" name="brand_id" value={String(selectedBrandId)} />
 
       {state?.error && (
         <p className="text-sm text-destructive">{state.error}</p>
@@ -156,7 +170,7 @@ export function PaintForm({
           name="name"
           type="text"
           required
-          defaultValue={defaultValues?.name ?? ''}
+          defaultValue={state?.fields?.name ?? defaultValues?.name ?? ''}
           onChange={handleNameChange}
           className="input-sm"
           placeholder="e.g. Abaddon Black"
@@ -217,7 +231,7 @@ export function PaintForm({
           id="paint-product-line"
           name="product_line_id"
           required
-          defaultValue={defaultValues?.product_line_id ?? ''}
+          defaultValue={state?.fields?.product_line_id ?? defaultValues?.product_line_id ?? ''}
           disabled={productLines.length === 0}
           className="input input-sm"
         >
@@ -243,7 +257,7 @@ export function PaintForm({
           name="brand_paint_id"
           type="text"
           required
-          defaultValue={defaultValues?.brand_paint_id ?? ''}
+          defaultValue={state?.fields?.brand_paint_id ?? defaultValues?.brand_paint_id ?? ''}
           className="input-sm font-mono"
           placeholder="e.g. 99189950001"
         />
@@ -309,7 +323,7 @@ export function PaintForm({
           id="paint-type"
           name="paint_type"
           type="text"
-          defaultValue={defaultValues?.paint_type ?? ''}
+          defaultValue={state?.fields?.paint_type ?? defaultValues?.paint_type ?? ''}
           className="input-sm"
           placeholder="e.g. base, layer, contrast"
         />
@@ -321,7 +335,7 @@ export function PaintForm({
           <input
             type="checkbox"
             name="is_metallic"
-            defaultChecked={defaultValues?.is_metallic ?? false}
+            defaultChecked={state?.fields?.is_metallic ?? defaultValues?.is_metallic ?? false}
             className="checkbox checkbox-sm"
           />
           <span className="form-label text-sm">Metallic</span>
@@ -331,7 +345,7 @@ export function PaintForm({
           <input
             type="checkbox"
             name="is_discontinued"
-            defaultChecked={defaultValues?.is_discontinued ?? false}
+            defaultChecked={state?.fields?.is_discontinued ?? defaultValues?.is_discontinued ?? false}
             className="checkbox checkbox-sm"
           />
           <span className="form-label text-sm">Discontinued</span>
