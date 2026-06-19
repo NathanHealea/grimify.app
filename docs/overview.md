@@ -271,6 +271,7 @@ Core functionality:
 - [ ] [Cross-domain UI component audit](./13-application-improvements/02-cross-domain-ui-audit.md)
 - [ ] [Footer version display](./13-application-improvements/03-footer-version-display.md)
 - [x] [Domain breadcrumb navigation](./13-application-improvements/04-breadcrumb-navigation.md)
+- [x] [Palette tool — DESIGN.md visual refactor](./13-application-improvements/06-palette-tool-design-refactor.md)
 
 ### Epic: Army Management
 
