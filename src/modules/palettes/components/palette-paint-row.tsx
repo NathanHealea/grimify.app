@@ -130,7 +130,7 @@ export function PalettePaintRow({
         />
       )}
       <div
-        className="mt-0.5 size-8 shrink-0 rounded-sm"
+        className="mt-0.5 size-8 shrink-0 rounded-full"
         style={{ backgroundColor: paint.hex }}
         title={paint.hex}
       />
