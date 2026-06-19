@@ -23,9 +23,9 @@ export function PaletteCard({
   canEdit?: boolean
 }) {
   return (
-    <div className="relative">
+    <div className="relative transition-shadow hover:shadow-md">
       <div className="card card-body card-compact flex flex-col gap-3">
-        <PaletteSwatchStrip hexes={summary.swatches} size="sm" />
+        <PaletteSwatchStrip hexes={summary.swatches} size="md" />
         <div>
           <h3 className="card-title text-base">{summary.name}</h3>
           {summary.ownerDisplayName && (
