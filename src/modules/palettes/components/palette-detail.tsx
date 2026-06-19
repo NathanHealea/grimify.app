@@ -69,17 +69,16 @@ export function PaletteDetail({
           {isOwner && (
             <Link
               href={`/user/palettes/${palette.id}/edit`}
-              className="btn btn-sm btn-ghost shrink-0"
+              className="btn btn-sm btn-outline shrink-0"
             >
               Edit
             </Link>
           )}
         </div>
+        {hexes.length > 0 && (
+          <PaletteSwatchStrip hexes={hexes} size="lg" className="mt-4" />
+        )}
       </div>
-
-      {hexes.length > 0 && (
-        <PaletteSwatchStrip hexes={hexes} size="lg" />
-      )}
 
       {palette.paints.length > 0 ? (
         <PaletteGroupedPaintList
