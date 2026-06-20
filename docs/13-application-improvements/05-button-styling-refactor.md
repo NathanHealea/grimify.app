@@ -2,7 +2,7 @@
 
 **Epic:** Application Improvements
 **Type:** Refactor
-**Status:** Todo
+**Status:** Done
 **Branch:** `refactor/button-styling`
 **Merge into:** `main`
 
@@ -135,15 +135,15 @@ Once style modifiers consume `--btn-color`, the `.btn-destructive.btn-outline` c
 
 ## Acceptance Criteria
 
-- [ ] `btn-primary btn-outline` shows a gold/primary-colored outline button
-- [ ] `btn-destructive btn-outline` shows a red outline button (no compound workaround needed)
-- [ ] `btn-destructive btn-soft` shows a light red background with red text
-- [ ] `btn-primary btn-ghost` shows gold text on transparent background
-- [ ] `btn-ghost` without a color variant retains its current neutral appearance (no regression)
-- [ ] All existing button usages in the codebase render correctly after the change (visual regression check)
-- [ ] The `.btn-destructive.btn-outline` compound rule is removed from `button.css`
-- [ ] `btn-success`, `btn-warning`, `btn-info` variants are added and documented
-- [ ] The CSS file documentation header is updated to reflect all new classes
+- [x] `btn-primary btn-outline` shows a gold/primary-colored outline button
+- [x] `btn-destructive btn-outline` shows a red outline button (no compound workaround needed)
+- [x] `btn-destructive btn-soft` shows a light red background with red text
+- [x] `btn-primary btn-ghost` shows gold text on transparent background
+- [x] `btn-ghost` without a color variant retains its current neutral appearance (no regression)
+- [x] All existing button usages in the codebase render correctly after the change (visual regression check)
+- [x] The `.btn-destructive.btn-outline` compound rule is removed from `button.css`
+- [x] `btn-success`, `btn-warning`, `btn-info` variants are added and documented
+- [x] The CSS file documentation header is updated to reflect all new classes
 
 ## Scope
 
