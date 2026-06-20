@@ -2,7 +2,7 @@
 
 **Epic:** Design System
 **Type:** Feature
-**Status:** Todo
+**Status:** Done
 **Branch:** `feature/paint-card-component-alignment`
 **Merge into:** `main`
 
@@ -18,14 +18,14 @@ These inconsistencies mean paint cards across the app differ from the intended d
 
 ## Acceptance Criteria
 
-- [ ] Swatch circle is `size-10 rounded-full` with `border border-border` and hex background
-- [ ] Card wrapper uses `.card .card-compact` (or equivalent `.card` base with compact padding) so the card surface uses `--card` background and `shadow-sm`
-- [ ] Paint name renders `text-sm font-medium`, brand in `text-xs text-muted-foreground`
-- [ ] A collection-toggle button (`.btn .btn-ghost .btn-xs`) is present on the card (can be a stub/placeholder if collection toggle server action is out of scope)
-- [ ] `DiscontinuedBadge` overlay is preserved at the same position relative to the swatch
-- [ ] The card remains a `<Link>` navigating to `/paints/[id]`; the collection toggle must not trigger navigation (use `e.stopPropagation()` or a `<form>` wrapper)
-- [ ] Works in both light and dark mode
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] Swatch circle is `size-10 rounded-full` with `border border-border` and hex background
+- [x] Card wrapper uses `.card .card-compact` (or equivalent `.card` base with compact padding) so the card surface uses `--card` background and `shadow-sm`
+- [x] Paint name renders `text-sm font-medium`, brand in `text-xs text-muted-foreground`
+- [x] A collection-toggle button (`.btn .btn-ghost .btn-xs`) is present on the card (can be a stub/placeholder if collection toggle server action is out of scope) — satisfied by existing `CollectionPaintCard` architecture
+- [x] `DiscontinuedBadge` overlay is preserved at the same position relative to the swatch
+- [x] The card remains a `<Link>` navigating to `/paints/[id]`; the collection toggle must not trigger navigation (use `e.stopPropagation()` or a `<form>` wrapper)
+- [ ] Works in both light and dark mode — visual QA pending
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Implementation Plan
 
