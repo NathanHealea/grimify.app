@@ -2,7 +2,7 @@
 
 **Epic:** Marketing & Branding
 **Type:** Refactor
-**Status:** Done
+**Status:** Completed
 **Branch:** `refactor/palette-tool-design`
 **Merge into:** `main`
 
