@@ -8,15 +8,21 @@
  * .btn-sm, etc.) using this project's Tailwind CSS theme tokens instead of
  * daisyUI's built-in theme system.
  *
+ * Color variants set --btn-color; style modifiers (outline, soft) consume it
+ * via color-mix() so any color + style combination works without compound rules.
+ *
  * Classes:
  *   Base:    .btn                — Default button styling (h-8, text-sm, rounded-lg)
  *   Colors:  .btn-primary       — Primary background with foreground text
  *            .btn-secondary     — Secondary background with foreground text
  *            .btn-accent        — Accent background with foreground text
  *            .btn-destructive   — Destructive/error tinted background
- *   Styles:  .btn-outline       — Bordered, transparent background
- *            .btn-soft          — Muted background, subtle hover
- *            .btn-ghost         — Transparent background, muted text
+ *            .btn-success       — Green semantic variant (oklch 0.55 0.18 142)
+ *            .btn-warning       — Yellow semantic variant (oklch 0.75 0.18 85)
+ *            .btn-info          — Blue semantic variant (oklch 0.60 0.15 230)
+ *   Styles:  .btn-outline       — Border in --btn-color, transparent background
+ *            .btn-soft          — Low-opacity --btn-color background fill
+ *            .btn-ghost         — Transparent background, muted text (neutral, no --btn-color)
  *            .btn-link          — Text-only with underline on hover
  *   Sizes:   .btn-xs            — Extra-small (h-6, text-xs)
  *            .btn-sm            — Small (h-7, text-xs)
@@ -67,6 +73,36 @@
   --btn-color: var(--color-destructive);
   @apply bg-destructive/10 text-destructive hover:bg-destructive/20
     focus-visible:border-destructive/40 focus-visible:ring-destructive/20;
+}
+
+.btn-success {
+  --btn-color: oklch(0.55 0.18 142);
+  background-color: oklch(0.55 0.18 142);
+  color: oklch(1 0 0);
+}
+
+.btn-success:hover {
+  background-color: color-mix(in oklab, oklch(0.55 0.18 142) 80%, black);
+}
+
+.btn-warning {
+  --btn-color: oklch(0.75 0.18 85);
+  background-color: oklch(0.75 0.18 85);
+  color: oklch(0.15 0 0);
+}
+
+.btn-warning:hover {
+  background-color: color-mix(in oklab, oklch(0.75 0.18 85) 80%, black);
+}
+
+.btn-info {
+  --btn-color: oklch(0.60 0.15 230);
+  background-color: oklch(0.60 0.15 230);
+  color: oklch(1 0 0);
+}
+
+.btn-info:hover {
+  background-color: color-mix(in oklab, oklch(0.60 0.15 230) 80%, black);
 }
 
 /* -------------------------------------------------------------------------
