@@ -92,7 +92,7 @@ export function PaletteGroupHeader({
 
   if (!canEdit) {
     return (
-      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mt-2 mb-1 px-1">
+      <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mt-2 mb-1 px-1">
         {group.name}
       </h3>
     )

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { cn } from '@/lib/utils'
 import { Main } from '@/components/main'
 import { PageHeader, PageTitle, PageSubtitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
@@ -79,7 +80,7 @@ export default async function PalettesCatalogPage({
               <Link
                 href={`/palettes?page=${pageNum - 1}`}
                 aria-disabled={!hasPrev}
-                className={`btn btn-sm btn-ghost ${!hasPrev ? 'pointer-events-none opacity-50' : ''}`}
+                className={cn('btn btn-sm btn-ghost', !hasPrev && 'pointer-events-none opacity-50')}
               >
                 ← Previous
               </Link>
@@ -89,7 +90,7 @@ export default async function PalettesCatalogPage({
               <Link
                 href={`/palettes?page=${pageNum + 1}`}
                 aria-disabled={!hasNext}
-                className={`btn btn-sm btn-ghost ${!hasNext ? 'pointer-events-none opacity-50' : ''}`}
+                className={cn('btn btn-sm btn-ghost', !hasNext && 'pointer-events-none opacity-50')}
               >
                 Next →
               </Link>
