@@ -34,6 +34,8 @@
  * Base
  * ----------------------------------------------------------------------- */
 .btn {
+  /* Default --btn-color for style modifiers used without a color variant */
+  --btn-color: var(--color-muted-foreground);
   @apply inline-flex shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg
     text-sm font-medium whitespace-nowrap transition-all select-none outline-none
     focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50
@@ -47,18 +49,22 @@
  * Color variants
  * ----------------------------------------------------------------------- */
 .btn-primary {
+  --btn-color: var(--color-primary);
   @apply bg-primary text-primary-foreground hover:bg-primary/80;
 }
 
 .btn-secondary {
+  --btn-color: var(--color-secondary);
   @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
 }
 
 .btn-accent {
+  --btn-color: var(--color-accent);
   @apply bg-accent text-accent-foreground hover:bg-accent/80;
 }
 
 .btn-destructive {
+  --btn-color: var(--color-destructive);
   @apply bg-destructive/10 text-destructive hover:bg-destructive/20
     focus-visible:border-destructive/40 focus-visible:ring-destructive/20;
 }
