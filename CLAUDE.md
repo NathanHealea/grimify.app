@@ -57,6 +57,11 @@ src/modules/<module>/
 
 - **`/plan`** must architect every feature around a specific domain module. The implementation plan must identify the target module (new or existing), and break work down by the directory it belongs in (`actions/`, `components/`, `services/`, `types/`, `utils/`, `validation.ts`). If a feature spans multiple domains, the plan must list each module touched and what lives where.
 - **`/implement`** must place new code in the correct module directory following the file-per-export rule. Do not add domain logic, types, or components directly inside `src/app/`. If the plan calls for a new module, scaffold `src/modules/<module>/` with the subdirectories actually needed — do not create empty placeholder folders.
+- **`/implement` worktree setup** — after the worktree is created, copy the root `.env` and `supabase/.env` into the worktree before any code changes:
+  ```bash
+  cp .env <worktree-path>/.env
+  cp supabase/.env <worktree-path>/supabase/.env
+  ```
 
 ## React & TypeScript Best Practices
 
