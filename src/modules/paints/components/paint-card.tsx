@@ -16,6 +16,8 @@ import { DiscontinuedBadge } from '@/modules/paints/components/discontinued-badg
  * @param props.paintType - The paint type (e.g., "base", "layer").
  * @param props.isDiscontinued - When `true`, overlays a `DiscontinuedBadge`
  *   on the swatch. Defaults to `false` so existing call-sites compile.
+ * @param props.size - `'sm'` (default) compact grid card; `'lg'` for search/browse
+ *   grids with fewer columns — larger swatch and heading-weight name.
  * @param props.className - Optional additional CSS classes for the outer card wrapper.
  */
 export function PaintCard({
@@ -25,6 +27,7 @@ export function PaintCard({
   brand,
   paintType,
   isDiscontinued = false,
+  size = 'sm',
   className,
 }: {
   id: string
@@ -33,14 +36,17 @@ export function PaintCard({
   brand?: string
   paintType?: string | null
   isDiscontinued?: boolean
+  size?: 'sm' | 'lg'
   className?: string
 }) {
+  const isLg = size === 'lg'
+
   return (
-    <div className={cn('card card-compact h-40 w-full', className)}>
+    <div className={cn('card card-compact w-full', isLg ? 'h-52' : 'h-40', className)}>
       <Link href={`/paints/${id}`} className="card-body flex h-full flex-col items-center gap-2">
         <div className="relative">
           <div
-            className="size-10 rounded-full border border-border"
+            className={cn('rounded-full border border-border', isLg ? 'size-16' : 'size-10')}
             style={{ backgroundColor: hex }}
             aria-hidden="true"
           />
@@ -50,7 +56,9 @@ export function PaintCard({
             </div>
           )}
         </div>
-        <p className="text-center text-sm font-medium leading-tight">{name}</p>
+        <p className={cn('text-center leading-tight', isLg ? 'text-base font-semibold' : 'text-sm font-medium')}>
+          {name}
+        </p>
         {(brand || paintType) && (
           <p className="text-center text-xs text-muted-foreground leading-tight">
             {brand}{brand && paintType ? ': ' : ''}{paintType?.replace(/\b\w/g, (c) => c.toUpperCase())}

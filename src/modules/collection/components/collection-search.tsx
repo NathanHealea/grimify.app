@@ -69,6 +69,7 @@ export function CollectionSearch({ initialPaints }: { initialPaints: PaintWithBr
                 hex={paint.hex}
                 brand={paint.product_lines.brands.name}
                 paintType={paint.paint_type}
+                size="lg"
               />
             ))}
           </div>
@@ -89,6 +90,7 @@ export function CollectionSearch({ initialPaints }: { initialPaints: PaintWithBr
               hex={paint.hex}
               brand={paint.product_lines.brands.name}
               paintType={paint.paint_type}
+              size="lg"
             />
           ))}
         </div>
