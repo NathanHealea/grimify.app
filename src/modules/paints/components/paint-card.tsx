@@ -36,7 +36,7 @@ export function PaintCard({
   className?: string
 }) {
   return (
-    <div className={cn('card card-compact h-full w-full', className)}>
+    <div className={cn('card card-compact h-40 w-full', className)}>
       <Link href={`/paints/${id}`} className="card-body flex h-full flex-col items-center gap-2">
         <div className="relative">
           <div
