@@ -2,7 +2,7 @@
 
 **Epic:** Application Improvements
 **Type:** Refactor
-**Status:** Done
+**Status:** Completed
 **Branch:** `refactor/button-styling`
 **Merge into:** `main`
 
