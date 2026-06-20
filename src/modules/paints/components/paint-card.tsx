@@ -36,8 +36,8 @@ export function PaintCard({
   className?: string
 }) {
   return (
-    <div className={cn('card card-compact', className)}>
-      <Link href={`/paints/${id}`} className="card-body flex flex-col items-center gap-2">
+    <div className={cn('card card-compact h-full w-full', className)}>
+      <Link href={`/paints/${id}`} className="card-body flex h-full flex-col items-center gap-2">
         <div className="relative">
           <div
             className="size-10 rounded-full border border-border"

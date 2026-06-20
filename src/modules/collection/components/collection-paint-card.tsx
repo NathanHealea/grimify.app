@@ -44,7 +44,7 @@ export function CollectionPaintCard({
   className?: string
 }) {
   return (
-    <div className="relative">
+    <div className="relative h-full w-full">
       <PaintCard
         id={id}
         name={name}
