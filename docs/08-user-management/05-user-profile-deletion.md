@@ -2,7 +2,7 @@
 
 **Epic:** User Management
 **Type:** Feature
-**Status:** Todo
+**Status:** Completed
 **Branch:** `feature/user-profile-deletion`
 **Merge into:** `main`
 

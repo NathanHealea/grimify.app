@@ -5,6 +5,7 @@ import { Main } from '@/components/main'
 import { PageHeader, PageTitle } from '@/components/page-header'
 import { createClient } from '@/lib/supabase/server'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
+import { DangerZone } from '@/modules/user/components/danger-zone'
 import { EditProfileForm } from '@/modules/user/components/edit-profile-form'
 import { getProfileById } from '@/modules/user/services/profile-service'
 
@@ -23,7 +24,20 @@ export default async function ProfileEditPage() {
   } = await supabase.auth.getUser()
 
   const hasEmailIdentity = user?.identities?.some((identity) => identity.provider === 'email') ?? false
-  const profile = user ? await getProfileById(user.id) : null
+
+  const [profile, userRolesResult] = await Promise.all([
+    user ? getProfileById(user.id) : Promise.resolve(null),
+    user
+      ? supabase
+          .from('user_roles')
+          .select('roles(name)')
+          .eq('user_id', user.id)
+      : Promise.resolve({ data: null }),
+  ])
+
+  const isAdmin = (
+    (userRolesResult.data as { roles: { name: string } | null }[] | null) ?? []
+  ).some((ur) => ur.roles?.name === 'admin')
 
   return (
     <Main>
@@ -50,6 +64,15 @@ export default async function ProfileEditPage() {
         displayName={profile?.display_name ?? ''}
         hasEmailIdentity={hasEmailIdentity}
       />
+
+      {user && (
+        <div className="mt-8">
+          <DangerZone
+            displayName={profile?.display_name ?? 'your account'}
+            isAdmin={isAdmin}
+          />
+        </div>
+      )}
     </Main>
   )
 }
