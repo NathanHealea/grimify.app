@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 
 import { Main } from '@/components/main'
 import { createClient } from '@/lib/supabase/server'
+import { MergeProfileSection } from '@/modules/admin/components/merge-profile-section'
 import { pageMetadata } from '@/modules/seo/utils/page-metadata'
 import type { AuthInfo } from '@/modules/user/components/user-detail'
 import { UserDetail } from '@/modules/user/components/user-detail'
@@ -32,11 +33,16 @@ export default async function AdminUserDetailPage({
     return null
   }
 
-  // Fetch profile, roles, and auth metadata in parallel
-  const [profile, roles, authUser] = await Promise.all([
+  // Fetch profile, roles, auth metadata, and candidate merge sources in parallel
+  const [profile, roles, authUser, { data: allProfiles }] = await Promise.all([
     getProfileById(id),
     getUserRoles(id),
     getAuthUser(id),
+    supabase
+      .from('profiles')
+      .select('id, display_name')
+      .neq('id', id)
+      .order('display_name', { ascending: true }),
   ])
 
   if (!profile) {
@@ -79,6 +85,13 @@ export default async function AdminUserDetailPage({
         authInfo={authInfo}
         currentUserId={currentUser.id}
       />
+
+      <div className="mt-8">
+        <MergeProfileSection
+          targetId={id}
+          mergeableProfiles={allProfiles ?? []}
+        />
+      </div>
     </Main>
   )
 }
