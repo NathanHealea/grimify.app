@@ -19,7 +19,8 @@
     "db:update": "npx supabase db push",
     "db:types": "npx supabase gen types typescript --local > src/types/supabase.ts",
     "db:seed:generate": "npx tsx scripts/generate-seed.ts",
-    "db:paints:recalculate": "node --env-file=.env node_modules/.bin/tsx scripts/recalculate-paint-colors.ts"
+    "db:paints:recalculate": "node --env-file=.env node_modules/.bin/tsx scripts/recalculate-paint-colors.ts",
+    "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

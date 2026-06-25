@@ -10,7 +10,10 @@ Planning and feature documentation lives in `docs/`.
 
 ## Conventions
 
-- Use conventional commit format: `type(scope): description`
+- **Commit format:** `type(domain): message` — enforced locally by `.githooks/commit-msg`
+  (installed via the `prepare` script in `package.json`). Allowed types: `chore`,
+  `enhancement`, `feature`, `bugfix`, `hotfix`, `refactor`, `docs`, `test`, `style`,
+  `perf`, `build`, `ci`, `revert`. Bypass with `git commit --no-verify` (use sparingly).
 - Feature docs follow the `/plan` → `/implement` → `/stage` → `/release` workflow
 
 ### Feature doc metadata
