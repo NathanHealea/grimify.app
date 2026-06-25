@@ -46,6 +46,7 @@ export function CollectionPaintCard({
   return (
     <div className="relative h-full w-full">
       <PaintCard
+        size="lg"
         id={id}
         name={name}
         hex={hex}

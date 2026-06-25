@@ -507,6 +507,7 @@ export function PaintExplorer({
             renderCard={(paint) =>
               isAuthenticated ? (
                 <CollectionPaintCard
+                size="lg"
                   id={paint.id}
                   name={paint.name}
                   hex={paint.hex}
@@ -518,6 +519,7 @@ export function PaintExplorer({
                 />
               ) : (
                 <PaintCard
+                size="lg"
                   id={paint.id}
                   name={paint.name}
                   hex={paint.hex}

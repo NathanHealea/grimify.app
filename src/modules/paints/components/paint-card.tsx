@@ -1,6 +1,6 @@
-import Link from 'next/link';
+import Link from 'next/link'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 import { DiscontinuedBadge } from '@/modules/paints/components/discontinued-badge'
 
 /**
@@ -46,7 +46,7 @@ export function PaintCard({
       <Link href={`/paints/${id}`} className="card-body flex h-full flex-col items-center gap-2">
         <div className="relative">
           <div
-            className={cn('rounded-full border border-border', isLg ? 'size-16' : 'size-10')}
+            className={cn('rounded-full border border-border', isLg ? 'size-20' : 'size-16')}
             style={{ backgroundColor: hex }}
             aria-hidden="true"
           />
@@ -61,7 +61,9 @@ export function PaintCard({
         </p>
         {(brand || paintType) && (
           <p className="text-center text-xs text-muted-foreground leading-tight">
-            {brand}{brand && paintType ? ': ' : ''}{paintType?.replace(/\b\w/g, (c) => c.toUpperCase())}
+            {brand}
+            {brand && paintType ? ': ' : ''}
+            {paintType?.replace(/\b\w/g, (c) => c.toUpperCase())}
           </p>
         )}
       </Link>
