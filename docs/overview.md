@@ -252,7 +252,7 @@ Core functionality:
 **High-Level Scope:**
 
 - [x] [Recipe database schema and module scaffold](./12-painting-recipes/00-recipe-schema.md)
-- [ ] [Recipe builder (sections, steps, instructions)](./12-painting-recipes/01-recipe-builder.md)
+- [x] [Recipe builder (sections, steps, instructions)](./12-painting-recipes/01-recipe-builder.md)
 - [ ] [Recipe step paints (palette-aware picker, ratios)](./12-painting-recipes/02-recipe-step-paints.md)
 - [x] [Recipe photos (upload, cover, lightbox)](./12-painting-recipes/03-recipe-photos.md)
 - [ ] [Recipe notes (multiple notes per recipe and per step)](./12-painting-recipes/04-recipe-notes.md)
@@ -283,7 +283,7 @@ Core functionality:
 
 - [x] [Army database schema & module foundation](./14-army-management/00-army-schema.md)
 - [x] [Admin army management](./14-army-management/01-admin-army-management.md)
-- [ ] [Palette army selection](./14-army-management/02-palette-army-selection.md)
+- [x] [Palette army selection](./14-army-management/02-palette-army-selection.md)
 
 ### Other
 

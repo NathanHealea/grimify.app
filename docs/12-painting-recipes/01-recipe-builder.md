@@ -2,7 +2,7 @@
 
 **Epic:** Painting Recipes
 **Type:** Feature
-**Status:** In Progress
+**Status:** Completed
 **Branch:** `feature/recipe-builder`
 **Merge into:** `v1/feature/paint-recipes`
 
@@ -14,7 +14,7 @@ This feature delivers the **structural** builder. Per-step paint pickers live in
 
 ## Acceptance Criteria
 
-- [ ] `/user/recipes` lists the signed-in user's recipes as cards (title, cover image, section count, step count, updated). _(Routes were moved from `/recipes` to `/user/recipes` per the "Route convention drift" risk; public catalog at `/recipes` is deferred to `05-recipe-sharing.md`.)_
+- [x] `/user/recipes` lists the signed-in user's recipes as cards (title, cover image, section count, step count, updated). _(Routes were moved from `/recipes` to `/user/recipes` per the "Route convention drift" risk; public catalog at `/recipes` is deferred to `05-recipe-sharing.md`.)_
 - [x] `/user/recipes/new` creates an empty recipe and redirects to its edit page
 - [x] `/recipes/[id]` is the read-only view; visible to anyone if `is_public`, owner-only otherwise
 - [x] `/user/recipes/[id]/edit` is the builder; legacy `/recipes/[id]/edit` redirects owner-aware
