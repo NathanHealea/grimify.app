@@ -2,7 +2,7 @@
 
 **Epic:** Application Improvements
 **Type:** Enhancement
-**Status:** Todo
+**Status:** Completed
 **Branch:** `enhancement/commit-message-hook`
 **Merge into:** `main`
 
@@ -30,17 +30,17 @@ The hook lives at `.githooks/commit-msg` (committed to the repo) and is wired up
 
 ## Acceptance Criteria
 
-- [ ] Running `npm install` sets `core.hooksPath` to `.githooks/` automatically (no manual setup step required).
-- [ ] A commit with a valid message (e.g. `feature(palettes): add hue swap`) succeeds.
-- [ ] A commit with no type prefix (e.g. `add hue swap`) is rejected with a helpful error.
-- [ ] A commit with an unrecognized type (e.g. `feat(palettes): add hue swap`) is rejected with an error that lists the allowed types.
-- [ ] A commit missing the domain in parens (e.g. `feature: add hue swap`) is rejected.
-- [ ] A commit with empty body (e.g. `feature(palettes): `) is rejected.
-- [ ] Merge commits (`Merge branch '...'`) and revert commits (`Revert "..."`) are **not** rejected.
-- [ ] Comment lines (starting with `#`) are ignored when locating the subject line.
-- [ ] The hook script exits `0` for valid messages and `1` with a printed error for invalid ones — confirmed via `npx tsx` or `node` invocation directly.
-- [ ] The README or `CLAUDE.md` is updated to document the enforced format and the allowed types (single source of truth).
-- [ ] `git commit --no-verify -m "anything"` still works as the documented escape hatch.
+- [x] Running `npm install` sets `core.hooksPath` to `.githooks/` automatically (no manual setup step required).
+- [x] A commit with a valid message (e.g. `feature(palettes): add hue swap`) succeeds.
+- [x] A commit with no type prefix (e.g. `add hue swap`) is rejected with a helpful error.
+- [x] A commit with an unrecognized type (e.g. `feat(palettes): add hue swap`) is rejected with an error that lists the allowed types.
+- [x] A commit missing the domain in parens (e.g. `feature: add hue swap`) is rejected.
+- [x] A commit with empty body (e.g. `feature(palettes): `) is rejected.
+- [x] Merge commits (`Merge branch '...'`) and revert commits (`Revert "..."`) are **not** rejected.
+- [x] Comment lines (starting with `#`) are ignored when locating the subject line.
+- [x] The hook script exits `0` for valid messages and `1` with a printed error for invalid ones — confirmed via `npx tsx` or `node` invocation directly.
+- [x] The README or `CLAUDE.md` is updated to document the enforced format and the allowed types (single source of truth).
+- [x] `git commit --no-verify -m "anything"` still works as the documented escape hatch.
 
 ## Approach
 

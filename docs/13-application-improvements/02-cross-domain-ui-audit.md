@@ -2,7 +2,7 @@
 
 **Epic:** Application Improvements
 **Type:** Enhancement
-**Status:** Todo
+**Status:** Completed
 **Branch:** `enhancement/cross-domain-ui-audit`
 **Merge into:** `main`
 

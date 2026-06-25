@@ -1,10 +1,10 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
 
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
+import { revalidatePaletteList } from '@/modules/palettes/utils/revalidate-palette'
 import type { VoidResult } from '@/modules/palettes/types/action-result'
 
 /**
@@ -36,7 +36,6 @@ export async function deletePalette(id: string): Promise<VoidResult> {
     return { ok: false, error: message }
   }
 
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
+  revalidatePaletteList()
   redirect('/user/palettes')
 }
