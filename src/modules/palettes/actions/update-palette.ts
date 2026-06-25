@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { validatePaletteForm } from '@/modules/palettes/validation'
+import { revalidatePaletteList } from '@/modules/palettes/utils/revalidate-palette'
 import type { PaletteFormState } from '@/modules/palettes/types/palette-form-state'
 
 /**
@@ -65,8 +66,7 @@ export async function updatePalette(
     return { values, errors: { form: message } }
   }
 
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
+  revalidatePaletteList()
   revalidatePath(`/palettes/${id}`)
 
   return { values, errors: {}, success: true }

@@ -1,11 +1,11 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
 
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { validatePaletteForm } from '@/modules/palettes/validation'
+import { revalidatePaletteList } from '@/modules/palettes/utils/revalidate-palette'
 import type { VoidResult } from '@/modules/palettes/types/action-result'
 
 /**
@@ -66,7 +66,6 @@ export async function createPaletteWithPaints(input: {
     // If append fails, palette exists but is empty — redirect to editor to retry
   }
 
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
+  revalidatePaletteList()
   redirect(`/user/palettes/${palette.id}/edit`)
 }

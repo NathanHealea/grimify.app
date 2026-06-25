@@ -1,11 +1,11 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
 
 import { createClient } from '@/lib/supabase/server'
 import { createPaletteService } from '@/modules/palettes/services/palette-service'
 import { validatePaletteForm } from '@/modules/palettes/validation'
+import { revalidatePaletteList } from '@/modules/palettes/utils/revalidate-palette'
 import type { PaletteFormState } from '@/modules/palettes/types/palette-form-state'
 
 const DEFAULT_STATE: PaletteFormState = {
@@ -72,7 +72,6 @@ export async function createPalette(
     return { values, errors: { form: message } }
   }
 
-  revalidatePath('/user/palettes')
-  revalidatePath('/palettes')
+  revalidatePaletteList()
   redirect(`/user/palettes/${palette.id}/edit`)
 }
