@@ -1,6 +1,6 @@
-import Link from 'next/link';
+import Link from 'next/link'
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 import { DiscontinuedBadge } from '@/modules/paints/components/discontinued-badge'
 
 /**
@@ -16,7 +16,9 @@ import { DiscontinuedBadge } from '@/modules/paints/components/discontinued-badg
  * @param props.paintType - The paint type (e.g., "base", "layer").
  * @param props.isDiscontinued - When `true`, overlays a `DiscontinuedBadge`
  *   on the swatch. Defaults to `false` so existing call-sites compile.
- * @param props.className - Optional additional CSS classes for the wrapper.
+ * @param props.size - `'sm'` (default) compact grid card; `'lg'` for search/browse
+ *   grids with fewer columns — larger swatch and heading-weight name.
+ * @param props.className - Optional additional CSS classes for the outer card wrapper.
  */
 export function PaintCard({
   id,
@@ -25,6 +27,7 @@ export function PaintCard({
   brand,
   paintType,
   isDiscontinued = false,
+  size = 'sm',
   className,
 }: {
   id: string
@@ -33,34 +36,37 @@ export function PaintCard({
   brand?: string
   paintType?: string | null
   isDiscontinued?: boolean
+  size?: 'sm' | 'lg'
   className?: string
 }) {
+  const isLg = size === 'lg'
+
   return (
-    <Link
-      href={`/paints/${id}`}
-      className={cn(
-        'group flex grow flex-col items-center gap-2 rounded-lg border border-border p-3 transition-shadow hover:shadow-md',
-        className,
-      )}
-    >
-      <div className="relative">
-        <div
-          className="size-16 rounded-lg border border-border"
-          style={{ backgroundColor: hex }}
-          aria-hidden="true"
-        />
-        {isDiscontinued && (
-          <div className="absolute -right-1 -top-1">
-            <DiscontinuedBadge size="sm" />
-          </div>
-        )}
-      </div>
-      <p className="text-center text-sm font-medium leading-tight">{name}</p>
-      {(brand || paintType) && (
-        <p className="text-center text-xs text-muted-foreground leading-tight">
-          {brand}{brand && paintType ? ': ' : ''}{paintType?.replace(/\b\w/g, (c) => c.toUpperCase())}
+    <div className={cn('card card-compact w-full', isLg ? 'h-52' : 'h-40', className)}>
+      <Link href={`/paints/${id}`} className="card-body flex h-full flex-col items-center gap-2">
+        <div className="relative">
+          <div
+            className={cn('rounded-full border border-border', isLg ? 'size-20' : 'size-16')}
+            style={{ backgroundColor: hex }}
+            aria-hidden="true"
+          />
+          {isDiscontinued && (
+            <div className="absolute -right-1 -top-1">
+              <DiscontinuedBadge size="sm" />
+            </div>
+          )}
+        </div>
+        <p className={cn('text-center leading-tight', isLg ? 'text-base font-semibold' : 'text-sm font-medium')}>
+          {name}
         </p>
-      )}
-    </Link>
+        {(brand || paintType) && (
+          <p className="text-center text-xs text-muted-foreground leading-tight">
+            {brand}
+            {brand && paintType ? ': ' : ''}
+            {paintType?.replace(/\b\w/g, (c) => c.toUpperCase())}
+          </p>
+        )}
+      </Link>
+    </div>
   )
 }
