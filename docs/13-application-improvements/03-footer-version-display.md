@@ -2,7 +2,7 @@
 
 **Epic:** Application Improvements
 **Type:** Enhancement
-**Status:** Todo
+**Status:** Completed
 **Branch:** `enhancement/footer-version-display`
 **Merge into:** `main`
 
@@ -28,15 +28,15 @@ The current footer (`src/components/footer.tsx`) renders a copyright line on the
 
 ## Acceptance Criteria
 
-- [ ] The footer renders a third row below the existing copyright + nav links.
-- [ ] The third row displays the version in the form `v<semver>` (lowercase `v`, no spaces), e.g. `v1.63.0`.
-- [ ] The version value matches the `version` field of `package.json` exactly at build time.
-- [ ] The text uses muted small typography consistent with the rest of the footer (`text-xs text-muted-foreground` or visually equivalent — one step smaller than the existing `text-sm` is acceptable to de-emphasize it).
-- [ ] The version row is horizontally centered within the footer container at all viewport widths.
-- [ ] The version row is announced sensibly to assistive tech: a `<small>` element with an `aria-label` like `"Application version 1.63.0"` (or equivalent visually-hidden label).
-- [ ] Bumping `version` in `package.json`, rebuilding, and reloading the page shows the new value.
-- [ ] No new runtime dependencies, no new env vars, no changes to `next.config.ts`.
-- [ ] No new client components are introduced — the footer remains a server component.
+- [x] The footer renders a third row below the existing copyright + nav links.
+- [x] The third row displays the version in the form `v<semver>` (lowercase `v`, no spaces), e.g. `v1.63.0`.
+- [x] The version value matches the `version` field of `package.json` exactly at build time.
+- [x] The text uses muted small typography consistent with the rest of the footer (`text-xs text-muted-foreground` or visually equivalent — one step smaller than the existing `text-sm` is acceptable to de-emphasize it).
+- [x] The version row is horizontally centered within the footer container at all viewport widths.
+- [x] The version row is announced sensibly to assistive tech: a `<small>` element with an `aria-label` like `"Application version 1.63.0"` (or equivalent visually-hidden label).
+- [x] Bumping `version` in `package.json`, rebuilding, and reloading the page shows the new value.
+- [x] No new runtime dependencies, no new env vars, no changes to `next.config.ts`.
+- [x] No new client components are introduced — the footer remains a server component.
 
 ## Codebase Context
 
