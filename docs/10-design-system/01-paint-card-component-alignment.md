@@ -2,7 +2,7 @@
 
 **Epic:** Design System
 **Type:** Feature
-**Status:** Done
+**Status:** Completed
 **Branch:** `feature/paint-card-component-alignment`
 **Merge into:** `main`
 
