@@ -10,8 +10,9 @@ color values, along with data quality decisions and known gaps.
 | Source | URL | Coverage |
 |--------|-----|----------|
 | PaintPad.app — Citadel Painting System | https://paintpad.app/paints/citadel-painting-system | 341/341 (100%) |
+| armycrafter.com — Citadel Shade | https://armycrafter.com/paints/citadel/shade | Secondary visual reference for the Shade line (23 paints); hex not exposed as text — swatches can be sampled for a re-sourcing pass |
 
-### The Army Painter (461 paints)
+### The Army Painter (462 paints)
 
 | Source | URL | Coverage |
 |--------|-----|----------|
@@ -20,10 +21,13 @@ color values, along with data quality decisions and known gaps.
 | PaintPad.app — Warpaints Air | https://paintpad.app/paints/the-army-painter-warpaints-air | Air |
 | PaintPad.app — Speedpaint 2.0 | https://paintpad.app/paints/the-army-painter-speedpaint-2-0 | Speedpaint |
 | PaintPad.app — Masterclass | https://paintpad.app/paints/the-army-painter-masterclass | Masterclass |
+| armycrafter.com — Speedpaint 2.0 | https://armycrafter.com/paints/army-painter/speedpaint-2-0 | Secondary visual reference for the Speedpaint line; hex not exposed as text — swatches can be sampled for a re-sourcing pass |
 
-Combined coverage: **460/461 (99.8%)**
+Combined coverage: **460/462 (99.6%)**
 
-Unmatched: Battleship Grey (Speedpaint) — not listed on PaintPad; retains original hex.
+Unmatched:
+- Battleship Grey (Speedpaint) — not listed on PaintPad; retains original hex.
+- Speedpaint Medium (ap-462) — colorless thinning medium; hex `#F2EFE9` is a near-neutral off-white approximation (no meaningful swatch color; intentional placeholder). Added June 2026.
 
 ### Vallejo (763 paints)
 
@@ -81,11 +85,11 @@ original hex values.
 | Brand | Matched | Total | Coverage |
 |-------|---------|-------|----------|
 | Citadel | 341 | 341 | 100% |
-| Army Painter | 460 | 461 | 99.8% |
+| Army Painter | 460 | 462 | 99.6% |
 | Vallejo | 716 | 763 | 94% |
 | Green Stuff World | 91 | 122 | 75% |
 | AK Interactive | 611 | 650 | 94% |
-| **Total** | **2,219** | **2,337** | **95%** |
+| **Total** | **2,219** | **2,338** | **95%** |
 
 ## Data Quality Decisions
 
