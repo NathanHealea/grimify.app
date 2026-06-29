@@ -10,7 +10,24 @@
 
 Refresh and verify the Grimify paint data for two **translucent** product lines — **Citadel Shade** (Citadel's wash range) and **Army Painter Speedpaint 2.0** — using [armycrafter.com](https://armycrafter.com) as the primary reference source. Both lines are translucent (their stored `hex` is an estimate of the paint's pooled/over-white appearance, not a solid color), and the existing [Paint Database Data Improvement](./05-paint-database-data-improvement.md) doc explicitly flags shade/speedpaint hex values as estimated and in need of better sourcing.
 
-This is a **data-quality refresh + reconciliation** following the established data pipeline used by every brand line: edit the per-brand JSON files (`scripts/data/paints/*.json`), regenerate `supabase/seed.sql` via `scripts/generate-seed.ts`, and (for already-deployed databases) add an idempotent migration. **No application-code or schema changes are expected** — the `paints` schema already models these lines via the `paint_type` text column and the existing `Shade` / `Speedpaint` product lines.
+This feature has two parts:
+
+1. **Data refresh** — following the established data pipeline used by every brand line: edit the per-brand JSON files (`scripts/data/paints/*.json`), regenerate `supabase/seed.sql` via `scripts/generate-seed.ts`, and (for already-deployed databases) add an idempotent migration. The data portion needs **no schema change** — the `paints` schema already models these lines via the `paint_type` text column and the existing `Shade` / `Speedpaint` product lines.
+2. **Gradient swatch rendering** — a UI change so paints whose flat hex doesn't represent their on-model appearance render as a CSS gradient instead of a solid fill. Applies to **translucent lines** (Shade, Wash, Ink, Contrast, Speedpaint, Xpress Color) and **metallic lines**.
+
+### Gradient swatch behavior
+
+Today every swatch is a solid fill (`style={{ backgroundColor: hex }}`). The new behavior:
+
+- **Pooling translucent** (Shade / Wash / Ink / Contrast / Xpress Color) — a **vertical** gradient keeping the paint's hue & saturation, light at the top (thin film) down to the paint's true lightness at the bottom (where it pools):
+  `linear-gradient(hsl(H, S%, L_top%), hsl(H, S%, L_bottom%))` — e.g. `linear-gradient(hsl(20.92, 50.70%, 63.24%), hsl(20.92, 50.70%, 21.08%))`
+- **Speedpaint** — a **horizontal** (`90deg`) gradient from a ~10% tint (mostly white) to the full paint color, mimicking thin-to-pooled application:
+  `linear-gradient(90deg, lerp(white, rgb, 0.1), rgb)` — e.g. `linear-gradient(90deg, rgb(94.65%, 95.61%, 96.02%), rgb(44.18%, 54.20%, 58.49%))`
+- **Metallic** — a **diagonal** (`135deg`) sheen: a highlight stop, the base color, and a shadow stop, all sharing the paint's hue & saturation:
+  `linear-gradient(135deg, hsl(H, S%, L+Δ%), hsl(H, S%, L%), hsl(H, S%, L−Δ%))`
+- **Everything else** (opaque, non-metallic) — unchanged solid `backgroundColor: hex`.
+
+Per the design decision for this feature, the gradient is **derived at render time** from data already stored (`hex` → H/S/L and R/G/B, plus `paint_type` and `is_metallic`). **No new database columns and no migration for styling** — a single shared helper computes the background and the swatch call-sites adopt it. "Add to the database" here means the styling is keyed off the seeded paints' `paint_type` / `is_metallic`, not that gradient values are stored.
 
 ### Current State (important — these lines already exist)
 
@@ -40,6 +57,10 @@ Because the additive gap is tiny (one clear medium), the real value of this feat
 - [ ] `npm run db:reset` applies cleanly with no SQL errors
 - [ ] An idempotent migration brings an already-deployed database to the same state (new `Speedpaint Medium` row + corrected hex/HSL for the refreshed paints)
 - [ ] `Speedpaint Medium` appears on the Army Painter Speedpaint product line and is searchable; refreshed swatches render with corrected colors in the paint explorer and on the color wheel
+- [ ] A shared helper (e.g. `src/modules/paints/utils/paint-swatch-background.ts`) returns the correct CSS background for a paint given its `hex`, `paintType`, and `isMetallic` — gradient for translucent/metallic lines, solid hex otherwise — and is unit-test-free per project convention but verified by spot-checking output
+- [ ] Pooling translucent paints (Shade, Wash, Ink, Contrast, Xpress Color) render a vertical gradient; Speedpaints render a horizontal tint gradient; metallics render a diagonal sheen; all opaque non-metallic paints render unchanged solid swatches
+- [ ] Paint-backed swatch call-sites (paint card, paint detail, combobox, comparison, color-wheel detail panel, etc.) use the shared helper; hue/non-paint swatches remain solid
+- [ ] Gradients derive from existing data only (no new DB columns, no styling migration); a paint with no hue (e.g. near-neutral `Speedpaint Medium`) still renders sensibly
 - [ ] `npm run build` and `npm run lint` pass with no errors
 
 ## Open Questions / Prerequisites
@@ -54,6 +75,12 @@ Resolve these before writing any seed JSON. **Do not invent paint data to unbloc
 3. **`Speedpaint Medium` hex.** A colorless medium has no meaningful color. Decide: near-neutral low-saturation placeholder (e.g. an off-white) and document it as a deliberate approximation, mirroring how clear mediums are discussed in [Army Painter Effects](./army-painter-effects.md). It will plot near neutral on the color wheel — acceptable.
 4. **Scope of `comparable` links.** Citadel Shade ↔ Army Painter equivalents already partially exist (e.g. `Agrax Earthshade` → `Strong Tone`). Decide whether expanding/auditing these is in scope here or deferred to [Paint Database Data Improvement](./05-paint-database-data-improvement.md). **Recommendation:** keep `comparable` edits minimal/optional in this feature; the data-improvement doc owns cross-reference work.
 5. **Deployed-DB strategy.** `generate-seed.ts` mints fresh `randomUUID()` paint IDs on every run, so a full `db:reset` reseed is fine locally but changes UUIDs (see Risks). For an already-deployed DB, the migration must **UPDATE** existing rows' hex/HSL (not just `INSERT ... ON CONFLICT DO NOTHING`, which silently skips existing paints) and **INSERT** only the new `Speedpaint Medium`. Confirm whether `npm run db:paints:recalculate` (which re-derives color from hex on a live DB) is the preferred path for the hex corrections instead of hand-written `UPDATE`s.
+6. **Gradient lightness rules (finalize during implement).** The exact stop math, calibrated against the user-supplied examples:
+   - **Pooling (vertical):** bottom stop = paint's own L; top stop = lerp L toward 100% by ≈`0.53` (i.e. `L_top = L + (100 − L) × 0.53`). Verified against the example: `L=21.08 → 21.08 + 78.92×0.53 ≈ 62.9 ≈ 63.24`. Confirm/tune the factor.
+   - **Speedpaint (horizontal):** light stop = `lerp(white, rgb, 0.10)` (10% paint, 90% white); dark stop = full `rgb`. Verified against the example (`#718A95`-ish): `0.9×255 + 0.1×channel` reproduces `rgb(94.65%, 95.61%, 96.02%)`.
+   - **Metallic (diagonal):** `Δ` for highlight/shadow stops (proposed `+25` / `−18` lightness points, clamped to `[0,100]`). No example was supplied — pick sensible defaults and eyeball a few metallics.
+7. **Type precedence for combined lines.** Some types are both metallic and translucent (e.g. `Speedpaint Metallic`, `Warpaints Wash`). Define a single precedence order in the helper — recommended: **Speedpaint family → horizontal**, else **`is_metallic` → diagonal sheen**, else **pooling translucent type → vertical**, else **solid**. Confirm before coding.
+8. **Translucent type set.** The helper must recognize the full translucent type set across brands. From `brands.json`: Citadel `Shade`, `Contrast`, `Technical` (some), Army Painter `*Wash`, `Speedpaint*`, plus Vallejo/Citadel inks and Citadel `Contrast`, GW `Xpress`-equivalents. Enumerate the exact `paint_type` strings to match (case-insensitive substring vs. exact list) during implement; prefer an explicit allow-list keyed to real `type` values in the JSON.
 
 ## Implementation Plan
 
@@ -113,6 +140,28 @@ Net-new paints in this repo are also shipped as a migration (precedent: `supabas
    - Color wheel → refreshed paints sit at their recomputed hue/lightness; the clear medium clusters near neutral.
 3. `npm run build` and `npm run lint`.
 
+### Phase 5 — Gradient swatch rendering (UI, derive-at-render)
+
+No schema or seed dependency — this phase can proceed in parallel with the data phases.
+
+1. **Create the shared helper** `src/modules/paints/utils/paint-swatch-background.ts`:
+   - Signature: `paintSwatchBackground({ hex, paintType, isMetallic }): CSSProperties` (returns `{ background }` for gradients or `{ backgroundColor }` for solids), or a plain CSS string — match whatever the call-sites consume most cleanly.
+   - Derive `H/S/L` and `R/G/B` from `hex` internally (reuse any existing hex↔HSL/RGB util in `src/lib` or `src/modules/paints/utils`; check before adding a new converter). This keeps call-sites passing only `hex` + `paintType` + `isMetallic`.
+   - Branch by the precedence from Open Question 7; produce the gradient strings from Open Questions 6/8.
+   - Full JSDoc per project convention (`@param`, `@returns`, `@remarks` for the gradient rules).
+2. **Adopt the helper at paint-backed swatch call-sites.** Replace `style={{ backgroundColor: paint.hex }}` with the helper output where the swatch represents a paint and `paintType` (+ `isMetallic`) are available or threadable:
+   - `src/modules/paints/components/paint-card.tsx` (add `isMetallic` prop alongside existing `paintType`)
+   - `src/modules/paints/components/paint-detail.tsx`
+   - `src/modules/paints/components/paint-combobox.tsx`
+   - `src/modules/paints/components/paint-comparison-card.tsx`
+   - `src/modules/paints/components/paint-comparison-delta-matrix.tsx`
+   - `src/modules/paints/components/discontinued-paint-listing.tsx`
+   - `src/modules/color-wheel/components/paint-detail-panel.tsx`
+   - Collection/palette/recipe/scheme paint swatches where `paint_type` is reachable (`collection-paint-card`, `palette-paint-row`, `palette-swap-*`, `recipe-step-paint-*`, `scheme-paint-combobox`, `scheme-partner-row`) — adopt where the paint object carries `paint_type`/`is_metallic`; otherwise leave solid and note it.
+   - **Do not** change hue/non-paint swatches (`hue.hex_code`, `group.hex`, base-color-picker, scheme-swatch for arbitrary colors) — those stay solid.
+3. Confirm the queries feeding these components already select `paint_type` and `is_metallic`; if a component's data shape omits them, extend the select/type (services in `src/modules/paints/services/`) rather than refetching.
+4. Verify visually: a Shade (vertical), a Speedpaint (horizontal tint), a metallic (diagonal sheen), and an opaque Base/Layer (solid) all render correctly in the paint explorer, paint detail, and color-wheel panel.
+
 ### Affected Files
 
 | File | Changes |
@@ -123,7 +172,12 @@ Net-new paints in this repo are also shipped as a migration (precedent: `supabas
 | `supabase/seed.sql` | Regenerated by `npm run db:seed:generate` (new paint + corrected color data) |
 | `supabase/migrations/20260628000000_refresh_shade_speedpaint_data.sql` | New — idempotent INSERT (Speedpaint Medium) + UPDATE (hex/HSL corrections) for deployed DBs |
 | `src/types/supabase.ts` | Regenerated for parity (no shape change expected) |
-| _(none expected)_ | No `src/` app code or `brands.json` changes — schema and services already handle these `paint_type` strings and product lines |
+| `src/modules/paints/utils/paint-swatch-background.ts` | **New** — shared helper computing solid vs. gradient CSS background from `hex` + `paintType` + `isMetallic` |
+| `src/modules/paints/components/{paint-card,paint-detail,paint-combobox,paint-comparison-card,paint-comparison-delta-matrix,discontinued-paint-listing}.tsx` | Use the helper for paint swatches; `paint-card` gains an `isMetallic` prop |
+| `src/modules/color-wheel/components/paint-detail-panel.tsx` | Use the helper for the paint swatch |
+| `src/modules/{collection,palettes,recipes,color-schemes}/components/*` (paint swatches only) | Adopt the helper where `paint_type`/`is_metallic` are available; otherwise unchanged |
+| `src/modules/paints/services/*` (if needed) | Extend selects/types to include `paint_type` / `is_metallic` for any swatch component missing them |
+| `brands.json`, schema/migrations for styling | **No change** — gradients derive at render; no styling columns or migration |
 
 ### Risks & Considerations
 
@@ -134,6 +188,10 @@ Net-new paints in this repo are also shipped as a migration (precedent: `supabas
 - **Translucent hex is inherently approximate.** Shades/washes/speedpaints have no single true color; keep the documented "over white/medium primer" convention. The clear `Speedpaint Medium` is a deliberate near-neutral placeholder.
 - **Type-string exactness.** New/edited entries must use `type: "Speedpaint"` / `type: "Shade"` exactly (matching `brands.json`), or the generator silently fails to associate them with a product line. Spot-check the generator output.
 - **Hue re-classification.** Corrected hex may move a paint across a Munsell hue boundary (its `hue_id` recomputes). This is expected and acceptable.
+- **Swatch call-sites are numerous (~40).** Gradients only matter where the swatch represents a *paint* and `paint_type`/`is_metallic` are available. Scope Phase 5 to those; leave hue swatches and arbitrary-color pickers solid. Audit each call-site's data shape before editing — some may need a `select`/type extension to carry the type fields.
+- **Gradient must degrade gracefully.** Near-neutral paints (e.g. `Speedpaint Medium`) and very dark/light paints must still produce a legible swatch — clamp lightness stops to `[0,100]` and confirm contrast against the card border.
+- **Consistency vs. existing UI.** Introducing gradients changes the visual language site-wide for affected lines. Keep the swatch dimensions/border identical; only the fill changes. Verify dark mode renders the gradients acceptably.
+- **No tests in this project.** Per `## Testing`, there's no framework; the helper's correctness is verified by spot-checking output against the two reference examples rather than unit tests.
 
 ## Notes
 
