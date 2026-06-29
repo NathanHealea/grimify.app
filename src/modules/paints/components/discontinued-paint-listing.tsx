@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import { DiscontinuedBadge } from '@/modules/paints/components/discontinued-badge'
 import { PaintSubstitutes } from '@/modules/paints/components/paint-substitutes'
+import { paintSwatchBackground } from '@/modules/paints/utils/paint-swatch-background'
 import type { PaintWithRelations } from '@/modules/paints/services/paint-service'
 import type { PaintMatch } from '@/modules/paints/types/paint-match'
 import type { Brand } from '@/types/paint'
@@ -77,7 +78,7 @@ export function DiscontinuedPaintListing({
                 <div className="flex items-start gap-3">
                   <div
                     className="size-16 shrink-0 rounded-lg border border-border"
-                    style={{ backgroundColor: paint.hex }}
+                    style={paintSwatchBackground(paint.hex, paint.paint_type, paint.is_metallic)}
                     aria-label={`Color swatch for ${paint.name}`}
                   />
                   <div className="flex flex-col gap-1">

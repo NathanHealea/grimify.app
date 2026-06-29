@@ -14,6 +14,7 @@ import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-ha
 import { PalettePaintGroupsToggle } from '@/modules/palettes/components/palette-paint-groups-toggle'
 import { Button } from '@/components/ui/button'
 import { PaletteSwapButton } from '@/modules/palettes/components/palette-swap-button'
+import { paintSwatchBackground } from '@/modules/paints/utils/paint-swatch-background'
 
 /**
  * A single row in a palette's paint list, shared by the master-list section and
@@ -131,7 +132,7 @@ export function PalettePaintRow({
       )}
       <div
         className="mt-0.5 size-8 shrink-0 rounded-full"
-        style={{ backgroundColor: paint.hex }}
+        style={paintSwatchBackground(paint.hex, paint.paint_type, paint.is_metallic)}
         title={paint.hex}
       />
       <div className="min-w-0 flex-1">

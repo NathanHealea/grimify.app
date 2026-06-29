@@ -12,6 +12,7 @@ import { removeRecipeStepPaint } from '@/modules/recipes/actions/remove-recipe-s
 import { updateRecipeStepPaint } from '@/modules/recipes/actions/update-recipe-step-paint'
 import { PaletteDragHandle } from '@/modules/palettes/components/palette-drag-handle'
 import { formatStepPaintSource } from '@/modules/recipes/utils/format-step-paint-source'
+import { paintSwatchBackground } from '@/modules/paints/utils/paint-swatch-background'
 
 /**
  * A single row in a recipe step's paint list.
@@ -150,7 +151,7 @@ export function RecipeStepPaintRow({
       {data ? (
         <div
           className="mt-0.5 size-6 shrink-0 rounded-sm"
-          style={{ backgroundColor: data.hex }}
+          style={paintSwatchBackground(data.hex, data.paint_type, data.is_metallic)}
           title={data.hex}
         />
       ) : (

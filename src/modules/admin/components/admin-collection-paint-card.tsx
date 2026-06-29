@@ -14,6 +14,7 @@ export function AdminCollectionPaintCard({
   hex,
   brand,
   paintType,
+  isMetallic = false,
 }: {
   userId: string
   id: string
@@ -21,6 +22,7 @@ export function AdminCollectionPaintCard({
   hex: string
   brand?: string
   paintType?: string | null
+  isMetallic?: boolean
 }) {
   const [isPending, startTransition] = useTransition()
 
@@ -44,6 +46,7 @@ export function AdminCollectionPaintCard({
         hex={hex}
         brand={brand}
         paintType={paintType}
+        isMetallic={isMetallic}
       />
       <button
         className="absolute right-1 top-1 flex size-6 items-center justify-center rounded-md bg-background/80 text-muted-foreground backdrop-blur-sm hover:bg-background hover:text-destructive disabled:opacity-50"

@@ -5,6 +5,7 @@ import { SearchIcon, X } from 'lucide-react'
 
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import { paintSwatchBackground } from '@/modules/paints/utils/paint-swatch-background'
 
 /**
  * Searchable combobox for selecting a paint from a live-filtered dropdown.
@@ -102,7 +103,7 @@ export function PaintCombobox({
               >
                 <span
                   className="inline-block size-5 shrink-0 rounded border border-border"
-                  style={{ backgroundColor: paint.hex }}
+                  style={paintSwatchBackground(paint.hex, paint.paint_type, paint.is_metallic)}
                   aria-hidden="true"
                 />
                 <span className="truncate">{paint.name}</span>

@@ -512,6 +512,7 @@ export function PaintExplorer({
                   hex={paint.hex}
                   brand={paint.product_lines?.brands?.name}
                   paintType={paint.paint_type}
+                  isMetallic={paint.is_metallic}
                   isInCollection={userPaintIds?.has(paint.id) ?? false}
                   isAuthenticated
                   revalidatePath="/paints"
@@ -524,6 +525,7 @@ export function PaintExplorer({
                   hex={paint.hex}
                   brand={paint.product_lines?.brands?.name}
                   paintType={paint.paint_type}
+                  isMetallic={paint.is_metallic}
                   isDiscontinued={paint.is_discontinued}
                 />
               )

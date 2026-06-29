@@ -128,6 +128,7 @@ export function AdminUserCollectionSearch({
             hex={paint.hex}
             brand={paint.product_lines.brands.name}
             paintType={paint.paint_type}
+            isMetallic={paint.is_metallic}
           />
         )}
       />

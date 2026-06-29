@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
 import { DiscontinuedBadge } from '@/modules/paints/components/discontinued-badge'
+import { paintSwatchBackground } from '@/modules/paints/utils/paint-swatch-background'
 
 /**
  * A compact paint card showing a color swatch, paint name, brand, and type.
@@ -14,6 +15,8 @@ import { DiscontinuedBadge } from '@/modules/paints/components/discontinued-badg
  * @param props.hex - The hex color value for the swatch background.
  * @param props.brand - The brand name (e.g., "Citadel").
  * @param props.paintType - The paint type (e.g., "base", "layer").
+ * @param props.isMetallic - Whether the paint is metallic. Used to render a
+ *   diagonal sheen gradient on the swatch. Defaults to `false`.
  * @param props.isDiscontinued - When `true`, overlays a `DiscontinuedBadge`
  *   on the swatch. Defaults to `false` so existing call-sites compile.
  * @param props.size - `'sm'` (default) compact grid card; `'lg'` for search/browse
@@ -26,6 +29,7 @@ export function PaintCard({
   hex,
   brand,
   paintType,
+  isMetallic = false,
   isDiscontinued = false,
   size = 'sm',
   className,
@@ -35,6 +39,7 @@ export function PaintCard({
   hex: string
   brand?: string
   paintType?: string | null
+  isMetallic?: boolean
   isDiscontinued?: boolean
   size?: 'sm' | 'lg'
   className?: string
@@ -47,7 +52,7 @@ export function PaintCard({
         <div className="relative">
           <div
             className={cn('rounded-full border border-border', isLg ? 'size-20' : 'size-16')}
-            style={{ backgroundColor: hex }}
+            style={paintSwatchBackground(hex, paintType ?? null, isMetallic)}
             aria-hidden="true"
           />
           {isDiscontinued && (
