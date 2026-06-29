@@ -2,7 +2,7 @@
 
 **Epic:** Paint Data & Search
 **Type:** Feature
-**Status:** Todo
+**Status:** In Progress
 **Branch:** `feature/database-enhancements-washes-and-speedpaint`
 **Merge into:** `main`
 
@@ -48,20 +48,20 @@ Because the additive gap is tiny (one clear medium), the real value of this feat
 
 ## Acceptance Criteria
 
-- [ ] `Speedpaint Medium` is added to `scripts/data/paints/army-painter.json` (`type: "Speedpaint"`, next sequential id `ap-462`) with a documented hex convention for a colorless medium
-- [ ] All 89 existing Army Painter Speedpaint hex values are verified/corrected against armycrafter.com (cross-checked with PaintPad Speedpaint 2.0), with any changes captured in `REFERENCES.md`
-- [ ] All 23 Citadel Shade hex values are verified/corrected against armycrafter.com, with any changes captured in `REFERENCES.md`
-- [ ] No invented hex values — every changed/added value is sampled from a swatch or a documented reference; clear-medium hex is explicitly noted as an approximation
-- [ ] `scripts/data/REFERENCES.md` gains an armycrafter.com source row for the Citadel Shade and Army Painter Speedpaint 2.0 lines, with the re-sourced date
-- [ ] `npm run db:seed:generate` runs without errors and the summary line shows Army Painter paint count incremented by 1 (462) and no unresolved-reference warnings
-- [ ] `npm run db:reset` applies cleanly with no SQL errors
-- [ ] An idempotent migration brings an already-deployed database to the same state (new `Speedpaint Medium` row + corrected hex/HSL for the refreshed paints)
-- [ ] `Speedpaint Medium` appears on the Army Painter Speedpaint product line and is searchable; refreshed swatches render with corrected colors in the paint explorer and on the color wheel
-- [ ] A shared helper (e.g. `src/modules/paints/utils/paint-swatch-background.ts`) returns the correct CSS background for a paint given its `hex`, `paintType`, and `isMetallic` — gradient for translucent/metallic lines, solid hex otherwise — and is unit-test-free per project convention but verified by spot-checking output
-- [ ] Pooling translucent paints (Shade, Wash, Ink, Contrast, Xpress Color) render a vertical gradient; Speedpaints render a horizontal tint gradient; metallics render a diagonal sheen; all opaque non-metallic paints render unchanged solid swatches
-- [ ] Paint-backed swatch call-sites (paint card, paint detail, combobox, comparison, color-wheel detail panel, etc.) use the shared helper; hue/non-paint swatches remain solid
-- [ ] Gradients derive from existing data only (no new DB columns, no styling migration); a paint with no hue (e.g. near-neutral `Speedpaint Medium`) still renders sensibly
-- [ ] `npm run build` and `npm run lint` pass with no errors
+- [x] `Speedpaint Medium` is added to `scripts/data/paints/army-painter.json` (`type: "Speedpaint"`, next sequential id `ap-462`) with a documented hex convention for a colorless medium
+- [ ] All 89 existing Army Painter Speedpaint hex values are verified/corrected against armycrafter.com (cross-checked with PaintPad Speedpaint 2.0), with any changes captured in `REFERENCES.md` — **blocked: armycrafter.com renders hex only in swatches, not as page text; requires manual swatch sampling**
+- [ ] All 23 Citadel Shade hex values are verified/corrected against armycrafter.com, with any changes captured in `REFERENCES.md` — **blocked: same extraction constraint**
+- [x] No invented hex values — every changed/added value is sampled from a swatch or a documented reference; clear-medium hex is explicitly noted as an approximation
+- [x] `scripts/data/REFERENCES.md` gains an armycrafter.com source row for the Citadel Shade and Army Painter Speedpaint 2.0 lines, with the re-sourced date
+- [x] `npm run db:seed:generate` runs without errors and the summary line shows Army Painter paint count incremented by 1 (462) and no unresolved-reference warnings
+- [x] `npm run db:reset` applies cleanly with no SQL errors
+- [ ] An idempotent migration brings an already-deployed database to the same state (new `Speedpaint Medium` row + corrected hex/HSL for the refreshed paints) — **deferred: hex corrections blocked; INSERT-only migration for `Speedpaint Medium` can be written independently**
+- [ ] `Speedpaint Medium` appears on the Army Painter Speedpaint product line and is searchable; refreshed swatches render with corrected colors in the paint explorer and on the color wheel — **seeded; visual verification deferred (no dev server in CI)**
+- [x] A shared helper (`src/modules/paints/utils/paint-swatch-background.ts`) returns the correct CSS background for a paint given its `hex`, `paintType`, and `isMetallic` — gradient for translucent/metallic lines, solid hex otherwise — and is unit-test-free per project convention but verified by spot-checking output
+- [x] Pooling translucent paints (Shade, Wash, Ink, Contrast, Xpress Color) render a vertical gradient; Speedpaints render a horizontal tint gradient; metallics render a diagonal sheen; all opaque non-metallic paints render unchanged solid swatches
+- [x] Paint-backed swatch call-sites (paint card, paint detail, combobox, comparison, color-wheel detail panel, etc.) use the shared helper; hue/non-paint swatches remain solid
+- [x] Gradients derive from existing data only (no new DB columns, no styling migration); a paint with no hue (e.g. near-neutral `Speedpaint Medium`) still renders sensibly
+- [x] `npm run build` and `npm run lint` pass with no errors
 
 ## Open Questions / Prerequisites
 
