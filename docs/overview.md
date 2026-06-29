@@ -117,6 +117,7 @@ Core functionality:
 - [ ] [Reactive hue filter counts](./02-paint-data-search/13-paint-explorer-reactive-hue-counts.md)
 - [x] [Scale75 paint indexing](./02-paint-data-search/scale75-paints.md)
 - [ ] [Army Painter Effects paint line](./02-paint-data-search/army-painter-effects.md)
+- [ ] [Citadel Shades & Army Painter Speedpaint 2.0 data refresh](./02-paint-data-search/database-enhancements-washes-and-speedpaint.md)
 
 ### Epic: Interactive Color Wheel
 
