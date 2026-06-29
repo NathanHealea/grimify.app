@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import { paintSwatchBackground } from '@/modules/paints/utils/paint-swatch-background'
 
 /**
  * Searchable combobox for selecting a paint from a live-filtered dropdown.
@@ -72,7 +73,7 @@ export function SchemePaintCombox({
           {selectedPaint ? (
             <span
               className="inline-block size-5 shrink-0 rounded border border-border"
-              style={{ backgroundColor: selectedPaint.hex }}
+              style={paintSwatchBackground(selectedPaint.hex, selectedPaint.paint_type, selectedPaint.is_metallic)}
               aria-hidden="true"
             />
           ) : (
@@ -109,7 +110,7 @@ export function SchemePaintCombox({
               >
                 <span
                   className="inline-block size-5 shrink-0 rounded border border-border"
-                  style={{ backgroundColor: paint.hex }}
+                  style={paintSwatchBackground(paint.hex, paint.paint_type, paint.is_metallic)}
                   aria-hidden="true"
                 />
                 <span className="truncate">{paint.name}</span>

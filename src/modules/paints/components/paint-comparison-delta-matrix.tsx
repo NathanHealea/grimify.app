@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 
 import type { PaintWithRelationsAndHue } from '@/modules/paints/services/paint-service'
 import { computePairwiseDeltaE } from '@/modules/paints/utils/compute-pairwise-delta-e'
+import { paintSwatchBackground } from '@/modules/paints/utils/paint-swatch-background'
 
 /**
  * Threshold below which two colors are perceived as effectively identical
@@ -66,7 +67,7 @@ export function PaintComparisonDeltaMatrix({
                   <div className="flex items-center gap-2">
                     <span
                       className="inline-block size-3 shrink-0 rounded-full border border-border"
-                      style={{ backgroundColor: p.hex }}
+                      style={paintSwatchBackground(p.hex, p.paint_type, p.is_metallic)}
                       aria-hidden="true"
                     />
                     <span className="truncate">{p.name}</span>
@@ -85,7 +86,7 @@ export function PaintComparisonDeltaMatrix({
                   <div className="flex items-center gap-2">
                     <span
                       className="inline-block size-3 shrink-0 rounded-full border border-border"
-                      style={{ backgroundColor: rowPaint.hex }}
+                      style={paintSwatchBackground(rowPaint.hex, rowPaint.paint_type, rowPaint.is_metallic)}
                       aria-hidden="true"
                     />
                     <span className="truncate">{rowPaint.name}</span>

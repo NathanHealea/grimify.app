@@ -17,6 +17,7 @@ import { AddToPaletteButton } from '@/modules/palettes/components/add-to-palette
  * @param props.hex - The hex color value for the swatch background.
  * @param props.brand - The brand name (e.g., "Citadel").
  * @param props.paintType - The paint type (e.g., "base", "layer").
+ * @param props.isMetallic - Whether the paint is metallic; passed through to {@link PaintCard} for gradient rendering.
  * @param props.isInCollection - Whether the paint is in the user's collection.
  * @param props.isAuthenticated - Whether the current user is signed in.
  * @param props.revalidatePath - Optional page path to revalidate after toggle.
@@ -28,6 +29,7 @@ export function CollectionPaintCard({
   hex,
   brand,
   paintType,
+  isMetallic = false,
   isInCollection,
   isAuthenticated,
   revalidatePath,
@@ -38,6 +40,7 @@ export function CollectionPaintCard({
   hex: string
   brand?: string
   paintType?: string | null
+  isMetallic?: boolean
   isInCollection: boolean
   isAuthenticated: boolean
   revalidatePath?: string
@@ -52,6 +55,7 @@ export function CollectionPaintCard({
         hex={hex}
         brand={brand}
         paintType={paintType}
+        isMetallic={isMetallic}
         className={className}
       />
       <CollectionToggle

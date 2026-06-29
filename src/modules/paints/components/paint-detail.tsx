@@ -6,6 +6,7 @@ import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-pa
 import { CollectionToggle } from '@/modules/collection/components/collection-toggle'
 import { AddToPaletteButton } from '@/modules/palettes/components/add-to-palette-button'
 import { DiscontinuedBadge } from '@/modules/paints/components/discontinued-badge'
+import { paintSwatchBackground } from '@/modules/paints/utils/paint-swatch-background'
 import { FindSimilarButton } from '@/modules/paints/components/find-similar-button'
 import { PaintSectionsToggle } from '@/modules/paints/components/paint-sections-toggle'
 import { PaintSubstitutes } from '@/modules/paints/components/paint-substitutes'
@@ -69,7 +70,7 @@ export function PaintDetail({
       <div className="flex flex-col items-start gap-6 sm:flex-row">
         <div
           className="size-32 shrink-0 rounded-xl border border-border shadow-sm"
-          style={{ backgroundColor: paint.hex }}
+          style={paintSwatchBackground(paint.hex, paint.paint_type, paint.is_metallic)}
           aria-label={`Color swatch for ${paint.name}`}
         />
         <div className="flex flex-col gap-2">

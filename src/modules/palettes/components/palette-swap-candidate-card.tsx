@@ -2,6 +2,7 @@
 
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { formatBrandLine } from '@/modules/palettes/utils/format-brand-line'
+import { paintSwatchBackground } from '@/modules/paints/utils/paint-swatch-background'
 
 /**
  * A compact candidate tile in the hue-swap dialog grid.
@@ -42,7 +43,7 @@ export function PaletteSwapCandidateCard({
       {/* Swatch */}
       <div
         className="size-10 shrink-0 rounded-sm"
-        style={{ backgroundColor: paint.hex }}
+        style={paintSwatchBackground(paint.hex, paint.paint_type, paint.is_metallic)}
         aria-hidden
       />
 

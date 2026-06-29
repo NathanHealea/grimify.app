@@ -4221,5 +4221,13 @@
     "type": "Warpaints Air",
     "description": "",
     "comparable": []
+  },
+  {
+    "id": "ap-462",
+    "name": "Speedpaint Medium",
+    "hex": "#F2EFE9",
+    "type": "Speedpaint",
+    "description": "Colorless thinning/transparency medium — hex is a near-neutral approximation",
+    "comparable": []
   }
 ]

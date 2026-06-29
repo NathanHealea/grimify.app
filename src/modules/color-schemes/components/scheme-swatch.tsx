@@ -45,6 +45,7 @@ export function SchemeSwatch({
               hex={paint.hex}
               brand={paint.brand_name}
               paintType={paint.paint_type}
+              isMetallic={paint.is_metallic}
               isInCollection={ownedIds.has(paint.id)}
               isAuthenticated={isAuthenticated}
               revalidatePath={revalidatePath}

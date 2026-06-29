@@ -4,6 +4,7 @@ import { X } from 'lucide-react'
 import Link from 'next/link'
 
 import type { PaintWithRelationsAndHue } from '@/modules/paints/services/paint-service'
+import { paintSwatchBackground } from '@/modules/paints/utils/paint-swatch-background'
 
 /**
  * Pure renderer for a single paint inside the comparison row.
@@ -39,7 +40,7 @@ export function PaintComparisonCard({
 
       <div
         className="h-32 w-full rounded-lg border border-border shadow-sm sm:h-40"
-        style={{ backgroundColor: paint.hex }}
+        style={paintSwatchBackground(paint.hex, paint.paint_type, paint.is_metallic)}
         aria-label={`Color swatch for ${paint.name}`}
       />
 

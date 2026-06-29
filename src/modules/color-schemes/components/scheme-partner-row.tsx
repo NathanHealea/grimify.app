@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
+import { paintSwatchBackground } from '@/modules/paints/utils/paint-swatch-background'
 
 /**
  * Renders one partner row: label + a fixed-width strip of five paint chips,
@@ -42,7 +43,7 @@ export function SchemePartnerRow({
           >
             <span
               className="aspect-square w-full rounded"
-              style={{ backgroundColor: p.hex }}
+              style={paintSwatchBackground(p.hex, p.paint_type, p.is_metallic)}
               aria-hidden
             />
             <span className="line-clamp-2 text-xs font-medium">{p.name}</span>

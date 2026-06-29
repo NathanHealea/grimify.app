@@ -20,6 +20,7 @@ import { PaletteSwapCandidateCard } from '@/modules/palettes/components/palette-
 import { PaletteSwapSliders } from '@/modules/palettes/components/palette-swap-sliders'
 import { filterPaintsByHslRange } from '@/modules/palettes/utils/filter-paints-by-hsl-range'
 import { rankPaintsByDeltaE } from '@/modules/paints/utils/rank-paints-by-delta-e'
+import { paintSwatchBackground } from '@/modules/paints/utils/paint-swatch-background'
 
 type FetchState =
   | { status: 'loading' }
@@ -133,7 +134,7 @@ export function PaletteSwapDialog({
         <div className="flex items-center gap-3 border-b border-border px-5 py-4 shrink-0">
           <div
             className="size-9 shrink-0 rounded-md"
-            style={{ backgroundColor: paint.hex }}
+            style={paintSwatchBackground(paint.hex, paint.paint_type, paint.is_metallic)}
             aria-hidden
           />
           <DialogHeader className="min-w-0 flex-1">

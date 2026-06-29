@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import type { ColorWheelPaint } from '@/modules/color-wheel/types/color-wheel-paint'
 import { addToCollection } from '@/modules/collection/actions/add-to-collection'
+import { paintSwatchBackground } from '@/modules/paints/utils/paint-swatch-background'
 import { removeFromCollection } from '@/modules/collection/actions/remove-from-collection'
 
 /**
@@ -89,7 +90,7 @@ export function PaintDetailPanel({
         <div className="flex items-center gap-3">
           <div
             className="h-10 w-10 shrink-0 rounded border border-border"
-            style={{ backgroundColor: paint.hex }}
+            style={paintSwatchBackground(paint.hex, paint.paint_type, paint.is_metallic)}
             aria-label={`Color swatch: ${paint.hex}`}
           />
           <p className="font-semibold leading-tight">{paint.name}</p>
