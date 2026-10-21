@@ -18,3 +18,5 @@ The public marketing site for Grimify at grimify.app. The app itself lives at my
 - verify_commands:
   - npm run check
   - npm run build
+
+@docs/AGENTS.md
