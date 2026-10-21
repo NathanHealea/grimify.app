@@ -93,6 +93,28 @@ The site describes four app features. All four exist in the app today (app PRD �
 - **Edge cases:**
   - Old app URLs (e.g. `/paints`, `/palettes/*`) are handled by redirects in the cutover work item, not by this page.
 
+### Feature 4 — Search and social metadata (SEO)
+
+- **Purpose:** Help painters find the site through search engines, and make shared links preview well in chat apps and social posts.
+- **User flow:** A painter searches for something like "Citadel Vallejo equivalent" or follows a shared link → sees a clear title, description and preview image → lands on the right page. Covered by UX_FLOWS Flow 1's entry points.
+- **Inputs:** Per-page title, description and canonical path, set in each page's frontmatter. One site-wide Open Graph image, plus an optional override per page.
+- **Outputs:**
+  - Every page's `<head>` has a unique `<title>`, a meta description, `<link rel="canonical">` on `https://grimify.app`, and Open Graph and Twitter card tags.
+  - A sitemap of the public pages.
+  - JSON-LD structured data.
+- **Acceptance criteria:**
+  - Every indexable page has a unique `<title>` and meta description.
+  - Every page has a canonical URL: absolute, on `https://grimify.app`, and matching the URL the page is served at.
+  - Every page has `og:title`, `og:description`, `og:url`, `og:image` (an absolute URL), `og:type` and `twitter:card`.
+  - The sitemap lists the landing page and the FAQ, not the 404 page. `robots.txt` names the sitemap.
+  - The landing page has JSON-LD for `WebSite` (site name) and `WebApplication` (the app at my.grimify.app, free). The JSON parses, and it claims nothing the app doesn't do.
+  - The 404 page has `<meta name="robots" content="noindex">` and no canonical.
+- **Edge cases:**
+  - **Before launch,** `robots.txt` blocks all crawling, so nothing is indexed and the SEO tags are inert. They're still built and tested, so launch is a `robots.txt` change only.
+  - **No ratings or reviews exist,** so the `WebApplication` markup won't earn a Google rich result. Google requires `aggregateRating` or `review` ([Google: Software app structured data](https://developers.google.com/search/docs/appearance/structured-data/software-app), checked 2026-10-21). Never invent ratings to qualify.
+  - **No `FAQPage` markup.** Google deprecated FAQ rich results and stopped showing them from 2026-05-07 ([Google: FAQPage](https://developers.google.com/search/docs/appearance/structured-data/faqpage), checked 2026-10-21).
+  - **Shared links on `workers.dev`** before the cutover still point their canonical and `og:url` at grimify.app. That's intended: grimify.app is the real address.
+
 ## 7. Non-Goals
 
 Intentionally not part of this version:
@@ -109,8 +131,9 @@ Intentionally not part of this version:
   - Landing page.
   - FAQ page.
   - 404 page.
+  - Search and social metadata (Feature 4). The Open Graph image depends on the artwork being ready (DESIGN_SYSTEM §2a).
 - **Nice to have:**
-  - **TBD:** screenshots or images of the app; Open Graph images for link previews. (The scaffold plan lists both as later work.)
+  - **TBD:** screenshots or images of the app. (The scaffold plan lists them as later work.)
 - **Future:**
   - **TBD:** nothing decided yet.
 
@@ -120,6 +143,7 @@ Intentionally not part of this version:
   - **TBD:** how success is measured. The candidate metric is the share of visitors who follow "Open Grimify" to the app. It can't be measured until the analytics decision is made (see §13).
 - **Secondary:**
   - Hosting cost stays at $0/month.
+  - **TBD:** a search metric, such as impressions and clicks for target queries, read from a search-console tool after launch. Which tool, which queries, and what target are undecided. Search consoles are configured outside the site and add nothing to the page, beyond a possible verification file or meta tag.
 
 ## 10. Constraints
 
@@ -160,7 +184,10 @@ The product or feature is complete when:
 - **TBD:** Success metric and target (§9).
 - **TBD:** FAQ question list (Feature 2).
 - **TBD:** Who keeps site claims and FAQ answers in sync with the app, and when.
-- **TBD:** Screenshots, images and Open Graph images (§8).
+- **TBD:** Screenshots and images (§8).
+- **TBD:** Open Graph image artwork (Feature 4; blocked on the logo, app issue #3).
+- **TBD:** Target search queries and the search metric (§9).
+- **TBD:** Per-page titles and meta descriptions (Feature 4). They follow the copy tone rules in §10.
 - **TBD:** Launch timeline, i.e. when crawling is allowed and grimify.app is cut over (§10).
 - **TBD:** Primary tagline and headline copy.
 - Assumption: the site is English only and collects no personal data. If an email form is ever added, this PRD, SECURITY.md and the CSP all change.

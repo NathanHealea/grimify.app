@@ -51,6 +51,8 @@ The headers live in `public/_headers`, apply to `/*`, and come from the scaffold
 - **`Referrer-Policy`.** **TBD:** the exact value. The scaffold plan requires the header but names no value. `strict-origin-when-cross-origin` is the common choice.
 - **`Permissions-Policy`.** It disables browser features the site doesn't use. **TBD:** the exact list.
 
+JSON-LD structured data (PRD Feature 4) needs no CSP change. A `<script type="application/ld+json">` is a data block, which the browser never runs and the CSP never checks (ARCHITECTURE §8). Never add `unsafe-inline` or a hash to `script-src` for it.
+
 Any change that needs a new origin (analytics, images on a CDN) changes the CSP. That change needs explicit approval and a test update.
 
 **TBD:** whether to add `Strict-Transport-Security`. It isn't in the scaffold plan. On `workers.dev` it's less relevant; at the grimify.app cutover it should be decided.
@@ -85,7 +87,9 @@ Not applicable.
 
 ## 12. Crawling
 
-- `public/robots.txt` disallows all crawlers until launch (scaffold plan R5).
+- `public/robots.txt` disallows all crawlers until launch (scaffold plan R5). It also names the sitemap URL, which is harmless while crawling is blocked.
+- Launching for search is a single change: `Disallow: /` becomes `Allow: /` (or an empty `Disallow:`). It's a launch decision for the owner, never made in passing.
+- Search-console verification, if used, is a static file in `public/` or a meta tag. It adds no third-party origin and no script.
 - **TBD:** the launch date, when crawling is allowed (PRD §13).
 
 ## 13. Security Checklist

@@ -16,7 +16,7 @@ Operational rules for any AI coding agent working in this repository.
 
 Before any significant change, read the relevant documents in `docs/`:
 
-- `PRD.md`: what the site is for, its three pages, non-goals, and copy tone rules.
+- `PRD.md`: what the site is for, its three pages, SEO requirements, non-goals, and copy tone rules.
 - `UX_FLOWS.md`: the three visitor flows, plus the header and footer on every page.
 - `DESIGN_SYSTEM.md`: the look, which matches the app; tokens and accessibility rules.
 - `ARCHITECTURE.md`: the static Astro build, the Cloudflare Worker, project structure, and dependency rules.
@@ -73,7 +73,7 @@ Update the matching document in the same change when implementation alters it:
 
 | Change | Update |
 |---|---|
-| Product requirement, page, or copy rule | PRD.md |
+| Product requirement, page, copy rule, or SEO metadata | PRD.md |
 | Visitor journey, navigation | UX_FLOWS.md |
 | Visual design, tokens | DESIGN_SYSTEM.md |
 | Architecture, structure, dependencies | ARCHITECTURE.md |

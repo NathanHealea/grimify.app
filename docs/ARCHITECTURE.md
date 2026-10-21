@@ -26,6 +26,7 @@ grimify.app is a static marketing site. Astro builds HTML, CSS and static files 
 | Hosting | Cloudflare Workers static assets, one assets-only Worker (`grimify-marketing`), no adapter | Same platform as the app; free tier. A static Astro site needs no Cloudflare adapter ([Astro docs](https://docs.astro.build/en/guides/deploy/cloudflare/)) |
 | Email | None | No forms (PRD §7) |
 | Analytics | **TBD:** none, or cookieless (e.g. Cloudflare Web Analytics) | PRD §13 |
+| SEO | Meta tags rendered by the base layout; JSON-LD data blocks; sitemap at build time. **TBD:** `@astrojs/sitemap` (new dependency) or a hand-written sitemap | PRD Feature 4. The integration outputs `sitemap-index.xml` and `sitemap-0.xml`, needs `site` set (already `https://grimify.app`), and includes every page unless filtered ([Astro docs](https://docs.astro.build/en/guides/integrations-guide/sitemap/), checked 2026-10-21). With three pages, a hand-written file is also viable |
 | Other services | None | |
 | Runtime (build) | Node 24 (`.nvmrc`) | Matches the app; Astro 7.4.1 requires Node `>=22.22.0` (scaffold plan) |
 
@@ -42,7 +43,10 @@ grimify.app is a static marketing site. Astro builds HTML, CSS and static files 
 
 - **Responsibilities:**
   - `base.astro`: the `<html lang="en">`, `<head>`, header, skip link, `<main>`, and footer shared by every page.
-  - Takes the page title and meta description as props.
+  - Takes the page's SEO metadata as props: `title`, `description`, an optional `ogImage` override, and `noindex` (true only on the 404 page).
+  - Renders all `<head>` SEO tags in one place: title, meta description, canonical, Open Graph, Twitter card and robots. The canonical and `og:url` are built from `Astro.site` and the page path, never hand-typed.
+  - Pages pass JSON-LD objects to the layout, which serializes them into `<script type="application/ld+json">`.
+  - **TBD:** whether SEO tags live in the layout or a separate `src/components/seo-head.astro`. Extract it on its second use, per CODE_STYLE §1.
 
 ### Components (`src/components/`)
 
@@ -54,8 +58,15 @@ grimify.app is a static marketing site. Astro builds HTML, CSS and static files 
 
 - **Responsibilities:**
   - `_headers`: security headers (SECURITY.md §6).
-  - `robots.txt`: disallows all crawling until launch.
+  - `robots.txt`: disallows all crawling until launch, and names the sitemap URL.
+  - `og/default.png`: the Open Graph image, once the artwork exists (DESIGN_SYSTEM §2a).
   - Favicon and images, once they exist.
+
+### Sitemap
+
+- **Responsibilities:**
+  - Lists the landing page and the FAQ at their canonical URLs, and excludes the 404 page.
+  - Is generated at build time into `dist/`.
 
 ### Worker config (`wrangler.json`)
 
@@ -95,7 +106,8 @@ my.grimify.app  (separate repo, separate Worker)
 ├── .nvmrc                  24
 ├── public/
 │   ├── _headers
-│   └── robots.txt
+│   ├── robots.txt
+│   └── og/default.png      Open Graph image (when artwork exists)
 ├── src/
 │   ├── layouts/base.astro
 │   ├── components/         (when a second page needs a piece)
@@ -118,6 +130,8 @@ This is the layout from the scaffold plan (`docs/implementation-plans/task-site-
 
 - No server code: no adapter, no `_worker.js`, and no `output: "server"` or on-demand rendered routes.
 - No client-side JavaScript unless a work item justifies it, and never for content or navigation. Every page works with JavaScript off.
+  - JSON-LD isn't JavaScript. A `<script type="application/ld+json">` is a data block: the browser never runs it, and the CSP check never applies to it ([HTML spec, "prepare the script element"](https://html.spec.whatwg.org/multipage/scripting.html), checked 2026-10-21). It's the only allowed inline `<script>`.
+- Canonical URLs follow the URLs the site actually serves. **TBD:** Astro's `trailingSlash` and `build.format` settings, and Cloudflare's `html_handling`, decided together, so `/faq` and `/faq/` don't both serve a page with different canonicals. I haven't verified the defaults here.
 - No third-party origins at runtime: no CDN fonts, scripts, images or embeds. The CSP forbids them (SECURITY.md §6).
 - Raw color, size and spacing values live only in `src/styles/tokens.css`.
 - Styles live in `.css` files, never in inline `style` attributes.
@@ -162,5 +176,8 @@ The decisions recorded so far (the scaffold plan and this documentation; a DECIS
 - **TBD:** Exact dependency versions to pin (scaffold plan open item).
 - **TBD:** HTML parser for build-output tests (scaffold plan open item; a new dependency needs approval).
 - **TBD:** Performance budget, and Astro image optimization (§10).
+- **TBD:** Sitemap via `@astrojs/sitemap` or a hand-written file (§3).
+- **TBD:** Trailing-slash policy across Astro and Cloudflare (§8).
+- **TBD:** SEO tags in the layout or a `seo-head` component (§4).
 - **TBD:** Rollback procedure (§12).
 - **TBD:** When the cutover adds the `grimify.app` and `www.grimify.app` routes. That's a separate work item, blocked on my.grimify.app's production deploy.

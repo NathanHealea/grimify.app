@@ -102,7 +102,8 @@ Comments explain why something exists, a tradeoff, or non-obvious behavior. They
 
 - Create duplicate components or styles
 - Add a dependency without approval
-- Add client-side JavaScript without a work item that justifies it
+- Add client-side JavaScript without a work item that justifies it. JSON-LD `application/ld+json` blocks aren't JavaScript and are allowed (ARCHITECTURE §8)
+- Hand-type a canonical or `og:url`. Build them from `Astro.site` and the page path
 - Add server code, an adapter, or on-demand rendering
 - Load anything from a third-party origin
 - Ignore the documented architecture

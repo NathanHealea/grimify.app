@@ -12,6 +12,7 @@ Answers: how will we know it works? "The code looks correct" is not a test resul
 - Every page meets WCAG 2.1 AA in light and dark mode.
 - Security headers are present and the CSP allows no inline script, `eval` or third-party origin.
 - `robots.txt` blocks crawling until launch.
+- Every page has correct, unique SEO metadata, and the sitemap lists only the public pages (PRD Feature 4).
 
 ## 2. Test Levels
 
@@ -34,6 +35,7 @@ Automated checks can't prove WCAG 2.1 AA on their own. The manual pass is requir
 tests/
 ├── build-output.test.ts    built HTML in dist/ (scaffold T1–T4)
 ├── static-files.test.ts    _headers, robots.txt, wrangler.json, package.json (scaffold T5–T8)
+├── seo.test.ts             meta tags, canonical, Open Graph, sitemap, JSON-LD (PRD Feature 4)
 └── e2e/
     ├── landing.spec.ts     Flow 1 + axe scan
     ├── faq.spec.ts         Flow 2 + axe scan
@@ -77,6 +79,28 @@ The `e2e/` file names are proposed. The scaffold plan fixes the two Vitest files
   - The page links to `/` and to the app.
   - No axe violations.
 
+### SEO metadata (build output, Vitest)
+
+PRD Feature 4. These read the built `dist/` like the scaffold's `build-output.test.ts` and belong in `tests/seo.test.ts`.
+
+- **Steps:**
+  1. Parse every HTML file in `dist/`.
+  2. Read the sitemap and `robots.txt`.
+- **Expected result:**
+  - Every page except the 404 has a non-empty `<title>` and meta description, and no two pages share either.
+  - Every page except the 404 has one `<link rel="canonical">`: absolute, starting with `https://grimify.app/`, and matching the page's built path.
+  - Every page has `og:title`, `og:description`, `og:url` (equal to its canonical), `og:type` and `twitter:card`.
+  - `og:image` is absolute and its file exists in `dist/`. Skipped, with a message, until the artwork exists (DESIGN_SYSTEM §2a).
+  - The 404 page has `<meta name="robots" content="noindex">` and no canonical.
+  - The sitemap lists exactly the canonical URLs of the non-404 pages.
+  - `robots.txt` has a `Sitemap:` line with the absolute sitemap URL.
+  - Every `<script type="application/ld+json">` parses as JSON and has `@context` `https://schema.org`.
+  - The landing page has a `WebSite` and a `WebApplication` with `offers.price` `0`.
+  - No JSON-LD has `aggregateRating` or `review`, since no real ratings exist.
+  - No `<script>` other than `application/ld+json` is inline.
+
+Manual, after launch: check a page with a structured-data validator (e.g. the Schema.org validator or Google's Rich Results Test). **TBD:** which tool, and record the result in the work item.
+
 **TBD:** how the E2E run serves the site. `astro preview` doesn't apply Cloudflare's `_headers` or `not_found_handling`, so Flow 3's status code and the header checks need `wrangler dev` or the deployed Worker.
 
 ## 5. Test Data
@@ -86,7 +110,7 @@ None. The site has no data. Tests read built files and the repo's own config. Sc
 ## 6. Coverage
 
 - **Target:** No line-coverage target; there's almost no executable code. Instead, every scaffold requirement and every UX flow has a test, or a recorded manual check.
-- **Prioritize:** accessibility, the app link, the 404 status, and security headers.
+- **Prioritize:** accessibility, the app link, the 404 status, security headers, and SEO metadata.
 
 ## 7. Commands
 
@@ -114,6 +138,7 @@ Verify commands for the wi workflow (from CLAUDE.md): `npm run check` and `npm r
 ## 9. Open Questions
 
 - **TBD:** Screen reader(s) for the manual pass (§2).
+- **TBD:** Structured-data validator for the manual post-launch check (§4).
 - **TBD:** How E2E serves the site so `_headers` and 404 handling are real (§4).
 - **TBD:** Whether `test:e2e` is part of `check` (§7).
 - **TBD:** Whether `check` builds before the `dist/` tests (§7; the scaffold plan decides).

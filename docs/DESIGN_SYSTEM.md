@@ -22,6 +22,16 @@ Answers: what should it look and feel like?
 - **Logo rules:** **TBD.** The artwork doesn't exist yet (app GitHub issue #3). Until it does, use the word "Grimify" in text. Favicon: **TBD**, same artwork.
 - **Voice:** The tone rules in PRD §10: first person, specific (named paints and brands), no hype words, no roadmap promises, and no pushing sign-ups. Short labels, no exclamation marks, matching the app's voice.
 
+## 2a. Open Graph Image
+
+The image shown when a link to the site is shared (PRD Feature 4).
+
+- **Artwork:** **TBD.** It depends on the logo (app issue #3). Until it exists, pages ship without `og:image`, and that test is skipped with a clear message. Never use a placeholder that looks finished.
+- **Size and format:** **TBD.** 1200×630 PNG is the size commonly recommended for large link previews; I haven't checked it against each platform's docs.
+- **Content:** The word "Grimify" plus a one-line description, on the Background token color, meeting the same 4.5:1 contrast as the page. Paint swatches only from the app's catalog, never invented hex values.
+- **Alt text:** Set `og:image:alt` to describe the image. Platforms that support it show it to screen-reader users.
+- **Location:** `public/og/default.png`, served from the site's own origin. A per-page override goes next to it.
+
 ## 3. Color Palette
 
 Every text/background pair must meet WCAG contrast: 4.5:1 for body text, and 3:1 for large text, UI components and focus indicators.
@@ -139,6 +149,7 @@ Requirement: **WCAG 2.1 Level AA.**
 ## 13. Open Questions
 
 - **TBD:** Logo and favicon artwork (app issue #3).
+- **TBD:** Open Graph image artwork, size and format (§2a).
 - **TBD:** Icon approach: inline lucide SVGs, or none (§10).
 - **TBD:** Hero type size (§4).
 - **TBD:** Feature sections as cards or plain sections, and the tablet layout (§8, §11).
